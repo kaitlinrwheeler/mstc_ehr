@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hDZcBZhhBkdjFddl1Nh2qDS+oxSN/FgXO8GArvMMKpCNnx0ujY9IoSYnriS4p6fhO2P0pNInfN/2HqDgjn4FrA==",
+  "dgSpecHash": "hHjvhjlDNtQPYl1XczULR6AnV9L/cn7fgVvIFMP/KcMlAPjIFGdF7CmLMmkyin1csEvFeBDvJEE1lxJlrtnaiQ==",
   "success": true,
-  "projectFilePath": "D:\\Courses\\CapStone\\EHRApplication\\EHRApplication\\EHRApplication.csproj",
+  "projectFilePath": "D:\\Courses\\CapStone\\GIT\\EHRApplication\\EHRApplication\\EHRApplication.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
