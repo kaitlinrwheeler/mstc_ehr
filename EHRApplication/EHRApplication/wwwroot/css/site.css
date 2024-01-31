@@ -1,5 +1,19 @@
 html {
   font-size: 14px;
+
+  background-color: ghostwhite;
+}
+
+#headerContainer {
+    background-color: lightblue;
+}
+
+.nav-link {
+    color: black !important;
+}
+
+.nav-link:hover {
+    color: white !important;
 }
 
 @media (min-width: 768px) {
@@ -18,5 +32,6 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: ghostwhite;
 }
