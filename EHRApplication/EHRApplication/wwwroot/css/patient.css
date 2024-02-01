@@ -1,1 +1,35 @@
-﻿
+﻿section {
+    margin: 0 auto; 
+    width: 70%; 
+    padding: 20px;
+    background-color: #f9f9f9; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+    section label {
+        font-weight: bold;
+    }
+
+    section .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    section .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        section .btn-primary:hover {
+            background-color: #0056b3;
+        }
