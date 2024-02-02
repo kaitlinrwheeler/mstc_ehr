@@ -1,10 +1,10 @@
-﻿@model PatientModel
-
+﻿
 @{
     ViewData["Title"] = "Patient Page";
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="css/patient.css">
-            //<script src="../wwwroot/js./patient.js"></script>
+    <script src="../wwwroot/js./patient.js"></script>
+
     <script src="../wwwroot/lib/jquery/dist/jquery.js"></script>
     <script src="../wwwroot/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="../wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
@@ -31,7 +31,7 @@
 
         <div class="form-group">
             <label for="MiddleName">Middle Name:</label>
-            <input type="text" id="MiddleName" name="MiddleName" class="form-control" required />
+            <input type="text" id="MiddleName" name="MiddleName" class="form-control"/>
         </div>
 
         <div class="form-group">
@@ -41,7 +41,7 @@
 
         <div class="form-group">
             <label for="Suffix">Suffix:</label>
-            <input type="text" id="Suffix" name="Suffix" class="form-control" required />
+            <input type="text" id="Suffix" name="Suffix" class="form-control" />
         </div>
 
         <div class="form-group">
@@ -65,6 +65,17 @@
                 <option value="English">English</option>
                 <option value="Spanish">Spanish</option>
                 <option value="French">French</option>
+                <option value="Mandarin">Mandarin</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Bengali">Bengali</option>
+                <option value="Russian">Russian</option>
+                <option value="Portugese">Portugese</option>
+                <option value="Japanese">Japanese</option>
+                <option value="German">German</option>
+                <option value="Korean">Korean</option>
+                <option value="Italian">Italian</option>
+                <option value="Dutch">Dutch</option>
             </select>
         </div>
 
@@ -81,8 +92,12 @@
             <label for="Race">Race:</label>
             <select id="Race" name="Race" class="form-control" required> 
                 <option value="White">White</option>
-                <option value="Black or African American">Black or African American</option>
+                <option value="Black">Black</option>
                 <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+                <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+                <option value="Hispanic or Latino">Hispanic or Latino</option>
+                <option value="Middle Eastern or North African">Middle Eastern or North African</option>
+                <option value="Mixed Race">Mixed Race</option>
             </select>
         </div>
 
@@ -98,13 +113,13 @@
 
         <div class="form-group">
             <label for="LegalGuardian1">Legal Guardian 1:</label>
-            <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" required />
+            <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" />
+            <span id="LegalGuardian1Error" class="invalid-feedback">Please enter a valid legal guardian.</span>
         </div>
 
         <div class="form-group">
             <label for="LegalGuardian2">Legal Guardian 2:</label>
-            <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" required/>
-            <span id="LegalGuardian2Error" class="text-danger"></span> <!-- Error message placeholder -->
+            <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control"/>
         </div>
 
         <div class="form-group">
