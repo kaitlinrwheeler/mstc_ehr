@@ -158,11 +158,11 @@ body {
         }
 
     #sidebar-wrapper {
-        width: 200px;
+        width: 220px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        width: 40px;
+        width: 60px;
     }
 
     #wrapper.toggled span {
@@ -200,9 +200,9 @@ body {
         padding-left: 20px;
     }
 
-        #wrapper.toggled {
-            padding-left: 0;
-        }
+    #wrapper.toggled {
+        padding-left: 0;
+    }
 
     #sidebar-wrapper {
         width: 50px;
