@@ -16,113 +16,105 @@
 
 
 
-    <div id="wrapper">
+@*         <nav class="navbar navbar-default no-margin">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header fixed-brand">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" id="menu-toggle">
+                <span class="fa fa-bars" aria-hidden="true"></span>
+                </button>
+               <a class="navbar-brand" href="#"><i class="fa fa-rocket fa-4"></i> M-33</a>
+            </div>
+            <!-- navbar-header-->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2">
+                        <span class="fa-solid fa-bars" aria-hidden="true"></span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <!-- bs-example-navbar-collapse-1 -->
+        </nav>
+ *@        
 
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+                    <li>
+@*                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" id="menu-toggle">
+                            <span class="fa-solid fa-bars" aria-hidden="true"></span>
+                        </button>
+ *@                    <a href="#" class="navbar-toggle collapsed ps-3" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars"></i></a>
+                    </li>
 
+                    <li class="active">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-table-columns fa-stack-1x"></i></span>Overview</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav" style="margin-left:0;">
-                <li class="sidebar-brand">
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-stethoscope fa-stack-1x"></i></span>Diagnoses</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-                    <a href="#menu-toggle" id="menu-toggle" style="margin-top:20px;float:right;"> <i class="fa fa-bars " style="font-size:20px !Important;" aria-hidden="true">tog</i></a>
+                    <li class="active">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-                </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-                <li>
-                    <a href="#"><i class="fa-solid fa-table-columns" aria-hidden="true"> </i> <span style="margin-left:10px;">Overview</span>  </a>
-                </li>
+                    <li class="active">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-notes-medical fa-stack-1x"></i></span>Notes</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-                <li>
-                    <a href="#"> <i class="fa-solid fa-stethoscope" aria-hidden="true"> </i> <span style="margin-left:10px;">Diagnoses</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa-solid fa-truck-medical" aria-hidden="true"> </i> <span style="margin-left:10px;">Visits</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa-solid fa-prescription" aria-hidden="true"> </i> <span style="margin-left:10px;">Medications</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-notes-medical" aria-hidden="true"> </i> <span style="margin-left:10px;">Notes</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"> </i> <span style="margin-left:10px;">Insurance</span> </a>
-                </li>
+                    <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-file-invoice-dollar fa-stack-1x "></i></span>Insurance</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        </ul>
+                    </li>
 
-
-
-
-                <!--potential additions just to show how it scrolls.-->
-                <li>
-                    <a href="#"><i class="fa fa-sort-alpha-asc " aria-hidden="true"> </i> <span style="margin-left:10px;">Section</span>  </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-play-circle-o " aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-puzzle-piece" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-font" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-info-circle " aria-hidden="true"> </i> <span style="margin-left:10px;">Section </span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-comment-o" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-sort-alpha-asc " aria-hidden="true"> </i> <span style="margin-left:10px;">Section</span>  </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-play-circle-o " aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-puzzle-piece" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-font" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-info-circle " aria-hidden="true"> </i> <span style="margin-left:10px;">Section </span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-comment-o" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-sort-alpha-asc " aria-hidden="true"> </i> <span style="margin-left:10px;">Section</span>  </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-play-circle-o " aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-puzzle-piece" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-font" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-info-circle " aria-hidden="true"> </i> <span style="margin-left:10px;">Section </span> </a>
-                </li>
-                <li>
-                    <a href="#"> <i class="fa fa-comment-o" aria-hidden="true"> </i> <span style="margin-left:10px;"> Section</span> </a>
-                </li>
-
-            </ul>
+                </ul>
+            </div>
+            <!-- /#sidebar-wrapper -->
+            <!-- Page Content -->
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+            <!-- /#page-content-wrapper -->
         </div>
-        <!-- /#sidebar-wrapper -->
-        <!-- Page Content -->
-        @*     <div id="page-content-wrapper">
-        <div class="container-fluid">
-        <div class="row">
-        <div class="col-lg-12">
+        <!-- /#wrapper -->
+        <!-- jQuery -->
 
 
 
-        </a>
-        *@
 
-        <div class="container">
+
+
+@*         <div class="container">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
@@ -130,12 +122,9 @@
         </div>
         <i class="fa-solid fa-user"></i>
         <partial name="_footer" />
+ *@
 
 
-
-        <!-- /#page-content-wrapper -->
-        <!-- /#wrapper -->
-    </div>
 
 
 
