@@ -4,103 +4,111 @@
     ViewData["Title"] = "Patient Page";
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="css/patient.css">
-    <script src="../wwwroot/js./patient.js"></script>
+            //<script src="../wwwroot/js./patient.js"></script>
+    <script src="../wwwroot/lib/jquery/dist/jquery.js"></script>
+    <script src="../wwwroot/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="../wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+    //<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 }
+
 <section>
 
     <h2>Create Patient</h2>
 
     @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label for="MHN">MHN:</label>
-        <input type="text" id="MHN" name="MHN" class="form-control" />
-    </div>
+    <form id="patientForm">
+        <div class="form-group">
+            <label for="MHN">MHN:</label>
+            <input type="text" id="MHN" name="MHN" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="FirstName">First Name:</label>
-        <input type="text" id="FirstName" name="FirstName" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="FirstName">First Name:</label>
+            <input type="text" id="FirstName" name="FirstName" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="MiddleName">Middle Name:</label>
-        <input type="text" id="MiddleName" name="MiddleName" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="MiddleName">Middle Name:</label>
+            <input type="text" id="MiddleName" name="MiddleName" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="LastName">Last Name:</label>
-        <input type="text" id="LastName" name="LastName" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="LastName">Last Name:</label>
+            <input type="text" id="LastName" name="LastName" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="Suffix">Suffix:</label>
-        <input type="text" id="Suffix" name="Suffix" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="Suffix">Suffix:</label>
+            <input type="text" id="Suffix" name="Suffix" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="DOB">Date of Birth:</label>
-        <input type="date" id="DOB" name="DOB" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="DOB">Date of Birth:</label>
+            <input type="date" id="DOB" name="DOB" class="form-control" required />
+        </div>
 
 
-    <div class="form-group">
-        <label for="Gender">Gender:</label>
-        <select id="Gender" name="Gender" class="form-control">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="Gender">Gender:</label>
+            <select id="Gender" name="Gender" class="form-control" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="PreferredLanguage">Preferred Language:</label>
-        <select id="PreferredLanguage" name="PreferredLanguage" class="form-control">
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="PreferredLanguage">Preferred Language:</label>
+            <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" required>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="Ethnicity">Ethnicity:</label>
-        <select id="Ethnicity" name="Ethnicity" class="form-control">
-            <option value="Caucasian">Caucasian</option>
-            <option value="African American">African American</option>
-            <option value="Asian">Asian</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="Ethnicity">Ethnicity:</label>
+            <select id="Ethnicity" name="Ethnicity" class="form-control" required>
+                <option value="Caucasian">Caucasian</option>
+                <option value="African American">African American</option>
+                <option value="Asian">Asian</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="Race">Race:</label>
-        <select id="Race" name="Race" class="form-control">
-            <option value="White">White</option>
-            <option value="Black or African American">Black or African American</option>
-            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="Race">Race:</label>
+            <select id="Race" name="Race" class="form-control" required> 
+                <option value="White">White</option>
+                <option value="Black or African American">Black or African American</option>
+                <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="Religion">Religion:</label>
-        <input type="text" id="Religion" name="Religion" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="Religion">Religion:</label>
+            <input type="text" id="Religion" name="Religion" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="PrimaryPhysician">Primary Physician:</label>
-        <input type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="PrimaryPhysician">Primary Physician:</label>
+            <input type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="LegalGuardian1">Legal Guardian 1:</label>
-        <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="LegalGuardian1">Legal Guardian 1:</label>
+            <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" required />
+        </div>
 
-    <div class="form-group">
-        <label for="LegalGuardian2">Legal Guardian 2:</label>
-        <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label for="LegalGuardian2">Legal Guardian 2:</label>
+            <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" required/>
+            <span id="LegalGuardian2Error" class="text-danger"></span> <!-- Error message placeholder -->
+        </div>
 
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
 </section>
