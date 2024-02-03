@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EHRApplication.Models
 {
@@ -7,10 +8,12 @@ namespace EHRApplication.Models
         [Key]
         public int visitsId { get; set; }
 
-        public PatientDemographic vatients { get; set; }
+        [ForeignKey("MHN")]
+        public PatientDemographic patients { get; set; }
 
         public int MHN { get; set; }
 
+        [ForeignKey("providersId")]
         public Providers providers { get; set; }
 
         public int providerId { get; set; }

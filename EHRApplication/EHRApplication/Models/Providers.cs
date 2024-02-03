@@ -1,7 +1,10 @@
-﻿namespace EHRApplication.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EHRApplication.Models
 {
     public class Providers
     {
+        [Key]
         public int providerId { get; set; }
 
         public string firstName { get; set; }
