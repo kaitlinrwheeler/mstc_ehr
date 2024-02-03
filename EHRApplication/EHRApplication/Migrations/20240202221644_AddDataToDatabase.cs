@@ -245,7 +245,7 @@ namespace EHRApplication.Migrations
                         column: x => x.providerId,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,7 +265,7 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -286,13 +286,13 @@ namespace EHRApplication.Migrations
                         column: x => x.allergyId,
                         principalTable: "Allergies",
                         principalColumn: "allergyId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientAllergies_PatientDemographic_MHN",
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -321,7 +321,7 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,13 +344,13 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientDx_Providers_createdBy",
                         column: x => x.createdBy,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,7 +360,7 @@ namespace EHRApplication.Migrations
                     patientInsuranceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MHN = table.Column<int>(type: "int", nullable: false),
-                    providerName = table.Column<string>(type: "varchar(100`)", nullable: false),
+                    providerName = table.Column<string>(type: "varchar(100)", nullable: false),
                     memberId = table.Column<int>(type: "int", nullable: false),
                     policyNumber = table.Column<int>(type: "int", nullable: false),
                     groupNumber = table.Column<int>(type: "int", nullable: false),
@@ -376,13 +376,13 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientInsurance_Providers_primaryPhysician",
                         column: x => x.primaryPhysician,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -406,19 +406,19 @@ namespace EHRApplication.Migrations
                         column: x => x.medId,
                         principalTable: "Medications",
                         principalColumn: "medId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientMedications_PatientDemographic_MHN",
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientMedications_Providers_providedBy",
                         column: x => x.providedBy,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -444,13 +444,13 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientNotes_Providers_createdBy",
                         column: x => x.createdBy,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -475,13 +475,13 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Visits_Providers_providersId",
                         column: x => x.providersId,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -511,7 +511,7 @@ namespace EHRApplication.Migrations
                         column: x => x.patientId,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Vitals_Visits_visitId",
                         column: x => x.visitId,
