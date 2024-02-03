@@ -4,7 +4,7 @@ html {
 }
 
 
-/*Top nav section*/
+/* Top nav section */
 
 #headerContainer {
     background-color: #82142D;
@@ -18,7 +18,9 @@ html {
         color: #181818;
     }
 
-/*End top nav*/
+/* End top nav */
+
+/* General default styles. */
 
 @media (min-width: 768px) {
   html {
@@ -37,23 +39,17 @@ html {
 
 body {
     margin-bottom: 60px;
-/*    background-color: ghostwhite;
-*/}
+}
 
 
 
-
-
-
-
-/*Side nav section*/
-
+/* Side nav section */
 
 .nav-pills > li > a {
     border-radius: 0;
 }
 
-/*Adjusts indent of the sub links so they don't show when the side nav is collapsed.*/
+/* Adjusts indent of the sub links so they don't show when the side nav is collapsed. */
 .sub-links {
     padding-left: 3rem;
 }
@@ -123,8 +119,7 @@ body {
 }
 
     .sidebar-nav li {
-/*        text-indent: 15px;
-*/        line-height: 40px;
+        line-height: 40px;
     }
 
         .sidebar-nav li a {
