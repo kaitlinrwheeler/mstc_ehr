@@ -1,12 +1,21 @@
 ﻿// checks for empty input values
 // param = input value
-function isEmpty(input) {
+
+function isEmpty(input, errorSpanID) {
     // set initial validity status
     let valid = true;
-
+    const errorSpan = document.getElementById(errorSpanID);
+  
     // invalidate input value if empty
-    if (input === null || input === undefined || input.trim() === '') {
+    if (input === null || input === undefined || input.value.trim() === '') {
         valid = false;
+    }
+
+    // Display error message if input is invalid
+    if (!valid) {
+        errorSpan.style.display = 'inline';
+    } else {
+        errorSpan.style.display = 'none';
     }
 
     return valid;
