@@ -14,9 +14,19 @@ namespace EHRApplication.Models
         public int MHN { get; set; }
 
         [ForeignKey("medId")]
-        public Medications medications { get; set; }
+        public MedicationProfile medProfile { get; set; }
 
         public int medId { get; set; }
+
+        public string category { get; set; }
+
+        public string activeStatus { get; set; }
+        
+        public string prescrptionInstructions { get; set; }
+
+        public string dosage { get; set; }
+
+        public string route {  get; set; }
 
         [ForeignKey("providedBy")]
         public Providers providers { get; set; }
@@ -25,8 +35,6 @@ namespace EHRApplication.Models
 
         public DateTime datePrescribed { get; set; }
 
-        public string dosage { get; set; }
-
-        public string prescrptionInstructions { get; set; }
+        public DateTime endDate { get; set; }
     }
 }

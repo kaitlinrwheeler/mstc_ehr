@@ -14,5 +14,9 @@ namespace EHRApplication.Models
         public int MHN { get; set; }
 
         public string alertName { get; set; }
+
+        public string activeStatus { get; set; }
+
+        public DateTime endDate { get; set; }
     }
 }

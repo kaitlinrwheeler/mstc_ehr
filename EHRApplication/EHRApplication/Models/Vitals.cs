@@ -18,13 +18,13 @@ namespace EHRApplication.Models
 
         public int patientId { get; set; }
 
+        public int painLevel { get; set; }
+
         public decimal temperature { get; set; }
 
-        public int systolicPressure { get; set; }
+        public int bloodPressure { get; set; }
 
         public int diastolicPressure { get; set; }
-
-        public int heartRate { get; set; }
 
         public int respiratoryRate { get; set; }
 
@@ -33,6 +33,8 @@ namespace EHRApplication.Models
         public decimal heightInches { get; set; }
 
         public decimal weightPounds { get; set; }
+
+        public decimal BMI { get; set; }
 
         public decimal intakeMilliLiters { get; set; }
 
