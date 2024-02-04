@@ -47,15 +47,15 @@ section .invalid-feedback {
 /* CSS for Tablet and Desktop View */
 @media (min-width: 1000px) {
     .race-column {
-        width: 50%; /* Set the width to 50% for each column */
-        float: left; /* Float the columns to have them side by side */
+        width: 50%; 
+        float: left; 
     }
 }
 
 /* CSS for Mobile View */
 @media (max-width: 1001px) {
     .race-column {
-        width: 100%; /* Set the width to 100% for each column */
-        float: none; /* Remove float */
+        width: 100%; 
+        float: none; 
     }
 }
