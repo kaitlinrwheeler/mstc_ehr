@@ -3,8 +3,11 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "jquery-validate@1.20.0",
-      "destination": "wwwroot/jquery-validate/"
+      "library": "font-awesome@6.5.1",
+      "destination": "wwwroot/font-awesome/",
+      "files": [
+        "css/all.min.css"
+      ]
     }
   ]
 }
