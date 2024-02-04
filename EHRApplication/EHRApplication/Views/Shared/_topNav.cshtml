@@ -1,0 +1,42 @@
+﻿
+
+
+<div id="headerContainer">
+    <header class="d-flex flex-wrap justify-content-center py-3 border-bottom">
+
+        <a id="logo" href="/" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap" /></svg>
+            <span class="fs-4">EHR app</span>
+        </a>
+
+        <ul id="topNav" class="nav nav-pills align-items-center">
+
+            <li class="d-flex align-items-center">
+                <i class="fa-solid fa-sun"></i>
+
+                <!--Dark mode switch-->
+                <div id="darkSwitch" class="form-check form-switch d-flex justify-content-center">
+                    <input
+                        class="form-check-input p-2"
+                        type="checkbox"
+                        id="flexSwitchCheckChecked"
+                        onclick="darkSwitch()"
+                    />
+                </div>
+                <i class="fa-solid fa-moon"></i>
+            </li>
+
+
+            <li class="nav-item">
+                <button id="srchBtn" class="btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </li>
+
+
+            <li class="nav-item"><a href="#" class="nav-link">Resources</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Account</a></li>
+            <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Login" class="nav-link">Sign In</a></li>
+        </ul>
+    </header>
+</div>
