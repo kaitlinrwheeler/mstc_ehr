@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EHRApplication.Models
+namespace EHRApplication.Models.PatientDemographics
 {
-    public class ConsciousnessAndOrientation
+    public class Respiratory
     {
         [Key]
-        public int COId { get; set; }
+        public int respId { get; set; }
 
         [ForeignKey("MHN")]
         public PatientDemographic patients { get; set; }
@@ -17,13 +17,15 @@ namespace EHRApplication.Models
 
         public TimeOnly evaluationTime { get; set; }
 
-        public string person {  get; set; }
+        public string lungSounds { get; set; }
 
-        public string place { get; set; }
+        public string respirationDepth { get; set; }
 
-        public string time { get; set; }
+        public string respirationRate { get; set; }
 
-        public string purpose { get; set; }
+        public string chestShapeAppearance { get; set; }
+
+        public string drainLineSutureStaple { get; set; }
 
         [ForeignKey("providerId")]
         public Providers providers { get; set; }

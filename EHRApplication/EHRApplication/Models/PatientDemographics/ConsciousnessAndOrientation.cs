@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EHRApplication.Models
+namespace EHRApplication.Models.PatientDemographics
 {
-    public class General
+    public class ConsciousnessAndOrientation
     {
         [Key]
-        public int genId { get; set; }
+        public int COId { get; set; }
 
         [ForeignKey("MHN")]
         public PatientDemographic patients { get; set; }
@@ -17,13 +17,13 @@ namespace EHRApplication.Models
 
         public TimeOnly evaluationTime { get; set; }
 
-        public string plainDiscomfort { get; set; }
+        public string person { get; set; }
 
-        public string elimination { get; set; }
+        public string place { get; set; }
 
-        public string appetite { get; set; }
+        public string time { get; set; }
 
-        public string activity { get; set; }
+        public string purpose { get; set; }
 
         [ForeignKey("providerId")]
         public Providers providers { get; set; }

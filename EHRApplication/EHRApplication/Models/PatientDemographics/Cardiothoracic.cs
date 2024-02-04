@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EHRApplication.Models
+namespace EHRApplication.Models.PatientDemographics
 {
     public class Cardiothoracic
     {
         [Key]
         public int cardioId { get; set; }
 
+        [ForeignKey("MHN")]
         public PatientDemographic patients { get; set; }
 
         public int MHN { get; set; }
@@ -22,5 +24,12 @@ namespace EHRApplication.Models
         public string heartRate { get; set; }
 
         public string jugularVenousPulse { get; set; }
+
+        public string drainLineSutureStaple { get; set; }
+
+        [ForeignKey("providerId")]
+        public Providers providers { get; set; }
+
+        public int providerId { get; set; }
     }
 }
