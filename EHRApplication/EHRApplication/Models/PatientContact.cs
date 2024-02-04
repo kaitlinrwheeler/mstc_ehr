@@ -21,7 +21,7 @@ namespace EHRApplication.Models
 
         public int zipcode { get; set; }
 
-        public int phone { get; set; }
+        public string phone { get; set; }
 
         public string email { get; set; }
 
@@ -31,6 +31,6 @@ namespace EHRApplication.Models
 
         public string ECRelationship { get; set; }
 
-        public int ECPhone { get; set; }
+        public string ECPhone { get; set; }
     }
 }
