@@ -3,15 +3,15 @@ html {
 
 }
 
+body {
+    background-color: #F8F8FF;
+}
+
 
 /* Top nav section */
 
-#headerContainer {
-    background-color: #82142D;
-}
-
 #topNav, .nav-link, .nav-link:visited, #srchBtn, #logo {
-    color: ghostwhite;
+    color: #F8F8FF;
 }
 
     .nav-link:hover, #srchBtn:hover {
@@ -77,8 +77,8 @@ html {
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background-color: #181818;
-    -webkit-transition: all 0.5s ease;
+/*    background-color: #181818;
+*/    -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
@@ -133,7 +133,7 @@ html {
                 text-decoration: none;
                 color: #fff;
                 background: rgba(255, 255, 255, 0.2);
-                border-left: red 2px solid;
+                border-left: var(--red) 2px solid;
             }
 
             .sidebar-nav li a:active,
@@ -215,17 +215,115 @@ html {
         width: auto;
     }
 }
+/* End side nav section */
 
 
 
-/*Dark/light modes*/
+/* Define color theme variables */
 
-[data-bs-theme=light] {
-    color: #000;
-    background-color:ghostwhite;
+:root {
+    --red: #82142e;
+    --blue: #123c54;
+    --dark-blue: #091c29;
+    --dark-purple: #120013;
+    --dark-red: #3d000a;
+    --offwhite: #f2f2f2;
+    --light-gray:#dddddd;
+    --mid-gray: #999999;
+    --dark-gray: #424242;
+    --darker-gray: #333333;
+    --black: #1a1a1a;
+}
+/* End color theme variables. */
+
+
+/* Main styles */
+
+#headerContainer {
+    background-color: var(--red);
 }
 
-[data-bs-theme=dark] {
-    color: #fff;
-    background-color: #121212;
+.card-header {
+    background-color: var(--light-gray);
 }
+
+.card-body {
+    background-color: var(--offwhite);
+}
+
+.blue-button {
+    color: var(--offwhite);
+    background-color: var(--blue)
+}
+
+.blue-button:hover {
+    color: var(--offwhite);
+    filter: brightness(1.5);
+}
+
+#sidebar-wrapper {
+    background-color: #181818;
+    border-right: solid;
+    border-color: var(--mid-gray);
+    border-width: 1px;
+}
+/* End main styles */
+
+
+/* Dark mode styles
+    To add styles to utilize dark mode switching:
+    Step 1: Add the data-bs-theme="auto" attribute to the element you want to style.
+    Step 2: Give the element an id or class namne you can referrence for dark mode.
+    Step 3: Style it below by using the [data-bs-theme=dark].YourClassOrIdNameHere selector, or elementName[data-bs-theme=dark].
+*/
+
+body[data-bs-theme=dark] {
+    color: var(--offwhite);
+    background-color: var(--black);
+}
+
+[data-bs-theme=dark].card {
+    background-color: var(--mid-gray);
+}
+
+[data-bs-theme=dark].card-header {
+    color: var(--offwhite);
+    background-color: var(--darker-gray);
+}
+
+[data-bs-theme=dark].card-body {
+    color: var(--offwhite);
+    background-color: var(--dark-gray);
+}
+
+[data-bs-theme=dark].blue-button {
+    color: var(--offwhite);
+    background-color: var(--dark-blue);
+}
+
+[data-bs-theme=dark].blue-button:hover {
+    filter: brightness(1.5);
+}
+
+section[data-bs-theme=dark] {
+    border-color: var(--mid-gray);
+}
+
+[data-bs-theme=dark].form-control {
+    color: var(--offwhite);
+    background-color: var(--darker-gray);
+    border: none;
+}
+
+[data-bs-theme=dark]#forgotPw {
+    color: var(--light-gray);
+}
+
+[data-bs-theme=dark]#forgotPw:hover {
+    filter: brightness(1.5);
+}
+
+footer[data-bs-theme=dark] {
+    border-color: var(--mid-gray) !important;
+}
+/* End dark mode styles */
