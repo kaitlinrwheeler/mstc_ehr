@@ -24,6 +24,7 @@ namespace EHRApplication.Models
 
         public int createdBy { get; set; }
 
+        [ForeignKey("associatedProvider")]
         public int associatedProvider {  get; set; }
 
         public DateTime updatedAt { get; set; }

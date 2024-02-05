@@ -47,8 +47,6 @@ namespace EHRApplication.Data
 
         public DbSet<PatientDemographic> PatientDemographic { get; set; }
 
-        public DbSet<PatientDx> PatientDx { get; set; }
-
         public DbSet<PatientInsurance> PatientInsurance { get; set; }
 
         public DbSet<PatientMedications> PatientMedications { get; set; }

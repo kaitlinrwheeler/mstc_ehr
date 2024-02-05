@@ -7,7 +7,7 @@ namespace EHRApplication.Models
         [Key]
         public int testId { get; set; }
 
-        public string textName { get; set; }
+        public string testName { get; set; }
 
         public string description { get; set; }
 

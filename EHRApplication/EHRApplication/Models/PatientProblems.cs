@@ -15,7 +15,7 @@ namespace EHRApplication.Models
 
         public string priority { get; set; }
 
-        public string descripcion { get; set; }
+        public string description { get; set; }
 
         public string ICD_10 { get; set; }
 
@@ -28,6 +28,6 @@ namespace EHRApplication.Models
 
         public int createdBy { get; set; }
 
-        public bool actived { get; set; }
+        public bool active { get; set; }
     }
 }

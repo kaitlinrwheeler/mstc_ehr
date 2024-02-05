@@ -271,13 +271,13 @@ namespace EHRApplication.Migrations
                         column: x => x.MHN,
                         principalTable: "PatientDemographic",
                         principalColumn: "MHN",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_AbdomenCoccyxGenitalia_Providers_providerId",
                         column: x => x.providerId,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
