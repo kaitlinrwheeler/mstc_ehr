@@ -15,11 +15,11 @@ namespace EHRApplication.Models
 
         public string providerName { get; set; }
 
-        public int memberId { get; set; }
+        public string memberId { get; set; }
 
-        public int policyNumber { get; set; }
+        public string policyNumber { get; set; }
 
-        public int groupNumber { get; set; }
+        public string groupNumber { get; set; }
 
         public string priority { get; set; }
 
