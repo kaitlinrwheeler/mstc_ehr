@@ -267,6 +267,10 @@ html {
     border-color: var(--mid-gray);
     border-width: 1px;
 }
+
+.invalid-feedback {
+    color: orangered !important;
+}
 /* End main styles */
 
 
@@ -326,4 +330,6 @@ section[data-bs-theme=dark] {
 footer[data-bs-theme=dark] {
     border-color: var(--mid-gray) !important;
 }
+
+
 /* End dark mode styles */
