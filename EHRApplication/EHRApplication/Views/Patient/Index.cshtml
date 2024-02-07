@@ -67,8 +67,18 @@
             </div>
 
             <div class="form-group">
-                <label for="Gender">Gender:</label>
-                <select id="Gender" name="Gender" class="form-control" onblur="isEmpty(this, 'GenderError')" data-bs-theme="auto">
+                <label for="Pronouns">Pronouns (optional):</label>
+                <input type="text" id="Pronouns" name="Pronouns" class="form-control" data-bs-theme="auto" />
+            </div>
+
+            <div class="form-group">
+                <label for="Gender">Gender (optional):</label>
+                <input type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" />
+            </div>
+
+            <div class="form-group">
+                <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
+                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" onblur="isEmpty(this, 'GenderError')" data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
