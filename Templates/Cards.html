@@ -1,10 +1,13 @@
-    <!-- Template stuff -->
+<!-- Template stuff -->
 <!-- data-bs-theme="auto" attribute is needed to control light and dark modes on those specific elements in this template.
         For the inputs, the onblur attribute should be used for calling javascript functions to handle client side validation.
         There should be a whole js file for validation.
 
-        These are just a couple general ones, if you need to make something diffearent use these as a learning tool.
+        For validation, use the onblur attribute to call your js function you need, and pass in (this, <and the id you gave your error span so it knows where to display the error>) i.e. onblur="isEmpty(this, 'EthnicityError')"
+
+        These are just a couple general ones, you will have to adjust for your specific needs as far as validation and input specific things. If you need to make something different use these as a learning tool.
         Also reach out to Jordan for help if you'd like.
+
 -->
 <!-- Essentially the wrapper element. This should be used as the top most parent element for each new page. -->
 <section class="my-5 w-75 m-auto">
@@ -29,6 +32,10 @@
                            title="Please enter your MSTC email address." minlength="10"
                            maxlength="100" pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$"
                            onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                    <!-- This is where validation errors should appear. -->
+                    <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                 </div>
 
                 <div class="form-group mb-3">
@@ -36,6 +43,9 @@
                     <input type="password" class="form-control" id="password" name="password"
                            minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                            onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                    <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                 </div>
 
                 <div class="mb-3 text-center">
@@ -73,6 +83,9 @@
                                    title="Please enter your MSTC email address." minlength="10" maxlength="100"
                                    pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
                                    required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -83,6 +96,9 @@
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -96,6 +112,9 @@
                                    title="Please enter your MSTC email address." minlength="10" maxlength="100"
                                    pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
                                    required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -106,6 +125,9 @@
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -119,6 +141,9 @@
                                    title="Please enter your MSTC email address." minlength="10" maxlength="100"
                                    pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
                                    required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -129,6 +154,9 @@
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -142,6 +170,9 @@
                                    title="Please enter your MSTC email address." minlength="10" maxlength="100"
                                    pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
                                    required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
@@ -152,6 +183,9 @@
                             <input type="password" class="form-control" id="password" name="password" minlength="8"
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
                         </div>
                     </div>
 
