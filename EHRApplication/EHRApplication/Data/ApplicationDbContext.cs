@@ -53,6 +53,8 @@ namespace EHRApplication.Data
 
         public DbSet<PatientNotes> PatientNotes { get; set; }
 
+        public DbSet<PatientProblems> PatientProblems { get; set; }
+
         public DbSet<Providers> Providers { get; set; }
 
         public DbSet<PsychMentalHealth> PsychMentalHealth { get; set; }
