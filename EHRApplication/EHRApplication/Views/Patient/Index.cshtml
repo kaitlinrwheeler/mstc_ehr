@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/patient.css">
 }
 
-<section class="my-5" data-bs-theme="auto">
+<section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
         <h3 class="my-3">Create Patient</h3>
@@ -19,7 +19,7 @@
         <form id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
-                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" onblur="isEmpty(this, 'FirstNameError')" />
+                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="isEmpty(this, 'FirstNameError')" />
                 <span id="FirstNameError" class="invalid-feedback">Please enter a valid first name.</span>
 
             </div>
@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for="LastName">Last Name:</label>
-                <input type="text" id="LastName" name="LastName" class="form-control" onblur="isEmpty(this, 'LastNameError')" data-bs-theme="auto" />
+                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="isEmpty(this, 'LastNameError')" data-bs-theme="auto" />
                 <span id="LastNameError" class="invalid-feedback">Please enter a valid last name.</span>
             </div>
 
@@ -42,7 +42,7 @@
 
             <div class="form-group">
                 <label for="DOB">Date of Birth:</label>
-                <input type="date" id="DOB" name="DOB" class="form-control" onblur="isEmpty(this, 'DOBError')" data-bs-theme="auto" />
+                <input type="date" id="DOB" name="DOB" class="form-control" required onblur="isEmpty(this, 'DOBError')" data-bs-theme="auto" />
                 <span id="DOBError" class="invalid-feedback">Please enter a valid DOB.</span>
             </div>
 
@@ -78,17 +78,16 @@
 
             <div class="form-group">
                 <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
-                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" onblur="isEmpty(this, 'GenderError')" data-bs-theme="auto">
+                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" required onblur="isEmpty(this, 'GenderError')" data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                    <option value="Other">Other</option>
                 </select>
                 <span id="GenderError" class="invalid-feedback">Please select a valid gender option.</span>
             </div>
 
             <div class="form-group">
                 <label for="PreferredLanguage">Preferred Language:</label>
-                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" onblur="isEmpty(this, 'PreferredLanguageError')" data-bs-theme="auto">
+                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" required onblur="isEmpty(this, 'PreferredLanguageError')" data-bs-theme="auto">
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Dutch">Dutch</option>
@@ -111,7 +110,7 @@
 
             <div class="form-group">
                 <label for="Ethnicity">Ethnicity:</label>
-                <select id="Ethnicity" name="Ethnicity" class="form-control" onblur="isEmpty(this, 'EthnicityError')" data-bs-theme="auto">
+                <select id="Ethnicity" name="Ethnicity" class="form-control" required onblur="isEmpty(this, 'EthnicityError')" data-bs-theme="auto">
                     <option value="African American">African American</option>
                     <option value="Asian">Asian</option>
                     <option value="Caucasian">Caucasian</option>
