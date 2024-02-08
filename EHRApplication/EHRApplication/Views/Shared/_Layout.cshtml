@@ -12,6 +12,39 @@
 
     <partial name="_topNav"/>
 
+
+
+@*     <!-- gpt Patient Info Banner -->
+    <div id="patient-info-banner" class="container-fluid bg-light ">
+        <div class="row align-items-center">
+            <div class="col">
+                <!-- Place for patient image -->
+                <img src="path_to_placeholder_image" alt="Patient Image" class="img-fluid rounded-circle" style="max-width: 100px;" />
+            </div>
+            <div class="col">
+                <!-- Patient demographic info displayed -->
+                <p>Full Name: John Doe</p>
+                <p>DOB: January 1, 1990</p>
+                <p>MHN: MHN123456</p>
+                <p>Alerts: None</p>
+                <p>Gender: Male</p>
+                <p>Preferred Pronouns: He/Him</p>
+                <p>Gender Assigned at Birth: Male</p>
+            </div>
+        </div>
+    </div>
+    <!-- End gpt Patient Info Banner -->
+ *@
+
+
+
+
+
+
+
+
+
+
     <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
         <div id="wrapper">
             <!-- Sidebar -->
@@ -74,7 +107,28 @@
             <!-- /#sidebar-wrapper -->
             <!-- Page Content -->
                     <main role="main" class="pb-3">
-                        @RenderBody()
+
+            <!-- gpt Patient Info Banner -->
+            <div id="patient-info-banner" class="container-fluid bg-light "data-bs-theme="auto" >
+                <div class="row align-items-center">
+                    <div class="col">
+                        <!-- Place for patient image -->
+                        <img src="path_to_placeholder_image" alt="Patient Image" class="img-fluid rounded-circle" style="max-width: 100px;" />
+                    </div>
+                    <div class="col">
+                        <!-- Patient demographic info displayed -->
+                        <p>Full Name: John Doe</p>
+                        <p>DOB: January 1, 1990</p>
+                        <p>MHN: MHN123456</p>
+                        <p>Alerts: None</p>
+                        <p>Gender: Male</p>
+                        <p>Preferred Pronouns: He/Him</p>
+                        <p>Gender Assigned at Birth: Male</p>
+                    </div>
+                </div>
+            </div>
+            <!-- End gpt Patient Info Banner -->
+            @RenderBody()
                         <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
                         <partial name="_footer" />               
                     </main>

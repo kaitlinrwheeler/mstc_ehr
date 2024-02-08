@@ -271,10 +271,20 @@ html {
 .invalid-feedback {
     color: orangered !important;
 }
-/* End main styles */
 
 
-/* Dark mode styles
+#patient-info-banner {
+
+}
+
+
+    /* End main styles */
+
+
+
+
+
+    /* Dark mode styles
     To add styles to utilize dark mode switching:
     Step 1: Add the data-bs-theme="auto" attribute to the element you want to style.
     Step 2: Give the element an id or class namne you can referrence for dark mode.
@@ -284,6 +294,11 @@ html {
 body[data-bs-theme=dark] {
     color: var(--offwhite);
     background-color: var(--black);
+}
+
+[data-bs-theme=dark]#patient-info-banner {
+    color: var(--offwhite);
+    background-color: var(--black) !important;
 }
 
 [data-bs-theme=dark].card {
