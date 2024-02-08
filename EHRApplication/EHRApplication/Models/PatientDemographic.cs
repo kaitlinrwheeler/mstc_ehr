@@ -41,6 +41,6 @@ namespace EHRApplication.Models
 
         public string previousName { get; set; }
 
-        public string genderAssingedAtBirth { get; set; }
+        public string genderAssignedAtBirth { get; set; }
     }
 }

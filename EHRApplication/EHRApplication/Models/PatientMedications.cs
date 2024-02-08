@@ -22,7 +22,7 @@ namespace EHRApplication.Models
 
         public string activeStatus { get; set; }
         
-        public string prescrptionInstructions { get; set; }
+        public string prescriptionInstructions { get; set; }
 
         public string dosage { get; set; }
 
@@ -31,7 +31,7 @@ namespace EHRApplication.Models
         [ForeignKey("providedBy")]
         public Providers providers { get; set; }
 
-        public int providedBy { get; set; }
+        public int prescribedBy { get; set; }
 
         public DateTime datePrescribed { get; set; }
 

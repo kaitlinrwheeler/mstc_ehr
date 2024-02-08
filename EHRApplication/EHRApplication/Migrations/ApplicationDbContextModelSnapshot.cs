@@ -35,11 +35,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("activeStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("alertName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
@@ -64,11 +64,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("allergyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("allergyType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("allergyId");
 
@@ -88,25 +88,25 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("activeStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("diagnosis")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("startDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("CPId");
 
@@ -128,7 +128,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("completionStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("orderDate")
                         .HasColumnType("date");
@@ -171,7 +171,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("abnormalFlag")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("date")
                         .HasColumnType("date");
@@ -181,7 +181,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("resultValue")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("testId")
                         .HasColumnType("int");
@@ -218,23 +218,23 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("category")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("referenceRange")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("testName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("units")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("testId");
 
@@ -257,21 +257,21 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("category")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("dateGiven")
                         .HasColumnType("date");
 
                     b.Property<string>("frequency")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("medId")
                         .HasColumnType("int");
 
                     b.Property<string>("status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<TimeOnly>("timeGiven")
                         .HasColumnType("time");
@@ -300,11 +300,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("frequency")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("fulfillmentStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("medId")
                         .HasColumnType("int");
@@ -344,15 +344,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("medName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("route")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("medId");
 
@@ -395,42 +395,42 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("ECFirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ECLastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ECPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ECRelationship")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
                     b.Property<string>("address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("city")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("state")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("zipcode")
                         .HasColumnType("int");
@@ -455,62 +455,62 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("ethnicity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<string>("genderAssingedAtBirth")
+                    b.Property<string>("genderAssignedAtBirth")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("lastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("legalGuardian1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("legalGuardian2")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("middleName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("preferredLanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("preferredPronouns")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("previousName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
 
                     b.Property<string>("race")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("religion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("suffix")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("MHN");
 
@@ -532,11 +532,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("abdominalShapeAppearance")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("bowelSounds")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -549,15 +549,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("skinAppearance")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("tendernessLumpDistention")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("tubeDrainCath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("ACGId");
 
@@ -581,7 +581,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("drainLineSutureStaple")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -591,19 +591,19 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("heartRate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("heartRhythm")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("heartSounds")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("jugularVenousPulse")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
@@ -636,22 +636,22 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("person")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("place")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
 
                     b.Property<string>("purpose")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("time")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("COId");
 
@@ -675,11 +675,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("colorTempCapillaryRefill")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("edema")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -692,15 +692,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("pulseSensation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("rangeOfMotion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("tubeDrainSutureStapleCath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("exId");
 
@@ -724,15 +724,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("activity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("appetite")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("elimination")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -742,7 +742,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("plainDiscomfort")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
@@ -775,15 +775,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("head")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("hearing")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("nose")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
@@ -793,11 +793,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("throatMouth")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("vision")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("HNId");
 
@@ -821,7 +821,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("cognition")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -831,7 +831,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("moodAffect")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
@@ -841,11 +841,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("sleepPattern")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("thoughtPattern")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("psychId");
 
@@ -869,11 +869,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("chestShapeAppearance")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("drainLineSutureStaple")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -883,18 +883,18 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("lungSounds")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
 
                     b.Property<string>("respirationDepth")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("respirationRate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("respId");
 
@@ -918,11 +918,11 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("colorTemp")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("drynessIrritation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateOnly>("evaluationDate")
                         .HasColumnType("date");
@@ -938,15 +938,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("rednessIrritation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("signOfBreakdown")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("woundsLessions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("skinId");
 
@@ -973,26 +973,26 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("groupNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("memberId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("policyNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("providerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("patientInsuranceId");
 
@@ -1016,18 +1016,18 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("activeStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("category")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("datePrescribed")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("dosage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
@@ -1035,16 +1035,19 @@ namespace EHRApplication.Migrations
                     b.Property<int>("medId")
                         .HasColumnType("int");
 
-                    b.Property<string>("prescrptionInstructions")
+                    b.Property<int>("prescribedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("prescriptionInstructions")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providedBy")
                         .HasColumnType("int");
 
                     b.Property<string>("route")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("patientMedId");
 
@@ -1070,14 +1073,14 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("Note")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("associatedProvider")
                         .HasColumnType("int");
 
                     b.Property<string>("category")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime2");
@@ -1100,6 +1103,51 @@ namespace EHRApplication.Migrations
                     b.ToTable("PatientNotes");
                 });
 
+            modelBuilder.Entity("EHRApplication.Models.PatientProblems", b =>
+                {
+                    b.Property<int>("patientProblemsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("patientProblemsId"));
+
+                    b.Property<string>("ICD_10")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("MHN")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("createdBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("immediacy")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("priority")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("patientProblemsId");
+
+                    b.HasIndex("MHN");
+
+                    b.HasIndex("createdBy");
+
+                    b.ToTable("PatientProblems");
+                });
+
             modelBuilder.Entity("EHRApplication.Models.Providers", b =>
                 {
                     b.Property<int>("providerId")
@@ -1110,15 +1158,15 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("lastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("specialty")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("providerId");
 
@@ -1144,7 +1192,7 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("notes")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("providerId")
                         .HasColumnType("int");
@@ -1176,9 +1224,6 @@ namespace EHRApplication.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("bloodPressure")
-                        .HasColumnType("int");
-
-                    b.Property<int>("diastolicPressure")
                         .HasColumnType("int");
 
                     b.Property<decimal>("heightInches")
@@ -1223,19 +1268,19 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -1256,14 +1301,14 @@ namespace EHRApplication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.HasKey("Id");
 
@@ -1275,18 +1320,18 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -1299,30 +1344,30 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -1346,14 +1391,14 @@ namespace EHRApplication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.HasKey("Id");
 
@@ -1365,17 +1410,17 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -1387,10 +1432,10 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -1402,16 +1447,16 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -1831,6 +1876,25 @@ namespace EHRApplication.Migrations
                 });
 
             modelBuilder.Entity("EHRApplication.Models.PatientNotes", b =>
+                {
+                    b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
+                        .WithMany()
+                        .HasForeignKey("MHN")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EHRApplication.Models.Providers", "providers")
+                        .WithMany()
+                        .HasForeignKey("createdBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("patients");
+
+                    b.Navigation("providers");
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.PatientProblems", b =>
                 {
                     b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
                         .WithMany()

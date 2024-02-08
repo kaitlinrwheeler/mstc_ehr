@@ -24,8 +24,6 @@ namespace EHRApplication.Models
 
         public int bloodPressure { get; set; }
 
-        public int diastolicPressure { get; set; }
-
         public int respiratoryRate { get; set; }
 
         public decimal pulseOximetry { get; set; }

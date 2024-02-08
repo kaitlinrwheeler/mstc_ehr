@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240205051858_moreUpdates")]
-    partial class moreUpdates
+    [Migration("20240207230148_InitialDBCreation")]
+    partial class InitialDBCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -468,7 +468,7 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("genderAssingedAtBirth")
+                    b.Property<string>("genderAssignedAtBirth")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1038,7 +1038,10 @@ namespace EHRApplication.Migrations
                     b.Property<int>("medId")
                         .HasColumnType("int");
 
-                    b.Property<string>("prescrptionInstructions")
+                    b.Property<int>("prescribedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("prescriptionInstructions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1101,6 +1104,51 @@ namespace EHRApplication.Migrations
                     b.HasIndex("createdBy");
 
                     b.ToTable("PatientNotes");
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.PatientProblems", b =>
+                {
+                    b.Property<int>("patientProblemsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("patientProblemsId"));
+
+                    b.Property<string>("ICD_10")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MHN")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("createdBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("immediacy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("priority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("patientProblemsId");
+
+                    b.HasIndex("MHN");
+
+                    b.HasIndex("createdBy");
+
+                    b.ToTable("PatientProblems");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.Providers", b =>
@@ -1179,9 +1227,6 @@ namespace EHRApplication.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("bloodPressure")
-                        .HasColumnType("int");
-
-                    b.Property<int>("diastolicPressure")
                         .HasColumnType("int");
 
                     b.Property<decimal>("heightInches")
@@ -1834,6 +1879,25 @@ namespace EHRApplication.Migrations
                 });
 
             modelBuilder.Entity("EHRApplication.Models.PatientNotes", b =>
+                {
+                    b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
+                        .WithMany()
+                        .HasForeignKey("MHN")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EHRApplication.Models.Providers", "providers")
+                        .WithMany()
+                        .HasForeignKey("createdBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("patients");
+
+                    b.Navigation("providers");
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.PatientProblems", b =>
                 {
                     b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
                         .WithMany()

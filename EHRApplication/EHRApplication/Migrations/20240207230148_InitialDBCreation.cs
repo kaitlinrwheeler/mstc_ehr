@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EHRApplication.Migrations
 {
     /// <inheritdoc />
-    public partial class initialDBCreation : Migration
+    public partial class InitialDBCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,7 @@ namespace EHRApplication.Migrations
                 {
                     testId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    textName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    testName = table.Column<string>(type: "varchar(100)", nullable: false),
                     description = table.Column<string>(type: "varchar(100)", nullable: false),
                     units = table.Column<string>(type: "varchar(100)", nullable: false),
                     referenceRange = table.Column<string>(type: "varchar(100)", nullable: false),
@@ -224,27 +224,31 @@ namespace EHRApplication.Migrations
                     MHN = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     firstName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    middleName = table.Column<string>(type: "varchar(100)", nullable: false),
+                    middleName = table.Column<string>(type: "varchar(100)", nullable: true),
                     lastName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    suffix = table.Column<string>(type: "varchar(100)", nullable: false),
+                    suffix = table.Column<string>(type: "varchar(100)", nullable: true),
+                    preferredPronouns = table.Column<string>(type: "varchar(100)", nullable: false),
                     DOB = table.Column<DateOnly>(type: "date", nullable: false),
                     gender = table.Column<string>(type: "varchar(100)", nullable: false),
-                    perferredLanguage = table.Column<string>(type: "varchar(100)", nullable: false),
-                    ethnicity = table.Column<string>(type: "varchar(100)", nullable: false),
-                    religion = table.Column<string>(type: "varchar(100)", nullable: false),
-                    providerId = table.Column<int>(type: "int", nullable: false),
-                    legalGuardian1 = table.Column<string>(type: "varchar(100)", nullable: false),
-                    legalGuardian2 = table.Column<string>(type: "varchar(100)", nullable: false)
+                    preferredLanguage = table.Column<string>(type: "varchar(100)", nullable: false),
+                    ethnicity = table.Column<string>(type: "varchar(100)", nullable: true),
+                    race = table.Column<string>(type: "varchar(100)", nullable: true),
+                    religion = table.Column<string>(type: "varchar(100)", nullable: true),
+                    primaryPhysician = table.Column<int>(type: "int", nullable: true),
+                    legalGuardian1 = table.Column<string>(type: "varchar(100)", nullable: true),
+                    legalGuardian2 = table.Column<string>(type: "varchar(100)", nullable: true),
+                    previousName = table.Column<string>(type: "varchar(100)", nullable: true),
+                    genderAssignedAtBirth = table.Column<string>(type: "varchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PatientDemographic", x => x.MHN);
                     table.ForeignKey(
-                        name: "FK_PatientDemographic_Providers_providerId",
-                        column: x => x.providerId,
+                        name: "FK_PatientDemographic_Providers_primaryPhysician",
+                        column: x => x.primaryPhysician,
                         principalTable: "Providers",
                         principalColumn: "providerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -289,6 +293,7 @@ namespace EHRApplication.Migrations
                     MHN = table.Column<int>(type: "int", nullable: false),
                     alertName = table.Column<string>(type: "varchar(100)", nullable: false),
                     activeStatus = table.Column<string>(type: "varchar(100)", nullable: false),
+                    startDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     endDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -563,16 +568,16 @@ namespace EHRApplication.Migrations
                     patientContactId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MHN = table.Column<int>(type: "int", nullable: false),
-                    address = table.Column<string>(type: "varchar(100)", nullable: false),
+                    address = table.Column<string>(type: "varchar(100)", nullable: true),
                     city = table.Column<string>(type: "varchar(100)", nullable: false),
                     state = table.Column<string>(type: "varchar(100)", nullable: false),
                     zipcode = table.Column<int>(type: "int", nullable: false),
-                    phone = table.Column<string>(type: "varchar(100)", nullable: false),
-                    email = table.Column<string>(type: "varchar(100)", nullable: false),
-                    ECFirstName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    ECLastName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    ECRelationship = table.Column<string>(type: "varchar(100)", nullable: false),
-                    ECPhone = table.Column<string>(type: "varchar(100)", nullable: false)
+                    phone = table.Column<string>(type: "varchar(100)", nullable: true),
+                    email = table.Column<string>(type: "varchar(100)", nullable: true),
+                    ECFirstName = table.Column<string>(type: "varchar(100)", nullable: true),
+                    ECLastName = table.Column<string>(type: "varchar(100)", nullable: true),
+                    ECRelationship = table.Column<string>(type: "varchar(100)", nullable: true),
+                    ECPhone = table.Column<string>(type: "varchar(100)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -586,35 +591,6 @@ namespace EHRApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PatientDx",
-                columns: table => new
-                {
-                    patientDxId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MHN = table.Column<int>(type: "int", nullable: false),
-                    Dx = table.Column<string>(type: "varchar(100)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    createdBy = table.Column<int>(type: "int", nullable: false),
-                    active = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PatientDx", x => x.patientDxId);
-                    table.ForeignKey(
-                        name: "FK_PatientDx_PatientDemographic_MHN",
-                        column: x => x.MHN,
-                        principalTable: "PatientDemographic",
-                        principalColumn: "MHN",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_PatientDx_Providers_createdBy",
-                        column: x => x.createdBy,
-                        principalTable: "Providers",
-                        principalColumn: "providerId",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PatientInsurance",
                 columns: table => new
                 {
@@ -622,11 +598,11 @@ namespace EHRApplication.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MHN = table.Column<int>(type: "int", nullable: false),
                     providerName = table.Column<string>(type: "varchar(100)", nullable: false),
-                    memberId = table.Column<int>(type: "int", nullable: false),
-                    policyNumber = table.Column<int>(type: "int", nullable: false),
-                    groupNumber = table.Column<int>(type: "int", nullable: false),
+                    memberId = table.Column<string>(type: "varchar(100)", nullable: false),
+                    policyNumber = table.Column<string>(type: "varchar(100)", nullable: false),
+                    groupNumber = table.Column<string>(type: "varchar(100)", nullable: false),
                     priority = table.Column<string>(type: "varchar(100)", nullable: false),
-                    primaryPhysician = table.Column<int>(type: "int", nullable: false),
+                    primaryPhysician = table.Column<int>(type: "int", nullable: true),
                     active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -653,15 +629,16 @@ namespace EHRApplication.Migrations
                     patientMedId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MHN = table.Column<int>(type: "int", nullable: false),
-                    medId = table.Column<int>(type: "int", nullable: false),
+                    medId = table.Column<int>(type: "int", nullable: true),
                     category = table.Column<string>(type: "varchar(100)", nullable: false),
                     activeStatus = table.Column<string>(type: "varchar(100)", nullable: false),
-                    prescrptionInstructions = table.Column<string>(type: "varchar(100)", nullable: false),
+                    prescriptionInstructions = table.Column<string>(type: "varchar(100)", nullable: false),
                     dosage = table.Column<string>(type: "varchar(100)", nullable: false),
                     route = table.Column<string>(type: "varchar(100)", nullable: false),
                     providedBy = table.Column<int>(type: "int", nullable: false),
-                    datePrescribed = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    endDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    prescribedBy = table.Column<int>(type: "int", nullable: true),
+                    datePrescribed = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    endDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -712,6 +689,38 @@ namespace EHRApplication.Migrations
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_PatientNotes_Providers_createdBy",
+                        column: x => x.createdBy,
+                        principalTable: "Providers",
+                        principalColumn: "providerId",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PatientProblems",
+                columns: table => new
+                {
+                    patientProblemsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MHN = table.Column<int>(type: "int", nullable: false),
+                    priority = table.Column<string>(type: "varchar(100)", nullable: false),
+                    description = table.Column<string>(type: "varchar(100)", nullable: false),
+                    ICD_10 = table.Column<string>(type: "varchar(100)", nullable: false),
+                    immediacy = table.Column<string>(type: "varchar(100)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    createdBy = table.Column<int>(type: "int", nullable: false),
+                    active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PatientProblems", x => x.patientProblemsId);
+                    table.ForeignKey(
+                        name: "FK_PatientProblems_PatientDemographic_MHN",
+                        column: x => x.MHN,
+                        principalTable: "PatientDemographic",
+                        principalColumn: "MHN",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_PatientProblems_Providers_createdBy",
                         column: x => x.createdBy,
                         principalTable: "Providers",
                         principalColumn: "providerId",
@@ -992,7 +1001,6 @@ namespace EHRApplication.Migrations
                     painLevel = table.Column<int>(type: "int", nullable: false),
                     temperature = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     bloodPressure = table.Column<int>(type: "int", nullable: false),
-                    diastolicPressure = table.Column<int>(type: "int", nullable: false),
                     respiratoryRate = table.Column<int>(type: "int", nullable: false),
                     pulseOximetry = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     heightInches = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -1218,19 +1226,9 @@ namespace EHRApplication.Migrations
                 column: "MHN");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PatientDemographic_providerId",
+                name: "IX_PatientDemographic_primaryPhysician",
                 table: "PatientDemographic",
-                column: "providerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PatientDx_createdBy",
-                table: "PatientDx",
-                column: "createdBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PatientDx_MHN",
-                table: "PatientDx",
-                column: "MHN");
+                column: "primaryPhysician");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PatientInsurance_MHN",
@@ -1265,6 +1263,16 @@ namespace EHRApplication.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PatientNotes_MHN",
                 table: "PatientNotes",
+                column: "MHN");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PatientProblems_createdBy",
+                table: "PatientProblems",
+                column: "createdBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PatientProblems_MHN",
+                table: "PatientProblems",
                 column: "MHN");
 
             migrationBuilder.CreateIndex(
@@ -1379,9 +1387,6 @@ namespace EHRApplication.Migrations
                 name: "PatientContact");
 
             migrationBuilder.DropTable(
-                name: "PatientDx");
-
-            migrationBuilder.DropTable(
                 name: "PatientInsurance");
 
             migrationBuilder.DropTable(
@@ -1389,6 +1394,9 @@ namespace EHRApplication.Migrations
 
             migrationBuilder.DropTable(
                 name: "PatientNotes");
+
+            migrationBuilder.DropTable(
+                name: "PatientProblems");
 
             migrationBuilder.DropTable(
                 name: "PsychMentalHealth");
