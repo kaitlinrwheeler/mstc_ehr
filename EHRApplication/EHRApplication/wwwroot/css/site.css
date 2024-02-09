@@ -170,7 +170,7 @@ html {
     }
 
     #wrapper.toggled {
-        padding-left: 0;
+        padding-left: 50px;
     }
 
     #sidebar-wrapper {
@@ -277,14 +277,21 @@ html {
 
 }
 
+.bg-red {
+    color: var(--offwhite);
+    background-color: var(--red);
+}
 
+.text-sm {
+    font-size: 13px;
+}
     /* End main styles */
 
 
 
 
 
-    /* Dark mode styles
+/* Dark mode styles
     To add styles to utilize dark mode switching:
     Step 1: Add the data-bs-theme="auto" attribute to the element you want to style.
     Step 2: Give the element an id or class namne you can referrence for dark mode.
@@ -296,10 +303,16 @@ body[data-bs-theme=dark] {
     background-color: var(--black);
 }
 
-[data-bs-theme=dark]#patient-info-banner {
+[data-bs-theme=dark].bg-red {
+    background-color: var(--dark-red);
+}
+
+
+/*[data-bs-theme=dark]#patient-info-banner {
     color: var(--offwhite);
     background-color: var(--black) !important;
 }
+*/
 
 [data-bs-theme=dark].card {
     background-color: var(--mid-gray);
