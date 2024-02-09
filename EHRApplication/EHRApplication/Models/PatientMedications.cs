@@ -28,7 +28,7 @@ namespace EHRApplication.Models
 
         public string route {  get; set; }
 
-        [ForeignKey("providedBy")]
+        [ForeignKey("prescribedBy")]
         public Providers providers { get; set; }
 
         public int prescribedBy { get; set; }
