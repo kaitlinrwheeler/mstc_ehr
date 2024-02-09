@@ -77,29 +77,29 @@ VALUES
 INSERT INTO `PatientProblems` (`MHN`, `Priority`, `Description`, `ICD_10`, `Immediacy`, `CreatedAt`, `CreatedBy`, `Active`)
 VALUES
 -- Patient Johnny (MHN = 1)
-(1, 'High', 'Cardiac Health', 'I25.10', 'Urgent', '2023-01-01T00:00:00', 1, true),
-(1, 'Medium', 'Weight Management', 'E66.9', 'Routine', '2023-02-15T00:00:00', 2, true),
-(1, 'Low', 'Vitamin D Deficiency', 'E55.9', 'Routine', '2023-04-10T00:00:00', 3, true),
+(1, 'High', 'Cardiac Health', 'I25.10', 'Urgent', '2023-01-01T00:00:00', 1, 1),
+(1, 'Medium', 'Weight Management', 'E66.9', 'Routine', '2023-02-15T00:00:00', 2, 1),
+(1, 'Low', 'Vitamin D Deficiency', 'E55.9', 'Routine', '2023-04-10T00:00:00', 3, 1),
 
 -- Patient Moira (MHN = 2)
-(2, 'High', 'Diabetes Management', 'E11.9', 'Urgent', '2023-03-01T00:00:00', 1, true),
-(2, 'Medium', 'Migraine Treatment', 'G43.9', 'Urgent', '2023-05-20T00:00:00', 2, true),
-(2, 'Low', 'Allergy Management', 'T78.40', 'Routine', '2023-07-15T00:00:00', 3, true),
+(2, 'High', 'Diabetes Management', 'E11.9', 'Urgent', '2023-03-01T00:00:00', 1, 1),
+(2, 'Medium', 'Migraine Treatment', 'G43.9', 'Urgent', '2023-05-20T00:00:00', 2, 1),
+(2, 'Low', 'Allergy Management', 'T78.40', 'Routine', '2023-07-15T00:00:00', 3, 1),
 
 -- Patient David (MHN = 3)
-(3, 'High', 'Anxiety Treatment', 'F41.9', 'Urgent', '2023-02-10T00:00:00', 1, true),
-(3, 'Medium', 'Gastritis Management', 'K29.40', 'Urgent', '2023-04-05T00:00:00', 2, true),
-(3, 'Low', 'Sleep Disorder Treatment', 'G47.9', 'Routine', '2023-06-25T00:00:00', 3, true),
+(3, 'High', 'Anxiety Treatment', 'F41.9', 'Urgent', '2023-02-10T00:00:00', 1, 1),
+(3, 'Medium', 'Gastritis Management', 'K29.40', 'Urgent', '2023-04-05T00:00:00', 2, 1),
+(3, 'Low', 'Sleep Disorder Treatment', 'G47.9', 'Routine', '2023-06-25T00:00:00', 3, 1),
 
 -- Patient Alexis (MHN = 4)
-(4, 'High', 'Allergy Management', 'T78.40', 'Urgent', '2023-03-15T00:00:00', 1, true),
-(4, 'Medium', 'Asthma Treatment', 'J45.909', 'Urgent', '2023-05-10T00:00:00', 2, true),
-(4, 'Low', 'Chronic Pain Management', 'G89.29', 'Routine', '2023-07-30T00:00:00', 3, true),
+(4, 'High', 'Allergy Management', 'T78.40', 'Urgent', '2023-03-15T00:00:00', 1, 1),
+(4, 'Medium', 'Asthma Treatment', 'J45.909', 'Urgent', '2023-05-10T00:00:00', 2, 1),
+(4, 'Low', 'Chronic Pain Management', 'G89.29', 'Routine', '2023-07-30T00:00:00', 3, 1),
 
 -- Patient Stevie (MHN = 5)
-(5, 'High', 'Physical Therapy', 'Z47.89', 'Urgent', '2023-04-01T00:00:00', 1, true),
-(5, 'Medium', 'Injury Follow-up', 'S49.90', 'Routine', '2023-06-18T00:00:00', 2, true),
-(5, 'Low', 'General Wellness', 'Z00.00', 'Routine', '2023-08-10T00:00:00', 3, true);
+(5, 'High', 'Physical Therapy', 'Z47.89', 'Urgent', '2023-04-01T00:00:00', 1, 1),
+(5, 'Medium', 'Injury Follow-up', 'S49.90', 'Routine', '2023-06-18T00:00:00', 2, 1),
+(5, 'Low', 'General Wellness', 'Z00.00', 'Routine', '2023-08-10T00:00:00', 3, 1);
 
 
 
