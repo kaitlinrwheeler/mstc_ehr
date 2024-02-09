@@ -74,7 +74,7 @@ VALUES
 
 
 -- Dummy data for PatientProblems table // Commented out because this table still needs to be added
-INSERT INTO `PatientProblems` (`MHN`, `Priority`, `Description`, `ICD_10`, `Immediacy`, `CreatedAt`, `CreatedBy`, `Active`)
+INSERT INTO [dbo].[PatientProblems] ([MHN], [Priority], [Description], [ICD_10], [Immediacy], [CreatedAt], [CreatedBy], [Active])
 VALUES
 -- Patient Johnny (MHN = 1)
 (1, 'High', 'Cardiac Health', 'I25.10', 'Urgent', '2023-01-01T00:00:00', 1, 1),
