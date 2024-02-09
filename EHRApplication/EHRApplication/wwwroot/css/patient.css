@@ -1,7 +1,6 @@
 ﻿section {
     margin: 0 auto; 
     width: 70%; 
-    padding: 20px;
     background-color: #f9f9f9; 
     border: 1px solid #ccc; 
     border-radius: 5px; 
@@ -44,18 +43,3 @@ section .invalid-feedback {
 }
 
 
-/* CSS for Tablet and Desktop View */
-@media (min-width: 1000px) {
-    .race-column {
-        width: 50%; 
-        float: left; 
-    }
-}
-
-/* CSS for Mobile View */
-@media (max-width: 1001px) {
-    .race-column {
-        width: 100%; 
-        float: none; 
-    }
-}
