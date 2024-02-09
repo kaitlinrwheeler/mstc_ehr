@@ -1,0 +1,205 @@
+<!-- Template stuff -->
+<!-- data-bs-theme="auto" attribute is needed to control light and dark modes on those specific elements in this template.
+        For the inputs, the onblur attribute should be used for calling javascript functions to handle client side validation.
+        There should be a whole js file for validation.
+
+        For validation, use the onblur attribute to call your js function you need, and pass in (this, <and the id you gave your error span so it knows where to display the error>) i.e. onblur="isEmpty(this, 'EthnicityError')"
+
+        These are just a couple general ones, you will have to adjust for your specific needs as far as validation and input specific things. If you need to make something different use these as a learning tool.
+        Also reach out to Jordan for help if you'd like.
+
+-->
+<!-- Essentially the wrapper element. This should be used as the top most parent element for each new page. -->
+<section class="my-5 w-75 m-auto">
+
+    <!-- The card should be used for each new form or section for displaying grouped information. -->
+    <div class="card position-static mx-auto shadow-sm" data-bs-theme="auto">
+
+        <!-- The header where the title goes, adds a bottom border for distinction. -->
+        <div class="card-header h3" data-bs-theme="auto">&lt;form title&gt;</div>
+
+        <!-- The card body where all the information or inputs are. -->
+        <div class="card-body" data-bs-theme="auto">
+
+            <form action="(formAction)">
+
+                <!-- form-group is a bootstrap class that is altered in site.css for dark mode. -->
+                <div class="form-group mb-3">
+
+                    <label for="email" class="form-label">&lt;label&gt;</label>
+                    <!-- form-control is a bootstrap class that is altered in site.css for dark mode. -->
+                    <input type="email" class="form-control" id="username" name="username"
+                           title="Please enter your MSTC email address." minlength="10"
+                           maxlength="100" pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$"
+                           onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                    <!-- This is where validation errors should appear. -->
+                    <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label">&lt;label&gt;</label>
+                    <input type="password" class="form-control" id="password" name="password"
+                           minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                           onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                    <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                </div>
+
+                <div class="mb-3 text-center">
+                    <!-- blue-button class is needed for saetting color and hover effects from within the site.css file. -->
+                    <button type="submit" class="btn blue-button" data-bs-theme="auto">&lt;test&gt;</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+    <!-- Two column variant -->
+    <!-- The card should be used for each new form or section for displaying grouped information. -->
+    <div class="card position-static mx-auto shadow-sm" data-bs-theme="auto">
+
+        <!-- The header where the title goes, adds a bottom border for distinction. -->
+        <div class="card-header h3" data-bs-theme="auto">&lt;form title&gt;</div>
+
+        <!-- The card body where all the information or inputs are. -->
+        <div class="card-body" data-bs-theme="auto">
+
+            <form action="(formAction)">
+
+                <div class="row">
+
+                    <!-- Left side -->
+                    <div class="col-md-6">
+                        <!-- form-group is a bootstrap class that is altered in site.css for dark mode. -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">&lt;label&gt;</label>
+                            <!-- form-control is a bootstrap class that is altered in site.css for dark mode. -->
+                            <input type="email" class="form-control" id="username" name="username"
+                                   title="Please enter your MSTC email address." minlength="10" maxlength="100"
+                                   pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
+                                   required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">&lt;label&gt;</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                                   onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Left side -->
+                    <div class="col-md-6">
+                        <!-- form-group is a bootstrap class that is altered in site.css for dark mode. -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">&lt;label&gt;</label>
+                            <!-- form-control is a bootstrap class that is altered in site.css for dark mode. -->
+                            <input type="email" class="form-control" id="username" name="username"
+                                   title="Please enter your MSTC email address." minlength="10" maxlength="100"
+                                   pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
+                                   required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">&lt;label&gt;</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                                   onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Left side -->
+                    <div class="col-md-6">
+                        <!-- form-group is a bootstrap class that is altered in site.css for dark mode. -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">&lt;label&gt;</label>
+                            <!-- form-control is a bootstrap class that is altered in site.css for dark mode. -->
+                            <input type="email" class="form-control" id="username" name="username"
+                                   title="Please enter your MSTC email address." minlength="10" maxlength="100"
+                                   pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
+                                   required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">&lt;label&gt;</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                                   onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Left side -->
+                    <div class="col-md-6">
+                        <!-- form-group is a bootstrap class that is altered in site.css for dark mode. -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">&lt;label&gt;</label>
+                            <!-- form-control is a bootstrap class that is altered in site.css for dark mode. -->
+                            <input type="email" class="form-control" id="username" name="username"
+                                   title="Please enter your MSTC email address." minlength="10" maxlength="100"
+                                   pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$" onchange="" onblur="<validationFunction>"
+                                   required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">&lt;label&gt;</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                                   onchange="" onblur="<validationFunction>" required data-bs-theme="auto" />
+
+                            <span id="<specificErrorID>" class="invalid-feedback">(Your error message here)</span>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="mb-3 text-center">
+                    <!-- blue-button class is needed for saetting color and hover effects from within the site.css file. -->
+                    <button type="submit" class="btn blue-button" data-bs-theme="auto">&lt;test&gt;</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+</section>
