@@ -13,38 +13,6 @@
     <partial name="_topNav"/>
 
 
-
-@*     <!-- gpt Patient Info Banner -->
-    <div id="patient-info-banner" class="container-fluid bg-light ">
-        <div class="row align-items-center">
-            <div class="col">
-                <!-- Place for patient image -->
-                <img src="path_to_placeholder_image" alt="Patient Image" class="img-fluid rounded-circle" style="max-width: 100px;" />
-            </div>
-            <div class="col">
-                <!-- Patient demographic info displayed -->
-                <p>Full Name: John Doe</p>
-                <p>DOB: January 1, 1990</p>
-                <p>MHN: MHN123456</p>
-                <p>Alerts: None</p>
-                <p>Gender: Male</p>
-                <p>Preferred Pronouns: He/Him</p>
-                <p>Gender Assigned at Birth: Male</p>
-            </div>
-        </div>
-    </div>
-    <!-- End gpt Patient Info Banner -->
- *@
-
-
-
-
-
-
-
-
-
-
     <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
         <div id="wrapper">
             <!-- Sidebar -->
@@ -105,15 +73,16 @@
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
+
             <!-- Page Content -->
                     <main role="main" class="pb-3">
 
-                        <!-- gpt Patient Info Banner -->
+                        <!-- Patient Info Banner -->
                         <div id="patient-info-banner" class="container-fluid bg-red text-sm py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
                             <div class="row align-items-center">
 
                                 <div class="col d-flex align-items-center">
-                                    <!-- Place for patient image -->
+                                    
                                     <img src="~/images/blank-profile-picture.png" alt="Patient Image" class="img-fluid rounded-circle me-1" style="max-width: 100px" />
 
                                     <div class="">
@@ -123,32 +92,33 @@
                                     </div>
                                 </div>
 
-
-                                <div class="col">
-                                    <!-- Patient demographic info displayed -->
-                                    <p>Alerts: None</p>
-                                </div>
-
-
                                 <div class="col">
                                     <p class="mb-2"><span class="fw-bold">Gender: </span>Male</p>
-                                    <p class="mb-2"><span class="fw-bold">Pronouns: </span>He/Him</p>
+                                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>Male</p>
                                 </div>
 
                                 <div class="col">
                                     <p class="mb-2"><span class="fw-bold">Pronouns: </span>He/Him</p>
-                                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>Male</p>
+                                    <p class="mb-2"><span class="fw-bold">Primary Physician: </span>Dr. Pepper</p>
                                 </div>
 
                             </div>
                         </div>
-                        <!-- End gpt Patient Info Banner -->
+
+                        <!-- End Patient Info Banner -->
+
+                        <!-- Alert bar -->
+                        <div class="alert-bar d-flex align-items-center justify-content-center" onclick="window.location.href='#'">
+                           <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                            <p class="mb-0">Alerts</p>
+                        </div>
+                        <!-- End alert bar -->
 
 
 
-
-
+                        <!-- Actual pages -->
                         @RenderBody()
+
                         <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
                         <partial name="_footer" />               
                     </main>
