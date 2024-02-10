@@ -1,18 +1,28 @@
-﻿// checks for empty input values
-// param = input value
+﻿function validateFirstName() {
+    const firstNameInput = this; // Assuming 'this' refers to the input element
+    const firstNameErrorSpan = document.getElementById('FirstNameError');
 
-function isEmpty(input, errorSpanID) {
+    // Check if first name is empty
+    if (!isEmpty(firstNameInput, 'FirstNameError', 'Please enter a first name.')) {
+        // If not empty, proceed with character limit validation
+        isValidInputWithLimit(firstNameInput.value, 'errorSpan', 10, 'Please enter alphabetic characters only under 11 characters.');
+    }
+}
+
+
+function isEmpty(input, errorSpanID, errorMessage) {
     // set initial validity status
     let valid = true;
     const errorSpan = document.getElementById(errorSpanID);
-  
+
     // invalidate input value if empty
     if (input === null || input === undefined || input.value.trim() === '') {
         valid = false;
     }
 
-    // Display error message if input is invalid
+    // display error message if input is invalid
     if (!valid) {
+        errorSpan.textContent = errorMessage; //sets error message
         errorSpan.style.display = 'inline';
     } else {
         errorSpan.style.display = 'none';
@@ -21,11 +31,37 @@ function isEmpty(input, errorSpanID) {
     return valid;
 }
 
+function isValidInputWithLimit(input, errorSpanID, characterLimit, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+
+    //regular expression to match alphabets 
+    const alphabetRegex = /^[a-zA-Z]$/;
+
+    //check if input exceeds character limit or is not a valid alphabet
+    const valid = input && input.trim() !== '' && input.trim().length <= characterLimit && alphabetRegex.test(input.trim());
+
+    //display error message if input is invalid
+    if (!valid) {
+        errorSpan.textContent = errorMessage; 
+        errorSpan.style.display = 'inline';
+    } else {
+        errorSpan.style.display = 'none';
+    }
+
+    return valid;
+}
+
+
+
+
 // checks that number input is appropriate type
 // param = number value
-function isNumber(input) {
+function isNumber(input, errorSpanID) {
+
+
     // check input type
     const valid = typeof input !== 'number' && isNaN(input);
+
 
     return valid;
 }
@@ -38,6 +74,41 @@ function isEmail(input) {
 
     // check email input against previously defined criteria (pattern)
     const valid = pattern.test(input);
+
+    return valid;
+}
+
+// checks date input to ensure appropriate formatting to fit defined standards
+// param = date input
+function validateDate(input) {
+    // retrieve input and parse value as a date
+    const enteredDate = new Date(input.value);
+
+    // set date entry limits
+    const minDate = new Date("1/1/1900"); // earliest acceptable date
+    const maxDate = new Date(); // current date may not be exceeded
+    maxDate.setHours(0, 0, 0, 0);
+
+    // defines the expected pattern for date input (MM/DD/YYYY)
+    const pattern = /^(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+
+    // check input against previously defined criteria (date range)
+    const valid = enteredDate >= minDate && enteredDate <= maxDate;
+
+    // check input against previously defined criteria (pattern)
+    // returns invalid result if the input doesn't match the pattern
+    if (pattern.test(enteredDate)) {
+        valid = false;
+    }
+
+    // change input field border color/thickness to visually indicate to the user their input validity status
+    input.style.borderColor = valid ? "green" : "red";
+    input.style.borderWidth = "thick";
+
+    // display alert message if input doesn't meet criteria
+    if (!valid) {
+        alert("Please select a valid date that falls between 01/01/1900 and today's date.");
+    }
 
     return valid;
 }
@@ -189,40 +260,7 @@ function validateTime(input) {
     return valid;
 }
 
-// checks date input to ensure appropriate formatting to fit defined standards
-// param = date input
-function validateDate(input) {
-    // retrieve input and parse value as a date
-    const enteredDate = new Date(input.value);
 
-    // set date entry limits
-    const minDate = new Date("10/31/1891"); // earliest acceptable date
-    const maxDate = new Date(); // current date may not be exceeded
-    maxDate.setHours(0, 0, 0, 0);
-
-    // defines the expected pattern for date input (MM/DD/YYYY)
-    const pattern = /^(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
-
-    // check input against previously defined criteria (date range)
-    const valid = enteredDate >= minDate && enteredDate <= maxDate;
-
-    // check input against previously defined criteria (pattern)
-    // returns invalid result if the input doesn't match the pattern
-    if (pattern.test(enteredDate)) {
-        valid = false;
-    }
-
-    // change input field border color/thickness to visually indicate to the user their input validity status
-    input.style.borderColor = valid ? "green" : "red";
-    input.style.borderWidth = "thick";
-
-    // display alert message if input doesn't meet criteria
-    if (!valid) {
-        alert("Please select a valid date that falls between 11/01/1891 and today's date.");
-    }
-
-    return valid;
-}
 
 // compare team names to ensure they're not the same
 // param = team name input

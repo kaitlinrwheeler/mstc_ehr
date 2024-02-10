@@ -1,8 +1,8 @@
 ﻿
 @{
     ViewData["Title"] = "Patient Page";
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="css/patient.css">
+    <script src="~/js/validation.js"></script>
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -19,10 +19,10 @@
         <form id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
-                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="isEmpty(this, 'FirstNameError')" />
-                <span id="FirstNameError" class="invalid-feedback">Please enter a valid first name.</span>
-
+                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="isEmpty(this, 'FirstNameError', 'Please enter a valid first name.')" />
+                <span id="FirstNameError" class="invalid-feedback"></span>
             </div>
+
 
             <div class="form-group">
                 <label for="MiddleName">Middle Name (optional):</label>
@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for="LastName">Last Name:</label>
-                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="isEmpty(this, 'LastNameError')" data-bs-theme="auto" />
+                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="isEmpty(this, 'LastNameError', 'Please enter a last name.')" data-bs-theme="auto" />
                 <span id="LastNameError" class="invalid-feedback">Please enter a valid last name.</span>
             </div>
 
@@ -171,4 +171,3 @@
 
 
 
-<script src="~/js/validation.js"></script>
