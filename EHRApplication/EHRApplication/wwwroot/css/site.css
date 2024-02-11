@@ -109,11 +109,11 @@ html {
     width: 0;
     height: 100%;
     margin-left: -250px;
-    overflow-y: auto;
-    -webkit-transition: all 0.5s ease;
+   -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    margin-top: 184px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -193,7 +193,7 @@ html {
     margin: 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 7px) {
     #wrapper {
         padding-left: 250px;
     }
@@ -272,7 +272,11 @@ html {
 
 /* Main styles */
 
-#headerContainer {
+main {
+    margin-top: 4rem;
+}
+
+#headerContainer { 
     background-color: var(--red);
 }
 
@@ -306,8 +310,10 @@ html {
 }
 
 
-#patient-info-banner {
-
+#patient-banner-wrapper {
+    position: fixed;
+    top: 72px;
+    width: 100%;
 }
 
 .bg-red {
