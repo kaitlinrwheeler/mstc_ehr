@@ -27,15 +27,6 @@ function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
     return valid;
 }
 
-//function displayError(valid, errorSpan, errorMessage) {
-//    if (!valid) {
-//        errorSpan.textContent = errorMessage;
-//        errorSpan.style.display = 'inline';
-//    } else {
-//        errorSpan.style.display = 'none';
-//    }
-//}
-
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
         errorSpan.innerHTML = xIcon + errorMessage;
