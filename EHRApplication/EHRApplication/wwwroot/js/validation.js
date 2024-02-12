@@ -1,84 +1,45 @@
-﻿// Client side validation functions
-/**
- * Checks if the input value is empty.
- * input - The input element to be validated.
- * errorSpanID - The ID of the error span element.
- * errorMessage - The error message to display.
- */
+﻿// Validation functions
 function isEmpty(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
     let valid = true;
-
-    // Check if input value is empty
     if (input === null || input === undefined || input.value.trim() === '') {
         valid = false;
     }
-
-    // Display error message if input is empty
     displayError(valid, errorSpan, errorMessage);
-
     return valid;
 }
 
-/**
- * Checks if the input value contains only alphabetic characters.
- * input - The input element to be validated.
- * errorSpanID - The ID of the error span element.
- * errorMessage - The error message to display.
- */
 function isAlphabetic(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
     const alphabetRegex = /^[a-zA-Z]+$/;
     let valid = alphabetRegex.test(input.value.trim());
-
-    // Display error message if input contains non-alphabetic characters
     displayError(valid, errorSpan, errorMessage);
-
     return valid;
 }
 
-/**
- * Checks if the input value has a character limit.
- * input - The input element to be validated.
- * errorSpanID - The ID of the error span element.
- * characterLimit - The maximum number of characters allowed.
- * errorMessage - The error message to display.
- */
 function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
     let valid = input.value.trim().length <= characterLimit;
-
-    // Display error message if input exceeds character limit
     displayError(valid, errorSpan, errorMessage);
-
     return valid;
 }
 
-/**
- * Displays or hides the error message based on validation result.
- * valid - The validation result.
- * errorSpan - The error span element.
- * errorMessage - The error message to display.
- */
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
-        // Display error message
         errorSpan.textContent = errorMessage;
         errorSpan.style.display = 'inline';
     } else {
-        // Hide error message
         errorSpan.style.display = 'none';
     }
 }
 
-
-// call to validate a date picker input. Pass in InputID and error messages words to be displayed in the error message.
-function validateDatePicker(inputID, errorMessage) {
+// call to validate a date picker input
+function validateDatePicker(inputID, errorWords) {
     const input = document.getElementById(inputID);
     const errorSpanID = inputID + 'Error';
 
     // Validate empty input
-    const isEmptyValid = isEmpty(input, errorSpanID, `Please enter a valid ${errorMessage}.`);
+    const isEmptyValid = isEmpty(input, errorSpanID, `Please enter a valid ${errorWords}.`);
 
     if (isEmptyValid) {
         const inputValue = new Date(input.value);
@@ -116,10 +77,11 @@ function validateDateRange(inputValue, errorSpanID) {
     }
 }
 
-//Use when validating optional text inputs. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
-function validateOptionalTextInput(inputID, characterLimit, errorMessage) {
+//Use when validating optional text inputs. Pass in the inputID and the words you would like to be displayed in the error message in.
+function validateOptionalTextInput(inputID, errorMessage) {
     const input = document.getElementById(inputID);
     const inputErrorSpanID = inputID + 'Error';
+    const errorWords = errorMessage;
     const inputErrorSpan = document.getElementById(inputErrorSpanID);
 
     // Function to handle input change event
@@ -133,7 +95,7 @@ function validateOptionalTextInput(inputID, characterLimit, errorMessage) {
             const isAlphabeticValid = isAlphabetic(input, inputErrorSpanID, 'Please enter alphabetic characters only.');
             if (isAlphabeticValid) {
                 // Validate character limit
-                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                hasCharacterLimit(input, inputErrorSpanID, 25, `Please enter a ${errorWords} under 25 characters.`);
             }
         }
     }
@@ -145,22 +107,23 @@ function validateOptionalTextInput(inputID, characterLimit, errorMessage) {
     handleInputChange();
 }
 
-//Use when validating a required text input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
-function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
+//Use when validating a required text input. Pass in the inputID and the words you would like to be displayed in the error message in.
+function validateRequiredTextInput(inputID, errorMessage) {
     const input = document.getElementById(inputID);
     const inputErrorSpanID = inputID + 'Error';
-    
+    const errorWords = errorMessage;
+
     function handleInputChange() {
         // Check if input value is empty
         if (input.value.trim() === '') {
             // If input is empty call isempty function
-            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorWords}.`);
         } else {
             // If input is not empty, perform validation
             const isAlphabeticValid = isAlphabetic(input, inputErrorSpanID, 'Please enter alphabetic characters only.');
             if (isAlphabeticValid) {
                 // Validate character limit
-                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                hasCharacterLimit(input, inputErrorSpanID, 25, `Please enter a ${errorWords} under 25 characters.`);
             }
         }
     }
