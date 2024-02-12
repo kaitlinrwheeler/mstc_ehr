@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Patient Page";
     <link rel="stylesheet" href="css/patient.css">
-    <script src="~/js/test.js"></script>
+    <script src="~/js/validation.js"></script>
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -13,13 +13,10 @@
     
     <div class="card-body" data-bs-theme="auto">
 
-
-
-
         <form id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
-                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="validateRequiredTextInput('FirstName','first name')" />
+                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName','first name')" />
                 <span id="FirstNameError" class="invalid-feedback"></span>
             </div>
 
@@ -32,7 +29,7 @@
 
             <div class="form-group">
                 <label for="LastName">Last Name:</label>
-                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="validateRequiredTextInput('LastName','last name')" data-bs-theme="auto" />
+                <input type="text" id="LastName" name="LastName" class="form-control"  onblur="validateRequiredTextInput('LastName','last name')" data-bs-theme="auto" />
                 <span id="LastNameError" class="invalid-feedback"></span>
             </div>
 
@@ -44,7 +41,7 @@
 
             <div class="form-group">
                 <label for="DOB">Date of Birth:</label>
-                <input type="date" id="DOB" name="DOB" class="form-control" required onblur="validateDatePicker()" data-bs-theme="auto" />
+                <input type="date" id="DOB" name="DOB" class="form-control" onblur="validateDatePicker('DOB', 'date of birth')"  data-bs-theme="auto" />
                 <span id="DOBError" class="invalid-feedback"></span>
             </div>
 
@@ -87,7 +84,7 @@
 
             <div class="form-group">
                 <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
-                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" required data-bs-theme="auto">
+                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
@@ -95,7 +92,7 @@
 
             <div class="form-group">
                 <label for="PreferredLanguage">Preferred Language:</label>
-                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" required data-bs-theme="auto">
+                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" data-bs-theme="auto">
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Dutch">Dutch</option>
@@ -117,7 +114,7 @@
 
             <div class="form-group">
                 <label for="Ethnicity">Ethnicity:</label>
-                <select id="Ethnicity" name="Ethnicity" class="form-control" required data-bs-theme="auto">
+                <select id="Ethnicity" name="Ethnicity" class="form-control" data-bs-theme="auto">
                     <option value="African American">African American</option>
                     <option value="Asian">Asian</option>
                     <option value="Caucasian">Caucasian</option>
@@ -132,7 +129,7 @@
                 <label for="Race" class="mb-1">Race:</label>
                 <div id="Race" class="row text-nowrap">
                     <!-- Add 'row' class to create a row container -->
-                    <div class="col-sm-6">
+                    <div class="col-sm-6">  
                         <!-- Create a column for the first half of checkboxes -->
                         <div class="race-column">
                             <input type="checkbox" id="AmericanIndian" name="Race" value="American Indian" />
