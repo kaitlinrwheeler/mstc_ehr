@@ -34,6 +34,15 @@
                                    minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" required data-bs-theme="auto" />
                         </div>
+
+@* This part should come later so Julie can create users and select a role for them but not allow anyone but an admin see this select
+                        <!-- Select Role Field -->
+                        <div class="form-group mb-3">
+                            <select asp-for="Role" asp-items="@Model.RoleList" class="form-select" aria-required="true">
+                                <option disabled selected>Select Role</option>
+                            </select>
+                        </div> *@
+
                         <div class="mb-3 text-center">
                             <button type="submit" class="btn blue-button" data-bs-theme="auto">Register</button>
                         </div>
