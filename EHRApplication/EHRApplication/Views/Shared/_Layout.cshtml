@@ -12,10 +12,13 @@
 
     <partial name="_topNav"/>
 
+    <partial name="_patientInfoBanner" />
+
+
     <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
         <div id="wrapper">
             <!-- Sidebar -->
-            <div id="sidebar-wrapper">
+        <div id="sidebar-wrapper" class="sticky-top overflow-hidden">
                 <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
                     <li>
                        <a href="#" class="navbar-toggle collapsed ps-3" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars fa-lg"></i></a>
@@ -72,9 +75,12 @@
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
-            <!-- Page Content -->
-                    <main role="main" class="pb-3">
+
+                    <main role="main" class="pb-3" style="z-index:1;">
+
+                        <!-- Page Content -->
                         @RenderBody()
+
                         <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
                         <partial name="_footer" />               
                     </main>
