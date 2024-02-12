@@ -15,15 +15,53 @@ body {
 }
 
     .nav-link:hover, #srchBtn:hover {
-        color: #181818;
+        transform: translateY(1px);
     }
 
+
+
+@keyframes movingUnderline {
+    0% {
+        width: 0;
+        left: 50%;
+    }
+
+    100% {
+        width: 100%;
+        left: 0;
+    }
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px; /* Adjust the thickness of the underline */
+    background-color: white;
+    transition: width 0.3s ease, left 0.3s ease; /* Smooth transition for the underline */
+}
+
+.nav-item:hover::after {
+    width: 100%;
+    left: 0;
+    animation: movingUnderline 0.3s ease; /* Animation for moving underline */
+}
+
+#flexSwitchCheckChecked {
+    cursor: pointer;
+}
 /* End top nav */
 
-/* General default styles. */
 
+/* General default styles. */
 @media (min-width: 768px) {
-  html {
+    html {
     font-size: 16px;
   }
 }
@@ -36,11 +74,6 @@ html {
   position: relative;
   min-height: 100vh;
 }
-
-/*body {
-    margin-bottom: 60px;
-}
-*/
 
 
 /* Side nav section */
@@ -76,12 +109,11 @@ html {
     width: 0;
     height: 100%;
     margin-left: -250px;
-    overflow-y: auto;
-/*    background-color: #181818;
-*/    -webkit-transition: all 0.5s ease;
+   -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    margin-top: 184px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -107,6 +139,7 @@ html {
 .fixed-brand {
     width: auto;
 }
+
 /* Sidebar Styles */
 
 .sidebar-nav {
@@ -160,7 +193,7 @@ html {
     margin: 0;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 7px) {
     #wrapper {
         padding-left: 250px;
     }
@@ -170,7 +203,7 @@ html {
     }
 
     #wrapper.toggled {
-        padding-left: 0;
+        padding-left: 50px;
     }
 
     #sidebar-wrapper {
@@ -239,7 +272,11 @@ html {
 
 /* Main styles */
 
-#headerContainer {
+main {
+    margin-top: 4rem;
+}
+
+#headerContainer { 
     background-color: var(--red);
 }
 
@@ -271,7 +308,46 @@ html {
 .invalid-feedback {
     color: orangered !important;
 }
+
+
+#patient-banner-wrapper {
+    position: fixed;
+    top: 72px;
+    width: 100%;
+}
+
+.bg-red {
+    color: var(--offwhite);
+    background-color: var(--red);
+}
+
+.text-sm {
+    font-size: 13px;
+}
+
+
+
+
+.alert-bar {
+    background-color: yellow;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    height: 22px;
+    font-size: 14px;
+    border-top: ridge;
+    border-bottom: ridge;
+    border-width: 2px
+}
+
+    .alert-bar:hover {
+        filter: brightness(0.93)
+    }
+
 /* End main styles */
+
+
+
 
 
 /* Dark mode styles
