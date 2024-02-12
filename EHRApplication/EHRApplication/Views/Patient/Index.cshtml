@@ -19,75 +19,83 @@
         <form id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
-                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="validateFirstName()" />
+                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" required onblur="validateRequiredTextInput('FirstName','first name')" />
                 <span id="FirstNameError" class="invalid-feedback"></span>
             </div>
 
 
             <div class="form-group">
                 <label for="MiddleName">Middle Name (optional):</label>
-                <input type="text" id="MiddleName" name="MiddleName" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="MiddleName" name="MiddleName" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 'middle name')" />
+                <span id="MiddleNameError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LastName">Last Name:</label>
-                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="isEmpty(this, 'LastNameError', 'Please enter a last name.')" data-bs-theme="auto" />
+                <input type="text" id="LastName" name="LastName" class="form-control" required onblur="validateRequiredTextInput('LastName','last name')" data-bs-theme="auto" />
                 <span id="LastNameError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Suffix">Suffix (optional):</label>
-                <input type="text" id="Suffix" name="Suffix" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="Suffix" name="Suffix" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 'suffix')" />
+                <span id="SuffixError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="DOB">Date of Birth:</label>
-                <input type="date" id="DOB" name="DOB" class="form-control" required onblur="isEmpty(this, 'DOBError')" data-bs-theme="auto" />
-                <span id="DOBError" class="invalid-feedback">Please enter a valid DOB.</span>
+                <input type="date" id="DOB" name="DOB" class="form-control" required onblur="validateDatePicker()" data-bs-theme="auto" />
+                <span id="DOBError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="PrimaryPhysician">Primary Physician (optional):</label>
-                <input type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('PrimaryPhysician', 'primary physician')" />
+                <span id="PrimaryPhysicianError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LegalGuardian1">Legal Guardian 1 (optional):</label>
-                <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian1', 'legal guardian')" />
+                <span id="LegalGuardian1Error" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LegalGuardian2">Legal Guardian 2 (optional):</label>
-                <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian2', 'legal guardian')" />
+                <span id="LegalGuardian2Error" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Religion">Religion (optional):</label>
-                <input type="text" id="Religion" name="Religion" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="Religion" name="Religion" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Religion', 'religion')" />
+                <span id="ReligionError" class="invalid-feedback"></span>
+
             </div>
 
             <div class="form-group">
                 <label for="Pronouns">Pronouns (optional):</label>
-                <input type="text" id="Pronouns" name="Pronouns" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="Pronouns" name="Pronouns" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Pronouns', 'pronoun')" />
+                <span id="PronounsError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Gender">Gender (optional):</label>
-                <input type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" />
+                <input type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Gender', 'gender')" />
+                <span id="GenderError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
-                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" required onblur="isEmpty(this, 'GenderError')" data-bs-theme="auto">
+                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" required data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
-                <span id="GenderError" class="invalid-feedback">Please select a valid gender option.</span>
             </div>
 
             <div class="form-group">
                 <label for="PreferredLanguage">Preferred Language:</label>
-                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" required onblur="isEmpty(this, 'PreferredLanguageError')" data-bs-theme="auto">
+                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" required data-bs-theme="auto">
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Dutch">Dutch</option>
@@ -105,12 +113,11 @@
                     <option value="Spanish">Spanish</option>
 
                 </select>
-                <span id="PrefferedLanguageError" class="invalid-feedback">Please select a valid language option.</span>
             </div>
 
             <div class="form-group">
                 <label for="Ethnicity">Ethnicity:</label>
-                <select id="Ethnicity" name="Ethnicity" class="form-control" required onblur="isEmpty(this, 'EthnicityError')" data-bs-theme="auto">
+                <select id="Ethnicity" name="Ethnicity" class="form-control" required data-bs-theme="auto">
                     <option value="African American">African American</option>
                     <option value="Asian">Asian</option>
                     <option value="Caucasian">Caucasian</option>
@@ -118,8 +125,6 @@
                     <option value="Unknown">Unknown</option>
 
                 </select>
-                <span id="EthnicityError" class="invalid-feedback">Please select a valid ethnicity option.</span>
-
             </div>
 
 
