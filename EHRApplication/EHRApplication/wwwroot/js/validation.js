@@ -1,4 +1,7 @@
 ﻿// Validation functions
+
+const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
+
 function isEmpty(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
     let valid = true;
@@ -26,12 +29,13 @@ function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
 
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
-        errorSpan.textContent = errorMessage;
+        errorSpan.innerHTML = xIcon + errorMessage;
         errorSpan.style.display = 'inline';
     } else {
         errorSpan.style.display = 'none';
     }
 }
+
 
 // call to validate a date picker input
 function validateDatePicker(inputID, errorWords) {
