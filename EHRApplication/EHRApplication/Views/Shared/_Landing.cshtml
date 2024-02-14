@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CougarCare</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EHRApplication.styles.css" asp-append-version="true" />
+</head>
+<body data-bs-theme="auto">
+    <style>
+        body{
+            background-image: url('~/wwwroot/Media/typing.jpg');
+        }
+    </style>
+    <partial name="_topNav" />
+
+    <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
+    <div id="wrapper">
+        <!-- Page Content -->
+        <main role="main" class="pb-3">
+            @RenderBody()
+            <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
+            <partial name="_footer" />
+        </main>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Font Awesome imports. -->
+    <script src="~/fontawesome-free-6.5.1-web/js/brands.js"></script>
+    <script src="~/fontawesome-free-6.5.1-web/js/solid.js"></script>
+    <script src="~/fontawesome-free-6.5.1-web/js/fontawesome.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

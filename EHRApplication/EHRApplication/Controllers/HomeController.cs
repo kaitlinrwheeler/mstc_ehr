@@ -38,5 +38,10 @@ namespace EHRApplication.Controllers
         {
             return View();
         }
+
+        public IActionResult LandingPage()
+        {
+            return View();
+        }
     }
 }
