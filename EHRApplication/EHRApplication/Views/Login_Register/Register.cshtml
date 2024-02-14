@@ -15,40 +15,35 @@
                         <!-- Username/MSTC Email Field -->
                         <div class="form-group mb-3">
                             <label for="username" class="form-label">MSTC Email:</label>
-                            <input asp-for="Email" type="email" class="form-control" id="username" name="email"
-                                   title="Please enter your MSTC email address." minlength="10"
-                                   maxlength="100" pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$"
-                                   onchange="" required data-bs-theme="auto" />
+                            <input asp-for="Email" class="form-control" id="username" name="email"
+                                   title="Please enter your MSTC email address."
+                                   onchange=""  data-bs-theme="auto" />
+                            <!-- Error message span -->
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <!-- Password Field -->
                         <div class="form-group mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input asp-for="Password" type="password" class="form-control" id="password" name="password"
-                                   minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
-                                   onchange="" required data-bs-theme="auto" />
+                                   onchange=""  data-bs-theme="auto" />
+                            <!-- Error message span -->
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                         <!-- Confirm Password Field -->
                         <div class="form-group mb-3">
                             <label for="confirmpassword" class="form-label">Confirm Password:</label>
                             <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" name="confirmpassword"
-                                   minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
-                                   onchange="" required data-bs-theme="auto" />
+                                   onchange=""  data-bs-theme="auto" />
+                            <!-- Error message span -->
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
-
-@* This part should come later so Julie can create users and select a role for them but not allow anyone but an admin see this select
-                        <!-- Select Role Field -->
-                        <div class="form-group mb-3">
-                            <select asp-for="Role" asp-items="@Model.RoleList" class="form-select" aria-required="true">
-                                <option disabled selected>Select Role</option>
-                            </select>
-                        </div> *@
 
                         <div class="mb-3 text-center">
                             <button type="submit" class="btn blue-button" data-bs-theme="auto">Register</button>
                         </div>
                     </form>
                     <div class="text-center">
-                        <a id="register" data-bs-theme="auto" asp-action="Login">Already Have An Account?</a>
+                        <a class="dark-links" data-bs-theme="auto" asp-action="Login">Already Have An Account?</a>
                     </div>
                 </div>
             </div>

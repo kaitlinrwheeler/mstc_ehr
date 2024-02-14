@@ -395,13 +395,13 @@ section[data-bs-theme=dark] {
     border: none;
 }
 
-[data-bs-theme=dark]#forgotPw {
+[data-bs-theme=dark].dark-links {
     color: var(--light-gray);
 }
 
-[data-bs-theme=dark]#forgotPw:hover {
-    filter: brightness(1.5);
-}
+    [data-bs-theme=dark].dark-links:hover {
+        filter: brightness(1.5);
+    }
 
 footer[data-bs-theme=dark] {
     border-color: var(--mid-gray) !important;

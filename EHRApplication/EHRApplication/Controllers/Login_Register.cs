@@ -7,6 +7,7 @@ using EHRApplication.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace EHRApplication.Controllers
 {
@@ -36,16 +37,6 @@ namespace EHRApplication.Controllers
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
-
-            //Retrieving a list of the Roles from the database
-            Input = new LoginAccount()
-            {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                })
-            };
         }
 
         // Action method to display the index view
@@ -63,8 +54,36 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginAccount account)
         {
+            //Testing for nulls and if so will return with nulls
             if (ModelState.IsValid)
             {
+                //Testing to make sure that the email has "@mstc.edu" in it.
+                if (!System.Text.RegularExpressions.Regex.IsMatch(account.Email, @"^[^\s]+@mstc\.edu$"))
+                {
+                    //sets the error message for the email
+                    ModelState.AddModelError("Email", "Email must end with @mstc.edu.");
+                    return View(account);
+                }
+
+                //Testing to make sure that the password is greater than 8
+                if (account.Password.Length < 8)
+                {
+                    //Tests and makes sure that the password has at least one upper, lower, number and special character
+                    if (!account.Password.Any(char.IsUpper) || !account.Password.Any(char.IsLower) || !account.Password.Any(char.IsDigit) || !account.Password.Any(IsSpecialCharacter))
+                    {
+                        //sets the error message for password
+                        ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+                        return View(account);
+                    }
+                }
+                else
+                {
+                    //sets the error message for password
+                    ModelState.AddModelError("Password", "Password must have more than 8 character");
+                    return View(account);
+                }
+
+
                 // Attempt to sign in the user with the provided email and password
                 var result = await _signInManager.PasswordSignInAsync(account.Email, account.Password, true, lockoutOnFailure: false);
 
@@ -75,7 +94,7 @@ namespace EHRApplication.Controllers
                     _logger.LogInformation("User logged in.");
 
                     // Redirect the user to the returnUrl if it's provided
-                    return RedirectToAction("Register");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 // Check if two-factor authentication is required
@@ -90,7 +109,7 @@ namespace EHRApplication.Controllers
                 {
                     // If the user's account is locked out, log a warning and redirect to the lockout page
                     _logger.LogWarning("User account locked out.");
-            //        return RedirectToPage("./Lockout");
+                    //return RedirectToPage("./Lockout");
                 }
                 else
                 {
@@ -100,9 +119,16 @@ namespace EHRApplication.Controllers
                     return View();
                 }
             }
+            else
+            {
+                //Will set the errors for the input if they are null
+                ModelState.AddModelError("Email", "Email must not be null");
+                ModelState.AddModelError("Password", "Password must not be null");
+                ModelState.AddModelError("ConfirmPassword", "ConfirmPassword must not be null");
+            }
 
             // If the ModelState is not valid, redisplay the login form
-            return View();
+            return View(account);
         }
 
 
@@ -116,9 +142,39 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterAccount account)
         {
-            ///returnUrl ??= Url.Content("~/");
+            //Testing for nulls and if so will return with nulls.
             if (ModelState.IsValid)
             {
+                //Testing to make sure that the email has "@mstc.edu" in it.
+                if(!System.Text.RegularExpressions.Regex.IsMatch(account.Email, @"^[^\s]+@mstc\.edu$")) { 
+                    //sets the error message for the email
+                    ModelState.AddModelError("Email", "Email must end with @mstc.edu."); 
+                    return View(account); }
+
+                //Testing to make sure that the password is greater than 8
+                if (account.Password.Length < 8)
+                {
+                    //Tests and makes sure that the password has at least one upper, lower, number and special character
+                    if(!account.Password.Any(char.IsUpper) || !account.Password.Any(char.IsLower) || !account.Password.Any(char.IsDigit) || !account.Password.Any(IsSpecialCharacter)) {
+                        //sets the error message for password
+                        ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."); 
+                        return View(account);
+                    }
+                    if(account.ConfirmPassword != account.Password)
+                    {
+                        //sets the error message for confirmpassword
+                        ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match."); 
+                        return View(account);
+                    }
+                }
+                else
+                {
+                    //sets the error message for password
+                    ModelState.AddModelError("Password", "Password must have more than 8 character"); 
+                    return View(account);
+                }
+
+
                 //Creates the instance of the user
                 var user = CreateUser();
 
@@ -130,6 +186,7 @@ namespace EHRApplication.Controllers
                 {
                     // Log information about the successful creation of a new account
                     _logger.LogInformation("User created a new account with password.");
+                    await _userManager.AddToRoleAsync(user, "Student");
 
                     // Retrieve the user's ID
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -160,10 +217,15 @@ namespace EHRApplication.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+            }else
+            {
+                //Will set the errors for the input if they are null
+                ModelState.AddModelError("Email", "Email must not be null");
+                ModelState.AddModelError("Password", "Password must not be null");
+                ModelState.AddModelError("ConfirmPassword", "ConfirmPassword must not be null");
             }
-
             // If we got this far, something failed, redisplay form
-            return View();
+            return View(account);
         }
 
         
@@ -191,6 +253,15 @@ namespace EHRApplication.Controllers
                     $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+        }
+
+        private bool IsSpecialCharacter(char c)
+        {
+            // Define a set of special characters
+            string specialCharacters = @"!@#$%^&*()-_=+[]{}|;:',.<>?";
+
+            // Check if the character is in the set of special characters
+            return specialCharacters.Contains(c);
         }
     }
 }

@@ -147,6 +147,28 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
         }
     }
 
+    function validateEmail(emailValue) {
+        var errorMessage = "";
+        if (!emailValue || emailValue.trim() === "") {
+            errorMessage = "MSTC Email is required.";
+        } else if (!/^[a-zA-Z0-9._%+-]+@mstc\.edu$/.test(emailValue)) {
+            errorMessage = "Invalid email format. Please enter a valid MSTC email.";
+        }
+        return errorMessage;
+    }
+
+    function validatePassword(passwordValue) {
+        var errorMessage = "";
+        if (!passwordValue || passwordValue.trim() === "") {
+            errorMessage = "Password is required.";
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(passwordValue)) {
+            errorMessage = "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.";
+        }
+        return errorMessage;
+    }
+
+
+
     // Attach input change event listener
     input.addEventListener('input', handleInputChange);
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
 
-internal class Program
+public class Program
 {
     private static void Main(string[] args)
     {

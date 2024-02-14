@@ -10,8 +10,8 @@ namespace EHRApplication.Models
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email is required.")]
+        [RegularExpression(@"^[^\s]+@mstc\.edu$", ErrorMessage = "Invalid email format or domain. Format should end with '@mstc.edu'")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -19,10 +19,11 @@ namespace EHRApplication.Models
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Password is required.")]
+        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long", MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z])",
+                    ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
         public string Password { get; set; }
 
         /// <summary>
