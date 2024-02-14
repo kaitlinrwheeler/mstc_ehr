@@ -2,7 +2,22 @@
 @{
     ViewData["Title"] = "Login";
 }
-
+<!--This is a message banner displaying on the screen for the user to see-->
+@if (TempData["RegisterMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["RegisterMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<!--This is a message banner displaying on the screen for the user to see-->
+@if (TempData["logoutMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["LogoutMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 <div class="container my-5 overflow-hidden">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-5">

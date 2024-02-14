@@ -21,7 +21,7 @@ namespace EHRApplication.Models
         /// </summary>
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(30, ErrorMessage = "Password must be at least 8 characters long", MinimumLength = 8)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z])",
+        [RegularExpression(@"^.*(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\[\]_\-+=\\]).*$",
                     ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

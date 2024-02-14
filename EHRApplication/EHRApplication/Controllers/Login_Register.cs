@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace EHRApplication.Controllers
 {
@@ -66,7 +67,7 @@ namespace EHRApplication.Controllers
                 }
 
                 //Testing to make sure that the password is greater than 8
-                if (account.Password.Length < 8)
+                if (account.Password.Length >= 8)
                 {
                     //Tests and makes sure that the password has at least one upper, lower, number and special character
                     if (!account.Password.Any(char.IsUpper) || !account.Password.Any(char.IsLower) || !account.Password.Any(char.IsDigit) || !account.Password.Any(IsSpecialCharacter))
@@ -92,6 +93,8 @@ namespace EHRApplication.Controllers
                 {
                     // Log information about the successful login
                     _logger.LogInformation("User logged in.");
+                    TempData["SuccessMessage"] = "You have successfully Loged in!";
+
 
                     // Redirect the user to the returnUrl if it's provided
                     return RedirectToAction("Index", "Home");
@@ -152,7 +155,7 @@ namespace EHRApplication.Controllers
                     return View(account); }
 
                 //Testing to make sure that the password is greater than 8
-                if (account.Password.Length < 8)
+                if (account.Password.Length >= 8)
                 {
                     //Tests and makes sure that the password has at least one upper, lower, number and special character
                     if(!account.Password.Any(char.IsUpper) || !account.Password.Any(char.IsLower) || !account.Password.Any(char.IsDigit) || !account.Password.Any(IsSpecialCharacter)) {
@@ -186,6 +189,7 @@ namespace EHRApplication.Controllers
                 {
                     // Log information about the successful creation of a new account
                     _logger.LogInformation("User created a new account with password.");
+                    //This will set the role for the user being created. (setting as student because thats how we make sure they r not admin)
                     await _userManager.AddToRoleAsync(user, "Student");
 
                     // Retrieve the user's ID
@@ -207,6 +211,8 @@ namespace EHRApplication.Controllers
                     {
                         // If email confirmation is not required, sign in the user
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData["RegisterMessage"] = "You have successfully created your account!";
+
                         // Redirect to the login page
                         return RedirectToAction("Login");
                     }
@@ -217,7 +223,11 @@ namespace EHRApplication.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }else
+                //sets a message that will be displayed when returned to the view
+                TempData["ErrorMessage"] = "An account with that email is already been created. Please make sure you entered your email in correctly";
+                return View(account);
+            }
+            else
             {
                 //Will set the errors for the input if they are null
                 ModelState.AddModelError("Email", "Email must not be null");
@@ -235,6 +245,7 @@ namespace EHRApplication.Controllers
             await _signInManager.SignOutAsync();
             //log that the user was logged add perameters based on what is needeed to log something.
             _logger.LogInformation("User logged out.");
+            TempData["LogoutMessage"] = "You have successfully logged out!";
 
             //Redirect to a view. sending the user to the login page as thought that was acceptable
             return RedirectToAction("Login");
