@@ -1,4 +1,4 @@
-﻿@model Account
+﻿@model LoginAccount
 @{
     ViewData["Title"] = "Login";
 }
@@ -11,11 +11,11 @@
                 <div class="card-body" data-bs-theme="auto">
                     <!-- Login Form -->
                     <form method="post">
-                        <!-- Username/MSTC Email Field -->
+                        <!-- Email/MSTC Email Field -->
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">MSTC Email:</label>
-                            <input asp-for="Email" type="email" class="form-control" id="username" name="username" 
-                                title="Please enter your MSTC email address." minlength="10"
+                            <label for="email" class="form-label">MSTC Email:</label>
+                            <input asp-for="Email" type="email" class="form-control" id="email" name="email"
+                                   title="Please enter your MSTC email address." minlength="10"
                                    maxlength="100" pattern="[a-zA-Z0-9._%+-]+@@mstc\.edu$"
                                    onchange="" required data-bs-theme="auto" />
                         </div>
@@ -23,16 +23,16 @@
                         <div class="form-group mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input asp-for="Password" type="password" class="form-control" id="password" name="password"
-                                minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
+                                   minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])[A-Za-z\d@@$!%*?&]{8,}$"
                                    onchange="" required data-bs-theme="auto" />
                         </div>
 
-@* Nice to have come back to if we have time
+                        @* Nice to have come back to if we have time
                         <div class="checkbox mb-3">
-                            <label asp-for="RememberMe" class="form-label">
-                                <input class="form-check-input" asp-for="RememberMe" />
-                                @Html.DisplayNameFor(m => m.RememberMe)
-                            </label>
+                        <label asp-for="RememberMe" class="form-label">
+                        <input class="form-check-input" asp-for="RememberMe" />
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
                         </div> *@
 
                         <div class="mb-3 text-center">
@@ -41,8 +41,8 @@
                     </form>
                     <!-- Forgot Password -->
                     <div class="text-center">
-                        <a id="register" data-bs-theme="auto" asp-action="Register">Register Here</a><br/>
-                        <a id="forgotPw" data-bs-theme="auto" href="#">Forgot Password?</a>
+                        <a id="register" data-bs-theme="auto" asp-action="Register">Register Here</a><br />
+                        <a id="forgotPsw" data-bs-theme="auto" href="#">Forgot Password?</a>
                     </div>
                 </div>
             </div>

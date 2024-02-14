@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EHRApplication.Models
 {
-    public class Account
+    public class RegisterAccount
     {
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -33,19 +33,5 @@ namespace EHRApplication.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        [Required]
-        public string? Role { get; set; }
-
-        [ValidateNever]
-        public IEnumerable<SelectListItem> RoleList { get; set; }
-
-/* Nice to have not going to spend time on now
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }*/
     }
 }

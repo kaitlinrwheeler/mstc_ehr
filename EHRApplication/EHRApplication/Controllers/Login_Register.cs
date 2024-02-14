@@ -19,7 +19,7 @@ namespace EHRApplication.Controllers
         private readonly ILogger<Login_Register> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public Account Input { get; set; }
+        public LoginAccount Input { get; set; }
 
         // Constructor to initialize required services
         public Login_Register(
@@ -38,7 +38,7 @@ namespace EHRApplication.Controllers
             _roleManager = roleManager;
 
             //Retrieving a list of the Roles from the database
-            Input = new Account()
+            Input = new LoginAccount()
             {
                 RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
                 {
@@ -61,7 +61,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Account account)
+        public async Task<IActionResult> Login(LoginAccount account)
         {
             if (ModelState.IsValid)
             {
@@ -75,14 +75,14 @@ namespace EHRApplication.Controllers
                     _logger.LogInformation("User logged in.");
 
                     // Redirect the user to the returnUrl if it's provided
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Register");
                 }
 
                 // Check if two-factor authentication is required
                 if (result.RequiresTwoFactor)
                 {
                     // If two-factor authentication is required, redirect to the login page with 2FA
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    //return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
 
                 // Check if the user's account is locked out
@@ -90,18 +90,19 @@ namespace EHRApplication.Controllers
                 {
                     // If the user's account is locked out, log a warning and redirect to the lockout page
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+            //        return RedirectToPage("./Lockout");
                 }
                 else
                 {
                     // If none of the above conditions are met, it's an invalid login attempt
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    //       return Page();
+                    return View();
                 }
             }
 
             // If the ModelState is not valid, redisplay the login form
-            return Page();
+            return View();
         }
 
 
@@ -113,7 +114,7 @@ namespace EHRApplication.Controllers
 
         // Action method to handle the registration form submission
         [HttpPost]
-        public async Task<IActionResult> Register(Account account)
+        public async Task<IActionResult> Register(RegisterAccount account)
         {
             ///returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
@@ -165,10 +166,23 @@ namespace EHRApplication.Controllers
             return View();
         }
 
+        
+        public async Task<IActionResult> Logout()
+        {
+            //This will close the previously open user.
+            await _signInManager.SignOutAsync();
+            //log that the user was logged add perameters based on what is needeed to log something.
+            _logger.LogInformation("User logged out.");
+
+            //Redirect to a view. sending the user to the login page as thought that was acceptable
+            return RedirectToAction("Login");
+        }
+
         private IdentityUser CreateUser()
         {
             try
             {
+                //Creates an instance of the user that is registering
                 return Activator.CreateInstance<IdentityUser>();
             }
             catch
