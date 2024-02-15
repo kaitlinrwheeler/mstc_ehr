@@ -1,3 +1,4 @@
+using EHRApplication.Controllers;
 using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 

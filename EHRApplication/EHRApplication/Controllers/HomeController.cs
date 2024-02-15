@@ -6,11 +6,11 @@ namespace EHRApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly LogController _logController;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(LogController logController)
         {
-            _logger = logger;
+            _logController = logController;
         }
 
         public IActionResult Index()
