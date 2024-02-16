@@ -15,9 +15,23 @@ namespace EHRApplication.Controllers
 
         public IActionResult Index()
         {
-            _logService.WriteToDatabase("Success", "Home page loaded correctly.", "HomeController.cs");
-            return View();
+            try
+            {
+                // Simulating an exception
+                //throw new Exception("Intentional exception for testing.");
+
+                // Log success message if no exception is thrown
+                _logService.WriteToDatabase("Success", "Home page loaded correctly.", "HomeController.cs");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Log error message if an exception occurs
+                _logService.WriteToDatabase("Error", "An error occurred while loading the home page.", ex.Message);
+                return View("Error"); // Optionally, display an error view
+            }
         }
+
 
         public IActionResult Privacy()
         {
