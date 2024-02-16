@@ -381,9 +381,9 @@ body[data-bs-theme=dark] {
     background-color: var(--dark-blue);
 }
 
-[data-bs-theme=dark].blue-button:hover {
-    filter: brightness(1.5);
-}
+    [data-bs-theme=dark].blue-button:hover {
+        filter: brightness(1.5);
+    }
 
 section[data-bs-theme=dark] {
     border-color: var(--mid-gray);
@@ -399,9 +399,9 @@ section[data-bs-theme=dark] {
     color: var(--light-gray);
 }
 
-[data-bs-theme=dark]#forgotPw:hover {
-    filter: brightness(1.5);
-}
+    [data-bs-theme=dark]#forgotPw:hover {
+        filter: brightness(1.5);
+    }
 
 footer[data-bs-theme=dark] {
     border-color: var(--mid-gray) !important;
