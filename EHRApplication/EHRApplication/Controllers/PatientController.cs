@@ -6,11 +6,11 @@ namespace EHRApplication.Controllers
 {
     public class PatientController : Controller
     {
-        private readonly LogController _logController;
+        private readonly LogService _logService;
 
-        public PatientController(LogController logController)
+        public PatientController(LogService logService)
         {
-            _logController = logController;
+            _logService = logService;
         }
 
         public IActionResult Index()

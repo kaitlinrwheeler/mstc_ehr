@@ -4,11 +4,11 @@ namespace EHRApplication.Controllers
 {
     public class ResourcesController : Controller
     {
-        private readonly LogController _logController;
+        private readonly LogService _logService;
 
-        public ResourcesController(LogController logController)
+        public ResourcesController(LogService logService)
         {
-            _logController = logController;
+            _logService = logService;
         }
 
         public IActionResult Index()

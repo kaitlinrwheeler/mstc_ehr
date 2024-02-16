@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
-namespace EHRApplication.Controllers
+namespace EHRApplication
 {
     public class LogService
     {
@@ -13,7 +13,7 @@ namespace EHRApplication.Controllers
             _configuration = configuration;
         }
 
-        public void WriteToDatabase(Log log)
+        public void WriteToDatabase(string severity, string message, string context)
         {
             string connectionString = _configuration.GetConnectionString("DefaultConnection");
 
@@ -21,15 +21,15 @@ namespace EHRApplication.Controllers
             {
                 connection.Open();
 
-                string query = "INSERT INTO logs (severity, message, context, date_and_time) " +
+                string query = "INSERT INTO logs (Severity, Message, Context, DateAndTime) " +
                                "VALUES (@Severity, @Message, @Context, @DateAndTime)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Severity", log.Severity);
-                    command.Parameters.AddWithValue("@Message", log.Message);
-                    command.Parameters.AddWithValue("@Context", log.Context);
-                    command.Parameters.AddWithValue("@DateAndTime", log.DateAndTime);
+                    command.Parameters.AddWithValue("@Severity", severity); //Ex: Error, Warning, Success
+                    command.Parameters.AddWithValue("@Message", message); //Ex: Home page did not load.
+                    command.Parameters.AddWithValue("@Context", context); //Extra info, Ex: HomeController.cs
+                    command.Parameters.AddWithValue("@DateAndTime", DateTime.Now); //Date and time gets defaulted at the time the log is created.
 
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected <= 0)

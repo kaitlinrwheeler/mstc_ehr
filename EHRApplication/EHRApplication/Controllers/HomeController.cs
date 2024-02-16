@@ -6,15 +6,16 @@ namespace EHRApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly LogController _logController;
+        private readonly LogService _logService;
 
-        public HomeController(LogController logController)
+        public HomeController(LogService logService)
         {
-            _logController = logController;
+            _logService = logService;
         }
 
         public IActionResult Index()
         {
+            _logService.WriteToDatabase("Success", "Home page loaded correctly.", "HomeController.cs");
             return View();
         }
 
