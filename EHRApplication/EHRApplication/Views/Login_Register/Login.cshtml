@@ -22,7 +22,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-5">
             <div class="card mx-auto shadow-sm" data-bs-theme="auto">
-                <div class="card-header text-center" data-bs-theme="auto">Login</div>
+                <div class="h5 card-header text-center" data-bs-theme="auto">Login</div>
                 <div class="card-body" data-bs-theme="auto">
                     <!-- Login Form -->
                     <form method="post" onsubmit="return validateForm()">
@@ -34,7 +34,7 @@
                                    maxlength="100"
                                    onchange="validateEmailField(this.value)" data-bs-theme="auto" />
                             <!-- Error message span -->
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <span asp-validation-for="Email" class="valadation-msg"></span>
                         </div>
                         <!-- Password Field -->
                         <div class="form-group mb-3">
@@ -42,7 +42,7 @@
                             <input asp-for="Password" type="password" class="form-control" id="password" name="password"
                                    onchange="validatePasswordField(this.value)" data-bs-theme="auto" />
                             <!-- Error message span -->
-                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <span asp-validation-for="Password" class="valadation-msg"></span>
                         </div>
 
                         <div class="mb-3 text-center">

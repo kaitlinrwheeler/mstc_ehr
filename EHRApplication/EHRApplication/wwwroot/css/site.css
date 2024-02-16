@@ -309,6 +309,9 @@ main {
     color: orangered !important;
 }
 
+.valadation-msg {
+    color: orangered !important;
+}
 
 #patient-banner-wrapper {
     position: fixed;

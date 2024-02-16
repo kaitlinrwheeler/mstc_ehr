@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Update;
 
 namespace EHRApplication.Controllers
 {
@@ -181,8 +182,12 @@ namespace EHRApplication.Controllers
                 //Creates the instance of the user
                 var user = CreateUser();
 
-                // Set user name and create the user
+                // Set username, fist and last name
                 await _userStore.SetUserNameAsync(user, account.Email, CancellationToken.None);
+                user.Firstname = account.Firstname;
+                user.Lastname = account.Lastname;
+
+                //Links user instance to the user info
                 var result = await _userManager.CreateAsync(user, account.Password);
 
                 if (result.Succeeded)
@@ -251,12 +256,12 @@ namespace EHRApplication.Controllers
             return RedirectToAction("Login");
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
                 //Creates an instance of the user that is registering
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {

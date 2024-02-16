@@ -6,6 +6,18 @@ namespace EHRApplication.Models
 {
     public class RegisterAccount
     {
+        [Required(ErrorMessage = "First name is required.")]
+        [StringLength(60, ErrorMessage = "First name must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only letters are allowed in the first name.")]
+        [Display(Name = "First Name")]
+        public string Firstname { get; set; }
+
+        [Required(ErrorMessage = "Last name is required.")]
+        [StringLength(60, ErrorMessage = "Last name must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only letters are allowed in the last name.")]
+        [Display(Name = "Last Name")]
+        public string Lastname { get; set; }
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
