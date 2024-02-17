@@ -1,4 +1,6 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 
 <div id="headerContainer" class="sticky-top w-100">
@@ -37,7 +39,17 @@
             <li class="nav-item"><a asp-area="" asp-controller="Resources" asp-action="Index" class="nav-link">Resources</a></li>
             <li class="nav-item"><a href="#" class="nav-link">Account</a></li>
             <li class="nav-item"><a asp-area="" asp-controller="Patient" asp-action="Index" class="nav-link">Admin</a></li>
-            <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Login" class="nav-link">Sign In</a></li>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                //This can display the user on the screen.
+                //<a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <li class="nav-item"><a asp-area="" asp-controller="Login_Register" asp-action="Logout" class="nav-link">Logout</a></li>
+            }else{
+                <li class="nav-item"><a asp-area="" asp-controller="Login_Register" asp-action="Login" class="nav-link">Login</a></li>
+            }
+            <li class="nav-item">
+    </li>
         </ul>
     </header>
 </div>
