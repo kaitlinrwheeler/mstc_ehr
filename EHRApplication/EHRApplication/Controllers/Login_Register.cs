@@ -235,6 +235,8 @@ namespace EHRApplication.Controllers
             else
             {
                 //Will set the errors for the input if they are null
+                ModelState.AddModelError("Firstname", "Firstname must not be null");
+                ModelState.AddModelError("Lastname", "Lastname must not be null");
                 ModelState.AddModelError("Email", "Email must not be null");
                 ModelState.AddModelError("Password", "Password must not be null");
                 ModelState.AddModelError("ConfirmPassword", "ConfirmPassword must not be null");
