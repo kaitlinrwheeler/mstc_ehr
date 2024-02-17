@@ -1,0 +1,28 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.resource-links ul {
+    padding: 0;
+    margin-left: 2rem;
+}
+
+.resource-links li {
+    margin-bottom: .5rem;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+[data-bs-theme="dark"].card-body a {
+    color: #00bfff;
+}
+
+    [data-bs-theme="dark"].card-body a:hover {
+        color: #007bff;
+    }

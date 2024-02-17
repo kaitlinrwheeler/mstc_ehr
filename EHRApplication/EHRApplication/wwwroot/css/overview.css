@@ -1,0 +1,18 @@
+﻿/*.card-body p:nth-child(odd) {
+    background-color: #f2f2f2; 
+} If we want to change the odd lines do this with this*/
+
+.card-body p:nth-child(even) {
+    background-color: lightgray; /* Light gray */
+}
+
+/*style for picture card on overview page*/
+.card-cover {
+    height: 422px;
+}
+
+[data-bs-theme=dark].card-body p:nth-child(even) {
+    color: var(--offwhite);
+    background-color: var(--darker-gray);
+    border: none;
+}
