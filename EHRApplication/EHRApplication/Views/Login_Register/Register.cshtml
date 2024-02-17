@@ -1,7 +1,8 @@
 ﻿@model RegisterAccount
 @{
     ViewData["Title"] = "Register";
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/login_Register.css" asp-append-version="true" />
+
 }
 <!--This is a message banner displaying on the screen for the user to see-->
 @if (TempData["ErrorMessage"] != null)
@@ -50,26 +51,30 @@
                         </div>
                         <!-- Password Field -->
                         <div class="form-group mb-3">
-                            <label for="password" class="form-label">Password:</label>
+                            <label for="password" class="form-label">Password:
+                                <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements()" onmouseout="hideRequirements()">
+                                    <div class="question-icon rounded-circle" data-bs-theme="auto" id="questionIcon">
+                                        ?
+                                    </div>
+                                    <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
+                                        <ul>
+                                            <li>At least 1 uppercase letter</li>
+                                            <li>At least 1 lowercase letter</li>
+                                            <li>At least 1 number</li>
+                                            <li>At least 1 special character</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </label>
                             <input asp-for="Password" type="password" class="form-control" id="password" name="password"
                                    onchange=""  data-bs-theme="auto" />
                             <!-- Error message span -->
                             <span asp-validation-for="Password" class="valadation-msg"></span>
                         </div>
-                        <!-- Password Requirements Box -->
-@*                         <div id="password-requirements" class="password-requirements-box">
-                            <p>Password must contain:</p>
-                            <ul>
-                                <li>At least 1 uppercase letter</li>
-                                <li>At least 1 lowercase letter</li>
-                                <li>At least 1 number</li>
-                                <li>At least 1 special character</li>
-                            </ul>
-                        </div> *@
                         <!-- Confirm Password Field -->
                         <div class="form-group mb-3">
                             <label for="confirmpassword" class="form-label">Confirm Password:</label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="password" name="confirmpassword"
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmpassword" name="confirmpassword"
                                    onchange=""  data-bs-theme="auto" />
                             <!-- Error message span -->
                             <span asp-validation-for="ConfirmPassword" class="valadation-msg"></span>
@@ -79,58 +84,7 @@
                             <button type="submit" class="btn blue-button" data-bs-theme="auto">Register</button>
                         </div>
 
-                        <div class="icon">
-                            <div class="joyride-hint joyride-2 center text-center">
-                                <div class="help-text">
-                                    <i class="fa fa-info-circle"></i> Select a Channel
-                                </div>
-                                <div class="help-btn">
-                                    <i class="fa fa-life-ring"></i> Why should I do this?
-                                </div>
-                            </div>
-                            <i class="fa fa-facebook"></i>
-                            <div class="popout">
-                                <div class="form-horizontal">
-                                    <div class="form-group">
-                                        <div class="col-sm-7 text-left">
-                                            <label class="form-label">Post on Facebook</label>
-                                        </div>
-                                        <div class="col-sm-5 text-right pos-relative">
-                                            <div class="joyride-hint joyride-3 center text-center">
-                                                <div class="help-text">
-                                                    <i class="fa fa-info-circle"></i> Post on Facebook
-                                                </div>
-                                                <div class="help-btn">
-                                                    <i class="fa fa-life-ring"></i> Why should I do this?
-                                                </div>
-                                            </div>
-                                            <div class="btn-group yes-btns">
-                                                <button class="btn btn-primary">Yes</button><button class="btn">No</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-7 text-left">
-                                            <label class="form-label">Promote</label>
-                                        </div>
-                                        <div class="col-sm-5 text-right pos-relative">
-                                            <div class="joyride-hint joyride-4 center text-center">
-                                                <div class="help-text">
-                                                    <i class="fa fa-info-circle"></i> Promote this post
-                                                </div>
-                                                <div class="help-btn">
-                                                    <i class="fa fa-life-ring"></i> What is promoting
-                                                </div>
-                                            </div>
-                                            <div class="btn-group promote-btns">
-                                                <button class="btn btn-primary">Yes</button><button class="btn">No</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- More form fields as needed -->
-                                </div>
-                            </div>
-                        </div>
+                        
                     </form>
                     <div class="text-center">
                         <a class="dark-links" data-bs-theme="auto" asp-action="Login">Already Have An Account?</a>
@@ -140,4 +94,4 @@
         </div>
     </div>
 </div>
-<script src="../wwwroot/js/login_Register.js"></script>
+<script src="~/js/login_Register.js"></script>
