@@ -22,9 +22,13 @@
 }
 
     .nav-link:hover {
-        color: #181818;
+        transform: translateY(1px);
     }
 
 #landingHeaderContainer {
     background-color: transparent;
+}
+
+.btn:hover{
+    transform: translateY(1px);
 }

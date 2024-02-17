@@ -7,14 +7,6 @@ body {
     background-color: #F8F8FF;
 }
 
-#landingBody {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../Media/typing.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-}
-
 /* Top nav section */
 
 #topNav, .nav-link, .nav-link:visited, #srchBtn, #logo {
