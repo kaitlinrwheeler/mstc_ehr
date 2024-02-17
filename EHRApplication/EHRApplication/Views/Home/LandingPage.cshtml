@@ -2,14 +2,15 @@
     ViewData["Title"] = "";
     Layout = "_Landing";
 }
-<body class="">
-    <div class="container text-start mx-auto my-auto py-auto">
-        <div class="">
-            <h1 class="text-white text-lg-start">Hands-On Learning:<br/>your gateway to medical<br/>coding excellence</h1>
-            <p class="text-white">Realistic EHR scenarios for practical coding experience.</p>
-        </div>
-        <div class="container">
-            <button class="text-white text-center" style="border-radius:7px; background-color:#82142D;">Sign Up</button>
+
+<body id="landingBody" class="d-flex flex-column min-vh-100 w-100 justify-content-between text-center">
+    <div id="landingContent" class="container pt-5 mt-5">
+        <div class="container pt-5 mt-5 text-start">
+            <h1 class="text-white pt-5" style="font-size:4.5em;">Hands-On Learning: <br />your gateway to medical <br />coding excellence.</h1>
+            <p class="text-white fs-2">Realistic EHR scenarios for practical coding experience.</p>
+            <a asp-controller="Login_Register" asp-action="Index" class="btn text-light fw-bold fs-5 px-5 py-2 mt-5" style="border-radius: 7px; background-color: #82142D;">
+                Sign Up
+            </a>
         </div>
     </div>
 </body>

@@ -12,6 +12,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    background-position: center;
 }
 
 /* Top nav section */
@@ -27,17 +28,19 @@ body {
 /* Styles for the landing page navbar */
 #landingLogo {
     color: #82142D;
+    font-family: 'BIZ UDPGothic', sans-serif;
+    font-size: 2.5em;
 }
 
 #landingNav li {
     color: #181818;
 }
 
-#landingNav, .nav-link, .nav-link:visited, #srchBtn, #logo {
+#landingNav, .nav-link, .nav-link:visited, #logo {
     color: #F8F8FF;
 }
 
-    .nav-link:hover, #srchBtn:hover {
+    .nav-link:hover {
         color: #181818;
     }
 
