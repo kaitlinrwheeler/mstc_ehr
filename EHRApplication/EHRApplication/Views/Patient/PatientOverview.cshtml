@@ -1,0 +1,60 @@
+﻿@model PatientDemographic
+
+@{
+    ViewData["Title"] = "Patient Details";
+    <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
+}
+
+<div class="container mt-5" data-bs-theme="auto">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="h4 card-header" data-bs-theme="auto">
+                    Demographic Info
+                </div>
+                <div class="card-body" data-bs-theme="auto">
+                    <p><span class="h6">Patient ID:</span> 51651514548366</p>
+                    <p><span class="h6">First Name:</span> John</p>
+                    <p><span class="h6">Last Name:</span> Doe</p>
+                    <p><span class="h6">Suffix:</span> NA</p>
+                    <p><span class="h6">Preferred Pronouns:</span> He/Him</p>
+                    <p><span class="h6">Date of Birth:</span> 01-01-1990</p>
+                    <p><span class="h6">Gender:</span> Male</p>
+                    <p><span class="h6">Preferred Language:</span> English</p>
+                    <p><span class="h6">Ethnicity:</span> German</p>
+                    <p><span class="h6">Race:</span> White</p>
+                    <p><span class="h6">Religion:</span> Christian</p>
+                    <p><span class="h6">Primary Physician:</span> Dr. Pepper</p>
+                    <p><span class="h6">Legal Guardian1:</span> NA</p>
+                    <p><span class="h6">Legal Guardian2:</span> NA</p>
+                    <p><span class="h6">Previous Name:</span> NA</p>
+                    <p><span class="h6">Gender Assigned At Birth:</span> Male</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <!--Make height 422px-->
+                    <div class="card card-cover">
+                        <img src="~/images/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="h4 card-header" data-bs-theme="auto">
+                            Contact Info
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <p><span class="h6">Address:</span> 1408 Meadow Dr</p>
+                            <p><span class="h6">City:</span> Lake Charles</p>
+                            <p><span class="h6">State:</span> Louisiana</p>
+                            <p><span class="h6">Zip Code:</span> 70607</p>
+                            <p><span class="h6">Phone Number:</span> 203-685-9011</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

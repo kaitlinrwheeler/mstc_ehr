@@ -10,5 +10,10 @@ namespace EHRApplication.Controllers
         {
             return View();
         }
+        
+        public IActionResult PatientOverView()
+        {
+            return View();
+        }
     }
 }
