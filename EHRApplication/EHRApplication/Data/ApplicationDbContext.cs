@@ -66,5 +66,7 @@ namespace EHRApplication.Data
         public DbSet<Visits> Visits { get; set; }
 
         public DbSet<Vitals> Vitals { get; set; }
+
+        public DbSet<Log> Logs { get; set; }
     }
 }

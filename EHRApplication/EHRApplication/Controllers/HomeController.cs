@@ -6,17 +6,29 @@ namespace EHRApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly LogService _logService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(LogService logService)
         {
-            _logger = logger;
+            _logService = logService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                // Example: Log success message if no exception is thrown
+                //_logService.WriteToDatabase("Success", "Home page loaded correctly.", "HomeController.cs");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Example: Log error message if an exception occurs
+                //_logService.WriteToDatabase("Error", "An error occurred while loading the home page.", ex.Message);
+                return View("Error"); // Can display an error view if we make one.
+            }
         }
+
 
         public IActionResult Privacy()
         {

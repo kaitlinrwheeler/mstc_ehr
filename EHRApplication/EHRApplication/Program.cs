@@ -1,3 +1,4 @@
+using EHRApplication;
 using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-
+builder.Services.AddSingleton<LogService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
