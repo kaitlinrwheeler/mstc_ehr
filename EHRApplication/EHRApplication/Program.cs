@@ -41,10 +41,10 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
-
-        app.Run();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=LandingPage}/{id?}"); // changed from action=Index to action=LandingPage
+        
+    app.Run();
     }
 }

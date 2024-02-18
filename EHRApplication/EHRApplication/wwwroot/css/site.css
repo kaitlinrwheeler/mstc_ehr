@@ -7,7 +7,6 @@ body {
     background-color: #F8F8FF;
 }
 
-
 /* Top nav section */
 
 #topNav, .nav-link, .nav-link:visited, #srchBtn, #logo {
@@ -16,6 +15,7 @@ body {
 
     .nav-link:hover, #srchBtn:hover {
         transform: translateY(1px);
+        color: white;
     }
 
 
@@ -278,6 +278,10 @@ main {
 
 #headerContainer { 
     background-color: var(--red);
+}
+
+#landingHeaderContainer {
+    background-color: transparent;
 }
 
 .card-header {
