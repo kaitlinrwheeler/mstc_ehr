@@ -93,3 +93,56 @@ function darkSwitch() {
     // Set the local storage theme to the new theme. Needed for if a user refreshes the page, so the theme doesn't revert back to its default.
     localStorage.setItem('theme', newTheme);
 }
+
+
+//Start of question mark popout
+
+// Initialize variables to track the visibility and hover state of the requirements popup
+var requirementsVisible = false; // Indicates whether the requirements popup is currently visible
+var hoveringPopup = false; // Indicates whether the mouse is currently hovering over the requirements popup
+
+// Function to display the requirements popup
+function showRequirements() {
+    // Set the display style of the requirements popup to block to make it visible
+    document.getElementById("requirementsPopup").style.display = "block";
+}
+
+// Function to hide the requirements popup
+function hideRequirements() {
+    // Check if the requirements popup should be hidden
+    if (!requirementsVisible && !hoveringPopup) {
+        // If neither the requirements popup is visible nor the mouse is hovering over it,
+        // set the display style of the requirements popup to none to hide it
+        document.getElementById("requirementsPopup").style.display = "none";
+    }
+}
+
+// Event listener to track when the mouse enters the requirements popup
+document.getElementById("requirementsPopup").addEventListener("mouseover", function () {
+    // When the mouse enters the requirements popup, set hoveringPopup to true
+    hoveringPopup = true;
+});
+
+// Event listener to track when the mouse leaves the requirements popup
+document.getElementById("requirementsPopup").addEventListener("mouseout", function () {
+    // When the mouse leaves the requirements popup, set hoveringPopup to false
+    hoveringPopup = false;
+});
+
+// Event listener to track clicks anywhere on the document
+document.addEventListener("click", function (event) {
+    // Retrieve the requirements popup and question icon elements
+    var requirementsPopup = document.getElementById("requirementsPopup");
+    var questionIcon = document.getElementById("questionIcon");
+    var targetElement = event.target; // Retrieve the element that was clicked
+
+    // Check if the requirements popup is visible and the clicked element is not the requirements popup or the question icon
+    if (requirementsVisible && targetElement !== requirementsPopup && targetElement !== questionIcon) {
+        // If so, hide the requirements popup
+        hideRequirements();
+        // Set requirementsVisible to false, indicating that the popup is no longer visible
+        requirementsVisible = false;
+    }
+});
+
+//End of quesiton mark popout

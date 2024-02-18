@@ -17,6 +17,8 @@ namespace EHRApplication.Data
 
         public DbSet<Allergies> Allergies { get; set; }
 
+        public DbSet<ApplicationUser> ApplicationUser {  get; set; }
+
         public DbSet<Cardiothoracic> Cardiothoracic { get; set; }
 
         public DbSet<CarePlan> CarePlan { get; set; }
