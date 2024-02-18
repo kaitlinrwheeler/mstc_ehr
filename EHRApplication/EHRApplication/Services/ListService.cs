@@ -38,7 +38,7 @@ namespace EHRApplication.Services
                             providerId = Convert.ToInt32(row["providerId"]),
                             firstName = Convert.ToString(row["firstName"]),
                             lastName = Convert.ToString(row["lastName"]),
-                            specialty = Convert.ToString(row["lastName"]),
+                            specialty = Convert.ToString(row["specialty"]),
                         });
                 }
                 return providerList;
