@@ -33,6 +33,7 @@ namespace EHRApplication.Controllers
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
                 var providersList = new ListService(Configuration).GetProviders();
+                var contactList = new ListService(Configuration).GetContacts();
 
                 connection.Open();
                 //SqlCommand cmd = new SqlCommand("SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @MHN", connection);
@@ -63,8 +64,10 @@ namespace EHRApplication.Controllers
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        patientDemographic.ContactId = contactList.Where(type => type.MHN == patientDemographic.MHN).FirstOrDefault();
                     }
                 }
+
                 connection.Close();
             }
             return View(patientDemographic);

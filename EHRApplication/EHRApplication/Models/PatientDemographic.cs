@@ -8,6 +8,8 @@ namespace EHRApplication.Models
         [Key]
         public int MHN { get; set; }
 
+        public PatientContact ContactId { get; set; }
+
         public string firstName { get; set; }
 
         public string middleName { get; set; }

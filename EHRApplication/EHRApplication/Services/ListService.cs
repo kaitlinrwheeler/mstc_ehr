@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace EHRApplication.Services
 {
@@ -43,8 +44,39 @@ namespace EHRApplication.Services
                 }
                 return providerList;
             }
-
         }
 
+        public IEnumerable<PatientContact> GetContacts()
+        {
+            List<PatientContact> contactList = new List<PatientContact>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                DataTable dataTable = new DataTable();
+
+                string sql = "SELECT * FROM [dbo].[PatientContact] WHERE MHN = 1";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dataTable);
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    contactList.Add(
+                        new PatientContact
+                        {
+                            MHN = Convert.ToInt32(row["MHN"]),
+                            address = Convert.ToString(row["address"]),
+                            city = Convert.ToString(row["city"]),
+                            state = Convert.ToString(row["state"]),
+                            zipcode = Convert.ToInt32(row["zipcode"]),
+                            phone = Convert.ToString(row["phone"]),
+                            email = Convert.ToString(row["email"]),
+                        });
+                }
+                return contactList;
+            }
+        }
     }
 }
