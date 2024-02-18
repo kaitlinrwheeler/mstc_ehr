@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using System.Diagnostics
+@{
+    //Gets the controller for the page that is being displayed
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    }
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,8 +19,19 @@
 
     <partial name="_topNav"/>
 
-    <partial name="_patientInfoBanner" />
-
+    <!--If condition that will only display the patient banner if the page is not an an admin or login/Register page-->
+    @if (controllerName != "Login_Register")
+    {
+        <partial name="_patientInfoBanner" />
+    }
+    else
+    {
+        <style>
+            #sidebar-wrapper {
+                margin-top: 72px;
+            }
+        </style>
+    }
 
     <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
         <div id="wrapper">
