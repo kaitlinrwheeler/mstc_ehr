@@ -8,7 +8,14 @@
 
 /*style for picture card on overview page*/
 .card-cover {
-    height: 422px;
+    height: 385px;
+}
+.card-body{
+    padding: 0;
+}
+
+.card-body p{
+    padding-left: 20px;
 }
 
 [data-bs-theme=dark].card-body p:nth-child(even) {
