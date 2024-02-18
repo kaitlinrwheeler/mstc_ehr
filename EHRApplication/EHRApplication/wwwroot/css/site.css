@@ -16,6 +16,7 @@ body {
 
     .nav-link:hover, #srchBtn:hover {
         transform: translateY(1px);
+        color: white;
     }
 
 
