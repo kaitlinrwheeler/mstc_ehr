@@ -309,6 +309,9 @@ main {
     color: orangered !important;
 }
 
+.valadation-msg {
+    color: orangered !important;
+}
 
 #patient-banner-wrapper {
     position: fixed;
@@ -346,6 +349,43 @@ main {
 
 /* End main styles */
 
+
+
+/*Start of requirment question mark popout*/
+.question-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+/*styling for the question icon*/
+.question-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*styling for the popou box*/
+.requirements-popup {
+    display: none;
+    position: absolute;
+    background-color: var(--bs-gray-100);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.question-wrapper:hover .requirements-popup {
+    display: block;
+}
+/*adjusting the views in dark mode*/
+[data-bs-theme=dark].question-icon, .requirements-popup {
+    color: black;
+    background-color: var(--mid-gray);
+}
+/*End of requirment question mark popout*/
 
 
 
@@ -395,11 +435,11 @@ section[data-bs-theme=dark] {
     border: none;
 }
 
-[data-bs-theme=dark]#forgotPw {
+[data-bs-theme=dark].dark-links {
     color: var(--light-gray);
 }
 
-    [data-bs-theme=dark]#forgotPw:hover {
+    [data-bs-theme=dark].dark-links:hover {
         filter: brightness(1.5);
     }
 
