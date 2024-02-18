@@ -20,7 +20,7 @@ namespace EHRApplication.Models
 
         public string preferredPronouns { get; set; }
 
-        public DateOnly DOB { get; set; }
+        public DateTime DOB { get; set; }
 
         public string gender { get; set; }
 

@@ -28,14 +28,17 @@ namespace EHRApplication.Controllers
         
         public IActionResult PatientOverView()
         {
+            //Creating a new patientDemographic instance
             PatientDemographic patientDemographic = new PatientDemographic();
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
+                //Grabbing data from the database using the listService
                 var providersList = new ListService(Configuration).GetProviders();
                 var contactList = new ListService(Configuration).GetContacts();
 
                 connection.Open();
+                //Making a sql command
                 //SqlCommand cmd = new SqlCommand("SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @MHN", connection);
                 string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = 1";
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -51,8 +54,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
                         patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
                         patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        //patientDemographic.DOB = (DateTime)MyReader[""]
-                        //patientDemographic.DOB = dataReader.GetDateTime(dataReader.GetOrdinal("DOB"));
+                        patientDemographic.DOB = Convert.ToDateTime(dataReader["DOB"]);
                         patientDemographic.gender = Convert.ToString(dataReader["gender"]);
                         patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
                         patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
