@@ -23,6 +23,7 @@
 
     .nav-link:hover {
         transform: translateY(1px);
+        color: white;
     }
 
 #landingHeaderContainer {
@@ -31,4 +32,8 @@
 
 .btn:hover{
     transform: translateY(1px);
+}
+
+#sign-up-btn:hover {
+    filter: brightness(.94);
 }
