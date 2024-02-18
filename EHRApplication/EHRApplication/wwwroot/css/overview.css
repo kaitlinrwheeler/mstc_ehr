@@ -16,7 +16,17 @@
 
 .card-body p{
     padding-left: 20px;
+    height: 35px;
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
+
+    .card-body span {
+        margin: 0;
+        display: contents;
+        align-items: center;
+    }
 
 [data-bs-theme=dark].card-body p:nth-child(even) {
     color: var(--offwhite);
