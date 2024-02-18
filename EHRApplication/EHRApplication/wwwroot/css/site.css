@@ -385,7 +385,7 @@ main {
     display: block;
 }
 /*adjusting the views in dark mode*/
-[data-bs-theme=dark].question-icon, .requirements-popup {
+[data-bs-theme=dark].question-icon, [data-bs-theme=dark].requirements-popup {
     color: black;
     background-color: var(--mid-gray);
 }
