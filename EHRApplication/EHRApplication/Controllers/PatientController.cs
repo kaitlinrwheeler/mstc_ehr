@@ -21,6 +21,49 @@ namespace EHRApplication.Controllers
             this.connectionString = Configuration["ConnectionStrings:DefaultConnection"];
         }
 
+        public IActionResult AllPatients()
+        {
+            // New list to hold all the patients in the database.
+            List<PatientDemographic> allPatients = new List<PatientDemographic>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new patient object for each record.
+                        PatientDemographic patient = new PatientDemographic();
+
+                        // Populate the patient object with data from the database.
+                        // Note: there are more fields in a patient demographic, but these are the only ones we are wanting to display.
+                        // Change this if you want more of less fields.
+                        patient.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patient.firstName = Convert.ToString(dataReader["firstName"]);
+                        patient.lastName = Convert.ToString(dataReader["lastName"]);
+                        patient.DOB = Convert.ToDateTime(dataReader["DOB"]);
+                        patient.gender = Convert.ToString(dataReader["gender"]);
+
+                        // Add the patient to the list
+                        allPatients.Add(patient);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            // Return the view with the list of all the patients so we can display them.
+            return View(allPatients);
+        }
+
+
         public IActionResult Index()
         {
             return View();
@@ -32,22 +75,28 @@ namespace EHRApplication.Controllers
             return View(patient);
         }
         
-        public IActionResult PatientOverView()
+        public IActionResult PatientOverview(int mhn)
         {
             //Creating a new patientDemographic instance
             PatientDemographic patientDemographic = new PatientDemographic();
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
+
+                // TODO: don't think this is right, should probably change this to do a query based off the mhn instead of getting the entire list?
                 //Grabbing data from the database using the listService
                 var providersList = new ListService(Configuration).GetProviders();
                 var contactList = new ListService(Configuration).GetContacts();
 
                 connection.Open();
-                //Making a sql command
-                //SqlCommand cmd = new SqlCommand("SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @MHN", connection);
-                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = 1";
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
                 SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
 
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
@@ -72,7 +121,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = contactList.Where(type => type.MHN == patientDemographic.MHN).FirstOrDefault();
+                        patientDemographic.ContactId = contactList.Where(type => mhn == patientDemographic.MHN).FirstOrDefault();
                     }
                 }
 
