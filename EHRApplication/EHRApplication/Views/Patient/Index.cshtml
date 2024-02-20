@@ -1,4 +1,4 @@
-﻿
+﻿@model PatientDemographic
 @{
     ViewData["Title"] = "Patient Page";
     <link rel="stylesheet" href="~/css/patient.css">
@@ -14,86 +14,88 @@
 
     <div class="card-body" data-bs-theme="auto">
 
-        <form id="patientForm">
+        <form method="post" id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
-                <input type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
-                <span id="FirstNameError" class="invalid-feedback"></span>
+                <input asp-for="firstName" type="text" id="FirstName" name="FirstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
+                <span id="FirstNameError" class="invalid-feedback valadation-msg"></span>
+                <span asp-validation-for="firstName" id="firstNameAsp" class="valadation-msg"></span>
             </div>
 
 
             <div class="form-group">
                 <label for="MiddleName">Middle Name (optional):</label>
-                <input type="text" id="MiddleName" name="MiddleName" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 25, 'middle name')" />
-                <span id="MiddleNameError" class="invalid-feedback"></span>
+                <input asp-for="middleName" type="text" id="MiddleName" name="MiddleName" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 25, 'middle name')" />
+                <span asp-validation-for="middleName" id="MiddleNameError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LastName">Last Name:</label>
-                <input type="text" id="LastName" name="LastName" class="form-control" onblur="validateRequiredTextInput('LastName', 25,'last name')" data-bs-theme="auto" />
-                <span id="LastNameError" class="invalid-feedback"></span>
+                <input asp-for="lastName" type="text" id="LastName" name="LastName" class="form-control" onblur="validateRequiredTextInput('LastName', 25,'last name')" data-bs-theme="auto" />
+                <span asp-validation-for="lastName" id=" LastNameError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Suffix">Suffix (optional):</label>
-                <input type="text" id="Suffix" name="Suffix" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 20,  'suffix')" />
-                <span id="SuffixError" class="invalid-feedback"></span>
+                <input asp-for="suffix" type="text" id="Suffix" name="Suffix" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 20,  'suffix')" />
+                <span asp-validation-for="suffix" id="SuffixError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="DOB">Date of Birth:</label>
-                <input type="date" id="DOB" name="DOB" class="form-control" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" />
-                <span id="DOBError" class="invalid-feedback"></span>
+                <input asp-for="DOB" type="date" id="DOB" name="DOB" class="form-control" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" />
+                <span asp-validation-for="DOB" id="DOBError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="PrimaryPhysician">Primary Physician (optional):</label>
-                <input type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('PrimaryPhysician', 100, 'primary physician')" />
-                <span id="PrimaryPhysicianError" class="invalid-feedback"></span>
+                <input asp-for="primaryPhysician" type="text" id="PrimaryPhysician" name="PrimaryPhysician" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('PrimaryPhysician', 100, 'primary physician')" />
+                <span asp-validation-for="primaryPhysician" id="PrimaryPhysicianError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LegalGuardian1">Legal Guardian 1 (optional):</label>
-                <input type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian1', 100, 'legal guardian')" />
-                <span id="LegalGuardian1Error" class="invalid-feedback"></span>
+                <input asp-for="legalGuardian1" type="text" id="LegalGuardian1" name="LegalGuardian1" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian1', 100, 'legal guardian')" />
+                <span asp-validation-for="legalGuardian1" id="LegalGuardian1Error" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="LegalGuardian2">Legal Guardian 2 (optional):</label>
-                <input type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian2', 100, 'legal guardian')" />
-                <span id="LegalGuardian2Error" class="invalid-feedback"></span>
+                <input asp-for="legalGuardian2" type="text" id="LegalGuardian2" name="LegalGuardian2" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian2', 100, 'legal guardian')" />
+                <span asp-validation-for="legalGuardian2" id="LegalGuardian2Error" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Religion">Religion (optional):</label>
-                <input type="text" id="Religion" name="Religion" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Religion', 100,  'religion')" />
-                <span id="ReligionError" class="invalid-feedback"></span>
+                <input asp-for="religion" type="text" id="Religion" name="Religion" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Religion', 100,  'religion')" />
+                <span asp-validation-for="religion" id="ReligionError" class="invalid-feedback"></span>
 
             </div>
 
             <div class="form-group">
                 <label for="Pronouns">Pronouns (optional):</label>
-                <input type="text" id="Pronouns" name="Pronouns" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Pronouns', 25,  'pronoun')" />
-                <span id="PronounsError" class="invalid-feedback"></span>
+                <input asp-for="preferredPronouns" type="text" id="Pronouns" name="Pronouns" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Pronouns', 25,  'pronoun')" />
+                <span asp-validation-for="preferredPronouns" id="PronounsError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Gender">Gender (optional):</label>
-                <input type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Gender', 25, 'gender')" />
-                <span id="GenderError" class="invalid-feedback"></span>
+                <input asp-for="gender" type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Gender', 25, 'gender')" />
+                <span asp-validation-for="gender" id="GenderError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
-                <select id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
+                <select asp-for="genderAssignedAtBirth" id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
+                <span asp-validation-for="genderAssignedAtBirth" id="GenderAssignedAtBirthError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="PreferredLanguage">Preferred Language:</label>
-                <select id="PreferredLanguage" name="PreferredLanguage" class="form-control" data-bs-theme="auto">
+                <select asp-for="preferredLanguage" id="PreferredLanguage" name="PreferredLanguage" class="form-control" data-bs-theme="auto">
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Dutch">Dutch</option>
@@ -111,11 +113,12 @@
                     <option value="Spanish">Spanish</option>
 
                 </select>
+                <span asp-validation-for="preferredLanguage" id="PreferredLanguageError" class="invalid-feedback"></span>
             </div>
 
             <div class="form-group">
                 <label for="Ethnicity">Ethnicity:</label>
-                <select id="Ethnicity" name="Ethnicity" class="form-control" data-bs-theme="auto">
+                <select asp-for="ethnicity" id="Ethnicity" name="Ethnicity" class="form-control" data-bs-theme="auto">
                     <option value="African American">African American</option>
                     <option value="Asian">Asian</option>
                     <option value="Caucasian">Caucasian</option>
@@ -123,12 +126,13 @@
                     <option value="Unknown">Unknown</option>
 
                 </select>
+                <span asp-validation-for="ethnicity" id="EthnicityError" class="invalid-feedback"></span>
             </div>
 
 
             <div class="form-group">
                 <label for="Race" class="mb-1">Race:</label>
-                <div id="Race" class="row text-nowrap">
+                <div asp-for="race" id="Race" class="row text-nowrap">
                     <!-- Add 'row' class to create a row container -->
                     <div class="col-sm-6">
                         <!-- Create a column for the first half of checkboxes -->
@@ -159,6 +163,7 @@
                         </div>
                     </div>
                 </div>
+                <span asp-validation-for="race" id="RaceError" class="invalid-feedback"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">

@@ -72,9 +72,27 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(patient);
+            }
+
             return View(patient);
         }
-        
+        /// <summary>
+        /// Trying to clear the validation state when the input box is changed
+        /// </summary>
+        /// <param name="validationName"></param>
+        /// <returns></returns>
+        public IActionResult ClearValidationState(string validationName)
+        {
+            // Clear validation state for the specified property
+            ModelState.ClearValidationState(validationName);
+
+            return RedirectToAction("Index");
+        }
+
         public IActionResult PatientOverview(int mhn)
         {
             //Creating a new patientDemographic instance
