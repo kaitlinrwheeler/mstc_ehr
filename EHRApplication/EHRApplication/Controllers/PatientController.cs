@@ -3,6 +3,7 @@ using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 
 namespace EHRApplication.Controllers
@@ -78,7 +79,38 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
-            return View(patient);
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth) " +
+                    "VALUES (@firstName, @middleName, @lastName, @suffix, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth)";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
+                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = patient.middleName;
+                    command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
+                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = patient.suffix;
+                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = patient.preferredPronouns;
+                    command.Parameters.Add("@DBO", SqlDbType.Date).Value = patient.DOB;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = patient.gender;
+                    command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
+                    command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
+                    command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
+                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = patient.religion;
+                    command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
+                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = patient.legalGuardian1;
+                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = patient.legalGuardian2;
+                    command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return View();
         }
         /// <summary>
         /// Trying to clear the validation state when the input box is changed

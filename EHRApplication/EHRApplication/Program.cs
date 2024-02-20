@@ -24,7 +24,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        builder.Services.AddSingleton<ListService>();
+        builder.Services.AddSingleton<IListService, ListService>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
