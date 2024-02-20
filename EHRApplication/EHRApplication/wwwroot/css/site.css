@@ -332,6 +332,12 @@ main {
     font-size: 13px;
 }
 
+.hover-highlighting:hover {
+    filter: brightness(1.2);
+    background-color: #f5f5f5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 
 
 
@@ -355,7 +361,7 @@ main {
 
 
 
-/*Start of requirment question mark popout*/
+/*Start of requirement question mark popout*/
 .question-wrapper {
     position: relative;
     display: inline-block;
@@ -370,7 +376,7 @@ main {
     justify-content: center;
     align-items: center;
 }
-/*styling for the popou box*/
+/*styling for the popout box*/
 .requirements-popup {
     display: none;
     position: absolute;
@@ -415,7 +421,7 @@ body[data-bs-theme=dark] {
     background-color: var(--darker-gray);
 }
 
-[data-bs-theme=dark].card-body {
+[data-bs-theme=dark].card-body, [data-bs-theme=dark].card-body table tr{
     color: var(--offwhite);
     background-color: var(--dark-gray);
 }
