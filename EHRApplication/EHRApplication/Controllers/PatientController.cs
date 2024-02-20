@@ -64,7 +64,7 @@ namespace EHRApplication.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(int mhn)
         {
             return View();
         }

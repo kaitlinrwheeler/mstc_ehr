@@ -14,7 +14,12 @@ public class Program
         builder.Services.AddSingleton<LogService>();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            // Set the timeout to 30 minutes
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            options.SlidingExpiration = true; // Extend expiration time on activity
+        });
         builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
