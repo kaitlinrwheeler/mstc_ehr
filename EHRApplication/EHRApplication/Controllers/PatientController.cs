@@ -25,6 +25,12 @@ namespace EHRApplication.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Index(PatientDemographic patient)
+        {
+            return View(patient);
+        }
         
         public IActionResult PatientOverView()
         {
