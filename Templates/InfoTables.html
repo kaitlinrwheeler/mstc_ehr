@@ -2,7 +2,7 @@
     Example of a table within a card style element for displaying data. In this case there is a button that can be used for something.
 *@
 @{
-
+    // The list of patients being pulled in.
     @model List<PatientDemographic>
 
     }
@@ -14,6 +14,8 @@
                 All Patients
             </div>
             <div class="card-body" data-bs-theme="auto">
+                @if (Model.Any())
+                {
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -28,7 +30,8 @@
                     <tbody>
                         @foreach (var patient in Model)
                         {
-                        <tr class="hover-highlighting"> <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                        <tr class="hover-highlighting">
+                            <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
                             <td>@patient.MHN</td>
                             <td>@patient.firstName</td>
                             <td>@patient.lastName</td>
@@ -39,6 +42,11 @@
                         }
                     </tbody>
                 </table>
+                }
+                else
+                {
+                <h1 class="text-center display-6">No patients found.</h1>
+                }
             </div>
         </div>
     </section>
