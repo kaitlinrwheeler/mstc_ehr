@@ -1,8 +1,8 @@
-using EHRApplication;
 using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
+using EHRApplication.Services;
 
 public class Program
 {

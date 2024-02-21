@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EHRApplication.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EHRApplication.Controllers
 {
