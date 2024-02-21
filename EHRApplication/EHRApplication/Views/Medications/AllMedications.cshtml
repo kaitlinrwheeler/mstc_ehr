@@ -8,31 +8,34 @@
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Patients
+            All Medications
         </div>
         <div class="card-body" data-bs-theme="auto">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">MedId:</th>
-                        <th scope="col">Med Name:</th>
-                        <th scope="col">Description:</th>
-                        <th scope="col">Route:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var med in Model)
-                    {
-                        <tr class="hover-highlighting">
-                            <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                            <td>@med.medId</td>
-                            <td>@med.medName</td>
-                            <td>@med.description</td>
-                            <td>@med.route</td>
+            @if (Model.Any()){
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">MedId:</th>
+                            <th scope="col">Med Name:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">Route:</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var med in Model)
+                        {
+                            <tr class="hover-highlighting"><!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                <td>@med.medId</td>
+                                <td>@med.medName</td>
+                                <td>@med.description</td>
+                                <td>@med.route</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }else{
+                <h1 class="text-center display-6">No medications found.</h1>
+            }
         </div>
     </div>
 </section>
