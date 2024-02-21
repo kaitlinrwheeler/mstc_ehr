@@ -2,6 +2,7 @@
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -94,7 +95,7 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
                     command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = patient.suffix;
                     command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = patient.preferredPronouns;
-                    command.Parameters.Add("@DBO", SqlDbType.Date).Value = patient.DOB;
+                    command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
                     command.Parameters.Add("@gender", SqlDbType.VarChar).Value = patient.gender;
                     command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
                     command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
@@ -108,8 +109,10 @@ namespace EHRApplication.Controllers
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
+                    TempData["SuccessMessage"] = "You have successfully created a patient!";
                 }
             }
+            ModelState.Clear();
             return View();
         }
         /// <summary>
@@ -121,7 +124,6 @@ namespace EHRApplication.Controllers
         {
             // Clear validation state for the specified property
             ModelState.ClearValidationState(validationName);
-
             return RedirectToAction("Index");
         }
 
