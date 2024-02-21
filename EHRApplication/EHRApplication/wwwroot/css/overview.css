@@ -2,9 +2,15 @@
     background-color: #f2f2f2; 
 } If we want to change the odd lines do this with this*/
 
-.card-body p:nth-child(even) {
-    background-color: lightgray; /* Light gray */
+/*.card-body p:nth-child(even) {
+    background-color: lightgray;*/ /* Light gray */
+/*}*/
+
+/*Gets rid of the extra space at the end of the table*/
+.table{
+    margin-bottom: 0;
 }
+
 
 /*style for picture card on overview page*/
 .card-cover {
