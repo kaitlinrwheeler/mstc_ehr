@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Security.Cryptography.Pkcs;
 
 namespace EHRApplication.Controllers
 {
@@ -76,12 +77,6 @@ namespace EHRApplication.Controllers
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
-
-                // TODO: don't think this is right, should probably change this to do a query based off the mhn instead of getting the entire list?
-                //Grabbing data from the database using the listService
-                var providersList = new ListService(Configuration).GetProviders();
-                var contactList = new ListService(Configuration).GetContacts();
-
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
@@ -110,12 +105,14 @@ namespace EHRApplication.Controllers
                         patientDemographic.race = Convert.ToString(dataReader["race"]);
                         patientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        patientDemographic.providers = providersList.Where(type => type.providerId == patientDemographic.primaryPhysician).FirstOrDefault();
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        patientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(patientDemographic.primaryPhysician);
                         patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = contactList.Where(type => mhn == patientDemographic.MHN).FirstOrDefault();
+                        patientDemographic.ContactId = new ListService(Configuration).GetContactsByMHN(patientDemographic.MHN);
                     }
                 }
 

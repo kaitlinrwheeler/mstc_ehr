@@ -71,8 +71,8 @@
                     <li>
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li class="nav-item"><a asp-area="" asp-controller="Patient" asp-action="Index" asp-route-mhn="@mhn" class="Med-Link">Medicatins1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                            <li><a asp-area="" asp-controller="Medications" asp-action="AllMedications">All Medications</a></li>
+                            <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link">Patient Medications</a></li>
                         </ul>
                     </li>
 
