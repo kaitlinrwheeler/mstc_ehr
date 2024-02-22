@@ -1,4 +1,3 @@
-using EHRApplication;
 using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;

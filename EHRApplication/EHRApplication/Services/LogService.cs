@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
-namespace EHRApplication
+namespace EHRApplication.Services
 {
     public class LogService
     {
