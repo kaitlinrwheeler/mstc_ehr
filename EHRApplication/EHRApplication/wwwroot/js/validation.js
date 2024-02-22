@@ -153,20 +153,3 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
 }
-
-
-//This is used to change to either show the asp-validation or the js validation
-function clearValidationState(propertyName) {
-    window.location.href = 'ClearValidationState?parameterName=' + encodeURIComponet(inputID);
-    $.ajax({
-        url: '@Url.Action("ClearValidationState", "PatientController")',
-        type: 'POST',
-        data: { inputID: inputID },
-        success: function () {
-            console.log('Validation state cleared successfully');
-        },
-        error: function (xhr, status, error) {
-            console.error('Error clearing validation state:', error);
-        }
-    });
-}
