@@ -65,38 +65,49 @@ namespace EHRApplication.Controllers
         public IActionResult PatientMedications(int mhn)
         {
             // New list to hold all the patients in the database.
-            List<MedicationProfile> patientMeds = new List<MedicationProfile>();
+            List<PatientMedications> patientMeds = new List<PatientMedications>();
+            var medprofiles = new ListService(Configuration).GetMedicationProfiles();
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[MedicationProfile] WHERE MHN = @mhn ORDER BY medId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientMedications] WHERE MHN = @mhn ORDER BY medId ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
 
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
                     {
                         // Create a new patient object for each record.
-                        MedicationProfile medication = new MedicationProfile();
+                        PatientMedications medication = new PatientMedications();
 
                         // Populate the medication object with data from the database.
+                        medication.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medication.medId = Convert.ToInt32(dataReader["medId"]);
-                        medication.medName = Convert.ToString(dataReader["medName"]);
-                        medication.description = Convert.ToString(dataReader["description"]);
+                        medication.medProfile = medprofiles.Where(medprofiles => medprofiles.medId == medication.medId).FirstOrDefault();
+                        medication.category = Convert.ToString(dataReader["category"]);
+                        medication.activeStatus = Convert.ToString(dataReader["activeStatus"]);
+                        medication.prescriptionInstructions = Convert.ToString(dataReader["prescriptionInstructions"]);
+                        medication.dosage = Convert.ToString(dataReader["dosage"]);
                         medication.route = Convert.ToString(dataReader["route"]);
+                        medication.prescribedBy = Convert.ToInt32(dataReader["prescribedBy"]);
+                        medication.datePrescribed = Convert.ToDateTime(dataReader["datePrescribed"]);
+                        medication.endDate = Convert.ToDateTime(dataReader["endDate"]);
 
-                        // Add the patient to the list
+                            // Add the patient to the list
                         patientMeds.Add(medication);
                     }
                 }
 
                 connection.Close();
             }
-            return View();
+            return View(patientMeds);
         }
     }
 }

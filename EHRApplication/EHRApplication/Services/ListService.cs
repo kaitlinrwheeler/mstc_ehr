@@ -99,6 +99,43 @@ namespace EHRApplication.Services
             }
         }
 
+        public IEnumerable<MedicationProfile> GetMedicationProfiles()
+        {
+            // New list to hold all the patients in the database.
+            List<MedicationProfile> medsList = new List<MedicationProfile>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[MedicationProfile] ORDER BY medId ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new patient object for each record.
+                        MedicationProfile medication = new MedicationProfile();
+
+                        // Populate the medication object with data from the database.
+                        medication.medId = Convert.ToInt32(dataReader["medId"]);
+                        medication.medName = Convert.ToString(dataReader["medName"]);
+                        medication.description = Convert.ToString(dataReader["description"]);
+                        medication.route = Convert.ToString(dataReader["route"]);
+
+                        // Add the patient to the list
+                        medsList.Add(medication);
+                    }
+                }
+
+                connection.Close();
+            }
+            return medsList;
+        }
+
         /// <summary>
         /// Gets the provider from the database for that specific patient
         /// </summary>

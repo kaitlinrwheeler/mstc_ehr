@@ -4,12 +4,14 @@ namespace EHRApplication.Services
 {
     public interface IListService
     {
+        IEnumerable<PatientContact> GetContacts();
         IEnumerable<Providers> GetProviders();
 
-        IEnumerable<PatientContact> GetContacts();
+        IEnumerable<MedicationProfile> GetMedicationProfiles();
 
         Providers GetProvidersByProviderId(int mhn);
 
         PatientContact GetContactsByMHN(int mhn);
+
     }
 }
