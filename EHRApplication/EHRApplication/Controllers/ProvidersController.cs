@@ -4,13 +4,13 @@ using Microsoft.Data.SqlClient;
 
 namespace EHRApplication.Controllers
 {
-    public class ProviderController : Controller
+    public class ProvidersController : Controller
     {
         private readonly LogService _logService;
 
         private readonly string _connectionString;
 
-        public ProviderController(LogService logService, IConfiguration configuration)
+        public ProvidersController(LogService logService, IConfiguration configuration)
         {
             _logService = logService;
             _connectionString = configuration["ConnectionStrings:DefaultConnection"];

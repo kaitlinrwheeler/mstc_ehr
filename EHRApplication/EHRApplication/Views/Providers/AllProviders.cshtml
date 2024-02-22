@@ -1,0 +1,41 @@
+﻿@{
+    @model List<Providers>
+}
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            All Providers
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.Any())
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Provider ID</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Specialty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var provider in Model)
+                            {
+                                <tr class="hover-highlighting">
+                                    <td>@provider.providerId</td>
+                                    <td>@provider.firstName</td>
+                                    <td>@provider.lastName</td>
+                                    <td>@provider.specialty</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <h1 class="text-center display-6">No patients found.</h1>
+                }
+        </div>
+    </div>
+</section>
