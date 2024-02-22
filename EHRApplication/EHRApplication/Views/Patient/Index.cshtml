@@ -60,9 +60,9 @@
 
             <div class="form-group">
                 <label for="PrimaryPhysician">Primary Physician:</label>
-                <select class="form-control" name="primaryPhysician" asp-for="primaryPhysician"
+                <select data-bs-auto="auto" id="primary physician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician"
                         asp-items="ListService.GetProviders().Select(x => new SelectListItem { Text = x.firstName, Value = x.providerId.ToString()})">
-                    <option selected="selected" value="--Select--" required>--Select--</option>
+                    <option data-bs-auto="auto" class="form-control" selected="selected" value="--Select--" required>--Select--</option>
                 </select>
 @*                 <span id="PrimaryPhysicianError" class="invalid-feedback"></span> *@
                 <span asp-validation-for="primaryPhysician" id="PrimaryPhysicianError" class="valadation-msg"></span>

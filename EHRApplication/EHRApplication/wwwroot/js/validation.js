@@ -153,3 +153,11 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
 }
+
+//Remove icon
+$(document).ready(function () {
+    var firstNameError = $('#FirstNameError');
+    if ($.trim(firstNameError.text()) === "") {
+        firstNameError.hide();
+    }
+});
