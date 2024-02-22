@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Controllers
 {
@@ -74,6 +75,13 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
+            //Testing to see if the date of birth entered was a future date or not
+            if (patient.DOB >= DateTime.Now)
+            {
+                //adding an error to the DOB model to display an error.
+                ModelState.AddModelError("DOB", "Date cannot be in the future.");
+                return View(patient);
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
@@ -114,17 +122,6 @@ namespace EHRApplication.Controllers
             }
             ModelState.Clear();
             return View();
-        }
-        /// <summary>
-        /// Trying to clear the validation state when the input box is changed
-        /// </summary>
-        /// <param name="validationName"></param>
-        /// <returns></returns>
-        public IActionResult ClearValidationState(string validationName)
-        {
-            // Clear validation state for the specified property
-            ModelState.ClearValidationState(validationName);
-            return RedirectToAction("Index");
         }
 
         public IActionResult PatientOverview(int mhn)
