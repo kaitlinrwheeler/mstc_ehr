@@ -44,11 +44,11 @@ namespace EHRApplication.Models
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
 
-        [Required(ErrorMessage = "Gender is required.")]
+/*        [Required(ErrorMessage = "Gender is required.")]*/
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
-        public string gender { get; set; }
+        public string? gender { get; set; }
 
         [Required(ErrorMessage = "Language is required.")]
         [StringLength(60, ErrorMessage = "Language must be between 1 and 60 characters.", MinimumLength = 1)]

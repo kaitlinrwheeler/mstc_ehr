@@ -98,21 +98,22 @@ namespace EHRApplication.Controllers
                 {
                     command.CommandType = CommandType.Text;
 
+                    //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
                     //adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
-                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = patient.middleName;
+                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.middleName;
                     command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
-                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = patient.suffix;
-                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = patient.preferredPronouns;
+                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.suffix;
+                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.preferredPronouns;
                     command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
-                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = patient.gender;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.gender;
                     command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
                     command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
                     command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
-                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = patient.religion;
+                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.religion;
                     command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
-                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = patient.legalGuardian1;
-                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = patient.legalGuardian2;
+                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.legalGuardian1;
+                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.legalGuardian2;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
 
                     connection.Open();

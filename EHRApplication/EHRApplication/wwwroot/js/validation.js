@@ -1,7 +1,8 @@
 ﻿// Validation functions
 
 //variable for the 'X' symbol for error messages.
-const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
+//Hopefully someone will get back to this and make the validation show on the javascript and the model too.
+//const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
 
 // Function to check if the input value is empty
 function isEmpty(input, errorSpanID, errorMessage) {
@@ -46,7 +47,9 @@ function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
         // Display error message with an icon
-        errorSpan.innerHTML = xIcon + errorMessage;
+        //Commenting this hopefully we come back and finish this icon
+        //errorSpan.innerHTML = xIcon + errorMessage;
+        errorSpan.innerHTML = errorMessage;
         errorSpan.style.display = 'inline';
     } else {
         // Hide error message
@@ -153,11 +156,3 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
 }
-
-//Remove icon
-$(document).ready(function () {
-    var firstNameError = $('#FirstNameError');
-    if ($.trim(firstNameError.text()) === "") {
-        firstNameError.hide();
-    }
-});
