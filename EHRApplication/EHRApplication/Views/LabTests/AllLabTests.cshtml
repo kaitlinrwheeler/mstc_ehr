@@ -1,0 +1,46 @@
+﻿@{
+    @model List<LabTestProfile>
+}
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            All Laboratory Tests
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Test Id:</th>
+                            <th scope="col">Test Name:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">Units:</th>
+                            <th scope="col">Reference Range:</th>
+                            <th scope="col">Category:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var test in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                <td>@test.testId</td>
+                                <td>@test.testName</td>
+                                <td>@test.description</td>
+                                <td>@test.units</td>
+                                <td>@test.referenceRange</td>
+                                <td>@test.category</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No lab tests found.</h1>
+            }
+        </div>
+    </div>
+</section>
