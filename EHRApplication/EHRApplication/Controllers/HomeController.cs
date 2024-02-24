@@ -1,4 +1,5 @@
 using EHRApplication.Models;
+using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
