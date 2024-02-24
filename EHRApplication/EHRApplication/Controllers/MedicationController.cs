@@ -97,6 +97,8 @@ namespace EHRApplication.Controllers
                         medication.dosage = Convert.ToString(dataReader["dosage"]);
                         medication.route = Convert.ToString(dataReader["route"]);
                         medication.prescribedBy = Convert.ToInt32(dataReader["prescribedBy"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        medication.providers = new ListService(Configuration).GetProvidersByProviderId(medication.prescribedBy);
                         medication.datePrescribed = Convert.ToDateTime(dataReader["datePrescribed"]);
                         medication.endDate = Convert.ToDateTime(dataReader["endDate"]);
 

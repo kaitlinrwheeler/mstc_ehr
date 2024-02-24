@@ -1,23 +1,23 @@
 ﻿@{
     // The list of patients being pulled in.
     @model List<PatientMedications>
+    <link rel="stylesheet" href="~/css/patientMedication.css" asp-append-version="true" />
 }
 
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Patients
+            Patients Medication
         </div>
-        <div class="card-body" data-bs-theme="auto">
+        <div class="card-body overflow-auto d-flex justify-content-center" data-bs-theme="auto">
             @if (Model.Any())
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Patient:</th>
-                            <th scope="col">Med Name:</th>
-                            <th scope="col">Category:</th>
+                            <th scope="col">Med Name:</th>@* 
+                            <th scope="col">Category:</th> *@
                             <th scope="col">Active:</th>
                             <th scope="col">Instructions:</th>
                             <th scope="col">Dosage:</th>
@@ -30,14 +30,25 @@
                         @foreach (var medication in Model)
                         {
                             <tr class="hover-highlighting">
-                                <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                <td>@medication.MHN</td>
-                                <td>@medication.medProfile.medName</td>
-                                <td>@medication.category</td>
+                                <td>@medication.medProfile.medName</td>@* 
+                                <td>@medication.category</td> *@
                                 <td>@medication.activeStatus</td>
-                                <td>@medication.prescriptionInstructions</td>
+                                <td>
+                                    @medication.prescriptionInstructions
+                                    <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(this)" onmouseout="hideRequirements(this)">
+                                        <div class="" data-bs-theme="auto" id="questionIcon">
+                                            ...
+                                        </div>
+                                        <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
+                                            <ul>
+                                                @* @medication.prescriptionInstructions *@
+                                                lskdjfffff ffffffffffff fffffffffffffff fffff fffffffffffffffffffffffffffffffff ffffffffffffffffffffffsdfdsfsdfsdfsdfdsf sdfsdfsdfsd
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>@medication.dosage</td>
-                                <td>@medication.prescribedBy</td>
+                                <td>@medication.providers.firstName @medication.providers.lastName</td>
                                 <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
                                 <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
                             </tr>
