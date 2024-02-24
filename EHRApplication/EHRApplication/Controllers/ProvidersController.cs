@@ -8,6 +8,7 @@ namespace EHRApplication.Controllers
     {
         private readonly LogService _logService;
 
+        //database connection string
         private readonly string _connectionString;
 
         public ProvidersController(LogService logService, IConfiguration configuration)
@@ -22,6 +23,7 @@ namespace EHRApplication.Controllers
         /// <returns></returns>
         public IActionResult AllProviders()
         {
+            //list for providers
             List<Providers> allProviders = new List<Providers>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
