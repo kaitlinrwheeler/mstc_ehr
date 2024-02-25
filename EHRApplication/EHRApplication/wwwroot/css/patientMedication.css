@@ -12,10 +12,3 @@
     .question-wrapper:hover .requirements-popup {
         display: block;
     }
-
-/*This will make the table span the whole length so that you don't have to scroll on it.*/
-@media only screen and (max-width: 1100px) {
-    .w-75 {
-        width: 100% !important;
-    }
-}
