@@ -1,7 +1,56 @@
 ﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+    Example of a table within a card style element for displaying data. In this case there is a button that can be used for something.
 *@
 @{
+    // The list of patients being pulled in.
+    @model List<PatientProblems>
+
 }
 
-<h1>ahhhhh</h1>
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Problems
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">MHN:</th>
+                            <th scope="col">Priority:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">ICD_10:</th>
+                            <th scope="col">Immediacy:</th>
+                            <th scope="col">Created At:</th>
+                            <th scope="col">Created By:</th>
+                            <th scope="col">Active:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var problem in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                <td>@problem.MHN</td>
+                                <td>@problem.priority</td>
+                                <td>@problem.description</td>
+                                <td>@problem.ICD_10</td>
+                                <td>@problem.immediacy</td>
+                                <td>@problem.createdAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>Dr. @problem.providers.lastName, @problem.providers.firstName</td>
+                                <td>@(problem.active ? "Yes" : "No")</td>                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No patients found.</h1>
+            }
+        </div>
+    </div>
+</section>
