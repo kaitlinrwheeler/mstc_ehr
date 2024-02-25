@@ -64,8 +64,8 @@
                 <select data-bs-auto="auto" id="primaryPhysician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician">
                     @foreach (var provider in ListService.GetProviders())
                     {
-                        <option value="">
-                            @provider.firstName @provider.lastName, @provider.specialty @space @provider.providerId
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
                         </option>
                     }
                 </select>
@@ -150,41 +150,40 @@
                 <span asp-validation-for="ethnicity" id="EthnicityError" class="valadation-msg"></span>
             </div>
 
-
             <div class="form-group">
                 <label for="Race" class="mb-1">Race:</label>
-                <div asp-for="race" id="Race" class="row text-nowrap">
+                <div asp-for="raceList" id="Race" class="row text-nowrap">
                     <!-- Add 'row' class to create a row container -->
                     <div class="col-sm-6">
                         <!-- Create a column for the first half of checkboxes -->
                         <div class="race-column">
-                            <input type="checkbox" id="AmericanIndian" name="Race" value="American Indian" />
+                            <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian" />
                             <label for="AmericanIndian" style="font-weight: normal;">American Indian</label><br />
-                            <input type="checkbox" id="Asian" name="Race" value="Asian" />
+                            <input type="checkbox" id="Asian" name="RaceList" value="Asian" />
                             <label for="Asian" style="font-weight: normal;">Asian</label><br />
-                            <input type="checkbox" id="Black" name="Race" value="Black" />
+                            <input type="checkbox" id="Black" name="RaceList" value="Black" />
                             <label for="Black" style="font-weight: normal;">Black</label><br />
-                            <input type="checkbox" id="PacificIslander" name="Race" value="Native Hawaiian or Other Pacific Islander" />
+                            <input type="checkbox" id="PacificIslander" name="RaceList" value="Native Hawaiian or Other Pacific Islander" />
                             <label for="PacificIslander" style="font-weight: normal;">Pacific Islander</label><br />
-                            <input type="checkbox" id="White" name="Race" value="White" />
+                            <input type="checkbox" id="White" name="RaceList" value="White" />
                             <label for="White" style="font-weight: normal;">White</label><br />
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <!-- Create a column for the second half of checkboxes -->
                         <div class="race-column">
-                            <input type="checkbox" id="Hispanic" name="Race" value="Hispanic or Latino" />
+                            <input type="checkbox" id="Hispanic" name="RaceList" value="Hispanic or Latino" />
                             <label for="Hispanic" style="font-weight: normal;">Hispanic or Latino</label><br />
-                            <input type="checkbox" id="MiddleEastern" name="Race" value="Middle Eastern" />
+                            <input type="checkbox" id="MiddleEastern" name="RaceList" value="Middle Eastern" />
                             <label for="MiddleEastern" style="font-weight: normal;">Middle Eastern</label><br />
-                            <input type="checkbox" id="MixedRace" name="Race" value="Mixed Race" />
+                            <input type="checkbox" id="MixedRace" name="RaceList" value="Mixed Race" />
                             <label for="MixedRace" style="font-weight: normal;">Mixed Race</label><br />
-                            <input type="checkbox" id="OtherRace" name="Race" value="Other" />
+                            <input type="checkbox" id="OtherRace" name="RaceList" value="Other" />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
                     </div>
                 </div>
-                <span asp-validation-for="race" id="RaceError" class="valadation-msg"></span>
+                <span asp-validation-for="raceList" id="RaceError" class="valadation-msg"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">

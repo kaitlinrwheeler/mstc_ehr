@@ -98,6 +98,8 @@ namespace EHRApplication.Controllers
                 {
                     command.CommandType = CommandType.Text;
 
+                    patient.race = string.Join(",", patient.raceList);
+
                     //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
                     //adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
