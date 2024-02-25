@@ -66,7 +66,6 @@ namespace EHRApplication.Controllers
         {
             // New list to hold all the patients in the database.
             List<PatientMedications> patientMeds = new List<PatientMedications>();
-            var medprofiles = new ListService(Configuration).GetMedicationProfiles();
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
@@ -90,7 +89,7 @@ namespace EHRApplication.Controllers
                         // Populate the medication object with data from the database.
                         medication.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medication.medId = Convert.ToInt32(dataReader["medId"]);
-                        medication.medProfile = medprofiles.Where(medprofiles => medprofiles.medId == medication.medId).FirstOrDefault();
+                        medication.medProfile = new ListService(Configuration).GetMedicationProfileByMedId(medication.medId);
                         medication.category = Convert.ToString(dataReader["category"]);
                         medication.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         medication.prescriptionInstructions = Convert.ToString(dataReader["prescriptionInstructions"]);

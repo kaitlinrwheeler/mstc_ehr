@@ -34,15 +34,15 @@
                                 <td>@medication.category</td> *@
                                 <td>@medication.activeStatus</td>
                                 <td>
-                                    @medication.prescriptionInstructions
+                                    @*This will only display the first 20 characters in the saved data in the model*@
+                                    @medication.prescriptionInstructions.Substring(0,15)
                                     <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(this)" onmouseout="hideRequirements(this)">
                                         <div class="" data-bs-theme="auto" id="questionIcon">
                                             ...
                                         </div>
                                         <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
                                             <ul>
-                                                @* @medication.prescriptionInstructions *@
-                                                lskdjfffff ffffffffffff fffffffffffffff fffff fffffffffffffffffffffffffffffffff ffffffffffffffffffffffsdfdsfsdfsdfsdfdsf sdfsdfsdfsd
+                                                @medication.prescriptionInstructions
                                             </ul>
                                         </div>
                                     </div>

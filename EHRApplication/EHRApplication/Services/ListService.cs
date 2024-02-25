@@ -177,7 +177,7 @@ namespace EHRApplication.Services
         /// </summary>
         /// <param name="mhn"></param>
         /// <returns></returns>
-        public PatientContact GetContactsByMHN(int mhn)
+        public PatientContact GetContactByMHN(int mhn)
         {
             //Creating a new instance of the patient contact class to store data from the database
             PatientContact patientContact = new PatientContact();
@@ -208,6 +208,44 @@ namespace EHRApplication.Services
                 connection.Close();
                 return patientContact;
             }
+        }
+
+        /// <summary>
+        /// Gets the contact info from the database for that specific patient
+        /// </summary>
+        /// <param name="mhn"></param>
+        /// <returns></returns>
+        public MedicationProfile GetMedicationProfileByMedId(int medId)
+        {
+            // New medication profile instance to hold the medicaiton profile for the selected user.
+            MedicationProfile medicationProfile = new MedicationProfile();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[MedicationProfile] WHERE medId = @medId ORDER BY medId ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@medId", medId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Populate the medication object with data from the database.
+                        medicationProfile.medId = Convert.ToInt32(dataReader["medId"]);
+                        medicationProfile.medName = Convert.ToString(dataReader["medName"]);
+                        medicationProfile.description = Convert.ToString(dataReader["description"]);
+                        medicationProfile.route = Convert.ToString(dataReader["route"]);
+                    }
+                }
+
+                connection.Close();
+            }
+            return medicationProfile;
         }
     }
 }
