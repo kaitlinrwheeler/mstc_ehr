@@ -15,30 +15,31 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Please enter a first name.")]
         [StringLength(60, ErrorMessage = "First name must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "First Name")]
         public string firstName { get; set; }
 
         [StringLength(60, ErrorMessage = "Middle name must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Middle Name")]
         public string? middleName { get; set; } // Use nullable reference types
 
         [Required(ErrorMessage = "Please enter a last name.")]
         [StringLength(60, ErrorMessage = "Last name must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Last Name")]
         public string lastName { get; set; }
 
         [StringLength(60, ErrorMessage = "Suffix must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Suffix")]
         public string? suffix { get; set; }
 
+        [Required(ErrorMessage = "PreferredPronouns is required.")]
         [StringLength(60, ErrorMessage = "Pronouns name must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Pronouns")]
-        public string? preferredPronouns { get; set; }
+        public string preferredPronouns { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required.")]
         [DataType(DataType.Date)]
@@ -46,19 +47,19 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Gender is required.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string gender { get; set; }
 
         [Required(ErrorMessage = "Language is required.")]
         [StringLength(60, ErrorMessage = "Language must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Language")]
         public string preferredLanguage { get; set; }
 
         [Required(ErrorMessage = "Ethnicity is required.")]
         [StringLength(60, ErrorMessage = "Ethnicity must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Ethnicity")]
         public string ethnicity { get; set; }
 
@@ -69,7 +70,7 @@ namespace EHRApplication.Models
         public List<string> raceList { get; set; }
 
         [StringLength(60, ErrorMessage = "Religion must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Religion")]
         public string? religion { get; set; }
 
@@ -82,12 +83,12 @@ namespace EHRApplication.Models
         public int primaryPhysician { get; set; }
         
         [StringLength(60, ErrorMessage = "Guardian1 must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Guardian1")]
         public string? legalGuardian1 { get; set; }
 
         [StringLength(60, ErrorMessage = "Guardian2 must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Guardian2")]
         public string? legalGuardian2 { get; set; }
 
@@ -96,7 +97,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Gender is required.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
     }

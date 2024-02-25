@@ -57,10 +57,6 @@
 
             <div class="form-group">
                 <label for="PrimaryPhysician">Primary Physician:</label>
-@*                 <select data-bs-auto="auto" id="primaryPhysician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician"
-                        asp-items="ListService.GetProviders().Select(x => new SelectListItem { Text = 'providerId:' + x.providerId +' first name:'+ x.firstName +' specialty:'+ x.specialty, Value = x.providerId.ToString()})">
-                    <option data-bs-auto="auto" class="form-control" selected="selected" value=""</option>
-                </select> *@
                 <select data-bs-auto="auto" id="primaryPhysician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician">
                     @foreach (var provider in ListService.GetProviders())
                     {
@@ -94,8 +90,8 @@
             </div>
 
             <div class="form-group">
-                <label for="Pronouns">Preferred Pronouns (optional):</label>
-                <input asp-for="preferredPronouns" type="text" id="preferredPronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('Pronouns', 25,  'pronoun')" />
+                <label for="Pronouns">Preferred Pronouns:</label>
+                <input asp-for="preferredPronouns" type="text" id="preferredPronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Pronouns', 25,  'pronoun')" />
                 <span asp-validation-for="preferredPronouns" id="PronounsError" class="valadation-msg"></span>
             </div>
 

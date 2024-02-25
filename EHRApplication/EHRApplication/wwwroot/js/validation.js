@@ -23,7 +23,7 @@ function isEmpty(input, errorSpanID, errorMessage) {
 // Function to check if the input value contains only alphabetic characters
 function isAlphabetic(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
-    const alphabetRegex = /^[a-zA-Z]+$/;
+    const alphabetRegex = /^[a-zA-Z\s'\/\-]+$/;
     let valid = alphabetRegex.test(input.value.trim());
 
     // Display error message if input contains non-alphabetic characters
