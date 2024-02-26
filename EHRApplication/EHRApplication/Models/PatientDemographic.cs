@@ -35,7 +35,7 @@ namespace EHRApplication.Models
         [Display(Name = "Suffix")]
         public string? suffix { get; set; }
 
-        [Required(ErrorMessage = "PreferredPronouns is required.")]
+        [Required(ErrorMessage = "Please enter your preferred pronouns.")]
         [StringLength(60, ErrorMessage = "Pronouns name must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Pronouns")]
@@ -45,7 +45,7 @@ namespace EHRApplication.Models
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
 
-        [Required(ErrorMessage = "Gender is required.")]
+        [Required(ErrorMessage = "Please enter a gender.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
