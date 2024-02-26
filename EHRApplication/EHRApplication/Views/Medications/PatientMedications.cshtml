@@ -8,7 +8,7 @@
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patients Medication
+            Medications
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.Any())
@@ -16,13 +16,13 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Med Name:</th>@* 
+                            <th scope="col">Medication:</th>@* 
                             <th scope="col">Category:</th> *@
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col">Instructions:</th>
                             <th scope="col">Dosage:</th>
                             <th scope="col">Prescribed By:</th>
-                            <th scope="col">Date Prescribed:</th>
+                            <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
                         </tr>
                     </thead>
@@ -58,7 +58,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No patient Medication found.</h1>
+                <h1 class="text-center display-6">No medicaitons found for this patient.</h1>
             }
         </div>
     </div>
