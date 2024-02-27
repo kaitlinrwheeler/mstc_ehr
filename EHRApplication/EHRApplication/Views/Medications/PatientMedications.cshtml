@@ -1,0 +1,65 @@
+﻿@{
+    // The list of patients being pulled in.
+    @model List<PatientMedications>
+    <link rel="stylesheet" href="~/css/patientMedication.css" asp-append-version="true" />
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Medications
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Medication:</th>@* 
+                            <th scope="col">Category:</th> *@
+                            <th scope="col">Status:</th>
+                            <th scope="col">Instructions:</th>
+                            <th scope="col">Dosage:</th>
+                            <th scope="col">Prescribed By:</th>
+                            <th scope="col">Start Date:</th>
+                            <th scope="col">End Date:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var medication in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@medication.medProfile.medName</td>@* 
+                                <td>@medication.category</td> *@
+                                <td>@medication.activeStatus</td>
+                                <td>
+                                    @*This will only display the first 20 characters in the saved data in the model*@
+                                    @medication.prescriptionInstructions.Substring(0,15)
+                                    <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(this)" onmouseout="hideRequirements(this)">
+                                        <div class="" data-bs-theme="auto" id="questionIcon">
+                                            ...
+                                        </div>
+                                        <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
+                                            <ul>
+                                                @medication.prescriptionInstructions
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@medication.dosage</td>
+                                <td>@medication.providers.firstName @medication.providers.lastName</td>
+                                <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
+                                <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No medications found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>

@@ -2,6 +2,10 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    //This will save the mhn number from the display here change the page however you like 
+    // as long as you return the mhn number that is being currently displayed on the page.
+    int mhn = 5;
+    TempData["mhn"] = mhn;
 }
 
 <!-- Patient banner wrapper -->
@@ -17,7 +21,7 @@
                 <div class="">
                     <p class="fw-bold mb-1">Johnny Rose</p>
                     <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> 04-04-1952</p>
-                    <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> 1</p>
+                    <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @mhn</p>
                 </div>
             </div>
 
