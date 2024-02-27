@@ -15,7 +15,9 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">MHN:</th>
+                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
+@*                             <th scope="col">MHN:</th>
+ *@                            
                             <th scope="col">Priority:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">ICD_10:</th>
@@ -29,14 +31,25 @@
                         @foreach (var problem in Model)
                         {
                             <tr class="hover-highlighting">
-                                <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                <td>@problem.MHN</td>
-                                <td>@problem.priority</td>
+                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
+@*                                 <td>@problem.MHN</td>
+ *@
+                                <td style='background-color: @(problem.priority == "High" ? "yellow" : "unset"); color: @(problem.priority == "High" ? "black" : "inherit")'>
+                                    @if (problem.priority == "High")
+                                    {
+                                        <span>
+                                            <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                        </span>
+                                    }
+                                    @problem.priority
+                                </td>
+
+
                                 <td>@problem.description</td>
                                 <td>@problem.ICD_10</td>
                                 <td>@problem.immediacy</td>
-                                <td>@problem.createdAt.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>Dr. @problem.providers.lastName, @problem.providers.firstName</td>
+                                <td>@problem.createdAt.ToString("MM/dd/yyyy HH:mm")</td>
+                                <td>@problem.providers.firstName @problem.providers.lastName</td>
                                 <td>@(problem.active ? "Yes" : "No")</td>                
                             </tr>
                         }

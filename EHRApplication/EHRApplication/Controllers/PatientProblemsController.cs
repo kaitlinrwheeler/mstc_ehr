@@ -37,7 +37,7 @@ namespace EHRApplication.Controllers
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
+                cmd.Parameters.AddWithValue("@mhn", 1);
 
 
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
