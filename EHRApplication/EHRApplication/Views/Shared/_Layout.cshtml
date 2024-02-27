@@ -2,7 +2,8 @@
 @{
     //Gets the controller for the page that is being displayed
     var controllerName = ViewContext.RouteData.Values["controller"].ToString();
-    }
+    var mhn = 0;
+}
 
 
 <!DOCTYPE html>
@@ -23,6 +24,7 @@
     @if (controllerName != "Login_Register")
     {
         <partial name="_patientInfoBanner" />
+        mhn = (int)TempData["mhn"];
     }
     else
     {
@@ -70,7 +72,7 @@
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
                             <li><a asp-area="" asp-controller="Medications" asp-action="AllMedications">All Medications</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                            <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link">Patient Medications</a></li>
                         </ul>
                     </li>
 

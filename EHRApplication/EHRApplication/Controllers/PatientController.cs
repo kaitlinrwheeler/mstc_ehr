@@ -65,7 +65,7 @@ namespace EHRApplication.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(int mhn)
         {
             return View();
         }
@@ -112,7 +112,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(Configuration).GetContactsByMHN(patientDemographic.MHN);
+                        patientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(patientDemographic.MHN);
                     }
                 }
 
