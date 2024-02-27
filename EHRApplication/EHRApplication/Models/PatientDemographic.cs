@@ -43,7 +43,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Please enter a date of birth.")]
         [DataType(DataType.Date)]
-        public DateTime DOB { get; set; }
+        public DateOnly DOB { get; set; }
 
         [Required(ErrorMessage = "Please enter a gender.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]

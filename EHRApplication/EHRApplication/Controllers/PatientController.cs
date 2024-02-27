@@ -52,7 +52,10 @@ namespace EHRApplication.Controllers
                         patient.MHN = Convert.ToInt32(dataReader["MHN"]);
                         patient.firstName = Convert.ToString(dataReader["firstName"]);
                         patient.lastName = Convert.ToString(dataReader["lastName"]);
-                        patient.DOB = Convert.ToDateTime(dataReader["DOB"]);
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patient.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
                         patient.gender = Convert.ToString(dataReader["gender"]);
 
                         // Add the patient to the list
@@ -76,8 +79,13 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
+            if (patient.DOB == new DateOnly(0001, 1, 1))
+            {
+                ModelState.AddModelError("DOB", "Please enter a date of birth.");
+                return View(patient);
+            }
             //Testing to see if the date of birth entered was a future date or not
-            if (patient.DOB >= DateTime.Now)
+            if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
                 //adding an error to the DOB model to display an error.
                 ModelState.AddModelError("DOB", "Date cannot be in the future.");
@@ -156,7 +164,10 @@ namespace EHRApplication.Controllers
                         patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
                         patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
                         patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        patientDemographic.DOB = Convert.ToDateTime(dataReader["DOB"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
                         patientDemographic.gender = Convert.ToString(dataReader["gender"]);
                         patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
                         patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
