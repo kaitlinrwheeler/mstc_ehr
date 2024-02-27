@@ -22,7 +22,6 @@
     </div>
 
     <div class="card-body" data-bs-theme="auto">
-
         <form method="post" id="patientForm">
             <div class="form-group">
                 <label for="FirstName">First Name:</label>
@@ -65,10 +64,8 @@
                         </option>
                     }
                 </select>
-
                 <span asp-validation-for="primaryPhysician" id="PrimaryPhysicianError" class="valadation-msg"></span>
             </div>
-
 
             <div class="form-group">
                 <label for="LegalGuardian1">Legal Guardian 1 (optional):</label>
@@ -128,7 +125,6 @@
                     <option value="Portuguese">Portuguese</option>
                     <option value="Russian">Russian</option>
                     <option value="Spanish">Spanish</option>
-
                 </select>
                 <span asp-validation-for="preferredLanguage" id="PreferredLanguageError" class="valadation-msg"></span>
             </div>
@@ -187,10 +183,4 @@
             </div>
         </form>
     </div>
-
-
-
 </section>
-
-
-

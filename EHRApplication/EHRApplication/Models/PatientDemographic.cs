@@ -41,7 +41,7 @@ namespace EHRApplication.Models
         [Display(Name = "Pronouns")]
         public string preferredPronouns { get; set; }
 
-        [Required(ErrorMessage = "Date of Birth is required.")]
+        [Required(ErrorMessage = "Please enter a date of birth.")]
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
 
