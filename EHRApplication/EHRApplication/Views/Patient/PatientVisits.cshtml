@@ -1,0 +1,46 @@
+﻿@{
+    // The list of Visits being pulled in.
+    @model List<Visits>
+    <link rel="stylesheet" href="~/css/.css" asp-append-version="true" />
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Visits
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date:</th>
+                            <th scope="col">Time:</th>
+                            <th scope="col">Provider Name:</th>
+                            <th scope="col">Admitted:</th>
+                            <th scope="col">Notes:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var visits in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@visits.date.ToString("MM-dd-yyyy")</td>
+                                <td>@visits.time</td>
+                                <td>@visits.providers.firstName @visits.providers.lastName</td>
+                                <td>@visits.admitted</td>
+                                <td>@visits.notes</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No visits found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>
