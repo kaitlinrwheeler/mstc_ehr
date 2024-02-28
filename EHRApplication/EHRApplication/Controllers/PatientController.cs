@@ -79,11 +79,6 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
-            if (patient.DOB == new DateOnly(0001, 1, 1))
-            {
-                ModelState.AddModelError("DOB", "Please enter a date of birth.");
-                return View(patient);
-            }
             //Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
