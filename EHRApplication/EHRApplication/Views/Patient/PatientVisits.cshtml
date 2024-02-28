@@ -30,7 +30,7 @@
                                 <td>@visits.date.ToString("MM-dd-yyyy")</td>
                                 <td>@visits.time</td>
                                 <td>@visits.providers.firstName @visits.providers.lastName</td>
-                                <td>@visits.admitted</td>
+                                <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
                             </tr>
                         }
