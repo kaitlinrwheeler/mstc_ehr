@@ -20,7 +20,7 @@
 
     <partial name="_topNav"/>
 
-    <!--If condition that will only display the patient banner if the page is not an an admin or login/Register page-->
+    <!-- This block will hide the patient banner if true. -->
     @if (controllerName != "Login_Register")
     {
         <partial name="_patientInfoBanner" />
@@ -31,6 +31,19 @@
         <style>
             #sidebar-wrapper {
                 margin-top: 72px;
+            }
+        </style>
+    }
+
+    <!-- This block will hide the side nav if true. -->
+    @if (controllerName == "Login_Register")
+    {
+        <style>
+            #sidebar-wrapper {
+                display: none;
+            }
+            #wrapper{
+                padding-left: 0;
             }
         </style>
     }
