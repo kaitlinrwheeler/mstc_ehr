@@ -99,6 +99,57 @@ namespace EHRApplication.Services
             }
         }
 
+        /// <summary>
+        /// Gets a list of all the providers from the database
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<PatientDemographic> GetPatients()
+        {
+            //creates a new instance of the providers model as a list
+            List<PatientDemographic> patientList = new List<PatientDemographic>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                //Table that will be a tempory holder of the database untill we can convert it into a list
+                DataTable dataTable = new DataTable();
+
+                //SQL query that selects everything and sorts it in asc order
+                string sql = "Select * From [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dataTable);
+
+                //loops through all of the providers that were pulled and adds them to the list after setting the individual properties
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    patientList.Add(
+                        new PatientDemographic
+                        {
+                            MHN = Convert.ToInt32(row["MHN"]),
+                            firstName = Convert.ToString(row["firstName"]),
+                            middleName = Convert.ToString(row["middleName"]),
+                            lastName = Convert.ToString(row["lastName"]),
+                            suffix = Convert.ToString(row["suffix"]),
+                            preferredPronouns = Convert.ToString(row["preferredPronouns"]),
+                            DOB = Convert.ToDateTime(row["DOB"]),
+                            gender = Convert.ToString(row["gender"]),
+                            preferredLanguage = Convert.ToString(row["preferredLanguage"]),
+                            ethnicity = Convert.ToString(row["ethnicity"]),
+                            race = Convert.ToString(row["race"]),
+                            religion = Convert.ToString(row["religion"]),
+                            primaryPhysician = Convert.ToInt32(row["primaryPhysician"]),
+                            legalGuardian1 = Convert.ToString(row["legalGuardian1"]),
+                            legalGuardian2 = Convert.ToString(row["legalGuardian2"]),
+                            previousName = Convert.ToString(row["previousName"]),
+                            genderAssignedAtBirth = Convert.ToString(row["genderAssignedAtBirth"])
+                        });
+                }
+                return patientList;
+            }
+        }
+
         public IEnumerable<MedicationProfile> GetMedicationProfiles()
         {
             // New list to hold all the patients in the database.
