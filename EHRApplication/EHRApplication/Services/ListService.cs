@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -124,6 +125,9 @@ namespace EHRApplication.Services
                 //loops through all of the providers that were pulled and adds them to the list after setting the individual properties
                 foreach (DataRow row in dataTable.Rows)
                 {
+                    //This is grabbing the date of birth from the table and saving it as a variable so that when we add it below we are able to add only the date.
+                    DateTime dateTime = DateTime.Parse(row["DOB"].ToString());
+
                     patientList.Add(
                         new PatientDemographic
                         {
@@ -133,7 +137,8 @@ namespace EHRApplication.Services
                             lastName = Convert.ToString(row["lastName"]),
                             suffix = Convert.ToString(row["suffix"]),
                             preferredPronouns = Convert.ToString(row["preferredPronouns"]),
-                            DOB = Convert.ToDateTime(row["DOB"]),
+                            //This is taking the date that was grabbed up above and only setting the date to the DOB for the model
+                            DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
                             gender = Convert.ToString(row["gender"]),
                             preferredLanguage = Convert.ToString(row["preferredLanguage"]),
                             ethnicity = Convert.ToString(row["ethnicity"]),

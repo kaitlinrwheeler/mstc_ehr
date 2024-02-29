@@ -1,4 +1,4 @@
-﻿@* @inject EHRApplication.Services.IListService ListService *@
+﻿@inject EHRApplication.Services.IListService ListService
 @model PatientContact
 @{
     ViewData["Title"] = "Patient Page";
@@ -23,7 +23,7 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="patientForm">
 
-@*             <div class="form-group">
+            <div class="form-group">
                 <label for="MHN">Patient:</label>
                 <select data-bs-auto="auto" id="MHN" class="form-control" name="MHN" asp-for="MHN">
                     @foreach (var patient in ListService.GetPatients())
@@ -33,68 +33,68 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="MHN" id="MHNError" class="valadation-msg"></span>
-            </div> *@
+                <span asp-validation-for="MHN" id="MHNError" class="validation-msg"></span>
+            </div>
 
             <div class="form-group">
-                <label for="address">Address:</label>
+                <label for="Address">Address:</label>
                 <input asp-for="address" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Address', 25, 'address')" />
-                <span asp-validation-for="address" id="AddressError" class="valadation-msg"></span>
+                <span asp-validation-for="address" id="AddressError" class="validation-msg"></span>
             </div>
 
 
             <div class="form-group">
-                <label for="city">City:</label>
+                <label for="City">City:</label>
                 <input asp-for="city" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('City', 25, 'city')" />
-                <span asp-validation-for="city" id="CityError" class="valadation-msg"></span>
+                <span asp-validation-for="city" id="CityError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="state">State:</label>
+                <label for="State">State:</label>
                 <input asp-for="state" type="text" class="form-control" onblur="validateRequiredTextInput('State', 25,'state')" data-bs-theme="auto" />
-                <span asp-validation-for="state" id="StateError" class="valadation-msg"></span>
+                <span asp-validation-for="state" id="StateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="zipcode">Zipcode:</label>
+                <label for="Zipcode">Zipcode:</label>
                 <input asp-for="zipcode" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Zipcode', 20,  'zipcode')" />
-                <span asp-validation-for="zipcode" id="ZipcodeError" class="valadation-msg"></span>
+                <span asp-validation-for="zipcode" id="ZipcodeError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="phone">Phone Number:</label>
-                <input asp-for="phone" class="form-control" onblur="validateRequiredTextinput('Phone', 10, 'phone')" data-bs-theme="auto" />
-                <span asp-validation-for="phone" id="PhoneError" class="valadation-msg"></span>
+                <input asp-for="phone" class="form-control" data-bs-theme="auto" />
+                <span asp-validation-for="phone" id="PhoneError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input asp-for="email" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInputRequired" />
-                <span asp-validation-for="email" id="EmailError" class="valadation-msg"></span>
+                <label for="Email">Email:</label>
+                <input asp-for="email" type="text" class="form-control" data-bs-theme="auto" />
+                <span asp-validation-for="email" id="EmailError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="ECFirstname">EC First Name:</label>
-                <input asp-for="ECFirstName" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('ECFirstName', 100, 'EC first name')" />
-                <span asp-validation-for="ECFirstName" id="ECFirstNameError" class="valadation-msg"></span>
+                <input asp-for="ECFirstName" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECFirstName', 100, 'EC first name')" />
+                <span asp-validation-for="ECFirstName" id="ECFirstNameError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="ECLastname">EC Last Name:</label>
-                <input asp-for="ECLastName" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('ECLastName', 100, 'EC last name')" />
-                <span asp-validation-for="ECLastName" id="ECLastNameError" class="valadation-msg"></span>
+                <input asp-for="ECLastName" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECLastName', 100, 'EC last name')" />
+                <span asp-validation-for="ECLastName" id="ECLastNameError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="ECRelationship">EC Relationship:</label>
-                <input asp-for="ECRelationship" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('ECRelationship', 100,  'EC Relationship')" />
-                <span asp-validation-for="ECRelationship" id="ECRelationshipError" class="valadation-msg"></span>
+                <input asp-for="ECRelationship" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECRelationship', 100,  'EC Relationship')" />
+                <span asp-validation-for="ECRelationship" id="ECRelationshipError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="ECPhone">EC Phone:</label>
-                <input asp-for="ECPhone" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('ECPhone', 25,  'EC phone')" />
-                <span asp-validation-for="ECPhone" id="ECPhoneError" class="valadation-msg"></span>
+                <input asp-for="ECPhone" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECPhone', 25,  'EC phone')" />
+                <span asp-validation-for="ECPhone" id="ECPhoneError" class="validation-msg"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">

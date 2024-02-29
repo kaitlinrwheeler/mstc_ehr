@@ -14,26 +14,26 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
-        [Required(ErrorMessage = "Address is required")]
+        [Required(ErrorMessage = "Please enter an address.")]
         [RegularExpression(@"^[a-zA-Z0-9\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string address { get; set; }
 
-        [Required(ErrorMessage = "City is required")]
+        [Required(ErrorMessage = "Please enter a city.")]
         [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string city { get; set; }
 
-        [Required(ErrorMessage = "State is required")]
+        [Required(ErrorMessage = "Please enter a state.")]
         [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string state { get; set; }
 
-        [Required(ErrorMessage = "Zipcode is required")]
+        [Required(ErrorMessage = "Please enter a zipcode.")]
         [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zipcode")]
         public int? zipcode { get; set; }
 
         [RegularExpression(@"^[0-9\s\+\-]*$", ErrorMessage = "Please enter numbers only.")]
         public string phone { get; set; }
 
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email.")]
         public string email { get; set; }
 
         [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
