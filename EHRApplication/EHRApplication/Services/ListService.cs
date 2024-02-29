@@ -31,7 +31,7 @@ namespace EHRApplication.Services
                 DataTable dataTable = new DataTable();
 
                 //SQL query that selects everything and sorts it in asc order
-                string sql = "Select * From [dbo].[Providers] ORDER BY MHN ASC";
+                string sql = "Select * From [dbo].[Providers] ORDER BY providerId ASC";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);

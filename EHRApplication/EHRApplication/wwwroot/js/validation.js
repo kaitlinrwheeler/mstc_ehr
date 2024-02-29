@@ -1,7 +1,8 @@
 ﻿// Validation functions
 
 //variable for the 'X' symbol for error messages.
-const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
+//Hopefully someone will get back to this and make the validation show on the javascript and the model too.
+//const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
 
 // Function to check if the input value is empty
 function isEmpty(input, errorSpanID, errorMessage) {
@@ -22,7 +23,7 @@ function isEmpty(input, errorSpanID, errorMessage) {
 // Function to check if the input value contains only alphabetic characters
 function isAlphabetic(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
-    const alphabetRegex = /^[a-zA-Z]+$/;
+    const alphabetRegex = /^[a-zA-Z\s'\/\-]+$/;
     let valid = alphabetRegex.test(input.value.trim());
 
     // Display error message if input contains non-alphabetic characters
@@ -46,7 +47,9 @@ function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
         // Display error message with an icon
-        errorSpan.innerHTML = xIcon + errorMessage;
+        //Commenting this hopefully we come back and finish this icon
+        //errorSpan.innerHTML = xIcon + errorMessage;
+        errorSpan.innerHTML = errorMessage;
         errorSpan.style.display = 'inline';
     } else {
         // Hide error message
