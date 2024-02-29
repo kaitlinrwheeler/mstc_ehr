@@ -184,5 +184,50 @@ namespace EHRApplication.Controllers
             }
             return View(patientDemographic);
         }
+
+        public IActionResult PatientVisits(int mhn)
+        {
+            // New list to hold all the patients in the database.
+            List<Visits> patientVisits = new List<Visits>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT providerId, date, time, admitted, notes FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new patient object for each record.
+                        Visits visit = new Visits();
+
+                        //Populate the visits object with data from the database.
+                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        visit.providers = new ListService(Configuration).GetProvidersByProviderId(visit.providerId);
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
+                        visit.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        visit.time = TimeOnly.Parse(dataReader["time"].ToString());
+                        visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
+                        visit.notes = Convert.ToString(dataReader["notes"]);
+
+                        // Add the patient to the list
+                        patientVisits.Add(visit);
+                    }
+                }
+                connection.Close();
+            }
+            return View(patientVisits);
+        }
     }
 }
