@@ -38,38 +38,38 @@
 
             <div class="form-group">
                 <label for="Address">Address:</label>
-                <input asp-for="address" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Address', 25, 'address')" />
+                <input asp-for="address" type="text" id="Address" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Address', 25, 'address')" />
                 <span asp-validation-for="address" id="AddressError" class="validation-msg"></span>
             </div>
 
 
             <div class="form-group">
                 <label for="City">City:</label>
-                <input asp-for="city" type="text" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('City', 25, 'city')" />
+                <input asp-for="city" type="text" id="City" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('City', 25, 'city')" />
                 <span asp-validation-for="city" id="CityError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="State">State:</label>
-                <input asp-for="state" type="text" class="form-control" onblur="validateRequiredTextInput('State', 25,'state')" data-bs-theme="auto" />
+                <input asp-for="state" type="text" id="State" class="form-control" onblur="validateRequiredTextInput('State', 25,'state')" data-bs-theme="auto" />
                 <span asp-validation-for="state" id="StateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="Zipcode">Zipcode:</label>
-                <input asp-for="zipcode" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Zipcode', 20,  'zipcode')" />
+                <input asp-for="zipcode" id="Zipcode" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Zipcode', 20,  'zipcode')" />
                 <span asp-validation-for="zipcode" id="ZipcodeError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="phone">Phone Number:</label>
-                <input asp-for="phone" class="form-control" data-bs-theme="auto" />
+                <input asp-for="phone" id="Phone" class="form-control" data-bs-theme="auto" />
                 <span asp-validation-for="phone" id="PhoneError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="Email">Email:</label>
-                <input asp-for="email" type="text" class="form-control" data-bs-theme="auto" />
+                <input asp-for="email" type="text" id="Email" class="form-control" data-bs-theme="auto" />
                 <span asp-validation-for="email" id="EmailError" class="validation-msg"></span>
             </div>
 
