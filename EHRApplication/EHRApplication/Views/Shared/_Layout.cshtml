@@ -29,7 +29,8 @@
     @if (controllers.Contains(controllerName) 
         || controllerName == "Patient" && actionName == "Index"
         || controllerName == "Patient" && actionName == "AllPatients"
-        || controllerName == "Medications" && actionName == "AllMedications")
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders")
     {
         <style>
             #sidebar-wrapper {
@@ -47,7 +48,8 @@
     @if (controllers.Contains(controllerName) 
         || controllerName == "Patient" && actionName == "Index"
         || controllerName == "Patient" && actionName == "AllPatients"
-        || controllerName == "Medications" && actionName == "AllMedications")
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders")
     {
         <style>
             #sidebar-wrapper {
