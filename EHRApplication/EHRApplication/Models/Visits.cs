@@ -13,7 +13,7 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
-        [ForeignKey("providersId")]
+        [ForeignKey("providerId")]
         public Providers providers { get; set; }
 
         public int providerId { get; set; }
