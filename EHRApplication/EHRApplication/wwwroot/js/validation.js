@@ -281,3 +281,22 @@ function validateRequiredEmailInput(inputID, errorMessage) {
 
     return false; // Return false if input is empty
 }
+
+function validateRequiredInput(inputID, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
