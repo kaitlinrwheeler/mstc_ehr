@@ -32,6 +32,18 @@ function isAlphabetic(input, errorSpanID, errorMessage) {
     return valid;
 }
 
+// Function to check if the input value conatins only numeric characters
+function isANumber(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const numericRegex = /^[0-9]+$/;
+    let valid = numericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-numeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
 // Function to check if the input value exceeds a character limit
 function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
@@ -146,6 +158,48 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
             if (isAlphabeticValid) {
                 // Validate character limit
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+//Use when validating a required text input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateRequiredNumberInput(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isNumericValid = isANumber(input, inputErrorSpanID, 'Please enter numeric characters only.');
+            if (isNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                switch (inputID) {
+                    case "Phone":
+                        if (trimedInput.length !== 9) {
+                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                            return
+                        } 
+                        break;
+                    case "Zipcode":
+                        if (trimedInput.length == 5) {
+                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        } 
+                        break;
+                }
             }
         }
     }

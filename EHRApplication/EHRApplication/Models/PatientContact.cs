@@ -30,9 +30,11 @@ namespace EHRApplication.Models
         [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zipcode")]
         public int? zipcode { get; set; }
 
+        [Required(ErrorMessage = "Please enter a phone number.")]
         [RegularExpression(@"^[0-9\s\+\-]*$", ErrorMessage = "Please enter numbers only.")]
         public string phone { get; set; }
 
+        [Required(ErrorMessage = "Please enter a email.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email.")]
         public string email { get; set; }
 

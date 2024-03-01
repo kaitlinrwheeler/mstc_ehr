@@ -57,19 +57,19 @@
 
             <div class="form-group">
                 <label for="Zipcode">Zipcode:</label>
-                <input asp-for="zipcode" id="Zipcode" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Zipcode', 20,  'zipcode')" />
+                <input asp-for="zipcode" id="Zipcode" class="form-control" data-bs-theme="auto" onblur="validateRequiredNumberInput('Zipcode', 6,  'zipcode')" />
                 <span asp-validation-for="zipcode" id="ZipcodeError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="phone">Phone Number:</label>
-                <input asp-for="phone" id="Phone" class="form-control" data-bs-theme="auto" />
+                <input asp-for="phone" id="Phone" class="form-control" data-bs-theme="auto" onblur="validateRequiredNumberInput('Phone', 10, 'phone number')" />
                 <span asp-validation-for="phone" id="PhoneError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="Email">Email:</label>
-                <input asp-for="email" type="text" id="Email" class="form-control" data-bs-theme="auto" />
+                <input asp-for="email" type="text" id="Email" class="form-control" data-bs-theme="auto" onblur="validateRequiredEmailInput('Email', 50, 'email')"/>
                 <span asp-validation-for="email" id="EmailError" class="validation-msg"></span>
             </div>
 
