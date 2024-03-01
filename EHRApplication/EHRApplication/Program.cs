@@ -1,8 +1,8 @@
-using EHRApplication;
 using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
+using EHRApplication.Services;
 
 public class Program
 {
@@ -14,7 +14,12 @@ public class Program
         builder.Services.AddSingleton<LogService>();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            // Set the timeout to 30 minutes
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            options.SlidingExpiration = true; // Extend expiration time on activity
+        });
         builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -23,7 +28,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-
+        builder.Services.AddSingleton<IListService, ListService>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
