@@ -17,7 +17,7 @@
 <section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Create Patient</h3>
+        <h3 class="my-3">Create Patient Contact</h3>
     </div>
 
     <div class="card-body" data-bs-theme="auto">
@@ -28,9 +28,14 @@
                 <select data-bs-auto="auto" id="MHN" class="form-control" name="MHN" asp-for="MHN">
                     @foreach (var patient in ListService.GetPatients())
                     {
-                        <option value="@patient.MHN.ToString()">
-                            @patient.firstName @patient.lastName
-                        </option>
+                        // Check if the current patient's MHN is not in the patient contact table
+                        //This will make it so that only patients without their contact info in the table show up
+                        if (!ListService.GetContacts().Any(pc => pc.MHN == patient.MHN))
+                        {
+                            <option value="@patient.MHN.ToString()">
+                                @patient.MHN @patient.firstName @patient.lastName, @patient.DOB
+                            </option>
+                        }
                     }
                 </select>
                 <span asp-validation-for="MHN" id="MHNError" class="validation-msg"></span>
@@ -41,7 +46,6 @@
                 <input asp-for="address" type="text" id="Address" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Address', 25, 'address')" />
                 <span asp-validation-for="address" id="AddressError" class="validation-msg"></span>
             </div>
-
 
             <div class="form-group">
                 <label for="City">City:</label>
@@ -69,7 +73,7 @@
 
             <div class="form-group">
                 <label for="Email">Email:</label>
-                <input asp-for="email" type="text" id="Email" class="form-control" data-bs-theme="auto" onblur="validateRequiredEmailInput('Email', 50, 'email')"/>
+                <input asp-for="email" type="text" id="Email" class="form-control" data-bs-theme="auto" onblur="validateRequiredEmailInput('Email', 'email')"/>
                 <span asp-validation-for="email" id="EmailError" class="validation-msg"></span>
             </div>
 
@@ -93,7 +97,7 @@
 
             <div class="form-group">
                 <label for="ECPhone">EC Phone:</label>
-                <input asp-for="ECPhone" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECPhone', 25,  'EC phone')" />
+                <input asp-for="ECPhone" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalNumberInput('ECPhone', 25,  'EC phone')" />
                 <span asp-validation-for="ECPhone" id="ECPhoneError" class="validation-msg"></span>
             </div>
 

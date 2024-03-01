@@ -44,6 +44,18 @@ function isANumber(input, errorSpanID, errorMessage) {
     return valid;
 }
 
+// Function to check if the input value is a valid email address
+function isValidEmail(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const emailRegex = /^[\w.-]+@[\w.-]+\.[\w-]+(\.[\w-]+)*$/;
+    let valid = emailRegex.test(input.value.trim());
+
+    // Display error message if input is not a valid email address
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
 // Function to check if the input value exceeds a character limit
 function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
@@ -169,7 +181,7 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
     handleInputChange();
 }
 
-//Use when validating a required text input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+//Use when validating a required Number input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
 function validateRequiredNumberInput(inputID, characterLimit, errorMessage) {
     const input = document.getElementById(inputID);
     const inputErrorSpanID = inputID + 'Error';
@@ -209,4 +221,63 @@ function validateRequiredNumberInput(inputID, characterLimit, errorMessage) {
 
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
+} 
+
+//Use when validating an Optional number input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateOptionalNumberInput(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty, hide error message
+            errorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation
+            const isNumericValid = isANumber(input, inputErrorSpanID, 'Please enter numeric characters only.');
+            if (isNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                switch (inputID) {
+                    case "Phone",
+                        "ECPhone":
+                        if (trimedInput.length !== 9) {
+                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                            return
+                        }
+                        break;
+                    case "Zipcode":
+                        if (trimedInput.length == 5) {
+                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+} 
+
+// Call to validate an email input. Pass in InputID and error messages words to be displayed in the error message.
+function validateRequiredEmailInput(inputID, errorMessage) {
+    const input = document.getElementById(inputID);
+    const errorSpanID = inputID + 'Error';
+
+    // Validate empty input
+    const isEmptyValid = isEmpty(input, errorSpanID, `Please enter a valid ${errorMessage}.`);
+
+    if (isEmptyValid) {
+        // Validate email format
+        return isValidEmail(input, errorSpanID, 'Please enter a valid email address.');
+    }
+
+    return false; // Return false if input is empty
 }
