@@ -56,7 +56,7 @@
 
             <div class="form-group">
                 <label for="PrimaryPhysician">Primary Physician:</label>
-                <select data-bs-auto="auto" id="primaryPhysician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician">
+                <select id="primaryPhysician" class="form-control" name="primaryPhysician" asp-for="primaryPhysician" data-bs-theme="auto">
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
