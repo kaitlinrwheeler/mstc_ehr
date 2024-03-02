@@ -47,7 +47,7 @@ function isANumber(input, errorSpanID, errorMessage) {
 // Function to check if the input value is a valid email address
 function isValidEmail(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
-    const emailRegex = /^[\w.-]+@[\w.-]+\.[\w-]+(\.[\w-]+)*$/;
+    const emailRegex = /^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov)$/;;
     let valid = emailRegex.test(input.value.trim());
 
     // Display error message if input is not a valid email address

@@ -16,15 +16,14 @@ namespace EHRApplication.Models
         public int MHN { get; set; }
 
         [Required(ErrorMessage = "Please enter an address.")]
-        [RegularExpression(@"^[a-zA-Z0-9\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s\/\-'']*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string address { get; set; }
 
         [Required(ErrorMessage = "Please enter a city.")]
-        [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s\/\-'']*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string city { get; set; }
 
         [Required(ErrorMessage = "Please enter a state.")]
-        [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string state { get; set; }
 
         [Required(ErrorMessage = "Please enter a zipcode.")]
@@ -36,6 +35,7 @@ namespace EHRApplication.Models
         public string phone { get; set; }
 
         [Required(ErrorMessage = "Please enter a email.")]
+        [RegularExpression(@"^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov)$", ErrorMessage = "Please enter a valid email.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email.")]
         public string email { get; set; }
 
