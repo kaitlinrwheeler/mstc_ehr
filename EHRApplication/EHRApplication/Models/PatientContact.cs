@@ -35,7 +35,7 @@ namespace EHRApplication.Models
         public string phone { get; set; }
 
         [Required(ErrorMessage = "Please enter a email.")]
-        [RegularExpression(@"^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov)$", ErrorMessage = "Please enter a valid email.")]
+        [RegularExpression(@"^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov|org)$", ErrorMessage = "Please enter a valid email.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email.")]
         public string email { get; set; }
 
