@@ -1,8 +1,13 @@
 ﻿@using System.Diagnostics
 @{
-    //Gets the controller for the page that is being displayed
+    // Gets the controller for the page that is being displayed
     var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    // Gets the action for the page that is being displayed
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
     var mhn = 0;
+
+    // Controllers with views we want to hide things on.
+    string[] controllers = new string[] { "Login_Register", "Resources"  };
 }
 
 
@@ -20,17 +25,38 @@
 
     <partial name="_topNav"/>
 
-    <!--If condition that will only display the patient banner if the page is not an an admin or login/Register page-->
-    @if (controllerName != "Login_Register")
-    {
-        <partial name="_patientInfoBanner" />
-        mhn = (int)TempData["mhn"];
-    }
-    else
+    <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
+    @if (controllers.Contains(controllerName) 
+        || controllerName == "Patient" && actionName == "Index"
+        || controllerName == "Patient" && actionName == "AllPatients"
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders")
     {
         <style>
             #sidebar-wrapper {
                 margin-top: 72px;
+            }
+        </style>
+    }
+    else
+    {
+        <partial name="_patientInfoBanner" />
+        mhn = (int)TempData["mhn"];
+    }
+
+    <!-- This will hide the side nav if true. -->
+    @if (controllers.Contains(controllerName) 
+        || controllerName == "Patient" && actionName == "Index"
+        || controllerName == "Patient" && actionName == "AllPatients"
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders")
+    {
+        <style>
+            #sidebar-wrapper {
+                display: none;
+            }
+            #wrapper{
+                padding-left: 0;
             }
         </style>
     }
