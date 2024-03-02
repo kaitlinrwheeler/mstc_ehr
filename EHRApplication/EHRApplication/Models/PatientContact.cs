@@ -9,6 +9,7 @@ namespace EHRApplication.Models
         [Key]
         public int patientContactId { get; set; }
 
+        [ValidateNever]
         [ForeignKey("MHN")]
         public PatientDemographic patients { get; set; }
 

@@ -43,7 +43,7 @@
 
             <div class="form-group">
                 <label for="Address">Address:</label>
-                <input asp-for="address" type="text" id="Address" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('Address', 25, 'address')" />
+                <input asp-for="address" type="text" id="Address" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('Address', 'address')" />
                 <span asp-validation-for="address" id="AddressError" class="validation-msg"></span>
             </div>
 

@@ -201,14 +201,14 @@ function validateRequiredNumberInput(inputID, characterLimit, errorMessage) {
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
                 switch (inputID) {
                     case "Phone":
-                        if (trimedInput.length !== 9) {
-                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        if (trimedInput.length !== 10) {
+                            displayError(false, errorSpan, `Please enter exactly 10 characters for ${errorMessage}.`);
                             return
                         } 
                         break;
                     case "Zipcode":
-                        if (trimedInput.length == 5) {
-                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        if (trimedInput.length !== 5) {
+                            displayError(false, errorSpan, `Please enter exactly 5 characters for ${errorMessage}.`);
                         } 
                         break;
                 }
@@ -244,14 +244,14 @@ function validateOptionalNumberInput(inputID, characterLimit, errorMessage) {
                 switch (inputID) {
                     case "Phone",
                         "ECPhone":
-                        if (trimedInput.length !== 9) {
-                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        if (trimedInput.length !== 10) {
+                            displayError(false, errorSpan, `Please enter exactly 10 characters for ${errorMessage}.`);
                             return
                         }
                         break;
                     case "Zipcode":
-                        if (trimedInput.length == 5) {
-                            displayError(false, errorSpan, `Please enter exactly 9 characters for ${errorMessage}.`);
+                        if (trimedInput.length !== 5) {
+                            displayError(false, errorSpan, `Please enter exactly 5 characters for ${errorMessage}.`);
                         }
                         break;
                 }

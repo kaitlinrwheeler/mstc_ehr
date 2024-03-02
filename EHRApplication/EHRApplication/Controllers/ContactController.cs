@@ -37,8 +37,8 @@ namespace EHRApplication.Controllers
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
-                string sql = "INSERT INTO [PatientContact] (MHN, address, city, state, zipcode, phone, email, ECFirstName, ECLastName, ECRelationshiop, ECPhone) " +
-                    "VALUES (@MHN, @address, @city, @state, @zipcode, @phone, @email, @ECFirstName, @ECLastName, @ECRelationshiop, @ECPhone)";
+                string sql = "INSERT INTO [PatientContact] (MHN, address, city, state, zipcode, phone, email, ECFirstName, ECLastName, ECRelationship, ECPhone) " +
+                    "VALUES (@MHN, @address, @city, @state, @zipcode, @phone, @email, @ECFirstName, @ECLastName, @ECRelationship, @ECPhone)";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -48,7 +48,7 @@ namespace EHRApplication.Controllers
                     //adding parameters
                     command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = contact.MHN;
                     command.Parameters.Add("@address", SqlDbType.VarChar).Value = contact.address;
-                    command.Parameters.Add("@city", SqlDbType.Date).Value = contact.city;
+                    command.Parameters.Add("@city", SqlDbType.VarChar).Value = contact.city;
                     command.Parameters.Add("@state", SqlDbType.VarChar).Value = contact.state;
                     command.Parameters.Add("@zipcode", SqlDbType.VarChar).Value = contact.zipcode;
                     command.Parameters.Add("@phone", SqlDbType.VarChar).Value = contact.phone;
