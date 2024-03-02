@@ -34,10 +34,9 @@ namespace EHRApplication.Models
         [RegularExpression(@"^[0-9\s\+\-]*$", ErrorMessage = "Please enter numbers only.")]
         public string phone { get; set; }
 
-        [Required(ErrorMessage = "Please enter a email.")]
         [RegularExpression(@"^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov|org)$", ErrorMessage = "Please enter a valid email.")]
         [EmailAddress(ErrorMessage = "Please enter a valid email.")]
-        public string email { get; set; }
+        public string? email { get; set; }
 
         [RegularExpression(@"^[a-zA-Z\s\/\-]*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string? ECFirstName { get; set; }

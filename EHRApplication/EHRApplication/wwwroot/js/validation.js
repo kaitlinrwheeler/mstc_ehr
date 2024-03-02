@@ -267,20 +267,30 @@ function validateOptionalNumberInput(inputID, characterLimit, errorMessage) {
 } 
 
 // Call to validate an email input. Pass in InputID and error messages words to be displayed in the error message.
-function validateRequiredEmailInput(inputID, errorMessage) {
+function validateOptionalEmailInput(inputID, errorMessage) {
     const input = document.getElementById(inputID);
-    const errorSpanID = inputID + 'Error';
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
 
-    // Validate empty input
-    const isEmptyValid = isEmpty(input, errorSpanID, `Please enter a valid ${errorMessage}.`);
-
-    if (isEmptyValid) {
-        // Validate email format
-        return isValidEmail(input, errorSpanID, 'Please enter a valid email address.');
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty, hide error message
+            errorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation                
+            const isEmailValid = isValidEmail(input, inputErrorSpanID, 'Please enter a valid email address.');
+        }
     }
 
-    return false; // Return false if input is empty
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
 }
+
 
 function validateRequiredInput(inputID, errorMessage) {
     const input = document.getElementById(inputID);
