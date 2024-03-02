@@ -229,5 +229,61 @@ namespace EHRApplication.Controllers
             }
             return View(patientVisits);
         }
+
+        public IActionResult PatientAllergies(int mhn)
+        {
+            // List to hold the patient's list of allergies.
+            List<PatientAllergies> allergies = new List<PatientAllergies>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY PatientAllergyId ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        PatientAllergies allergy = new PatientAllergies();
+
+                        // Populate the allergy object with data from the database.
+
+                        allergy.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        allergy.patientAllergyId = Convert.ToInt32(dataReader["PatientAllergyId"]);
+
+
+
+                        allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
+
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        allergy.allergies = new ListService(Configuration).GetAllergyByAllergyId(allergy.allergyId);
+
+
+
+
+                        // Fetch the DateTime value from the database and convert it to DateOnly
+                        DateTime onSetDateTime = dataReader.GetDateTime(dataReader.GetOrdinal("onSetDate"));
+                        DateOnly onSetDate = new DateOnly(onSetDateTime.Year, onSetDateTime.Month, onSetDateTime.Day);
+                        allergy.onSetDate = onSetDate;
+
+                        // Add the patient to the list
+                        allergies.Add(allergy);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return View(allergies);
+        }
     }
 }

@@ -247,5 +247,41 @@ namespace EHRApplication.Services
             }
             return medicationProfile;
         }
+
+        /// <summary>
+        /// Gets the allergy object from the database for that specific allergy id.
+        /// </summary>
+        /// <param name="allergyId"></param>
+        /// <returns>The allergy object</returns>
+        public Allergies GetAllergyByAllergyId(int allergyId)
+        {
+            //Creating a new instance of the allergy class to store data from the database
+            Allergies allergy = new Allergies();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Allergies] WHERE AllergyId = @allergyId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@allergyId", allergyId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the allergies model.
+                        allergy.allergyId = allergyId;
+                        allergy.allergyName = Convert.ToString(dataReader["AllergyName"]);
+                        allergy.allergyType = Convert.ToString(dataReader["AllergyType"]);
+                    }
+                };
+                connection.Close();
+                return allergy;
+            }
+        }
+
     }
 }
