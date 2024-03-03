@@ -7,6 +7,8 @@ namespace EHRApplication.Services
         IEnumerable<PatientContact> GetContacts();
         IEnumerable<Providers> GetProviders();
 
+        IEnumerable<PatientDemographic> GetPatients();
+
         IEnumerable<MedicationProfile> GetMedicationProfiles();
 
         Providers GetProvidersByProviderId(int mhn);

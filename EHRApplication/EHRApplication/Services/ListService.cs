@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -96,6 +97,61 @@ namespace EHRApplication.Services
                         });
                 }
                 return contactList;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of all the providers from the database
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<PatientDemographic> GetPatients()
+        {
+            //creates a new instance of the providers model as a list
+            List<PatientDemographic> patientList = new List<PatientDemographic>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                //Table that will be a tempory holder of the database untill we can convert it into a list
+                DataTable dataTable = new DataTable();
+
+                //SQL query that selects everything and sorts it in asc order
+                string sql = "Select * From [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dataTable);
+
+                //loops through all of the providers that were pulled and adds them to the list after setting the individual properties
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    //This is grabbing the date of birth from the table and saving it as a variable so that when we add it below we are able to add only the date.
+                    DateTime dateTime = DateTime.Parse(row["DOB"].ToString());
+
+                    patientList.Add(
+                        new PatientDemographic
+                        {
+                            MHN = Convert.ToInt32(row["MHN"]),
+                            firstName = Convert.ToString(row["firstName"]),
+                            middleName = Convert.ToString(row["middleName"]),
+                            lastName = Convert.ToString(row["lastName"]),
+                            suffix = Convert.ToString(row["suffix"]),
+                            preferredPronouns = Convert.ToString(row["preferredPronouns"]),
+                            //This is taking the date that was grabbed up above and only setting the date to the DOB for the model
+                            DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
+                            gender = Convert.ToString(row["gender"]),
+                            preferredLanguage = Convert.ToString(row["preferredLanguage"]),
+                            ethnicity = Convert.ToString(row["ethnicity"]),
+                            race = Convert.ToString(row["race"]),
+                            religion = Convert.ToString(row["religion"]),
+                            primaryPhysician = Convert.ToInt32(row["primaryPhysician"]),
+                            legalGuardian1 = Convert.ToString(row["legalGuardian1"]),
+                            legalGuardian2 = Convert.ToString(row["legalGuardian2"]),
+                            previousName = Convert.ToString(row["previousName"]),
+                            genderAssignedAtBirth = Convert.ToString(row["genderAssignedAtBirth"])
+                        });
+                }
+                return patientList;
             }
         }
 
@@ -247,5 +303,41 @@ namespace EHRApplication.Services
             }
             return medicationProfile;
         }
+
+        /// <summary>
+        /// Gets the allergy object from the database for that specific allergy id.
+        /// </summary>
+        /// <param name="allergyId"></param>
+        /// <returns>The allergy object</returns>
+        public Allergies GetAllergyByAllergyId(int allergyId)
+        {
+            //Creating a new instance of the allergy class to store data from the database
+            Allergies allergy = new Allergies();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Allergies] WHERE AllergyId = @allergyId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@allergyId", allergyId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the allergies model.
+                        allergy.allergyId = allergyId;
+                        allergy.allergyName = Convert.ToString(dataReader["AllergyName"]);
+                        allergy.allergyType = Convert.ToString(dataReader["AllergyType"]);
+                    }
+                };
+                connection.Close();
+                return allergy;
+            }
+        }
+
     }
 }
