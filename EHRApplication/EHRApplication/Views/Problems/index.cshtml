@@ -22,7 +22,7 @@
                             <th scope="col">Description:</th>
                             <th scope="col">ICD_10:</th>
                             <th scope="col">Immediacy:</th>
-                            <th scope="col">Created At:</th>
+                            <th scope="col">Created On:</th>
                             <th scope="col">Created By:</th>
                             <th scope="col">Active:</th>
                         </tr>
@@ -48,7 +48,7 @@
                                 <td>@problem.description</td>
                                 <td>@problem.ICD_10</td>
                                 <td>@problem.immediacy</td>
-                                <td>@problem.createdAt.ToString("MM/dd/yyyy HH:mm")</td>
+                                <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
                                 <td>@problem.providers.firstName @problem.providers.lastName</td>
                                 <td>@(problem.active ? "Yes" : "No")</td>                
                             </tr>
