@@ -95,10 +95,18 @@
                     </li>
 
                     <li>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-file-medical fa-stack-1x "></i></span>Care Plans</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientCarePlan" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Care Plan</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a asp-area="" asp-controller="Medications" asp-action="AllMedications"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>All Medications</a></li>
-                        <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Medications</a></li>
+                            <li><a asp-area="" asp-controller="Medications" asp-action="AllMedications"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>All Medications</a></li>
+                            <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Medications</a></li>
                         </ul>
                     </li>
 
