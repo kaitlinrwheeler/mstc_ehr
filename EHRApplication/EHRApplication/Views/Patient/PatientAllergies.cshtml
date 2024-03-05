@@ -1,0 +1,48 @@
+﻿@{
+    // The list of patients being pulled in.
+    @model List<PatientAllergies>
+
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Allergies
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
+                            @*                             <th scope="col">MHN:</th>
+                        *@
+                            <th scope="col">Allergy Name:</th>
+                            <th scope="col">Allergy Type:</th>
+                            <th scope="col">Onset Date:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var allergy in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
+                                @*                                 <td>@allergy.MHN</td>
+                        *@
+                                <td>@allergy.allergies.allergyName</td>
+                                <td>@allergy.allergies.allergyType</td>
+                                <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No allergies found.</h1>
+            }
+        </div>
+    </div>
+</section>
