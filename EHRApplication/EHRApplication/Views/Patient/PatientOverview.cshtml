@@ -1,8 +1,10 @@
-﻿@model PatientDemographic
+﻿@* @model PatientDemographic *@
 
 @{
     ViewData["Title"] = "Patient Details";
     <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
+
+    var patient = ViewData.Model as PatientDemographic;
 }
 
 
@@ -15,73 +17,73 @@
                     Demographic Info
                 </div>
                 <div class="card-body" data-bs-theme="auto">
-                    @if (Model.MHN != 0)
-                    {                        
+                    @if (patient != null)
+                    {
                         <table class="table table-striped">
                             <tbody>
-                                <tr class ="hover-highlighting">
+                                <tr class="hover-highlighting">
                                     <th scope="row">Patient ID:</th>
-                                    <td>@Model.MHN</td>
+                                    <td>@patient.MHN</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">First Name:</th>
-                                    <td>@Model.firstName</td>
+                                    <td>@patient.firstName</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Last Name:</th>
-                                    <td>@Model.lastName</td>
+                                    <td>@patient.lastName</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Suffix:</th>
-                                    <td>@Model.suffix</td>
+                                    <td>@patient.suffix</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Preferred Pronouns:</th>
-                                    <td>@Model.preferredPronouns</td>
+                                    <td>@patient.preferredPronouns</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Date of Birth:</th>
-                                    <td>@Model.DOB.ToString("MM-dd-yyyy")</td>
+                                    <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Gender:</th>
-                                    <td>@Model.gender</td>
+                                    <td>@patient.gender</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Preferred Language:</th>
-                                    <td>@Model.preferredLanguage</td>
+                                    <td>@patient.preferredLanguage</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Ethnicity:</th>
-                                    <td>@Model.ethnicity</td>
+                                    <td>@patient.ethnicity</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Race:</th>
-                                    <td>@Model.race</td>
+                                    <td>@patient.race</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Religion:</th>
-                                    <td>@Model.religion</td>
+                                    <td>@patient.religion</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Primary Physician:</th>
-                                    <td>@Model.providers.firstName @Model.providers.lastName, @Model.providers.specialty</td>
+                                    <td>@patient.providers.firstName @patient.providers.lastName, @patient.providers.specialty</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Legal Guardian1:</th>
-                                    <td>@Model.legalGuardian1</td>
+                                    <td>@patient.legalGuardian1</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Legal Guardian2:</th>
-                                    <td>@Model.legalGuardian2</td>
+                                    <td>@patient.legalGuardian2</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Previous Name:</th>
-                                    <td>@Model.previousName</td>
+                                    <td>@patient.previousName</td>
                                 </tr>
                                 <tr class="hover-highlighting">
                                     <th scope="row">Gender Assigned At Birth:</th>
-                                    <td>@Model.genderAssignedAtBirth</td>
+                                    <td>@patient.genderAssignedAtBirth</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -95,14 +97,16 @@
         </div>
         <div class="col-md-6">
             <div class="row">
-                @if (Model.MHN != 0)
+                @if (patient != null)
                 {
                     <div class="col-md-12 mb-3">
                         <div class="card card-cover">
                             <img src="~/images/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
                         </div>
-                    </div>                    
-                }else{
+                    </div>
+                }
+                else
+                {
                     //Do nothing
                 }
                 <div class="col-md-12">
@@ -111,33 +115,33 @@
                             Contact Info
                         </div>
                         <div class="card-body" data-bs-theme="auto">
-                            @if (Model.ContactId != null)
+                            @if (patient.ContactId != null)
                             {
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Address:</th>
-                                            <td>@Model.ContactId.address</td>
+                                            <td>@patient.ContactId.address</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">City:</th>
-                                            <td>@Model.ContactId.city</td>
+                                            <td>@patient.ContactId.city</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">State:</th>
-                                            <td>@Model.ContactId.state</td>
+                                            <td>@patient.ContactId.state</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Zip Code:</th>
-                                            <td>@Model.ContactId.zipcode</td>
+                                            <td>@patient.ContactId.zipcode</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Phone Number:</th>
-                                            <td>@Model.ContactId.phone</td>
+                                            <td>@patient.ContactId.phone</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Email:</th>
-                                            <td>@Model.ContactId.email</td>
+                                            <td>@patient.ContactId.email</td>
                                         </tr>
                                     </tbody>
                                 </table>

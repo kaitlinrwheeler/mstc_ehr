@@ -1,40 +1,37 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    //This will save the mhn number from the display here change the page however you like 
-    // as long as you return the mhn number that is being currently displayed on the page.
-    int mhn = 4;
-    TempData["mhn"] = mhn;
-}
+﻿@model PatientDemographic
 
 <!-- Patient banner wrapper -->
 <div id="patient-banner-wrapper" class="sticky-top" style="">
     <!-- Patient Info Banner -->
-    <div id="patient-info-banner" class="container-fluid bg-red text-sm py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
+    <div id="patient-info-banner" class="container-fluid bg-red py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
         <div class="row align-items-center">
+            @if (Model != null)
+            {
+                <div class="col d-flex align-items-center">
 
-            <div class="col d-flex align-items-center">
+                    <img src="~/images/blank-profile-picture.png" alt="Patient Image" class="img-fluid rounded-circle me-3" style="max-width: 60px" />
 
-                <img src="~/images/blank-profile-picture.png" alt="Patient Image" class="img-fluid rounded-circle me-1" style="max-width: 60px" />
-
-                <div class="">
-                    <p class="fw-bold mb-1">Johnny Rose</p>
-                    <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> 04-04-1952</p>
-                    <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @mhn</p>
+                    <div class="">
+                        <p class="fw-bold mb-1"> @Model.firstName @Model.middleName @Model.lastName @Model.suffix</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> @Model.DOB.ToString("MM/dd/yyyy")</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @Model.MHN</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col">
-                <p class="mb-2"><span class="fw-bold">Gender: </span>Male</p>
-                <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>Male</p>
-            </div>
+                <div class="col">
+                    <p class="mb-2"><span class="fw-bold">Gender: </span>@Model.gender</p>
+                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>@Model.genderAssignedAtBirth</p>
+                </div>
 
-            <div class="col">
-                <p class="mb-2"><span class="fw-bold">Pronouns: </span></p>
-                <p class="mb-2"><span class="fw-bold">Primary Physician: </span>Cristina Yang</p>
-            </div>
-
+                <div class="col">
+                    <p class="mb-2"><span class="fw-bold">Pronouns: @Model.preferredPronouns</span></p>
+                    <p class="mb-2"><span class="fw-bold">Primary Physician: </span>@Model.providers.firstName @Model.providers.lastName</p>
+                </div>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No patient found</h1>
+            }
         </div>
     </div>
     <!-- End Patient Info Banner -->
