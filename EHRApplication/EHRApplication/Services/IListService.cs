@@ -17,6 +17,6 @@ namespace EHRApplication.Services
 
         MedicationProfile GetMedicationProfileByMedId(int medId);
 
-        CarePlan GetCarePlanByMHN(int mhn);
+        IEnumerable<CarePlan> GetCarePlanByMHN(int mhn);
     }
 }

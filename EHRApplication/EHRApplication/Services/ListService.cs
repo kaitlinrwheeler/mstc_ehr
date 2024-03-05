@@ -339,10 +339,10 @@ namespace EHRApplication.Services
             }
         }
 
-        public CarePlan GetCarePlanByMHN(int mhn)
+        public IEnumerable<CarePlan> GetCarePlanByMHN(int mhn)
         {
-            //Creating a new instance of the care plan class to store data form the database
-            CarePlan carePlan = new CarePlan();
+            //List that will hold all of the care plans for the patient with the passed in mhn number.
+            List<CarePlan> carePlanList = new List<CarePlan>();
 
             //Setting up the connection with the database
             using (SqlConnection connection = new SqlConnection(this.connectionString))
@@ -359,6 +359,9 @@ namespace EHRApplication.Services
                 {
                     while (dataReader.Read())
                     {
+                        //Creating a new instance of the care plan class to store data form the database
+                        CarePlan carePlan = new CarePlan();
+
                         //Setting the data that was jus pulled from the database into an instance of the care plan model.
                         carePlan.priority = Convert.ToString(dataReader["priority"]);
                         carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
@@ -366,10 +369,13 @@ namespace EHRApplication.Services
                         carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
                         carePlan.startDate = Convert.ToDateTime(dataReader["startDate"]);
                         carePlan.endDate = Convert.ToDateTime(dataReader["endDate"]);
+
+                        //After setting the data pulled from the database now adding it to the list that will be returned.
+                        carePlanList.Add(carePlan);
                     }
                 }
                 connection.Close();
-                return carePlan;
+                return carePlanList;
             }
         }
 
