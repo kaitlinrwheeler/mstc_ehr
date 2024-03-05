@@ -285,5 +285,13 @@ namespace EHRApplication.Controllers
 
             return View(allergies);
         }
+
+        public IActionResult PatientCarePlan(int mhn)
+        {
+            //This will grab a list of the care plans from the list services for the patient.
+            CarePlan carePlan = new ListService(Configuration).GetCarePlanByMHN(mhn);
+
+            return View(carePlan);
+        }
     }
 }

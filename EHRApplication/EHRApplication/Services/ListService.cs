@@ -339,5 +339,39 @@ namespace EHRApplication.Services
             }
         }
 
+        public CarePlan GetCarePlanByMHN(int mhn)
+        {
+            //Creating a new instance of the care plan class to store data form the database
+            CarePlan carePlan = new CarePlan();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                //SQL command to select the data from the database
+                string sql = "Select * From [dbo].[CarePlan] WHERE MHN = @mhn ORDER BY startDate ASC";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                //Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was jus pulled from the database into an instance of the care plan model.
+                        carePlan.priority = Convert.ToString(dataReader["priority"]);
+                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
+                        carePlan.title = Convert.ToString(dataReader["title"]);
+                        carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
+                        carePlan.startDate = Convert.ToDateTime(dataReader["startDate"]);
+                        carePlan.endDate = Convert.ToDateTime(dataReader["endDate"]);
+                    }
+                }
+                connection.Close();
+                return carePlan;
+            }
+        }
+
     }
 }
