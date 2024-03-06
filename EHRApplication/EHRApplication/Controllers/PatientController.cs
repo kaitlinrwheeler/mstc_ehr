@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -133,8 +134,10 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientOverview(int mhn)
         {
+            PortalViewModel portalViewModel = new PortalViewModel();
+
             //Creating a new patientDemographic instance
-            PatientDemographic patientDemographic = new PatientDemographic();
+            portalViewModel.PatientDemographic = new PatientDemographic();
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
@@ -153,43 +156,47 @@ namespace EHRApplication.Controllers
                     while (dataReader.Read())
                     {
                         //Assign properties for the patient demographic from the database
-                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
-                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
-                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
-                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
-                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        portalViewModel.PatientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        portalViewModel.PatientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        portalViewModel.PatientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        portalViewModel.PatientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        portalViewModel.PatientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        portalViewModel.PatientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
                         //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
                         //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
                         DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
-                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
-                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
-                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
-                        patientDemographic.race = Convert.ToString(dataReader["race"]);
-                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
-                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        portalViewModel.PatientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        portalViewModel.PatientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        portalViewModel.PatientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        portalViewModel.PatientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        portalViewModel.PatientDemographic.race = Convert.ToString(dataReader["race"]);
+                        portalViewModel.PatientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        portalViewModel.PatientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(patientDemographic.primaryPhysician);
-                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
-                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
-                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        portalViewModel.PatientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(portalViewModel.PatientDemographic.primaryPhysician);
+                        portalViewModel.PatientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        portalViewModel.PatientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        portalViewModel.PatientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
-                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(patientDemographic.MHN);
+                        portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        portalViewModel.PatientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                     }
                 }
 
-                ViewBag.Patient = patientDemographic;
-                TempData["mhn"] = patientDemographic.MHN;
+                ViewBag.Patient = portalViewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
 
                 connection.Close();
             }
-            return View(patientDemographic);
+            return View(portalViewModel);
         }
 
         public IActionResult PatientVisits(int mhn)
         {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            
+
             // New list to hold all the patients in the database.
             List<Visits> patientVisits = new List<Visits>();
 
@@ -228,13 +235,20 @@ namespace EHRApplication.Controllers
                         patientVisits.Add(visit);
                     }
                 }
+
+                viewModel.Visits = patientVisits;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
                 connection.Close();
             }
-            return View(patientVisits);
+            return View(viewModel);
         }
 
         public IActionResult PatientAllergies(int mhn)
         {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+         
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
 
@@ -283,10 +297,13 @@ namespace EHRApplication.Controllers
                     }
                 }
 
+                viewModel.PatientAllergies = allergies;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
                 connection.Close();
             }
 
-            return View(allergies);
+            return View(viewModel);
         }
 
         private PatientDemographic GetPatientByMHN(int mhn)

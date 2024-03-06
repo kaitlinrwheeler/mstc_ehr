@@ -1,10 +1,11 @@
 ﻿@* @model PatientDemographic *@
+@model EHRApplication.ViewModels.PortalViewModel
 
 @{
     ViewData["Title"] = "Patient Details";
     <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
 
-    var patient = ViewData.Model as PatientDemographic;
+    var patient = Model.PatientDemographic;
 }
 
 

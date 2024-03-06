@@ -1,4 +1,7 @@
-﻿@model PatientDemographic
+﻿@model EHRApplication.ViewModels.PortalViewModel
+@{
+    var mhn = ViewBag.MHN;
+}
 
 <!-- Patient banner wrapper -->
 <div id="patient-banner-wrapper" class="sticky-top" style="">
@@ -12,20 +15,20 @@
                     <img src="~/images/blank-profile-picture.png" alt="Patient Image" class="img-fluid rounded-circle me-3" style="max-width: 60px" />
 
                     <div class="">
-                        <p class="fw-bold mb-1"> @Model.firstName @Model.middleName @Model.lastName @Model.suffix</p>
-                        <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> @Model.DOB.ToString("MM/dd/yyyy")</p>
-                        <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @Model.MHN</p>
+                        <p class="fw-bold mb-1"> @Model.PatientDemographic.firstName @Model.PatientDemographic.middleName @Model.PatientDemographic.lastName @Model.PatientDemographic.suffix</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> @Model.PatientDemographic.DOB.ToString("MM/dd/yyyy")</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @Model.PatientDemographic.MHN</p>
                     </div>
                 </div>
 
                 <div class="col">
-                    <p class="mb-2"><span class="fw-bold">Gender: </span>@Model.gender</p>
-                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>@Model.genderAssignedAtBirth</p>
+                    <p class="mb-2"><span class="fw-bold">Gender: </span>@Model.PatientDemographic.gender</p>
+                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>@Model.PatientDemographic.genderAssignedAtBirth</p>
                 </div>
 
                 <div class="col">
-                    <p class="mb-2"><span class="fw-bold">Pronouns: @Model.preferredPronouns</span></p>
-                    <p class="mb-2"><span class="fw-bold">Primary Physician: </span>@Model.providers.firstName @Model.providers.lastName</p>
+                    <p class="mb-2"><span class="fw-bold">Pronouns: @Model.PatientDemographic.preferredPronouns</span></p>
+                    <p class="mb-2"><span class="fw-bold">Primary Physician: </span>@Model.PatientDemographic.providers.firstName @Model.PatientDemographic.providers.lastName</p>
                 </div>
             }
             else

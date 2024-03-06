@@ -1,6 +1,7 @@
 ﻿@{
     // The list of Visits being pulled in.
-    @model List<Visits>
+    @model EHRApplication.ViewModels.PortalViewModel
+    var mhn = ViewBag.MHN;
     <link rel="stylesheet" href="~/css/.css" asp-append-version="true" />
 }
 
@@ -11,7 +12,7 @@
             Visits
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (Model != null && Model.Visits != null && Model.Visits.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -24,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var visits in Model)
+                        @foreach (var visits in Model.Visits)
                         {
                             <tr class="hover-highlighting">
                                 <td>@visits.date.ToString("MM-dd-yyyy")</td>
