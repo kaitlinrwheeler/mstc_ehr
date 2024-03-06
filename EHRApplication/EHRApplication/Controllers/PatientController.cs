@@ -300,7 +300,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientInsurance] WHERE MHN = @mhn ORDER BY active ASC, patientInsuranceId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientInsurance] WHERE MHN = @mhn ORDER BY active DESC, priority ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -311,7 +311,7 @@ namespace EHRApplication.Controllers
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
-                    {
+                    { 
                         // Create a new allergy object for each record.
                         PatientInsurance insurance = new PatientInsurance();
 
