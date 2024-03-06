@@ -359,6 +359,16 @@ main {
 
 /* End main styles */
 
+/*Start of Success banner override.*/
+.alert-success{
+    margin: auto;
+    text-align: center;
+    width: max-content;
+}
+.btn-close{
+    padding-bottom: 10px;
+}
+/*End of Success banner override.*/
 
 
 /*Start of requirement question mark popout*/
