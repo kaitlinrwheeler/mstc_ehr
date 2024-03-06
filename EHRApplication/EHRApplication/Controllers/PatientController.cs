@@ -285,5 +285,57 @@ namespace EHRApplication.Controllers
 
             return View(allergies);
         }
+
+
+
+
+
+        public IActionResult PatientInsurance(int mhn)
+        {
+            // List to hold the patient's list of allergies.
+            List<PatientInsurance> insurances = new List<PatientInsurance>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[PatientInsurance] WHERE MHN = @mhn ORDER BY active ASC, patientInsuranceId ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        PatientInsurance insurance = new PatientInsurance();
+
+                        // Populate the allergy object with data from the database.
+                        insurance.active = Convert.ToBoolean(dataReader["active"]);
+                        //insurance name
+                        insurance.providerName = Convert.ToString(dataReader["providerName"]);
+                        insurance.memberId = Convert.ToString(dataReader["memberId"]);
+                        insurance.policyNumber = Convert.ToString(dataReader["policyNumber"]);
+                        insurance.groupNumber = Convert.ToString(dataReader["groupNumber"]);
+                        insurance.priority = Convert.ToString(dataReader["priority"]);
+                        insurance.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        insurance.providers = new ListService(Configuration).GetProvidersByProviderId(insurance.primaryPhysician);
+
+                        // Add the insurance to the list
+                        insurances.Add(insurance);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return View(insurances);
+        }
+
     }
 }
