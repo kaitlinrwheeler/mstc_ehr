@@ -88,7 +88,7 @@
 
             <div class="form-group">
                 <label for="Pronouns">Preferred Pronouns:</label>
-                <input asp-for="preferredPronouns" type="text" id="Pronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Pronouns', 25,  'pronoun')" />
+                <input asp-for="preferredPronouns" type="text" id="Pronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" required onblur="validateRequiredTextInput('Pronouns', 25,  'pronoun')" />
                 <span asp-validation-for="preferredPronouns" id="PronounsError" class="validation-msg"></span>
             </div>
 
@@ -103,6 +103,7 @@
                 <select asp-for="genderAssignedAtBirth" id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
+                    <option value="Intersex">Intersex</option>
                 </select>
                 <span asp-validation-for="genderAssignedAtBirth" id="GenderAssignedAtBirthError" class="validation-msg"></span>
             </div>
@@ -130,15 +131,20 @@
             </div>
 
             <div class="form-group">
-                <label for="Ethnicity">Ethnicity:</label>
-                <select asp-for="ethnicity" id="Ethnicity" name="Ethnicity" class="form-control" data-bs-theme="auto">
-                    <option value="African American">African American</option>
-                    <option value="Asian">Asian</option>
-                    <option value="Caucasian">Caucasian</option>
-                    <option value="Other">Other</option>
-                    <option value="Unknown">Unknown</option>
-
-                </select>
+                <label for="Ethnicity">Is the patient of Hispanic, Latino, or Spanish origin?</label>
+                    <!-- Add 'row' class to create a row container -->
+                    <div class="col-sm-6">
+                        <!-- Create a column for the first half of checkboxes -->
+                        <div class="race-column">
+                            <input type="checkbox" id="Yes" name="Ethnicity" value="Yes" />
+                            <label for="Yes" style="font-weight: normal;">Yes</label><br />
+                            <input type="checkbox" id="No" name="Ethnicity" value="No" />
+                            <label for="No" style="font-weight: normal;">No</label><br />
+                            <input type="checkbox" id="Unknown" name="Ethnicity" value="Unknown" />
+                            <label for="Unknown" style="font-weight: normal;">Unknown</label><br />
+                        </div>
+                    </div>
+                </div>
                 <span asp-validation-for="ethnicity" id="EthnicityError" class="validation-msg"></span>
             </div>
 
@@ -154,22 +160,11 @@
                             <input type="checkbox" id="Asian" name="RaceList" value="Asian" />
                             <label for="Asian" style="font-weight: normal;">Asian</label><br />
                             <input type="checkbox" id="Black" name="RaceList" value="Black" />
-                            <label for="Black" style="font-weight: normal;">Black</label><br />
+                            <label for="BlackOrAfricanAmerican" style="font-weight: normal;">Black or African American</label><br />
                             <input type="checkbox" id="PacificIslander" name="RaceList" value="Native Hawaiian or Other Pacific Islander" />
                             <label for="PacificIslander" style="font-weight: normal;">Pacific Islander</label><br />
                             <input type="checkbox" id="White" name="RaceList" value="White" />
                             <label for="White" style="font-weight: normal;">White</label><br />
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <!-- Create a column for the second half of checkboxes -->
-                        <div class="race-column">
-                            <input type="checkbox" id="Hispanic" name="RaceList" value="Hispanic or Latino" />
-                            <label for="Hispanic" style="font-weight: normal;">Hispanic or Latino</label><br />
-                            <input type="checkbox" id="MiddleEastern" name="RaceList" value="Middle Eastern" />
-                            <label for="MiddleEastern" style="font-weight: normal;">Middle Eastern</label><br />
-                            <input type="checkbox" id="MixedRace" name="RaceList" value="Mixed Race" />
-                            <label for="MixedRace" style="font-weight: normal;">Mixed Race</label><br />
                             <input type="checkbox" id="OtherRace" name="RaceList" value="Other" />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
