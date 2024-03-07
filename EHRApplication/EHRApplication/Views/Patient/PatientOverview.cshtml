@@ -95,13 +95,13 @@
         </div>
         <div class="col-md-6">
             <div class="row">
-                @if (Model.MHN != 0)
+                @if (Model.ContactId != null)
                 {
                     <div class="col-md-12 mb-3">
                         <div class="card card-cover">
                             <img src="~/images/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
                         </div>
-                    </div>                    
+                    </div>
                 }else{
                     //Do nothing
                 }
