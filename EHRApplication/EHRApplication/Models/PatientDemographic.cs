@@ -57,10 +57,7 @@ namespace EHRApplication.Models
         [Display(Name = "Language")]
         public string preferredLanguage { get; set; }
 
-        [Required(ErrorMessage = "Ethnicity is required.")]
-        [StringLength(60, ErrorMessage = "Ethnicity must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
-        [Display(Name = "Ethnicity")]
+        [Required(ErrorMessage = "Please select one.")]
         public string ethnicity { get; set; }
 
         [ValidateNever]
@@ -92,13 +89,17 @@ namespace EHRApplication.Models
         [Display(Name = "Guardian2")]
         public string? legalGuardian2 { get; set; }
 
-        [ValidateNever]
-        public string previousName { get; set; }
+        [StringLength(60, ErrorMessage = "Previous name must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "previousName")]
+        public string? previousName { get; set; }
 
         [Required(ErrorMessage = "Gender is required.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
+
+        public string? patientImagePath { get; set; }
     }
 }

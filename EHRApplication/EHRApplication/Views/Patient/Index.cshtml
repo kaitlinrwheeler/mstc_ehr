@@ -49,6 +49,12 @@
             </div>
 
             <div class="form-group">
+                <label for="PreviousName">Previous Name (optional):</label>
+                <input asp-for="previousName" type="text" id="PreviousName" name="PreviousName" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('PreviousName', 60,  'previous name')" />
+                <span asp-validation-for="previousName" id="PreviousNameError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="DOB">Date of Birth:</label>
                 <input asp-for="DOB" type="date" id="DOB" class="form-control" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" required/>
                 <span asp-validation-for="DOB" id="DOBError" class="validation-msg"></span>
@@ -88,19 +94,35 @@
 
             <div class="form-group">
                 <label for="Pronouns">Preferred Pronouns:</label>
-                <input asp-for="preferredPronouns" type="text" id="Pronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" required onblur="validateRequiredTextInput('Pronouns', 25,  'pronoun')" />
-                <span asp-validation-for="preferredPronouns" id="PronounsError" class="validation-msg"></span>
+                <select asp-for="preferredPronouns" id="Pronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" required onchange="handleDropdownWithTextField('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun')">
+                    <option value=""></option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="She/Her">She/Her</option>
+                    <option value="They/Them">They/Them</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input asp-for="preferredPronouns" type="text" id="OtherPronouns" name="OtherPronouns" class="form-control" style="display: none;" data-bs-theme="auto" />
+                <span asp-validation-for="preferredPronouns" id="OtherPronounsError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="Gender">Gender:</label>
-                <input asp-for="gender" type="text" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Gender', 25, 'gender')" />
-                <span asp-validation-for="gender" id="GenderError" class="validation-msg"></span>
+                <select asp-for="gender" id="Gender" name="Gender" class="form-control" data-bs-theme="auto" required onchange="handleDropdownWithTextField('Gender', 'OtherGender', 'OtherGenderError', 'gender')">
+                    <option value=""></option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input asp-for="gender" type="text" id="OtherGender" name="OtherGender" class="form-control" style="display: none;" data-bs-theme="auto" />
+                <span asp-validation-for="gender" id="OtherGenderError" class="validation-msg"></span>
             </div>
+
 
             <div class="form-group">
                 <label for="GenderAssignedAtBirth">Gender assigned at birth:</label>
                 <select asp-for="genderAssignedAtBirth" id="GenderAssignedAtBirth" name="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Intersex">Intersex</option>
@@ -111,6 +133,7 @@
             <div class="form-group">
                 <label for="PreferredLanguage">Preferred Language:</label>
                 <select asp-for="preferredLanguage" id="PreferredLanguage" name="PreferredLanguage" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
                     <option value="Dutch">Dutch</option>
@@ -144,7 +167,6 @@
                             <label for="Unknown" style="font-weight: normal;">Unknown</label><br />
                         </div>
                     </div>
-                </div>
                 <span asp-validation-for="ethnicity" id="EthnicityError" class="validation-msg"></span>
             </div>
 
@@ -155,22 +177,36 @@
                     <div class="col-sm-6">
                         <!-- Create a column for the first half of checkboxes -->
                         <div class="race-column">
-                            <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian" />
-                            <label for="AmericanIndian" style="font-weight: normal;">American Indian</label><br />
+                            <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian or Alaka Native" />
+                            <label for="AmericanIndianOrAlaskaNative" style="font-weight: normal;">American Indian or Alaka Native</label><br />
+
                             <input type="checkbox" id="Asian" name="RaceList" value="Asian" />
                             <label for="Asian" style="font-weight: normal;">Asian</label><br />
-                            <input type="checkbox" id="Black" name="RaceList" value="Black" />
+
+                            <input type="checkbox" id="Black" name="RaceList" value="Black or African American" />
                             <label for="BlackOrAfricanAmerican" style="font-weight: normal;">Black or African American</label><br />
+
                             <input type="checkbox" id="PacificIslander" name="RaceList" value="Native Hawaiian or Other Pacific Islander" />
-                            <label for="PacificIslander" style="font-weight: normal;">Pacific Islander</label><br />
+                            <label for="PacificIslanderOrOtherPacificIslander" style="font-weight: normal;">Native Hawaiian or Other Pacific Islander</label><br />
+
                             <input type="checkbox" id="White" name="RaceList" value="White" />
                             <label for="White" style="font-weight: normal;">White</label><br />
+
                             <input type="checkbox" id="OtherRace" name="RaceList" value="Other" />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <input type="text" id="OtherRaceInput" name="OtherRaceInput" class="form-control mt-2" style="display: none;" placeholder="Please specify other race" />
+                    </div>
                 </div>
                 <span asp-validation-for="raceList" id="RaceError" class="validation-msg"></span>
+            </div>
+
+            <div>
+                <label for="filePatientImage">Patient Image:</label>
+                <input type="file" id="filePatientImage" name="filePatientImage" accept="image/*" />
+                <span asp-validation-for="patientImagePath" id="patientImage" class="validation-msg"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">

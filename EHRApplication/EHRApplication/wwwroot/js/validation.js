@@ -310,3 +310,22 @@ function validateRequiredInput(inputID, errorMessage) {
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
 }
+
+function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, inputType) {
+    var selectedValue = document.getElementById(dropdownId).value;
+    var textField = document.getElementById(textFieldId);
+    var errorSpan = document.getElementById(errorSpanId);
+
+    if (selectedValue === "Other") {
+        textField.style.display = "block";
+        textField.required = true;
+        errorSpan.style.display = "block";
+
+        //Call validateRequiredTextInput for the optional text box
+        validateRequiredTextInput(textFieldId, 25, inputType);
+    } else {
+        textField.style.display = "none";
+        textField.required = false;
+        errorSpan.style.display = "none";
+    }
+}
