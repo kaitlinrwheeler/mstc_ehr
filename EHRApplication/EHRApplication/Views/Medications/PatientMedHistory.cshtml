@@ -1,0 +1,48 @@
+﻿@{
+    @model List<MedAdministrationHistory>
+
+}
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            All Providers
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Med Name:</th>
+                            <th scope="col">Date Given:</th>
+                            <th scope="col">Time Given:</th>
+                            <th scope="col">Categroy:</th>
+                            <th scope="col">Status:</th>
+                            <th scope="col">Frequency:</th>
+                            <th scope="col">Administered By:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var meds in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@meds.medProfile.medName</td>
+                                <td>@meds.dateGiven.ToString("MM-dd-yyyy")</td>
+                                <td>@meds.timeGiven.ToString("HH:mm")</td>
+                                <td>@meds.category</td>
+                                <td>@meds.status</td>
+                                <td>@meds.frequency</td>
+                                <td>@meds.providers.firstName @meds.providers.lastName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No providers found.</h1>
+            }
+        </div>
+    </div>
+</section>

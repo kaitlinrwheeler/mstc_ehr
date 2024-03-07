@@ -110,5 +110,12 @@ namespace EHRApplication.Controllers
             }
             return View(patientMeds);
         }
+
+        public IActionResult PatientMedHistory(int mhn)
+        {
+            //Calls the list service to get all of the med history associated to the passed in mhn number.
+            List<MedAdministrationHistory> patientHistory = new ListService(Configuration).GetPatientsMedHistoryByMHN(mhn);
+            return View(patientHistory);
+        }
     }
 }
