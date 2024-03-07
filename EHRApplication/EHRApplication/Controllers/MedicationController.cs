@@ -175,9 +175,22 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientMedHistory(int mhn)
         {
+            //This will set the banner up and the view model so we can view everything
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
             //Calls the list service to get all of the med history associated to the passed in mhn number.
             List<MedAdministrationHistory> patientHistory = new ListService(Configuration).GetPatientsMedHistoryByMHN(mhn);
-            return View(patientHistory);
+
+            //This will add the patient history to the view model so it can be displayed along with the banner at the same time.
+            viewModel.MedAdministrationHistories = patientHistory;
+
+            //This will add all of the data to a view bag the will be grabbed else where to display data correctly.
+            ViewBag.PatientMedHistory = viewModel.MedAdministrationHistories;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
         }
     }
 }
