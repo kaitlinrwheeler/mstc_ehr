@@ -175,7 +175,7 @@
                 <div asp-for="raceList" id="Race" class="row text-nowrap">
                     <!-- Add 'row' class to create a row container -->
                     <div class="col-sm-6">
-                        <!-- Create a column for the first half of checkboxes -->
+                        <!-- Create a column for the checkboxes -->
                         <div class="race-column">
                             <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian or Alaka Native" />
                             <label for="AmericanIndianOrAlaskaNative" style="font-weight: normal;">American Indian or Alaka Native</label><br />
@@ -192,12 +192,13 @@
                             <input type="checkbox" id="White" name="RaceList" value="White" />
                             <label for="White" style="font-weight: normal;">White</label><br />
 
-                            <input type="checkbox" id="OtherRace" name="RaceList" value="Other" />
+                            <input type="checkbox" id="OtherRace" name="RaceList" value="Other" onchange="handleOtherRaceSelection()" />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" id="OtherRaceInput" name="OtherRaceInput" class="form-control mt-2" style="display: none;" placeholder="Please specify other race" />
+                    </div><br />
+                    <div>
+                        <input asp-for="race" type="text" id="OtherRaceInput" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." onblur="validateOptionalTextInput('OtherRaceInput', 25,  'other race')"/>
+                        <span asp-validation-for="race" id="OtherRaceInputError" class="validation-msg"></span>
                     </div>
                 </div>
                 <span asp-validation-for="raceList" id="RaceError" class="validation-msg"></span>

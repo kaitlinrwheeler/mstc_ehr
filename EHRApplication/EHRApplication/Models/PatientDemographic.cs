@@ -60,7 +60,9 @@ namespace EHRApplication.Models
         [Required(ErrorMessage = "Please select one.")]
         public string ethnicity { get; set; }
 
-        [ValidateNever]
+        [StringLength(60, ErrorMessage = "Race must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "Race")]
         public string race { get; set; }
 
         [Required(ErrorMessage = "Please select at least one race.")]

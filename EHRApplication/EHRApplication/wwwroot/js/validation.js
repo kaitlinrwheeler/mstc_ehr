@@ -311,6 +311,7 @@ function validateRequiredInput(inputID, errorMessage) {
     handleInputChange();
 }
 
+//handles when OTHER option is clicked and adds a text box that the user can type in.
 function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, inputType) {
     var selectedValue = document.getElementById(dropdownId).value;
     var textField = document.getElementById(textFieldId);
@@ -321,11 +322,33 @@ function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, input
         textField.required = true;
         errorSpan.style.display = "block";
 
-        //Call validateRequiredTextInput for the optional text box
+        // Set placeholder based on input type
+        if (inputType === 'gender') {
+            textField.placeholder = "Please specify a gender.";
+        } else if (inputType === 'pronoun') {
+            textField.placeholder = "Please specify other pronouns.";
+        }
+
+        // Call validateRequiredTextInput for the optional text box (validation)
         validateRequiredTextInput(textFieldId, 25, inputType);
     } else {
         textField.style.display = "none";
         textField.required = false;
         errorSpan.style.display = "none";
+    }
+}
+
+//handles when the OTHER is selected in the race list. Had to do this one seperately because the js couldn't grab it successfully using the previous function.
+function handleOtherRaceSelection() {
+    var otherRaceCheckbox = document.getElementById("OtherRace");
+    var otherRaceInput = document.getElementById("OtherRaceInput");
+
+    if (otherRaceCheckbox.checked) {
+        otherRaceInput.style.display = "block";
+        otherRaceInput.required = true;
+
+    } else {
+        otherRaceInput.style.display = "none";
+        otherRaceInput.required = false;
     }
 }
