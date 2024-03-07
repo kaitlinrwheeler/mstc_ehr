@@ -350,7 +350,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 //SQL command to select the data from the database
-                string sql = "Select * From [dbo].[CarePlan] WHERE MHN = @mhn ORDER BY startDate DESC";
+                string sql = "Select * From [dbo].[CarePlan] WHERE MHN = @mhn ORDER BY CASE WHEN activeStatus = 'active' THEN 1 ELSE 2 END, startDate DESC";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 //Replace placeholder with paramater to avoid sql injection.
