@@ -1,5 +1,6 @@
 ﻿@{
     @model List<MedAdministrationHistory>
+    //@model EHRApplication.ViewModels.PortalViewModel
 
 }
 
@@ -9,7 +10,7 @@
             All Providers
         </div>
         <div class="card-body" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (Model@*.MedAdministrationHistory*@.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -24,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var meds in Model)
+                        @foreach (var meds in Model@*.MedAdministrationHistory*@)
                         {
                             <tr class="hover-highlighting">
                                 <td>@meds.medProfile.medName</td>
