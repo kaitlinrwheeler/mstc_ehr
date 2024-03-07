@@ -8,7 +8,7 @@
     <!-- Patient Info Banner -->
     <div id="patient-info-banner" class="container-fluid bg-red py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
         <div class="row align-items-center">
-            @if (Model != null && Model.PatientDemographic != null && Model.PatientDemographic.providers != null)
+            @if (Model != null && Model.PatientDemographic.MHN != 0 && Model.PatientDemographic.providers != null)
             {
                 <div class="col d-flex align-items-center">
 
