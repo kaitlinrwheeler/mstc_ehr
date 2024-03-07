@@ -10,7 +10,7 @@
             All Providers
         </div>
         <div class="card-body" data-bs-theme="auto">
-            @if (Model@*.MedAdministrationHistory*@.Any())
+            @if (Model@*.MedAdministrationHistories*@.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -25,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var meds in Model@*.MedAdministrationHistory*@)
+                        @foreach (var meds in Model@*.MedAdministrationHistories*@)
                         {
                             <tr class="hover-highlighting">
                                 <td>@meds.medProfile.medName</td>
