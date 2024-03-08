@@ -367,6 +367,9 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientInsurance(int mhn)
         {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
 
@@ -406,10 +409,13 @@ namespace EHRApplication.Controllers
                     }
                 }
 
+                viewModel.PatientInsurance = insurances;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
                 connection.Close();
             }
 
-            return View(insurances);
+            return View(viewModel);
         }
 
     }
