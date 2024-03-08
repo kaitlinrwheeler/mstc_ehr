@@ -322,6 +322,7 @@ namespace EHRApplication.Controllers
 
                         // Populate the vital object with data from the database.
                         vital.patientId = dataReader.GetInt32("patientID");
+                        // Single visit where the vitals were taken.
                         vital.visits = new ListService(Configuration).GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
                         vital.temperature = dataReader.GetDecimal("temperature");

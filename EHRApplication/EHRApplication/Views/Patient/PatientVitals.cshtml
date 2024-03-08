@@ -1,5 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    // The list of Visits being pulled in.
+    @model List<Vitals>
 }
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Visits
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Pain Level:</th>
+                            <th scope="col">Temperature:</th>
+                            <th scope="col">Blood Pressure:</th>
+                            <th scope="col">Respiratory Rate:</th>
+                            <th scope="col">Pulse Oximetry:</th>
+                            <th scope="col">Height (in)</th>
+                            <th scope="col">Weight (lb)</th>
+                            <th scope="col">BMI</th>
+                            <th scope="col">Intake (ml)</th>
+                            <th scope="col">Output (ml)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var vital in Model)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@vital.painLevel</td>
+                                <td>@vital.temperature.ToString("F1")</td>
+                                <td>@vital.bloodPressure</td>
+                                <td>@vital.respiratoryRate</td>
+                                <td>@vital.pulseOximetry.ToString("F1")</td>
+                                <td>@vital.heightInches.ToString("F1")</td>
+                                <td>@vital.weightPounds.ToString("F1")</td>
+                                <td>@vital.BMI.ToString("F1")</td>
+                                <td>@vital.intakeMilliLiters.ToString("F1")</td>
+                                <td>@vital.outputMilliLiters.ToString("F1")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No vitals found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>
