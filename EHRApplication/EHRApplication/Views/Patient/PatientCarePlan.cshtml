@@ -1,0 +1,58 @@
+﻿@{
+    // The list of patients being pulled in.
+    @model EHRApplication.ViewModels.PortalViewModel
+
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Care Plan
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model.CarePlans.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Priority:</th>
+                            <th scope="col">Status:</th>
+                            <th scope="col">Title:</th>
+                            <th scope="col">Diagnosis:</th>
+                            <th scope="col">Start Date:</th>
+                            <th scope="col">End Date:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var plan in Model.CarePlans)
+                        {
+                            <tr class="hover-highlighting">
+                                @* shows a yellow background if the priority for that plan is high otherwise it will be a gray background. *@
+                                <td style='background-color: @(plan.priority == "High" ? "yellow" : "unset"); color: @(plan.priority == "High" ? "black" : "inherit")'>
+                                    @if (plan.priority == "High")
+                                    {
+                                        <span>
+                                            <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                        </span>
+                                    }
+                                    @plan.priority
+                                </td>
+                                                            
+                                <td>@plan.activeStatus</td>
+                                <td>@plan.title</td>
+                                <td>@plan.diagnosis</td>
+                                <td>@plan.startDate.ToString("MM/dd/yyyy")</td>
+                                <td>@plan.endDate.ToString("MM/dd/yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No Care Plan found.</h1>
+            }
+        </div>
+    </div>
+</section>

@@ -16,5 +16,9 @@ namespace EHRApplication.Services
         PatientContact GetContactByMHN(int mhn);
 
         MedicationProfile GetMedicationProfileByMedId(int medId);
+
+        List<MedAdministrationHistory> GetPatientsMedHistoryByMHN(int mhn);
+
+        List<CarePlan> GetCarePlanByMHN(int mhn);
     }
 }
