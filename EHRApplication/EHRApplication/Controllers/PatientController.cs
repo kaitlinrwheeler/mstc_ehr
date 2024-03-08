@@ -420,11 +420,19 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientCarePlan(int mhn)
         {
+            //This will set the banner up and the view model so we can view everything
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
             //This will grab a list of the care plans from the list services for the patient.
-            IEnumerable<CarePlan> carePlans = new ListService(Configuration).GetCarePlanByMHN(mhn);
+            List<CarePlan> carePlans = new ListService(Configuration).GetCarePlanByMHN(mhn);
 
-            return View(carePlans);
+            //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
+            viewModel.CarePlans = carePlans;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
         }
-
     }
 }

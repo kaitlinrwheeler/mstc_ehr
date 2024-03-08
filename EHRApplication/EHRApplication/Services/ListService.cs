@@ -339,7 +339,7 @@ namespace EHRApplication.Services
             }
         }
 
-        public IEnumerable<CarePlan> GetCarePlanByMHN(int mhn)
+        public List<CarePlan> GetCarePlanByMHN(int mhn)
         {
             //List that will hold all of the care plans for the patient with the passed in mhn number.
             List<CarePlan> carePlanList = new List<CarePlan>();
