@@ -1,6 +1,6 @@
 ﻿@{
-    // The list of patients being pulled in.
-    @model List<PatientProblems>
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "Patient Problems";
 }
 
 
@@ -10,7 +10,7 @@
             Patient Problems
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (Model != null && Model.PatientProblems != null && Model.PatientProblems.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -28,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var problem in Model)
+                        @foreach (var problem in Model.PatientProblems)
                         {
                             <tr class="hover-highlighting">
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->

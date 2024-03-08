@@ -53,10 +53,10 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@zipcode", SqlDbType.VarChar).Value = contact.zipcode;
                     command.Parameters.Add("@phone", SqlDbType.VarChar).Value = contact.phone;
                     command.Parameters.Add("@email", SqlDbType.VarChar).Value = contact.email;
-                    command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "NA" : contact.ECFirstName;
-                    command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "NA" : contact.ECLastName;
-                    command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "NA" : contact.ECRelationship;
-                    command.Parameters.Add("@ECPhone", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECPhone) ? "NA" : contact.ECPhone;
+                    command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "" : contact.ECFirstName;
+                    command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "" : contact.ECLastName;
+                    command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "" : contact.ECRelationship;
+                    command.Parameters.Add("@ECPhone", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECPhone) ? "" : contact.ECPhone;
 
                     connection.Open();
                     command.ExecuteNonQuery();

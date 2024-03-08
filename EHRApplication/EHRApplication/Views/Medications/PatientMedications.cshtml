@@ -1,6 +1,6 @@
 ﻿@{
-    // The list of patients being pulled in.
-    @model List<PatientMedications>
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "Patient Medications";
     <link rel="stylesheet" href="~/css/patientMedication.css" asp-append-version="true" />
 }
 
@@ -11,7 +11,7 @@
             Medications
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (Model != null && Model.PatientMedications != null && Model.PatientMedications.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var medication in Model)
+                        @foreach (var medication in Model.PatientMedications)
                         {
                             <tr class="hover-highlighting">
                                 <td>@medication.medProfile.medName</td>@* 
