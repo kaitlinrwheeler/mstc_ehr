@@ -372,6 +372,10 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientVitals(int mhn)
         {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
 
@@ -415,10 +419,14 @@ namespace EHRApplication.Controllers
                     }
                 }
 
+                viewModel.Vitals = vitals;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+
                 connection.Close();
             }
 
-            return View(vitals);
+            return View(viewModel);
         }
 
     }

@@ -1,6 +1,9 @@
 ﻿@{
     // The list of Visits being pulled in.
-    @model List<Vitals>
+//@model List<Vitals>
+
+@model EHRApplication.ViewModels.PortalViewModel;
+    var patient = Model.PatientDemographic;
 }
 
 
@@ -10,7 +13,7 @@
             Visits
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (patient != null && Model.Vitals.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -28,7 +31,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var vital in Model)
+                        @foreach (var vital in Model.Vitals)
                         {
                             <tr class="hover-highlighting">
                                 <td>@vital.painLevel</td>
