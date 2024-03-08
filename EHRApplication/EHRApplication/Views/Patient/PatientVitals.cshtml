@@ -10,7 +10,7 @@
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header text-center" data-bs-theme="auto">
-            Visits
+            Vitals
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (patient != null && Model.Vitals.Any())
@@ -18,6 +18,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th scope="col">Date/Time</th>
                             <th scope="col">Pain Level:</th>
                             <th scope="col">Temperature:</th>
                             <th scope="col">Blood Pressure:</th>
@@ -34,6 +35,7 @@
                         @foreach (var vital in Model.Vitals)
                         {
                             <tr class="hover-highlighting">
+                                <td>@vital.visits.date.ToString("MM-dd-yyyy") @vital.visits.time.ToString("HH:mm")</td>
                                 <td>@vital.painLevel</td>
                                 <td>@vital.temperature.ToString("F1")</td>
                                 <td>@vital.bloodPressure</td>
