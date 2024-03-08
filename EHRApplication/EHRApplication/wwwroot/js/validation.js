@@ -352,3 +352,29 @@ function handleOtherRaceSelection() {
         otherRaceInput.required = false;
     }
 }
+
+function validateImageSize(input) {
+    const maxSize = 1000 * 1024; // 1000 KB in bytes
+    const minSize = 0;  // 500 KB in bytes
+
+    if (input.files && input.files[0]) {
+        const fileSize = input.files[0].size;
+
+        if (fileSize < minSize || fileSize > maxSize) {
+            document.getElementById("patientImage").innerText = "Image size should be between 500KB and 1000KB.";
+            input.value = ''; // Clear the file input to prevent submission
+        } else {
+            // File size within limits, proceed with the filename change
+            const file = input.files[0];
+            const filename = "MHN_" + file.name;
+
+            // Create a new File object with the updated filename
+            const newFile = new File([file], filename, { type: file.type });
+
+            // Replace the original file with the new file
+            input.files[0] = newFile;
+
+            document.getElementById("patientImage").innerText = ""; // Clear any previous error message
+        }
+    }
+}

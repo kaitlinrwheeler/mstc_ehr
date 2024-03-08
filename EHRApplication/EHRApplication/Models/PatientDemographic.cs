@@ -102,6 +102,9 @@ namespace EHRApplication.Models
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
 
-        public string? patientImagePath { get; set; }
+        [Display(Name = "Patient Image")]
+        [DataType(DataType.ImageUrl)]
+        [RegularExpression(@"^(?!.*\.\.)(?!.*\/{2})[a-zA-Z0-9\/.]+$", ErrorMessage = "Invalid file path.")]
+        public string patientImagePath { get; set; }
     }
 }

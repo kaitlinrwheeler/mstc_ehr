@@ -18,11 +18,14 @@ namespace EHRApplication.Controllers
         private string connectionString;
         public IConfiguration Configuration { get; }
 
-        public PatientController(LogService logService, IConfiguration configuration)
+        private readonly IWebHostEnvironment _environment;
+
+        public PatientController(LogService logService, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _logService = logService;
             Configuration = configuration;
             this.connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            _environment = environment;
         }
 
         public IActionResult AllPatients()
@@ -77,38 +80,61 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public IActionResult Index(PatientDemographic patient, IFormFile filePatientImage)
         {
-            //Testing to see if the date of birth entered was a future date or not
+            // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
-                //adding an error to the DOB model to display an error.
+                // Adding an error to the DOB model to display an error.
                 ModelState.AddModelError("DOB", "Date cannot be in the future.");
                 return View(patient);
             }
-            //returns the model if null because there were errors in validating it
+
+            // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 return View(patient);
             }
 
+            // Handling file upload
+            if (filePatientImage != null && filePatientImage.Length > 0)
+            {
+                if (filePatientImage.Length > 1000000) // 1000 KB = 1000 * 1024 bytes
+                {
+                    ModelState.AddModelError("filePatientImage", "The image size must be below 1000 KB.");
+                    return View(patient);
+                }
+
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + filePatientImage.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    filePatientImage.CopyTo(fileStream);
+                }
+
+                // Update patient's image path
+                patient.patientImagePath = "/uploads/" + uniqueFileName;
+            }
+
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
-                //SQL query that is going to insert the data that the user entered into the database table.
-                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth) " +
-                    "VALUES (@firstName, @middleName, @lastName, @suffix, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth)";
+                // SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, previousName, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth, patientImagePath) " +
+                    "VALUES (@firstName, @middleName, @lastName, @suffix, @previousName, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth, @patientImagePath)";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
 
                     patient.race = string.Join(",", patient.raceList);
 
-                    //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
-                    //adding parameters
+                    // Adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
                     command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.middleName;
                     command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
                     command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "NA" : patient.suffix;
+                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "NA" : patient.previousName;
                     command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "NA" : patient.preferredPronouns;
                     command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
                     command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "NA" : patient.gender;
@@ -120,6 +146,7 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
                     command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+                    command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -130,6 +157,7 @@ namespace EHRApplication.Controllers
             ModelState.Clear();
             return View();
         }
+
 
         public IActionResult PatientOverview(int mhn)
         {

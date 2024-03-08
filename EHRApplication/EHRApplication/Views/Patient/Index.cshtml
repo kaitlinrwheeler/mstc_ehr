@@ -206,7 +206,7 @@
 
             <div>
                 <label for="filePatientImage">Patient Image:</label>
-                <input type="file" id="filePatientImage" name="filePatientImage" accept="image/*" />
+                <input type="file" id="filePatientImage" name="filePatientImage" accept="image/*" onchange="validateImageSize(this)">
                 <span asp-validation-for="patientImagePath" id="patientImage" class="validation-msg"></span>
             </div>
 
