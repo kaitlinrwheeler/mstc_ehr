@@ -493,7 +493,9 @@ namespace EHRApplication.Controllers
                     }
                 }
 
-                viewModel.Vitals = vitals;
+                // Order the list by visit date descending
+                viewModel.Vitals = vitals.OrderByDescending(v => v.visits.date).ToList();
+
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = mhn;
 
