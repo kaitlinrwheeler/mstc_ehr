@@ -192,5 +192,10 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult PatientLabResults(int mhn)
+        {
+            return View();
+        }
     }
 }
