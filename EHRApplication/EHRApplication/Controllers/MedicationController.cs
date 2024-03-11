@@ -195,7 +195,21 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientLabResults(int mhn)
         {
-            return View();
+            //This will set the banner up and the view model so we can view everything
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            //Calls the list service to get all of the Lab Results associated to the passed in mhn number.
+            List<LabResults> patientHistory = new ListService(Configuration).GetPatientsLabResultsByMHN(mhn);
+
+            //This will add the patient Lab Results to the view model so it can be displayed along with the banner at the same time.
+            viewModel.LabResults = patientHistory;
+
+            //This will add all of the data to a view bag the will be grabbed else where to display data correctly.
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
         }
     }
 }
