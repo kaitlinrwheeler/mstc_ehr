@@ -442,7 +442,7 @@ namespace EHRApplication.Services
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "Select * From [dbo].[LabResults] WHERE MHN = @mhn ORDER By dateGiven DESC, timeGiven DESC";
+                string sql = "Select * From [dbo].[LabResults] WHERE MHN = @mhn ORDER By date DESC, time DESC";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 //Replace placeholder with paramater to avoid sql injection.
@@ -468,10 +468,10 @@ namespace EHRApplication.Services
                         labResults.testId = Convert.ToInt32(dataReader["testId"]);
                         labResults.labTests = GetLabTestByTestId(labResults.testId);
 
-                        labResults.resultValue = Convert.ToString("resultValue");
-                        labResults.abnormalFlag = Convert.ToString("abnormalFlag");
+                        labResults.resultValue = Convert.ToString(dataReader["resultValue"]);
+                        labResults.abnormalFlag = Convert.ToString(dataReader["abnormalFlag"]);
 
-                        labResults.orderedBy = Convert.ToInt32("orderedBy");
+                        labResults.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
                         labResults.providers = GetProvidersByProviderId(labResults.orderedBy);
 
                         //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
