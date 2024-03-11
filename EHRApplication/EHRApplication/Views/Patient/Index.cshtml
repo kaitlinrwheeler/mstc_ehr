@@ -196,19 +196,15 @@
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
                     </div><br />
-                    <div>
-                        <input asp-for="race" type="text" id="OtherRaceInput" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." onblur="validateOptionalTextInput('OtherRaceInput', 25,  'other race')"/>
-                        <span asp-validation-for="race" id="OtherRaceInputError" class="validation-msg"></span>
-                    </div>
                 </div>
                 <span asp-validation-for="raceList" id="RaceError" class="validation-msg"></span>
             </div>
-
             <div>
-                <label for="filePatientImage">Patient Image:</label>
-                <input type="file" id="filePatientImage" name="filePatientImage" accept="image/*" onchange="validateImageSize(this)">
-                <span asp-validation-for="patientImagePath" id="patientImage" class="validation-msg"></span>
+                <input asp-for="OtherRace" type="text" id="OtherRaceInput" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." onblur="validateOptionalTextInput('OtherRaceInput', 25,  'other race')" />
+                <span asp-validation-for="OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
             </div>
+
+
 
             <div class="mt-3 d-flex justify-content-center">
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />

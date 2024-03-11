@@ -60,13 +60,16 @@ namespace EHRApplication.Models
         [Required(ErrorMessage = "Please select one.")]
         public string ethnicity { get; set; }
 
-        [StringLength(60, ErrorMessage = "Race must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
-        [Display(Name = "Race")]
+        [ValidateNever]
         public string race { get; set; }
 
         [Required(ErrorMessage = "Please select at least one race.")]
         public List<string> raceList { get; set; }
+
+                [StringLength(60, ErrorMessage = "Race must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "Race")]
+        public string OtherRace { get; set; }
 
         [StringLength(60, ErrorMessage = "Religion must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
@@ -102,9 +105,9 @@ namespace EHRApplication.Models
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
 
-        [Display(Name = "Patient Image")]
+/*        [Display(Name = "Patient Image")]
         [DataType(DataType.ImageUrl)]
         [RegularExpression(@"^(?!.*\.\.)(?!.*\/{2})[a-zA-Z0-9\/.]+$", ErrorMessage = "Invalid file path.")]
-        public string patientImagePath { get; set; }
+        public string? patientImagePath { get; set; }*/
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -80,7 +81,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient, IFormFile filePatientImage)
+        public IActionResult Index(PatientDemographic patient)
         {
             // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
@@ -97,7 +98,7 @@ namespace EHRApplication.Controllers
             }
 
             // Handling file upload
-            if (filePatientImage != null && filePatientImage.Length > 0)
+/*            if (filePatientImage != null && filePatientImage.Length > 0)
             {
                 if (filePatientImage.Length > 1000000) // 1000 KB = 1000 * 1024 bytes
                 {
@@ -116,7 +117,7 @@ namespace EHRApplication.Controllers
 
                 // Update patient's image path
                 patient.patientImagePath = "/uploads/" + uniqueFileName;
-            }
+            }*/
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
@@ -127,7 +128,15 @@ namespace EHRApplication.Controllers
                 {
                     command.CommandType = CommandType.Text;
 
-                    patient.race = string.Join(",", patient.raceList);
+                    if (patient.raceList.Contains("Other"))
+                        {     
+                              //Remove the "other" race from the raceList
+                              patient.raceList.Remove("Other"); 
+                    }
+                        patient.raceList.Add(patient.OtherRace);
+                        patient.race = string.Join(",",patient.raceList);
+
+                    //patient.race = string.Join(",", patient.raceList, patient.OtherRace);
 
                     // Adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
@@ -146,7 +155,7 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
                     command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
-                    command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
+                    //command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
 
                     connection.Open();
                     command.ExecuteNonQuery();
