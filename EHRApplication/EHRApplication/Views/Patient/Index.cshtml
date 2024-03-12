@@ -204,10 +204,14 @@
                 <span asp-validation-for="OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
             </div>
 
-
-
             <div class="mt-3 d-flex justify-content-center">
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+            </div>
+
+            <div>
+                <label for="patientImagePath">Patient Image:</label>
+                <input asp-for="patientImagePath" type="file" id="patientImagePath"/>
+                <span asp-validation-for="patientImagePath" id="patientImage" class="validation-msg"></span>
             </div>
         </form>
     </div>

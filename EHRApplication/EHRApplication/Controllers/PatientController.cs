@@ -80,6 +80,49 @@ namespace EHRApplication.Controllers
             return View();
         }
 
+        public string UploadPatientImage(IFormFile filePatientImage)
+        {
+            if (filePatientImage != null && filePatientImage.Length > 0)
+            {
+                try
+                {
+                    // Define the folder path where you want to save the image
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "patientImages");
+
+                    // Ensure the folder exists, if not create it
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    // Create a unique file name to prevent overwriting
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + filePatientImage.FileName;
+
+                    // Combine the folder path and the unique file name
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Copy the uploaded file to the file path
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        filePatientImage.CopyTo(stream);
+                    }
+
+                    // You may save the filePath to your database if necessary
+                    // For demonstration purposes, returning the file path
+                    return filePath;
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions, log them, etc.
+                    throw new Exception("Error uploading file: " + ex.Message);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("No file uploaded");
+            }
+        }
+
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
@@ -91,33 +134,46 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
+            if (patient.patientImagePath != null && patient.patientImagePath.Length > 0)
+            {
+                try
+                {
+                    // Define the folder path where you want to save the image
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "patientImages");
+
+                    // Ensure the folder exists, if not create it
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    // Extracting the file name from the patientImagePath
+                    var fileName = Path.GetFileName(patient.patientImagePath);
+
+                    // Combining the destination path with the file name
+                    var destinationFilePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Copy the image file to the destination folder
+                    System.IO.File.Copy(patient.patientImagePath, destinationFilePath, true);
+
+                    // Image downloaded successfully
+                    Console.WriteLine("Image downloaded successfully.");
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions, log them, etc.
+                    Console.WriteLine("Error downloading image: " + ex.Message);
+                }
+            }
+
+
             // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 return View(patient);
             }
 
-            // Handling file upload
-/*            if (filePatientImage != null && filePatientImage.Length > 0)
-            {
-                if (filePatientImage.Length > 1000000) // 1000 KB = 1000 * 1024 bytes
-                {
-                    ModelState.AddModelError("filePatientImage", "The image size must be below 1000 KB.");
-                    return View(patient);
-                }
-
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + filePatientImage.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    filePatientImage.CopyTo(fileStream);
-                }
-
-                // Update patient's image path
-                patient.patientImagePath = "/uploads/" + uniqueFileName;
-            }*/
+            //UploadPatientImage(filePatientImage);
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
@@ -129,12 +185,20 @@ namespace EHRApplication.Controllers
                     command.CommandType = CommandType.Text;
 
                     if (patient.raceList.Contains("Other"))
-                        {     
-                              //Remove the "other" race from the raceList
-                              patient.raceList.Remove("Other"); 
+                    {
+                        //Remove the "other" race from the raceList
+                        patient.raceList.Remove("Other");
+
+                        // Add the OtherRace only if it's not empty
+                        if (!string.IsNullOrEmpty(patient.OtherRace))
+                        {
+                            patient.raceList.Add(patient.OtherRace);
+                        }
                     }
-                        patient.raceList.Add(patient.OtherRace);
-                        patient.race = string.Join(",",patient.raceList);
+
+                    // Join the race list with commas
+                    patient.race = string.Join(",", patient.raceList);
+
 
                     //patient.race = string.Join(",", patient.raceList, patient.OtherRace);
 
@@ -155,7 +219,7 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
                     command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
-                    //command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
+                    command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
 
                     connection.Open();
                     command.ExecuteNonQuery();
