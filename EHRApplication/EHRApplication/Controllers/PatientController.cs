@@ -434,5 +434,58 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+
+        public IActionResult PatientNotes(int mhn)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            // List to hold the patient's list of allergies.
+            List<PatientNotes> notes = new List<PatientNotes>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[PatientNotes] WHERE MHN = @mhn ORDER BY occurredOn DESC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        PatientNotes note = new PatientNotes();
+
+                        // Populate the note object with data from the database.
+                        //TODO: make this get the right date only data type.
+                        note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
+                        note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
+                        note.providers = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
+                        note.assocProvider = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));
+                        note.category = Convert.ToString(dataReader["category"]);
+                        note.Note = Convert.ToString(dataReader["note"]);
+
+
+                        // Add the insurance to the list
+                        notes.Add(note);
+                    }
+                }
+
+                viewModel.PatientNotes = notes;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+                connection.Close();
+            }
+
+            return View(viewModel);
+        }
     }
 }
