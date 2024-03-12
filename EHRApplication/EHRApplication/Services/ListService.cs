@@ -395,6 +395,7 @@ namespace EHRApplication.Services
             }
             return historyList;
         }
+
         public List<CarePlan> GetCarePlanByMHN(int mhn)
         {
             //List that will hold all of the care plans for the patient with the passed in mhn number.
@@ -435,5 +436,119 @@ namespace EHRApplication.Services
             }
         }
 
+        public List<LabOrders> GetPatientsLabOrdersByMHN(int mhn)
+        {
+            //Create a new instance of the Med History class to store data from the database
+            List<LabOrders> labOrdersList = new List<LabOrders>();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[LabOrders] WHERE MHN = @mhn ORDER By dateGiven DESC, timeGiven DESC";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                //Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@MHN", mhn);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the med history model.
+                        LabOrders labOrders = new LabOrders();
+
+                        // Populate the labOrders object with data from the database.
+                        labOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
+
+                        //Gets the MHN from the table and then uses that to grab the patient associated to the order and
+                        //Creates a object that is saved to the lab order object.
+                        labOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        labOrders.patients = GetPatientByMHN(mhn);
+                        
+                        //Gets the test id from the table and then uses that to grab the patient associated to the order and
+                        //Creates a object that is saved to the lab order object.
+                        labOrders.testId = Convert.ToInt32(dataReader["testId"]);
+                        //labOrders.labTests = GetLabTestsById(labOrders.testId);
+
+                        labOrders.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //labOrders.visits = GetPatientVisitsByMHN(labOrders.visitsId);
+
+                        labOrders.completionStatus = Convert.ToString(dataReader["completionStatus"]);
+
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["orderDate"].ToString());
+                        labOrders.orderDate = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        labOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
+
+                        //Gets the provider id from the table and then uses that to grab the provider associated to it.
+                        //Creates an object that is saved to the med history object.
+                        labOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        labOrders.providers = GetProvidersByProviderId(labOrders.orderedBy);
+
+                        // Add the patient to the list
+                        labOrdersList.Add(labOrders);
+                    }
+                }
+                connection.Close();
+            }
+            return labOrdersList;
+        }
+
+        public PatientDemographic GetPatientByMHN(int mhn)
+        {
+            //Creating a new patientDemographic instance
+            PatientDemographic patientDemographic = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Assign properties for the patient demographic from the database
+                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        patientDemographic.race = Convert.ToString(dataReader["race"]);
+                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        patientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
+                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        patientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(patientDemographic.MHN);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientDemographic;
+        }
     }
 }
