@@ -1,75 +1,48 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "UserDashboard";
     <link rel="stylesheet" href="~/css/userDashboard.css" asp-append-version="true" />
-
 }
 
 <div class="container">
     <h2>Welcome, User!</h2>
     <!--Start of first row-->
     <div class="card-row">
-        <div class="card-box">
-            <a>
-                <h3 class="card-title">Test</h3>
+        <a class="card-box navigation-1" asp-area ="" asp-controller="Medications" asp-action="AllMedications">
+                <h3 class="card-title">All Medications</h3>
                 <ul class="card-list">
-                    <li>Word1</li>
+                    <li>#New Medications</li>
                 </ul>
-            </a>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="Patient" asp-action="AllPatients">
+            <h3 class="card-title">All Patients</h3>
             <ul class="card-list">
-                <li>Word2</li>
+                <li>#New Patients</li>
             </ul>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="Providers" asp-action="AllProviders">
+            <h3 class="card-title">All Providers</h3>
             <ul class="card-list">
-                <li>Word3</li>
+                <li>#New Providers</li>
             </ul>
-        </div>
+        </a>
     </div>
     <!--Start of second row-->
     <div class="card-row">
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
+        <a class="card-box navigation-1" asp-area="" asp-controller="Resources" asp-action="Index">
+            <h3 class="card-title">Resources</h3>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="LabTestProfile" asp-action="AllLabTests">
+            <h3 class="card-title">All Lab Tests</h3>
             <ul class="card-list">
-                <li>Word4</li>
+                <li>#New Lab Tests</li>
             </ul>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
-            <ul class="card-list">
-                <li>Word5</li>
-            </ul>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
-            <ul class="card-list">
-                <li>Word6</li>
-            </ul>
-        </div>
-    </div>
-    <!--Start of third row-->
-    <div class="card-row">
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
-            <ul class="card-list">
-                <li>Word7</li>
-            </ul>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
-            <ul class="card-list">
-                <li>Word8</li>
-            </ul>
-        </div>
-        <div class="card-box">
-            <h3 class="card-title">Test</h3>
-            <ul class="card-list">
-                <li>Word9</li>
-            </ul>
-        </div>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="#" asp-action="#">
+            <h3 class="card-title">Account Info</h3>
+        </a>
     </div>
 </div>
