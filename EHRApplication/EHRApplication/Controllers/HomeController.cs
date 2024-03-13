@@ -56,5 +56,10 @@ namespace EHRApplication.Controllers
         {
             return View();
         }
+
+        public IActionResult UserDashboard()
+        {
+            return View();
+        }
     }
 }
