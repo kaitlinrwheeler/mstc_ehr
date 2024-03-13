@@ -2,13 +2,7 @@
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography.Pkcs;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Controllers
 {
@@ -80,52 +74,33 @@ namespace EHRApplication.Controllers
             return View();
         }
 
-        public string UploadPatientImage(IFormFile filePatientImage)
+        //processes the images
+        private async Task<IActionResult> ProcessImage(IFormFile file)
         {
-            if (filePatientImage != null && filePatientImage.Length > 0)
+            if (file == null || file.Length == 0)
+                return Content("File not selected or is empty.");
+
+            try
             {
-                try
+                //add unique file name
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/patientImages", file.FileName);
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    // Define the folder path where you want to save the image
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "patientImages");
-
-                    // Ensure the folder exists, if not create it
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    // Create a unique file name to prevent overwriting
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + filePatientImage.FileName;
-
-                    // Combine the folder path and the unique file name
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Copy the uploaded file to the file path
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        filePatientImage.CopyTo(stream);
-                    }
-
-                    // You may save the filePath to your database if necessary
-                    // For demonstration purposes, returning the file path
-                    return filePath;
+                    await file.CopyToAsync(stream);
                 }
-                catch (Exception ex)
-                {
-                    // Handle exceptions, log them, etc.
-                    throw new Exception("Error uploading file: " + ex.Message);
-                }
+                return Content($"File {file.FileName} uploaded successfully.");
             }
-            else
+            catch (Exception ex)
             {
-                throw new ArgumentException("No file uploaded");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error uploading file: {ex.Message}");
             }
         }
 
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
+            ProcessImage(patient.imageFile);
+
             // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
@@ -134,46 +109,11 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
-            if (patient.patientImagePath != null && patient.patientImagePath.Length > 0)
-            {
-                try
-                {
-                    // Define the folder path where you want to save the image
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "patientImages");
-
-                    // Ensure the folder exists, if not create it
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    // Extracting the file name from the patientImagePath
-                    var fileName = Path.GetFileName(patient.patientImagePath);
-
-                    // Combining the destination path with the file name
-                    var destinationFilePath = Path.Combine(uploadsFolder, fileName);
-
-                    // Copy the image file to the destination folder
-                    System.IO.File.Copy(patient.patientImagePath, destinationFilePath, true);
-
-                    // Image downloaded successfully
-                    Console.WriteLine("Image downloaded successfully.");
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions, log them, etc.
-                    Console.WriteLine("Error downloading image: " + ex.Message);
-                }
-            }
-
-
             // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 return View(patient);
             }
-
-            //UploadPatientImage(filePatientImage);
 
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
@@ -198,9 +138,6 @@ namespace EHRApplication.Controllers
 
                     // Join the race list with commas
                     patient.race = string.Join(",", patient.raceList);
-
-
-                    //patient.race = string.Join(",", patient.raceList, patient.OtherRace);
 
                     // Adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
