@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -140,20 +141,19 @@ namespace EHRApplication.Controllers
 
                     // Adding parameters
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
-                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.middleName;
+                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "" : patient.middleName;
                     command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
-                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "NA" : patient.suffix;
-                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "NA" : patient.previousName;
-                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "NA" : patient.preferredPronouns;
+                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "" : patient.suffix;
+                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "" : patient.preferredPronouns;
                     command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
-                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "NA" : patient.gender;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "" : patient.gender;
                     command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
                     command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
                     command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
-                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "NA" : patient.religion;
+                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "" : patient.religion;
                     command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
-                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
-                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
+                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "" : patient.legalGuardian1;
+                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "" : patient.legalGuardian2;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
                     //command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
 
@@ -169,6 +169,180 @@ namespace EHRApplication.Controllers
 
 
         public IActionResult PatientOverview(int mhn)
+        {
+            PortalViewModel portalViewModel = new PortalViewModel();
+
+            //Creating a new patientDemographic instance
+            portalViewModel.PatientDemographic = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Assign properties for the patient demographic from the database
+                        portalViewModel.PatientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        portalViewModel.PatientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        portalViewModel.PatientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        portalViewModel.PatientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        portalViewModel.PatientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        portalViewModel.PatientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        portalViewModel.PatientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        portalViewModel.PatientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        portalViewModel.PatientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        portalViewModel.PatientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        portalViewModel.PatientDemographic.race = Convert.ToString(dataReader["race"]);
+                        portalViewModel.PatientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        portalViewModel.PatientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        portalViewModel.PatientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(portalViewModel.PatientDemographic.primaryPhysician);
+                        portalViewModel.PatientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        portalViewModel.PatientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        portalViewModel.PatientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
+                        portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        portalViewModel.PatientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(portalViewModel.PatientDemographic.MHN);
+                    }
+                }
+
+                ViewBag.Patient = portalViewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+
+                connection.Close();
+            }
+            return View(portalViewModel);
+        }
+
+        public IActionResult PatientVisits(int mhn)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            
+
+            // New list to hold all the patients in the database.
+            List<Visits> patientVisits = new List<Visits>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT providerId, date, time, admitted, notes FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new patient object for each record.
+                        Visits visit = new Visits();
+
+                        //Populate the visits object with data from the database.
+                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        visit.providers = new ListService(Configuration).GetProvidersByProviderId(visit.providerId);
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
+                        visit.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        visit.time = TimeOnly.Parse(dataReader["time"].ToString());
+                        visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
+                        visit.notes = Convert.ToString(dataReader["notes"]);
+
+                        // Add the patient to the list
+                        patientVisits.Add(visit);
+                    }
+                }
+
+                viewModel.Visits = patientVisits;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+                connection.Close();
+            }
+            return View(viewModel);
+        }
+
+        public IActionResult PatientAllergies(int mhn)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+         
+            // List to hold the patient's list of allergies.
+            List<PatientAllergies> allergies = new List<PatientAllergies>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY PatientAllergyId ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        PatientAllergies allergy = new PatientAllergies();
+
+                        // Populate the allergy object with data from the database.
+
+                        allergy.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        allergy.patientAllergyId = Convert.ToInt32(dataReader["PatientAllergyId"]);
+
+
+
+                        allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
+
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        allergy.allergies = new ListService(Configuration).GetAllergyByAllergyId(allergy.allergyId);
+
+
+
+
+                        // Fetch the DateTime value from the database and convert it to DateOnly
+                        DateTime onSetDateTime = dataReader.GetDateTime(dataReader.GetOrdinal("onSetDate"));
+                        DateOnly onSetDate = new DateOnly(onSetDateTime.Year, onSetDateTime.Month, onSetDateTime.Day);
+                        allergy.onSetDate = onSetDate;
+
+                        // Add the patient to the list
+                        allergies.Add(allergy);
+                    }
+                }
+
+                viewModel.PatientAllergies = allergies;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+                connection.Close();
+            }
+
+            return View(viewModel);
+        }
+
+        private PatientDemographic GetPatientByMHN(int mhn)
         {
             //Creating a new patientDemographic instance
             PatientDemographic patientDemographic = new PatientDemographic();
@@ -219,108 +393,8 @@ namespace EHRApplication.Controllers
 
                 connection.Close();
             }
-            return View(patientDemographic);
-        }
 
-        public IActionResult PatientVisits(int mhn)
-        {
-            // New list to hold all the patients in the database.
-            List<Visits> patientVisits = new List<Visits>();
-
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
-            {
-                connection.Open();
-
-                // Sql query.
-                string sql = "SELECT providerId, date, time, admitted, notes FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        // Create a new patient object for each record.
-                        Visits visit = new Visits();
-
-                        //Populate the visits object with data from the database.
-                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        visit.providers = new ListService(Configuration).GetProvidersByProviderId(visit.providerId);
-                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
-                        visit.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        visit.time = TimeOnly.Parse(dataReader["time"].ToString());
-                        visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
-                        visit.notes = Convert.ToString(dataReader["notes"]);
-
-                        // Add the patient to the list
-                        patientVisits.Add(visit);
-                    }
-                }
-                connection.Close();
-            }
-            return View(patientVisits);
-        }
-
-        public IActionResult PatientAllergies(int mhn)
-        {
-            // List to hold the patient's list of allergies.
-            List<PatientAllergies> allergies = new List<PatientAllergies>();
-
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
-            {
-                connection.Open();
-
-                // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY PatientAllergyId ASC";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        // Create a new allergy object for each record.
-                        PatientAllergies allergy = new PatientAllergies();
-
-                        // Populate the allergy object with data from the database.
-
-                        allergy.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        allergy.patientAllergyId = Convert.ToInt32(dataReader["PatientAllergyId"]);
-
-
-
-                        allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
-
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        allergy.allergies = new ListService(Configuration).GetAllergyByAllergyId(allergy.allergyId);
-
-
-
-
-                        // Fetch the DateTime value from the database and convert it to DateOnly
-                        DateTime onSetDateTime = dataReader.GetDateTime(dataReader.GetOrdinal("onSetDate"));
-                        DateOnly onSetDate = new DateOnly(onSetDateTime.Year, onSetDateTime.Month, onSetDateTime.Day);
-                        allergy.onSetDate = onSetDate;
-
-                        // Add the patient to the list
-                        allergies.Add(allergy);
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return View(allergies);
+            return patientDemographic;
         }
     }
 }
