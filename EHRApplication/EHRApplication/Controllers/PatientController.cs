@@ -466,7 +466,9 @@ namespace EHRApplication.Controllers
 
                         // Populate the note object with data from the database.
                         //TODO: make this get the right date only data type.
-                        note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
+                        //note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
+                        note.occurredOn = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("occurredOn")));
+
                         note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
                         note.providers = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
                         note.assocProvider = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));

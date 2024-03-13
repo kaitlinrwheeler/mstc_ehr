@@ -2,6 +2,8 @@
     // The list of Notes being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
+
+    <link rel="stylesheet" href="~/css/notes.css" asp-append-version="true" />
 }
 
 
@@ -17,9 +19,9 @@
                     <thead>
                         <tr>
                             <th scope="col">Occurred On:</th>
-                            <th scope="col">Created On:</th>
+                            <th scope="col">Created At:</th>
                             <th scope="col">Created By:</th>
-                            <th scope="col">Assosciated Provider:</th>
+                            <th scope="col">Provider:</th>
                             <th scope="col">Category:</th>
                             <th scope="col">Note:</th>
                         </tr>
@@ -28,13 +30,25 @@
                         @foreach (var note in Model.PatientNotes)
                         {
                             <tr class="hover-highlighting">
-@*                                 <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
- *@                                <td>@note.createdAt.ToString("MM-dd-YYY HH:mm")</td>
-@*                                 <td>@note.providers.firstName @visits.providers.lastName</td>
- *@                                
-                                <td></td>
+                                <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
+                                <td>@note.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
+                                <td>@note.providers.firstName @note.providers.lastName</td>
+                                <td>@note.assocProvider.firstName @note.assocProvider.lastName</td>
                                 <td>@note.category</td>
-                                <td>@note.Note</td>
+                                 <td>
+                                    @*This will only display the first 20 characters in the saved data in the model*@
+                                    @note.Note.Substring(0, 15)
+                                    <div class="question-wrapper" onmouseover="showRequirements(this)" onmouseout="hideRequirements(this)">
+                                        <div data-bs-theme="auto">
+                                            ...
+                                        </div>
+                                        <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
+                                            <ul>
+                                                @note.Note
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
