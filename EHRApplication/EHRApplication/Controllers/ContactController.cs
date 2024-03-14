@@ -1,4 +1,5 @@
-﻿using EHRApplication.Models;
+﻿using EHRApplication.Connection;
+using EHRApplication.Models;
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -10,14 +11,12 @@ namespace EHRApplication.Controllers
     {
         private readonly LogService _logService;
         //Setting the default connection string
-        private string connectionString;
-        public IConfiguration Configuration { get; }
+        private string _connectionString;
 
-        public ContactController(LogService logService, IConfiguration configuration)
+        public ContactController(LogService logService, IConnectionString connectionString)
         {
             _logService = logService;
-            Configuration = configuration;
-            this.connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            _connectionString = connectionString.GetConnectionString();
         }
 
         public IActionResult Index()
@@ -34,7 +33,7 @@ namespace EHRApplication.Controllers
                 return View(contact);
             }
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
                 string sql = "INSERT INTO [PatientContact] (MHN, address, city, state, zipcode, phone, email, ECFirstName, ECLastName, ECRelationship, ECPhone) " +

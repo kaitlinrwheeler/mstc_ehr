@@ -1,4 +1,5 @@
-﻿using EHRApplication.Models;
+﻿using EHRApplication.Connection;
+using EHRApplication.Models;
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -12,10 +13,10 @@ namespace EHRApplication.Controllers
         //database connection string
         private readonly string _connectionString;
 
-        public LabTestProfileController(LogService logService, IConfiguration configuration)
+        public LabTestProfileController(LogService logService, IConnectionString connectionString)
         {
             _logService = logService;
-            _connectionString = configuration["ConnectionStrings:DefaultConnection"];
+            _connectionString = connectionString.GetConnectionString();
         }
 
         /// <summary>

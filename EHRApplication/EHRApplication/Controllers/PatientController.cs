@@ -1,4 +1,5 @@
-﻿using EHRApplication.Models;
+﻿using EHRApplication.Connection;
+using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,12 @@ namespace EHRApplication.Controllers
     {
         private readonly LogService _logService;
         //Setting the default connection string
-        private string connectionString;
-        public IConfiguration Configuration { get; }
+        private string _connectionString;
 
-        public PatientController(LogService logService, IConfiguration configuration)
+        public PatientController(LogService logService, IConnectionString connectionString)
         {
             _logService = logService;
-            Configuration = configuration;
-            this.connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            this._connectionString = connectionString.GetConnectionString();
         }
 
         public IActionResult AllPatients()
@@ -31,7 +30,7 @@ namespace EHRApplication.Controllers
             // New list to hold all the patients in the database.
             List<PatientDemographic> allPatients = new List<PatientDemographic>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -93,7 +92,7 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
                 string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth) " +
@@ -139,7 +138,7 @@ namespace EHRApplication.Controllers
             //Creating a new patientDemographic instance
             portalViewModel.PatientDemographic = new PatientDemographic();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -173,13 +172,13 @@ namespace EHRApplication.Controllers
                         portalViewModel.PatientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         portalViewModel.PatientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        portalViewModel.PatientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(portalViewModel.PatientDemographic.primaryPhysician);
+                        portalViewModel.PatientDemographic.providers = new ListService(this._connectionString).GetProvidersByProviderId(portalViewModel.PatientDemographic.primaryPhysician);
                         portalViewModel.PatientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         portalViewModel.PatientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         portalViewModel.PatientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        portalViewModel.PatientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(portalViewModel.PatientDemographic.MHN);
+                        portalViewModel.PatientDemographic.ContactId = new ListService(this._connectionString).GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                     }
                 }
 
@@ -200,7 +199,7 @@ namespace EHRApplication.Controllers
             // New list to hold all the patients in the database.
             List<Visits> patientVisits = new List<Visits>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -222,7 +221,7 @@ namespace EHRApplication.Controllers
                         //Populate the visits object with data from the database.
                         visit.providerId = Convert.ToInt32(dataReader["providerId"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        visit.providers = new ListService(Configuration).GetProvidersByProviderId(visit.providerId);
+                        visit.providers = new ListService(this._connectionString).GetProvidersByProviderId(visit.providerId);
                         //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
                         //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
                         DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
@@ -252,7 +251,7 @@ namespace EHRApplication.Controllers
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -282,7 +281,7 @@ namespace EHRApplication.Controllers
                         allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
 
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        allergy.allergies = new ListService(Configuration).GetAllergyByAllergyId(allergy.allergyId);
+                        allergy.allergies = new ListService(this._connectionString).GetAllergyByAllergyId(allergy.allergyId);
 
 
 
@@ -311,7 +310,7 @@ namespace EHRApplication.Controllers
             //Creating a new patientDemographic instance
             PatientDemographic patientDemographic = new PatientDemographic();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -345,13 +344,13 @@ namespace EHRApplication.Controllers
                         patientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.providers = new ListService(this._connectionString).GetProvidersByProviderId(patientDemographic.primaryPhysician);
                         patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.ContactId = new ListService(this._connectionString).GetContactByMHN(patientDemographic.MHN);
                     }
                 }
 
@@ -373,7 +372,7 @@ namespace EHRApplication.Controllers
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -402,7 +401,7 @@ namespace EHRApplication.Controllers
                         insurance.groupNumber = Convert.ToString(dataReader["groupNumber"]);
                         insurance.priority = Convert.ToString(dataReader["priority"]);
                         insurance.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        insurance.providers = new ListService(Configuration).GetProvidersByProviderId(insurance.primaryPhysician);
+                        insurance.providers = new ListService(this._connectionString).GetProvidersByProviderId(insurance.primaryPhysician);
 
                         // Add the insurance to the list
                         insurances.Add(insurance);
@@ -425,7 +424,7 @@ namespace EHRApplication.Controllers
             viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
-            List<CarePlan> carePlans = new ListService(Configuration).GetCarePlanByMHN(mhn);
+            List<CarePlan> carePlans = new ListService(this._connectionString).GetCarePlanByMHN(mhn);
 
             //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
             viewModel.CarePlans = carePlans;

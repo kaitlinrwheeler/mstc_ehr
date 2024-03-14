@@ -1,4 +1,5 @@
-﻿using EHRApplication.Models;
+﻿using EHRApplication.Connection;
+using EHRApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -6,18 +7,17 @@ namespace EHRApplication.Services
 {
     public class LogService
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
-        public LogService(IConfiguration configuration)
+        public LogService(IConnectionString connectionString)
         {
-            _configuration = configuration;
+            this._connectionString = connectionString.GetConnectionString();
         }
 
         public void WriteToDatabase(string severity, string message, string context)
         {
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
