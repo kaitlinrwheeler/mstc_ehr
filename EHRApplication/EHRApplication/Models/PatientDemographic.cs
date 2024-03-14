@@ -67,6 +67,7 @@ namespace EHRApplication.Models
         public string race { get; set; }
 
         [Required(ErrorMessage = "Please select at least one race.")]
+        [NotMapped]
         public List<string> raceList { get; set; }
 
         [StringLength(60, ErrorMessage = "Religion must be between 1 and 60 characters.", MinimumLength = 1)]
@@ -100,5 +101,8 @@ namespace EHRApplication.Models
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
+
+
+        public bool Active { get; set; }
     }
 }

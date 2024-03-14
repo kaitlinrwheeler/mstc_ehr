@@ -357,6 +357,17 @@ main {
         filter: brightness(0.93)
     }
 
+
+.delete-button {
+    background-color: red;
+    color: white;
+}
+    
+    .delete-button:hover {
+        background-color: darkred;
+        color: white;
+    }
+
 /* End main styles */
 
 /*Start of Success banner override.*/

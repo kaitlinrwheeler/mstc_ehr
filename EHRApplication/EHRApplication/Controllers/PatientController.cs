@@ -36,7 +36,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT MHN, firstName, lastName, DOB, gender FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -58,6 +58,7 @@ namespace EHRApplication.Controllers
                         DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
                         patient.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
                         patient.gender = Convert.ToString(dataReader["gender"]);
+                        patient.Active = Convert.ToBoolean(dataReader["Active"]);
 
                         // Add the patient to the list
                         allPatients.Add(patient);
@@ -433,6 +434,59 @@ namespace EHRApplication.Controllers
             ViewBag.MHN = mhn;
 
             return View(viewModel);
+        }
+
+        [HttpPut]
+        public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
+        {
+            // Flip the status.
+            activeStatus = !activeStatus;
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[PatientDemographic] SET Active = @active WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+                cmd.Parameters.AddWithValue("@active", activeStatus);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        PatientInsurance insurance = new PatientInsurance();
+
+                        // Populate the allergy object with data from the database.
+                        insurance.active = Convert.ToBoolean(dataReader["active"]);
+                        //insurance name
+                        insurance.providerName = Convert.ToString(dataReader["providerName"]);
+                        insurance.memberId = Convert.ToString(dataReader["memberId"]);
+                        insurance.policyNumber = Convert.ToString(dataReader["policyNumber"]);
+                        insurance.groupNumber = Convert.ToString(dataReader["groupNumber"]);
+                        insurance.priority = Convert.ToString(dataReader["priority"]);
+                        insurance.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        insurance.providers = new ListService(Configuration).GetProvidersByProviderId(insurance.primaryPhysician);
+
+                        // Add the insurance to the list
+                        insurances.Add(insurance);
+                    }
+                }
+
+                viewModel.PatientInsurance = insurances;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+                connection.Close();
+            }
+
+            return View(viewModel);
+
         }
     }
 }

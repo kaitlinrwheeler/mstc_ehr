@@ -6,9 +6,15 @@
 
 
 <section class="my-5 w-75 m-auto">
-    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Patients
+    <div class="card shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">All Patients</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="PatientOverView">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.Any())
@@ -21,7 +27,9 @@
                             <th scope="col">Last Name:</th>
                             <th scope="col">Date of Birth:</th>
                             <th scope="col">Gender:</th>
-                            <th scope="col"></th> <!-- Empty column for the button -->
+                            <th scope="col">Active:</th>
+                            <th scope="col"></th> <!-- Empty columns for the buttons -->
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,7 +41,19 @@
                                 <td>@patient.lastName</td>
                                 <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
                                 <td>@patient.gender</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN">View</a></td>
+                                <td>@patient.Active</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                            
+                                <!--This should have an if condtion around it that checks the user role and only displays these buttons if the user is an admin-->
+@*                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn delete-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-trash me-2"></i>Delete</a></td>
+ *@
+                                <td>
+                                <div class="btn-group" role="group">
+                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <a type="button" class="btn delete-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-trash me-2"></i>Delete</a>
+                                </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
