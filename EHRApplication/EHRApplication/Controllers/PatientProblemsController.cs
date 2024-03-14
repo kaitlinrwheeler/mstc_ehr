@@ -1,26 +1,27 @@
-﻿using EHRApplication.Connection;
-using EHRApplication.Models;
+﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Configuration;
 using System.Diagnostics;
+using System.Net;
 
 namespace EHRApplication.Controllers
 {
-    public class ProblemsController : Controller
+    public class ProblemsController : BaseController
     {
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        private readonly LogService _logService;
-
-        private string _connectionString;
-
-        public ProblemsController(LogService logService, IConnectionString connectionString)
+        public ProblemsController(ILogService logService, IListService listService, IConfiguration configuration)
+            :base(logService, listService, configuration)
         {
             _logService = logService;
-            this._connectionString = connectionString.GetConnectionString();
-        }
+            this._connectionString = base._connectionString;
+            _listService = listService;
+    }
 
 
         public IActionResult Index(int mhn)
@@ -65,7 +66,7 @@ namespace EHRApplication.Controllers
                         problem.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
                         // Used only to get the actual provider in the next row down.
                         problem.createdBy = Convert.ToInt32(dataReader["createdBy"]);
-                        problem.providers = new ListService(this._connectionString).GetProvidersByProviderId(problem.createdBy);
+                        problem.providers = _listService.GetProvidersByProviderId(problem.createdBy);
                         problem.active = Convert.ToBoolean(dataReader["active"]);
 
                         // Add the patient to the list
@@ -121,13 +122,13 @@ namespace EHRApplication.Controllers
                         patientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = new ListService(this._connectionString).GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
                         patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(this._connectionString).GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
                     }
                 }
 

@@ -1,5 +1,4 @@
-﻿using EHRApplication.Connection;
-using EHRApplication.Models;
+﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -7,16 +6,18 @@ using System.Data;
 
 namespace EHRApplication.Controllers
 {
-    public class ContactController : Controller
+    public class ContactController : BaseController
     {
-        private readonly LogService _logService;
-        //Setting the default connection string
-        private string _connectionString;
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public ContactController(LogService logService, IConnectionString connectionString)
+        public ContactController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
             _logService = logService;
-            _connectionString = connectionString.GetConnectionString();
+            this._connectionString = base._connectionString;
+            _listService = listService;
         }
 
         public IActionResult Index()

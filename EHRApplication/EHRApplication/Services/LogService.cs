@@ -1,17 +1,16 @@
-﻿using EHRApplication.Connection;
-using EHRApplication.Models;
+﻿using EHRApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 namespace EHRApplication.Services
 {
-    public class LogService
+    public class LogService: ILogService
     {
         private readonly string _connectionString;
 
-        public LogService(IConnectionString connectionString)
+        public LogService(string connectionString)
         {
-            this._connectionString = connectionString.GetConnectionString();
+            this._connectionString = connectionString;
         }
 
         public void WriteToDatabase(string severity, string message, string context)

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
 using EHRApplication.Services;
-using EHRApplication.Connection;
 
 public class Program
 {
@@ -13,10 +12,11 @@ public class Program
         //This sets the default connection for services in this file.
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-        //This will initialize the connection string class for all the controllers.
-        builder.Services.AddSingleton<IConnectionString, ConnectionString>();
-        //This will initialize the logger for all of the controllers.
-        builder.Services.AddSingleton<LogService>();
+        //This will initialize the logger class for all of the controllers.
+        builder.Services.AddSingleton<ILogService>(loger =>
+        {
+            return new LogService(connectionString);
+        });
 
         //More Microsoft identity stuff
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
@@ -36,11 +36,9 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        //This will initialize the connection string for the list service class as it had to be setup to take strings to work.
+        //This will initialize the service class for all of the controllers.
         builder.Services.AddSingleton<IListService>(provider =>
         {
-            var connectionStringProvider = provider.GetRequiredService<IConnectionString>();
-            var connectionString = connectionStringProvider.GetConnectionString();
             return new ListService(connectionString);
         });
 

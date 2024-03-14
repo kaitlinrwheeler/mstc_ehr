@@ -1,5 +1,4 @@
-﻿using EHRApplication.Connection;
-using EHRApplication.Models;
+﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;

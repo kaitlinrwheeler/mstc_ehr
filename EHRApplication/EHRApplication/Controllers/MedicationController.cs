@@ -1,5 +1,4 @@
-﻿using EHRApplication.Connection;
-using EHRApplication.Models;
+﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,17 +6,19 @@ using Microsoft.Data.SqlClient;
 
 namespace EHRApplication.Controllers
 {
-    public class MedicationsController : Controller
+    public class MedicationsController : BaseController
     {
-        private readonly LogService _logService;
-        //Setting the default connection string
-        private string _connectionString;
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public MedicationsController(LogService logService, IConnectionString connectionString)
+        public MedicationsController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
             _logService = logService;
-            this._connectionString = connectionString.GetConnectionString();
-        }
+            this._connectionString = base._connectionString;
+            _listService = listService;
+    }
 
         /// <summary>
         /// Displays the view that shows all the medications in the database
@@ -92,7 +93,7 @@ namespace EHRApplication.Controllers
                         // Populate the medication object with data from the database.
                         medication.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medication.medId = Convert.ToInt32(dataReader["medId"]);
-                        medication.medProfile = new ListService(this._connectionString).GetMedicationProfileByMedId(medication.medId);
+                        medication.medProfile = _listService.GetMedicationProfileByMedId(medication.medId);
                         medication.category = Convert.ToString(dataReader["category"]);
                         medication.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         medication.prescriptionInstructions = Convert.ToString(dataReader["prescriptionInstructions"]);
@@ -100,7 +101,7 @@ namespace EHRApplication.Controllers
                         medication.route = Convert.ToString(dataReader["route"]);
                         medication.prescribedBy = Convert.ToInt32(dataReader["prescribedBy"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        medication.providers = new ListService(this._connectionString).GetProvidersByProviderId(medication.prescribedBy);
+                        medication.providers = _listService.GetProvidersByProviderId(medication.prescribedBy);
                         medication.datePrescribed = Convert.ToDateTime(dataReader["datePrescribed"]);
                         medication.endDate = Convert.ToDateTime(dataReader["endDate"]);
 
@@ -156,13 +157,13 @@ namespace EHRApplication.Controllers
                         patientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = new ListService(this._connectionString).GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
                         patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(this._connectionString).GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
                     }
                 }
 
@@ -179,7 +180,7 @@ namespace EHRApplication.Controllers
             viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             //Calls the list service to get all of the med history associated to the passed in mhn number.
-            List<MedAdministrationHistory> patientHistory = new ListService(this._connectionString).GetPatientsMedHistoryByMHN(mhn);
+            List<MedAdministrationHistory> patientHistory = _listService.GetPatientsMedHistoryByMHN(mhn);
 
             //This will add the patient history to the view model so it can be displayed along with the banner at the same time.
             viewModel.MedAdministrationHistories = patientHistory;
