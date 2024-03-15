@@ -435,5 +435,47 @@ namespace EHRApplication.Services
             }
         }
 
+        /// <summary>
+        /// Gets the visit from the database that matches the visit id.
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
+        public Visits GetVisitByVisitId(int visitId)
+        {
+            //Creating a new instance of the patient contact class to store data from the database
+            Visits visit = new Visits();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Visits] WHERE visitsId = @visitId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the visit model.
+                        visit.MHN = dataReader.GetInt32("MHN");
+                        visit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
+
+                        TimeSpan timeSpan = dataReader.GetTimeSpan(dataReader.GetOrdinal("time"));
+                        visit.time = new TimeOnly(timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+
+                        visit.admitted = dataReader.GetBoolean("admitted");
+                        visit.notes = dataReader.GetString("notes");
+                        visit.providerId = dataReader.GetInt32("providerId");
+                    }
+                };
+                connection.Close();
+                return visit;
+            }
+        }
+
+
     }
 }

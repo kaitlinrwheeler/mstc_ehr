@@ -434,5 +434,76 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+
+
+
+
+
+
+
+
+
+        public IActionResult PatientVitals(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            // List to hold the patient's list of allergies.
+            List<Vitals> vitals = new List<Vitals>();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[Vitals] WHERE patientId = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        Vitals vital = new Vitals();
+
+                        // Populate the vital object with data from the database.
+                        vital.patientId = dataReader.GetInt32("patientID");
+                        // Single visit where the vitals were taken.
+                        vital.visits = new ListService(Configuration).GetVisitByVisitId(dataReader.GetInt32("visitId"));
+                        vital.painLevel = dataReader.GetInt32("painLevel");
+                        vital.temperature = dataReader.GetDecimal("temperature");
+                        vital.bloodPressure = dataReader.GetInt32("bloodPressure");
+                        vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
+                        vital.pulseOximetry = dataReader.GetDecimal("pulseOximetry");
+                        vital.heightInches = dataReader.GetDecimal("heightInches");
+                        vital.weightPounds = dataReader.GetDecimal("weightPounds");
+                        vital.BMI = dataReader.GetDecimal("BMI");
+                        vital.intakeMilliLiters = dataReader.GetDecimal("intakeMilliliters");
+                        vital.outputMilliLiters = dataReader.GetDecimal("outputMilliliters");
+
+                        // Add the vital to the list
+                        vitals.Add(vital);
+                    }
+                }
+
+                // Order the list by visit date descending
+                viewModel.Vitals = vitals.OrderByDescending(v => v.visits.date).ToList();
+
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+
+                connection.Close();
+            }
+
+            return View(viewModel);
+        }
+
     }
 }
