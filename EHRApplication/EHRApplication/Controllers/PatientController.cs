@@ -436,7 +436,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
         {
             // Flip the status.
@@ -456,37 +456,23 @@ namespace EHRApplication.Controllers
                 cmd.Parameters.AddWithValue("@active", activeStatus);
 
 
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        // Create a new allergy object for each record.
-                        PatientInsurance insurance = new PatientInsurance();
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
 
-                        // Populate the allergy object with data from the database.
-                        insurance.active = Convert.ToBoolean(dataReader["active"]);
-                        //insurance name
-                        insurance.providerName = Convert.ToString(dataReader["providerName"]);
-                        insurance.memberId = Convert.ToString(dataReader["memberId"]);
-                        insurance.policyNumber = Convert.ToString(dataReader["policyNumber"]);
-                        insurance.groupNumber = Convert.ToString(dataReader["groupNumber"]);
-                        insurance.priority = Convert.ToString(dataReader["priority"]);
-                        insurance.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        insurance.providers = new ListService(Configuration).GetProvidersByProviderId(insurance.primaryPhysician);
-
-                        // Add the insurance to the list
-                        insurances.Add(insurance);
-                    }
-                }
-
-                viewModel.PatientInsurance = insurances;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = mhn;
                 connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated. You can return a success message or perform any other action here.
+                    return RedirectToAction("AllPatients");
+                }
+                else
+                {
+                    // No rows were affected. You can return an error message or handle the situation accordingly.
+                    return NotFound("Patient with MHN " + mhn + " not found.");
+                }
             }
-
-            return View(viewModel);
-
         }
     }
 }

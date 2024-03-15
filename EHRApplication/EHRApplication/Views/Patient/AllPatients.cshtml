@@ -51,8 +51,12 @@
                                 <td>
                                 <div class="btn-group" role="group">
                                         <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                        <a type="button" class="btn delete-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-trash me-2"></i>Delete</a>
-                                </div>
+                                        <form method="post" asp-controller="Patient" asp-action="UpdateActiveStatus" asp-route-mhn="@patient.MHN" asp-route-activeStatus="@patient.Active">
+                                            <button type="submit" class="btn delete-button">
+                                                <i class="fa-solid fa-trash me-2"></i>Delete
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
