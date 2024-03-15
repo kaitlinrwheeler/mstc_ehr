@@ -436,12 +436,10 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost]
         public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
         {
-            // Flip the status.
-            activeStatus = !activeStatus;
-
             using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
                 connection.Open();
@@ -451,10 +449,9 @@ namespace EHRApplication.Controllers
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
-                // Replace placeholder with paramater to avoid sql injection.
+                // Replace placeholder with parameter to avoid SQL injection.
                 cmd.Parameters.AddWithValue("@mhn", mhn);
                 cmd.Parameters.AddWithValue("@active", activeStatus);
-
 
                 // Execute the SQL command.
                 int rowsAffected = cmd.ExecuteNonQuery();
@@ -464,13 +461,13 @@ namespace EHRApplication.Controllers
                 // Check if any rows were affected.
                 if (rowsAffected > 0)
                 {
-                    // Successfully updated. You can return a success message or perform any other action here.
-                    return RedirectToAction("AllPatients");
+                    // Successfully updated.
+                    return Ok("Successfully updated.");
                 }
                 else
                 {
-                    // No rows were affected. You can return an error message or handle the situation accordingly.
-                    return NotFound("Patient with MHN " + mhn + " not found.");
+                    // No rows were affected, return an error message.
+                    return BadRequest("No rows were affected.");
                 }
             }
         }

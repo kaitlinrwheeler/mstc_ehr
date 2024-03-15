@@ -2,6 +2,9 @@
 @{
     // The list of patients being pulled in.
     @model List<PatientDemographic>
+
+    <script src="~/js/allPatients.js" defer></script>
+
 }
 
 
@@ -41,13 +44,17 @@
                                 <td>@patient.lastName</td>
                                 <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
                                 <td>@patient.gender</td>
-                                <td>@patient.Active</td>
+@*                                 <td>@patient.Active</td>
+ *@
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Yes" : "No")</label>
+                                    </div>
+                                </td>
+
                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
                             
-                                <!--This should have an if condtion around it that checks the user role and only displays these buttons if the user is an admin-->
-@*                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
-                                <td><a type="button" class="btn delete-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-trash me-2"></i>Delete</a></td>
- *@
                                 <td>
                                 <div class="btn-group" role="group">
                                         <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
@@ -70,3 +77,6 @@
         </div>
     </div>
 </section>
+
+
+
