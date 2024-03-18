@@ -444,7 +444,7 @@ namespace EHRApplication.Services
             Visits visit = new Visits();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
