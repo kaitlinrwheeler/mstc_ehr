@@ -515,7 +515,7 @@ namespace EHRApplication.Controllers
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -539,10 +539,9 @@ namespace EHRApplication.Controllers
                         //TODO: make this get the right date only data type.
                         //note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
                         note.occurredOn = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("occurredOn")));
-
                         note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
-                        note.providers = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
-                        note.assocProvider = new ListService(Configuration).GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));
+                        note.providers = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
+                        note.assocProvider = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));
                         note.category = Convert.ToString(dataReader["category"]);
                         note.Note = Convert.ToString(dataReader["note"]);
 
