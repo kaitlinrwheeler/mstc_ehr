@@ -1,4 +1,35 @@
 ﻿//Everything in this function loads when the page is loaded. Loads when page is loaded.
+
+
+// search bar toggle
+$(document).ready(function () {
+    const searchButton = document.getElementById('srchBtn');
+    if (searchButton) {
+        const searchBar = document.getElementById('searchBar');
+        const searchInput = document.getElementById('searchInput');
+
+        searchButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            searchBar.classList.toggle('d-none');
+            searchButton.style.display = searchBar.classList.contains('d-none') ? '' : 'none';
+            if (!searchBar.classList.contains('d-none')) {
+                searchInput.focus();
+            }
+        });
+
+        searchInput.addEventListener('blur', function (e) {
+            if (e.target.value.trim() === '') {
+                searchBar.classList.add('d-none');
+                searchButton.style.display = '';
+            }
+        });
+    } else {
+        console.log('Search button not found.');
+    }
+});
+
+
+
 $(function () {
 
     initMenu();
@@ -145,11 +176,7 @@ document.addEventListener("click", function (event) {
     }
 });
 
-//End of quesiton mark popout
-
-
-
-
+//End of question mark popout
 $(document).ready(function () {
     // Get the MHN number from the <p> element
     var mhnNumber = $('.mb-1.text-nowrap').text().trim().split(':')[1].trim();

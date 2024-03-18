@@ -25,7 +25,7 @@
 </head>
 <body data-bs-theme="auto">
 
-    <partial name="_topNav" />
+    <partial name="_topNav" model="@new { Controller = controllerName, Action = actionName }"/>
 
     <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
     @if (controllers.Contains(controllerName)
