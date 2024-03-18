@@ -38,6 +38,9 @@
             #sidebar-wrapper {
                 margin-top: 72px;
             }
+            main {
+                margin-top: -50px !important;
+            }
         </style>
     }
     else
@@ -97,11 +100,11 @@
                     </ul>
                 </li>
 
-                <li class="active">
-                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
-                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientVisits" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Visits</a></li>
-                        <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                    <li class="active">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a asp-area="" asp-controller="Patient" asp-action="PatientVisits" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Visits</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientVitals" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Vitals</a></li>
                     </ul>
                 </li>
                                     <li>
@@ -141,7 +144,7 @@
         </div>
         <!-- /#sidebar-wrapper -->
 
-        <main role="main" class="pb-3" style="z-index:1;">
+        <main role="main" class="pb-3" style="z-index:1; margin-top:90px">
 
             <!-- Page Content -->
             @RenderBody()

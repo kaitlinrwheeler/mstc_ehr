@@ -9,13 +9,11 @@ namespace EHRApplication.Services
 {
     public class ListService : IListService
     {
-        private readonly string connectionString;
-        public IConfiguration Configuration { get; }
+        private readonly string _connectionString;
 
-        public ListService(IConfiguration configuration)
+        public ListService(string connectionString)
         {
-            Configuration = configuration;
-            connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            this._connectionString = connectionString;
         }
 
         /// <summary>
@@ -27,7 +25,7 @@ namespace EHRApplication.Services
             //creates a new instance of the providers model as a list
             List<Providers> providerList = new List<Providers>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -65,7 +63,7 @@ namespace EHRApplication.Services
             //Creates a new instance of the patient contact model as a list
             List<PatientContact> contactList = new List<PatientContact>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -110,7 +108,7 @@ namespace EHRApplication.Services
             //creates a new instance of the providers model as a list
             List<PatientDemographic> patientList = new List<PatientDemographic>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -161,7 +159,7 @@ namespace EHRApplication.Services
             // New list to hold all the patients in the database.
             List<MedicationProfile> medsList = new List<MedicationProfile>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -204,7 +202,7 @@ namespace EHRApplication.Services
             Providers providers = new Providers();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -240,7 +238,7 @@ namespace EHRApplication.Services
             PatientContact patientContact = new PatientContact();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -277,7 +275,7 @@ namespace EHRApplication.Services
             // New medication profile instance to hold the medicaiton profile for the selected user.
             MedicationProfile medicationProfile = new MedicationProfile();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -316,7 +314,7 @@ namespace EHRApplication.Services
             Allergies allergy = new Allergies();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -347,7 +345,7 @@ namespace EHRApplication.Services
             var patients = GetPatients();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -401,7 +399,7 @@ namespace EHRApplication.Services
             List<CarePlan> carePlanList = new List<CarePlan>();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -434,6 +432,48 @@ namespace EHRApplication.Services
                 return carePlanList;
             }
         }
+
+        /// <summary>
+        /// Gets the visit from the database that matches the visit id.
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
+        public Visits GetVisitByVisitId(int visitId)
+        {
+            //Creating a new instance of the patient contact class to store data from the database
+            Visits visit = new Visits();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Visits] WHERE visitsId = @visitId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the visit model.
+                        visit.MHN = dataReader.GetInt32("MHN");
+                        visit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
+
+                        TimeSpan timeSpan = dataReader.GetTimeSpan(dataReader.GetOrdinal("time"));
+                        visit.time = new TimeOnly(timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+
+                        visit.admitted = dataReader.GetBoolean("admitted");
+                        visit.notes = dataReader.GetString("notes");
+                        visit.providerId = dataReader.GetInt32("providerId");
+                    }
+                };
+                connection.Close();
+                return visit;
+            }
+        }
+
 
     }
 }
