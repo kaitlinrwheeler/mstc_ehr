@@ -453,7 +453,7 @@ namespace EHRApplication.Controllers
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -476,7 +476,7 @@ namespace EHRApplication.Controllers
                         // Populate the vital object with data from the database.
                         vital.patientId = dataReader.GetInt32("patientID");
                         // Single visit where the vitals were taken.
-                        vital.visits = new ListService(Configuration).GetVisitByVisitId(dataReader.GetInt32("visitId"));
+                        vital.visits = _listService.GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
                         vital.temperature = dataReader.GetDecimal("temperature");
                         vital.bloodPressure = dataReader.GetInt32("bloodPressure");
