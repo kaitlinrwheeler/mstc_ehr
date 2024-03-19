@@ -36,7 +36,7 @@
                     </button>
                     <!-- Hidden Search Bar -->
                     <div id="searchBar" class="d-none">
-                        @using (Html.BeginForm("Search", "PatientController", FormMethod.Get, new { @class = "form-inline" }))
+                        @using (Html.BeginForm("PatientSearch", "Patient", FormMethod.Get, new { @class = "form-inline" }))
                         {
                             <input type="text" id="searchInput" name="searchTerm" class="form-control" placeholder="Patient name or MHN">
                             <button type="submit" class="btn btn-default">Search</button>

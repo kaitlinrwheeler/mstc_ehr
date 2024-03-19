@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -396,5 +397,64 @@ namespace EHRApplication.Controllers
 
             return patientDemographic;
         }
+
+        public IActionResult PatientSearch(string searchInput)
+        {
+            var results = GetSearchResults(searchInput);
+            return View(results);
+        }
+
+        private List<PatientDemographic> GetSearchResults(string searchInput)
+        {
+            // create a new list to hold the search results
+            var results = new List<PatientDemographic>();
+
+            // create a new PatientDemographic instance
+            PatientDemographic patient = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            {
+                connection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+
+                // Determine if the search term is a number (MHN) or a string (Name)
+                if (int.TryParse(searchInput, out int mhn))
+                {
+                    // Search by MHN
+                    cmd.CommandText = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @searchInput";
+                    cmd.Parameters.AddWithValue("@searchInput", mhn);
+                }
+                else
+                {
+                    // Search by Name
+                    cmd.CommandText = "SELECT * FROM [dbo].[PatientDemographic] WHERE firstName LIKE @searchInput OR middleName LIKE @searchInput OR lastName LIKE @searchInput";
+                    cmd.Parameters.AddWithValue("@searchInput", $"%{searchInput}%");
+                }
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        patient.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patient.firstName = Convert.ToString(dataReader["firstName"]);
+                        patient.middleName = Convert.ToString(dataReader["middleName"]);
+                        patient.lastName = Convert.ToString(dataReader["lastName"]);
+                        patient.suffix = Convert.ToString(dataReader["suffix"]);
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patient.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patient.gender = Convert.ToString(dataReader["gender"]);
+                        
+                        results.Add(patient);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return results;
+        }
+
     }
 }
