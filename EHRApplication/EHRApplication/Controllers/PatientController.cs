@@ -520,7 +520,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientNotes] WHERE MHN = @mhn ORDER BY occurredOn DESC";
+                string sql = "SELECT * FROM [dbo].[PatientNotes] WHERE MHN = @mhn ORDER BY occurredOn DESC, createdAt DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
