@@ -538,7 +538,42 @@ namespace EHRApplication.Controllers
                 else
                 {
                     // No rows were affected, return an error message.
-                    return BadRequest("No rows were affected.");
+                    return BadRequest("Error, please try again.");
+                }
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult DeletePatient(int mhn)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // SQL query to delete the patient
+                string sql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                {
+                    // Replace placeholder with parameter to avoid SQL injection
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    // Execute the SQL command
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        // Patient deleted successfully
+                        //return RedirectToAction("AllPatients");
+                        return Ok("Successfully deleted.");
+                    }
+                    else
+                    {
+                        // Patient with the specified MHN not found
+                        return BadRequest("Patient with MHN " + mhn + " not found.");
+                    }
                 }
             }
         }
