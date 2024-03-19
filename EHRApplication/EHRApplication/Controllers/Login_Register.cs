@@ -214,7 +214,7 @@ namespace EHRApplication.Controllers
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         // If email confirmation is required, redirect to the index page
-                        return RedirectToAction("Index");
+                        return RedirectToAction("UserDashboard", "Home");
                     }
                     else
                     {
