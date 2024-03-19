@@ -51,11 +51,6 @@ namespace EHRApplication.Models
         [Display(Name = "Gender")]
         public string gender { get; set; }
 
-        [Required(ErrorMessage = "Please enter a gender.")]
-        [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
-        public string otherGender { get; set; }
-
         [Required(ErrorMessage = "Language is required.")]
         [StringLength(60, ErrorMessage = "Language must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
@@ -113,6 +108,8 @@ namespace EHRApplication.Models
 
         public string? patientImagePath { get; set; }
 
+        //must be notmapped or else application will not run
+        [NotMapped]
         public IFormFile imageFile { get; set; }
     }
 }

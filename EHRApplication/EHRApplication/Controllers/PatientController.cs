@@ -75,98 +75,113 @@ namespace EHRApplication.Controllers
         }
 
         //processes the images
-        private async Task<IActionResult> ProcessImage(IFormFile file)
+        private async Task<string> ProcessImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return Content("File not selected or is empty.");
+                throw new Exception("File not selected or is empty.");
 
             try
             {
-                //add unique file name
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/patientImages", file.FileName);
+                // Get the original filename
+                var fileName = Path.GetFileName(file.FileName);
+                //sets path to the folder in the repo to add images to.
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/patientImages", fileName);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
-                return Content($"File {file.FileName} uploaded successfully.");
+
+                return fileName;
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error uploading file: {ex.Message}");
+                throw new Exception($"Error uploading file: {ex.Message}");
             }
         }
+
+
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public async Task<IActionResult> Index(PatientDemographic patient)
         {
-            ProcessImage(patient.imageFile);
-
-            // Testing to see if the date of birth entered was a future date or not
-            if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
+            try
             {
-                // Adding an error to the DOB model to display an error.
-                ModelState.AddModelError("DOB", "Date cannot be in the future.");
-                return View(patient);
-            }
+                //gets the filename from the return in ProcessImage to add the filename to the database.
+                var filename = await ProcessImage(patient.imageFile);
 
-            // Returns the model if null because there were errors in validating it
-            if (!ModelState.IsValid)
-            {
-                return View(patient);
-            }
-
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
-            {
-                // SQL query that is going to insert the data that the user entered into the database table.
-                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, previousName, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth, patientImagePath) " +
-                    "VALUES (@firstName, @middleName, @lastName, @suffix, @previousName, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth, @patientImagePath)";
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                // Testing to see if the date of birth entered was a future date or not
+                if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
                 {
-                    command.CommandType = CommandType.Text;
-
-                    if (patient.raceList.Contains("Other"))
-                    {
-                        //Remove the "other" race from the raceList
-                        patient.raceList.Remove("Other");
-
-                        // Add the OtherRace only if it's not empty
-                        if (!string.IsNullOrEmpty(patient.OtherRace))
-                        {
-                            patient.raceList.Add(patient.OtherRace);
-                        }
-                    }
-
-                    // Join the race list with commas
-                    patient.race = string.Join(",", patient.raceList);
-
-                    // Adding parameters
-                    command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
-                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.middleName;
-                    command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
-                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "NA" : patient.suffix;
-                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "NA" : patient.previousName;
-                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "NA" : patient.preferredPronouns;
-                    command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
-                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "NA" : patient.gender;
-                    command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
-                    command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
-                    command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
-                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "NA" : patient.religion;
-                    command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
-                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
-                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
-                    command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
-                    command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = patient.patientImagePath ?? "NA";
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    TempData["SuccessMessage"] = "You have successfully created a patient!";
+                    // Adding an error to the DOB model to display an error.
+                    ModelState.AddModelError("DOB", "Date cannot be in the future.");
+                    return View(patient);
                 }
+
+                // Returns the model if null because there were errors in validating it
+                if (!ModelState.IsValid)
+                {
+                    return View(patient);
+                }
+
+                using (SqlConnection connection = new SqlConnection(this.connectionString))
+                {
+                    // SQL query that is going to insert the data that the user entered into the database table.
+                    string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, previousName, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth, patientImagePath) " +
+                        "VALUES (@firstName, @middleName, @lastName, @suffix, @previousName, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth, @patientImagePath)";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        if (patient.raceList.Contains("Other"))
+                        {
+                            // Remove the "other" race from the raceList
+                            patient.raceList.Remove("Other");
+
+                            // Add the OtherRace only if it's not empty
+                            if (!string.IsNullOrEmpty(patient.OtherRace))
+                            {
+                                patient.raceList.Add(patient.OtherRace);
+                            }
+                        }
+
+                        // Join the race list with commas
+                        patient.race = string.Join(",", patient.raceList);
+
+                        // Adding parameters
+                        command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
+                        command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "NA" : patient.middleName;
+                        command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
+                        command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "NA" : patient.suffix;
+                        command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "NA" : patient.previousName;
+                        command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "NA" : patient.preferredPronouns;
+                        command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
+                        command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "NA" : patient.gender;
+                        command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
+                        command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
+                        command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
+                        command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "NA" : patient.religion;
+                        command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
+                        command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "NA" : patient.legalGuardian1;
+                        command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "NA" : patient.legalGuardian2;
+                        command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+                        command.Parameters.Add("@patientImagePath", SqlDbType.VarChar).Value = filename ?? "NA";
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        TempData["SuccessMessage"] = "You have successfully created a patient!";
+                    }
+                }
+                ModelState.Clear();
+                return View();
             }
-            ModelState.Clear();
-            return View();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                return View(patient);
+            }
         }
+
 
 
         public IActionResult PatientOverview(int mhn)
