@@ -4,6 +4,7 @@ namespace EHRApplication.Services
 {
     public interface IListService
     {
+        PatientDemographic GetPatientByMHN(int mhn);
         IEnumerable<PatientContact> GetContacts();
         IEnumerable<Providers> GetProviders();
 

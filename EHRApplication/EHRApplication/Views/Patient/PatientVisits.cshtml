@@ -22,6 +22,7 @@
                             <th scope="col">Provider Name:</th>
                             <th scope="col">Admitted:</th>
                             <th scope="col">Notes:</th>
+                            <th scope="col"></th> <!-- Empty column for the button -->
                         </tr>
                     </thead>
                     <tbody>
@@ -33,6 +34,7 @@
                                 <td>@visits.providers.firstName @visits.providers.lastName</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@visits.MHN">View</a></td>
                             </tr>
                         }
                     </tbody>

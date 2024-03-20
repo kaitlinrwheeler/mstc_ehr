@@ -14,19 +14,21 @@ namespace EHRApplication.Controllers
         {
         }
 
-        public IActionResult VisitDetails(int visitId)
+        public IActionResult VisitDetails(int visitId, int mhn)
         {
-/*            //This will set the banner up and the view model so we can view everything
+            //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
             Visits visit = _listService.GetVisitByVisitId(visitId);
 
             //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
             viewModel.VisitDetails = visit;
-            ViewBag.Patient = viewModel.Visits;
-*/
-            return View();
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
         }
     }
 }
