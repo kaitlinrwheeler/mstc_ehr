@@ -552,28 +552,60 @@ namespace EHRApplication.Controllers
             {
                 connection.Open();
 
-                // SQL query to delete the patient
-                string sql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                // Begin a transaction
+                SqlTransaction transaction = connection.BeginTransaction();
 
-                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                try
                 {
-                    // Replace placeholder with parameter to avoid SQL injection
-                    cmd.Parameters.AddWithValue("@mhn", mhn);
+                    // SQL query to delete the patient and related records
+                    string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    string deleteRelatedRecordsSql = "[Add your SQL statements to delete related records here]";
 
-                    // Execute the SQL command
-                    int rowsAffected = cmd.ExecuteNonQuery();
+                    // First, delete related records
+                    using (SqlCommand cmd = new SqlCommand(deleteRelatedRecordsSql, connection, transaction))
+                    {
+                        // Set parameters if needed
+                        cmd.Parameters.AddWithValue("@mhn", mhn);
 
-                    if (rowsAffected > 0)
-                    {
-                        // Patient deleted successfully
-                        //return RedirectToAction("AllPatients");
-                        return Ok("Successfully deleted.");
+                        int relatedRowsAffected = cmd.ExecuteNonQuery();
+
+                        // Check if any related records were deleted
+                        // You might have more complex logic here depending on your constraints
+                        if (relatedRowsAffected <= 0)
+                        {
+                            throw new Exception("Failed to delete related records.");
+                        }
                     }
-                    else
+
+                    // Now, delete the patient
+                    using (SqlCommand cmd = new SqlCommand(deletePatientSql, connection, transaction))
                     {
-                        // Patient with the specified MHN not found
-                        return BadRequest("Patient with MHN " + mhn + " not found.");
+                        cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                        int patientRowsAffected = cmd.ExecuteNonQuery();
+
+                        // Check if the patient was deleted
+                        if (patientRowsAffected <= 0)
+                        {
+                            throw new Exception("Patient with MHN " + mhn + " not found.");
+                        }
                     }
+
+                    // If everything went well, commit the transaction
+                    transaction.Commit();
+
+                    return Ok("Successfully deleted.");
+                }
+                catch (Exception ex)
+                {
+                    // Something went wrong, rollback the transaction
+                    transaction.Rollback();
+
+                    // Log the exception if needed
+                    Console.WriteLine("Error: " + ex.Message);
+
+                    // Return an error response
+                    return BadRequest("Failed to delete patient.");
                 }
             }
         }
