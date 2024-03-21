@@ -35,9 +35,9 @@ namespace EHRApplication.Models
         [Display(Name = "Suffix")]
         public string? suffix { get; set; }
 
-        [Required(ErrorMessage = "Please enter your preferred pronouns.")]
+        [Required(ErrorMessage = "Please enter preferred pronouns.")]
         [StringLength(60, ErrorMessage = "Pronouns name must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please select pronouns.")]
         [Display(Name = "Pronouns")]
         public string preferredPronouns { get; set; }
 
@@ -92,13 +92,20 @@ namespace EHRApplication.Models
         [Display(Name = "Guardian2")]
         public string? legalGuardian2 { get; set; }
 
-        [ValidateNever]
-        public string previousName { get; set; }
+        [StringLength(60, ErrorMessage = "Previous name must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "previousName")]
+        public string? previousName { get; set; }
 
         [Required(ErrorMessage = "Gender is required.")]
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
+
+        [StringLength(60, ErrorMessage = "Image file must be of type .jpg, .jpeg, or .png.", MinimumLength = 5)]
+        [RegularExpression(@"^[a-zA-Z0-9]+\.(png|jpg|jpeg)$", ErrorMessage = "Please enter a valid file name.")]
+        [Display(Name = "Patient Image")]
+        public string? patientImage { get; set; }
     }
 }
