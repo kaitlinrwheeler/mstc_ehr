@@ -446,7 +446,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientNotes(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
