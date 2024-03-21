@@ -647,7 +647,7 @@ namespace EHRApplication.Services
                         //Gets the test id from the table and then uses that to grab the patient associated to the order and
                         //Creates a object that is saved to the lab order object.
                         labOrders.testId = Convert.ToInt32(dataReader["testId"]);
-                        //labOrders.labTests = GetLabTestsById(labOrders.testId);
+                        labOrders.labTests = GetLabTestByTestId(labOrders.testId);
 
                         labOrders.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //labOrders.visits = GetPatientVisitsByMHN(labOrders.visitsId);
