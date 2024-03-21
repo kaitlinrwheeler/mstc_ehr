@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -559,7 +560,25 @@ namespace EHRApplication.Controllers
                 {
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
-                    string deleteRelatedRecordsSql = "[Add your SQL statements to delete related records here]";
+
+
+                    string deleteRelatedRecordsSql = @"
+                        DELETE FROM [dbo].[LabResults] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[Vitals] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
+                        DELETE FROM [dbo].[Visits] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[MedAdministrationHistory] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientAllergies] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientInsurance] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[Alerts] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientProblems] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientNotes] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientMedications] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientContact] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[CarePlan] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[LabOrders] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[MedOrders] WHERE MHN = @mhn;
+                    ";
+
 
                     // First, delete related records
                     using (SqlCommand cmd = new SqlCommand(deleteRelatedRecordsSql, connection, transaction))
