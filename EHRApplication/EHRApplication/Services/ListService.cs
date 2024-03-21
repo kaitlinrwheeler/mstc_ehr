@@ -9,13 +9,11 @@ namespace EHRApplication.Services
 {
     public class ListService : IListService
     {
-        private readonly string connectionString;
-        public IConfiguration Configuration { get; }
+        private readonly string _connectionString;
 
-        public ListService(IConfiguration configuration)
+        public ListService(string connectionString)
         {
-            Configuration = configuration;
-            connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            this._connectionString = connectionString;
         }
 
         /// <summary>
@@ -27,7 +25,7 @@ namespace EHRApplication.Services
             //creates a new instance of the providers model as a list
             List<Providers> providerList = new List<Providers>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -65,7 +63,7 @@ namespace EHRApplication.Services
             //Creates a new instance of the patient contact model as a list
             List<PatientContact> contactList = new List<PatientContact>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -110,7 +108,7 @@ namespace EHRApplication.Services
             //creates a new instance of the providers model as a list
             List<PatientDemographic> patientList = new List<PatientDemographic>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //Table that will be a tempory holder of the database untill we can convert it into a list
                 DataTable dataTable = new DataTable();
@@ -161,7 +159,7 @@ namespace EHRApplication.Services
             // New list to hold all the patients in the database.
             List<MedicationProfile> medsList = new List<MedicationProfile>();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -204,7 +202,7 @@ namespace EHRApplication.Services
             Providers providers = new Providers();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -229,6 +227,39 @@ namespace EHRApplication.Services
             }
         }
 
+        public LabTestProfile GetLabTestByTestId(int testId)
+        {
+            //Creating a new instance of the patient contact class to store data from the database
+            LabTestProfile labTest = new LabTestProfile();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[LabTestProfile] WHERE testId = @testId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@testId", testId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the patient contact model.
+                        labTest.testId = Convert.ToInt32(dataReader["testId"]);
+                        labTest.testName = Convert.ToString(dataReader["testName"]);
+                        labTest.description = Convert.ToString(dataReader["description"]);
+                        labTest.units = Convert.ToString(dataReader["units"]);
+                        labTest.referenceRange = Convert.ToString(dataReader["referenceRange"]);
+                        labTest.category = Convert.ToString(dataReader["category"]);
+                    }
+                };
+                connection.Close();
+                return labTest;
+            }
+        }
+
         /// <summary>
         /// Gets the contact info from the database for that specific patient
         /// </summary>
@@ -240,7 +271,7 @@ namespace EHRApplication.Services
             PatientContact patientContact = new PatientContact();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -277,7 +308,7 @@ namespace EHRApplication.Services
             // New medication profile instance to hold the medicaiton profile for the selected user.
             MedicationProfile medicationProfile = new MedicationProfile();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -316,7 +347,7 @@ namespace EHRApplication.Services
             Allergies allergy = new Allergies();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -347,7 +378,7 @@ namespace EHRApplication.Services
             var patients = GetPatients();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
@@ -396,13 +427,118 @@ namespace EHRApplication.Services
             return historyList;
         }
 
+        public List<LabResults> GetPatientsLabResultsByMHN(int mhn)
+        {
+            //Create a new instance of the Med History class to store data from the database
+            List<LabResults> labResultsList = new List<LabResults>();
+
+            //When we move the get patient by MHN into the service use that one instead.
+            var patients = GetPatients();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[LabResults] WHERE MHN = @mhn ORDER By date DESC, time DESC";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                //Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@MHN", mhn);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the med history model.
+                        LabResults labResults = new LabResults();
+
+                        // Populate the medHistory object with data from the database.
+                        labResults.labId = Convert.ToInt32(dataReader["labId"]);
+
+                        //Gets the MHN from the table and then uses that to grab the patient associated to the history and
+                        //Creates a object that is saved to the med history object.
+                        labResults.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        labResults.patients = patients.Where(patients => patients.MHN == mhn).FirstOrDefault();
+
+                        labResults.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        labResults.visits = GetPatientVisitsByMHN(mhn).FirstOrDefault();
+
+                        labResults.testId = Convert.ToInt32(dataReader["testId"]);
+                        labResults.labTests = GetLabTestByTestId(labResults.testId);
+
+                        labResults.resultValue = Convert.ToString(dataReader["resultValue"]);
+                        labResults.abnormalFlag = Convert.ToString(dataReader["abnormalFlag"]);
+
+                        labResults.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        labResults.providers = GetProvidersByProviderId(labResults.orderedBy);
+
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
+                        labResults.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        labResults.time = TimeOnly.Parse(dataReader["time"].ToString());
+
+                        // Add the patient to the list
+                        labResultsList.Add(labResults);
+                    }
+                }
+                connection.Close();
+            }
+            return labResultsList;
+        }
+
+        public List<Visits> GetPatientVisitsByMHN(int mhn)
+        {
+            List<Visits> patientVisits = new List<Visits>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new patient object for each record.
+                        Visits visit = new Visits();
+
+                        //Populate the visits object with data from the database.
+                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        visit.providers = new ListService(_connectionString).GetProvidersByProviderId(visit.providerId);
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
+                        visit.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        visit.time = TimeOnly.Parse(dataReader["time"].ToString());
+                        visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
+                        visit.notes = Convert.ToString(dataReader["notes"]);
+
+                        // Add the patient to the list
+                        patientVisits.Add(visit);
+                    }
+                }
+                connection.Close();
+            }
+            return patientVisits;
+        }
+
+
         public List<CarePlan> GetCarePlanByMHN(int mhn)
         {
             //List that will hold all of the care plans for the patient with the passed in mhn number.
             List<CarePlan> carePlanList = new List<CarePlan>();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -436,17 +572,59 @@ namespace EHRApplication.Services
             }
         }
 
+        /// <summary>
+        /// Gets the visit from the database that matches the visit id.
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
+        public Visits GetVisitByVisitId(int visitId)
+        {
+            //Creating a new instance of the patient contact class to store data from the database
+            Visits visit = new Visits();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Visits] WHERE visitsId = @visitId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Setting the data that was just pulled from the database into an instance of the visit model.
+                        visit.MHN = dataReader.GetInt32("MHN");
+                        visit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
+
+                        TimeSpan timeSpan = dataReader.GetTimeSpan(dataReader.GetOrdinal("time"));
+                        visit.time = new TimeOnly(timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+
+                        visit.admitted = dataReader.GetBoolean("admitted");
+                        visit.notes = dataReader.GetString("notes");
+                        visit.providerId = dataReader.GetInt32("providerId");
+                    }
+                };
+                connection.Close();
+                return visit;
+            }
+        }
+
+
         public List<LabOrders> GetPatientsLabOrdersByMHN(int mhn)
         {
             //Create a new instance of the Med History class to store data from the database
             List<LabOrders> labOrdersList = new List<LabOrders>();
 
             //Setting up the connection with the database
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "Select * From [dbo].[LabOrders] WHERE MHN = @mhn ORDER By dateGiven DESC, timeGiven DESC";
+                string sql = "Select * From [dbo].[LabOrders] WHERE MHN = @mhn ORDER By orderDate DESC, orderTime DESC";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 //Replace placeholder with paramater to avoid sql injection.
@@ -501,7 +679,7 @@ namespace EHRApplication.Services
             //Creating a new patientDemographic instance
             PatientDemographic patientDemographic = new PatientDemographic();
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
 
@@ -535,13 +713,13 @@ namespace EHRApplication.Services
                         patientDemographic.religion = Convert.ToString(dataReader["religion"]);
                         patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = new ListService(Configuration).GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.providers = GetProvidersByProviderId(patientDemographic.primaryPhysician);
                         patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
                         patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
                         patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = new ListService(Configuration).GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.ContactId = GetContactByMHN(patientDemographic.MHN);
                     }
                 }
 

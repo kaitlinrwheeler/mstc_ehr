@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using EHRApplication.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using EHRApplication.Services;
+using System.Configuration;
 
 namespace EHRApplication.Controllers
 {
     // Controller responsible for handling user login and registration
-    public class Login_Register : Controller
+    public class Login_Register : BaseController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -16,6 +18,8 @@ namespace EHRApplication.Controllers
         private readonly ILogger<Login_Register> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IListService _listService;
+        private readonly ILogService _logService;
         public LoginAccount Input { get; set; }
 
         // Constructor to initialize required services
@@ -24,8 +28,12 @@ namespace EHRApplication.Controllers
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<Login_Register> logger,
-            IEmailSender emailSender,
+            IEmailSender emailSender, 
+            ILogService logService, 
+            IConfiguration configuration,
+            IListService listService,
             RoleManager<IdentityRole> roleManager)
+            :base(logService, listService, configuration)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -33,7 +41,9 @@ namespace EHRApplication.Controllers
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
-        }
+            _listService = listService;
+            _logService = logService;
+    }
 
         // Action method to display the index view
         public IActionResult Index()
@@ -204,7 +214,7 @@ namespace EHRApplication.Controllers
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         // If email confirmation is required, redirect to the index page
-                        return RedirectToAction("Index");
+                        return RedirectToAction("UserDashboard", "Home");
                     }
                     else
                     {

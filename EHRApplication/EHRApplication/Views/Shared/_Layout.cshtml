@@ -18,7 +18,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EHRApplication</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EHRApplication.styles.css" asp-append-version="true" />
@@ -37,6 +37,9 @@
         <style>
             #sidebar-wrapper {
                 margin-top: 72px;
+            }
+            main {
+                margin-top: -50px !important;
             }
         </style>
     }
@@ -58,7 +61,9 @@
     || controllerName == "Patient" && actionName == "Index"
     || controllerName == "Patient" && actionName == "AllPatients"
     || controllerName == "Medications" && actionName == "AllMedications"
-    || controllerName == "Providers" && actionName == "AllProviders")
+    || controllerName == "Providers" && actionName == "AllProviders"
+    || controllerName == "Home" && actionName == "UserDashboard"
+    || controllerName == "LabTestProfile" && actionName == "AllLabTests")
     {
         <style>
             #sidebar-wrapper {
@@ -94,14 +99,23 @@
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
                         <li><a asp-area="" asp-controller="Problems" asp-action="Index" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Problems</a></li>
                         <li><a asp-area="" asp-controller="Patient" asp-action="PatientAllergies" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Allergies</a></li>
+                        <li><a asp-area="" asp-controller="Medications" asp-action="PatientLabResults" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Results</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-microscope fa-stack-1x"></i></span>New Labs</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a asp-area="" asp-controller="Medications" asp-action="PatientLabResults" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Results</a></li>
+                        <li><a asp-area="" asp-controller="Lab" asp-action="LabOrders" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Orders</a></li>
                     </ul>
                 </li>
 
-                <li class="active">
-                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
-                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientVisits" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Visits</a></li>
-                        <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                    <li class="active">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
+                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                            <li><a asp-area="" asp-controller="Patient" asp-action="PatientVisits" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Visits</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientVitals" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Vitals</a></li>
                     </ul>
                 </li>
                                     <li>
@@ -124,7 +138,7 @@
                 <li class="active">
                     <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-notes-medical fa-stack-1x"></i></span>Notes</a>
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientNotes" asp-route-mhn="@mhn"></i><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Notes</a></li>
                         <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
                     </ul>
                 </li>
@@ -141,7 +155,7 @@
         </div>
         <!-- /#sidebar-wrapper -->
 
-        <main role="main" class="pb-3" style="z-index:1;">
+        <main role="main" class="pb-3" style="z-index:1; margin-top:90px">
 
             <!-- Page Content -->
             @RenderBody()

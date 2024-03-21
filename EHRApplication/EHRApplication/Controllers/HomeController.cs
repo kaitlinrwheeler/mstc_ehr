@@ -5,13 +5,18 @@ using System.Diagnostics;
 
 namespace EHRApplication.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly LogService _logService;
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public HomeController(LogService logService)
+        public HomeController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
             _logService = logService;
+            this._connectionString = base._connectionString;
+            _listService = listService;
         }
 
         public IActionResult Index()
@@ -53,6 +58,11 @@ namespace EHRApplication.Controllers
         }
 
         public IActionResult LandingPage()
+        {
+            return View();
+        }
+
+        public IActionResult UserDashboard()
         {
             return View();
         }
