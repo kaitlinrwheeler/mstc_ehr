@@ -103,6 +103,9 @@ namespace EHRApplication.Models
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
 
+        // needs to be changed to accept a file
+        // may need to add IFormFile as well 
+
         [StringLength(60, ErrorMessage = "Image file must be of type .jpg, .jpeg, or .png.", MinimumLength = 5)]
         [RegularExpression(@"^[a-zA-Z0-9]+\.(png|jpg|jpeg)$", ErrorMessage = "Please enter a valid file name.")]
         [Display(Name = "Patient Image")]
