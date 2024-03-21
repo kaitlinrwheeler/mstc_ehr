@@ -561,7 +561,7 @@ namespace EHRApplication.Controllers
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
 
-
+                    // All records related to the patient in some way or another that also must be deleted before we can.
                     string deleteRelatedRecordsSql = @"
                         DELETE FROM [dbo].[LabResults] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[Vitals] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
@@ -589,14 +589,13 @@ namespace EHRApplication.Controllers
                         int relatedRowsAffected = cmd.ExecuteNonQuery();
 
                         // Check if any related records were deleted
-                        // You might have more complex logic here depending on your constraints
                         if (relatedRowsAffected <= 0)
                         {
                             throw new Exception("Failed to delete related records.");
                         }
                     }
 
-                    // Now, delete the patient
+                    // Now, that everything related to the patient is deleted, delete the patient.
                     using (SqlCommand cmd = new SqlCommand(deletePatientSql, connection, transaction))
                     {
                         cmd.Parameters.AddWithValue("@mhn", mhn);
