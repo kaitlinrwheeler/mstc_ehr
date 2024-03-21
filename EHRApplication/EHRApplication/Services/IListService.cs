@@ -9,6 +9,8 @@ namespace EHRApplication.Services
 
         IEnumerable<PatientDemographic> GetPatients();
 
+        Allergies GetAllergyByAllergyId(int allergyId);
+
         IEnumerable<MedicationProfile> GetMedicationProfiles();
 
         Providers GetProvidersByProviderId(int mhn);
@@ -26,5 +28,7 @@ namespace EHRApplication.Services
         List<Visits> GetPatientVisitsByMHN(int mhn);
 
         List<CarePlan> GetCarePlanByMHN(int mhn);
+
+        Visits GetVisitByVisitId(int visitId);
     }
 }

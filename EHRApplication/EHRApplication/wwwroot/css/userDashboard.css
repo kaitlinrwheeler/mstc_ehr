@@ -1,0 +1,60 @@
+﻿#wrapper{
+    padding-top: 0px;
+}
+/*
+    Just putting this here I think it looks better with this color maybe 
+    we will make it the whole site background idk
+*/
+body{
+    background-color: #f4f4f4;
+}
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.card-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.card-box {
+    background-color: var(--red);
+    color: white;
+    flex: 1;
+    margin: 0 30px;
+    padding: 20px 0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+.card-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.card-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .card-list li {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+.navigation-1{
+    text-decoration: none;
+    color: white;
+}
+.navigation-1:hover{
+    color: white;
+}
