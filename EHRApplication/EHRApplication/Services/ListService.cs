@@ -16,6 +16,61 @@ namespace EHRApplication.Services
             this._connectionString = connectionString;
         }
 
+        public PatientDemographic GetPatientByMHN(int mhn)
+        {
+            //Creating a new patientDemographic instance
+            PatientDemographic patientDemographic = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Assign properties for the patient demographic from the database
+                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        patientDemographic.race = Convert.ToString(dataReader["race"]);
+                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        patientDemographic.providers = GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
+                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        patientDemographic.ContactId = GetContactByMHN(patientDemographic.MHN);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientDemographic;
+        }
+
         /// <summary>
         /// Gets a list of all the providers from the database
         /// </summary>
@@ -457,6 +512,7 @@ namespace EHRApplication.Services
                 {
                     while (dataReader.Read())
                     {
+                        visit.visitsId = dataReader.GetInt32("visitsId");
                         //Setting the data that was just pulled from the database into an instance of the visit model.
                         visit.MHN = dataReader.GetInt32("MHN");
                         visit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
@@ -466,7 +522,11 @@ namespace EHRApplication.Services
 
                         visit.admitted = dataReader.GetBoolean("admitted");
                         visit.notes = dataReader.GetString("notes");
-                        visit.providerId = dataReader.GetInt32("providerId");
+
+                        //Populate the visits object with data from the database.
+                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        visit.providers = GetProvidersByProviderId(visit.providerId);
                     }
                 };
                 connection.Close();

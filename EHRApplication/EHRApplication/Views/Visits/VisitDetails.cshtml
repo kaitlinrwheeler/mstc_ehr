@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Visit Details";
+    // The list of Visits being pulled in.
+    @model EHRApplication.ViewModels.PortalViewModel
+    var mhn = ViewBag.MHN;
+    var visit = Model.VisitDetails;
+}
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Visit Details
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.VisitDetails != null && Model.VisitDetails.visitsId !=0)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date:</th>
+                            <th scope="col">Time:</th>
+                            <th scope="col">Provider Name:</th>
+                            <th scope="col">Admitted:</th>
+                            <th scope="col">Notes:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover-highlighting">
+                            <td>@visit.date.ToString("MM-dd-yyyy")</td>
+                            <td>@visit.time.ToString("HH:mm")</td>
+                            <td>@visit.providers.firstName @visit.providers.lastName</td>
+                            <td>@(visit.admitted ? "Yes" : "No")</td>
+                            <td>@visit.notes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No Visit data found.</h1>
+            }
+        </div>
+@* This is commented so we don't show code that is hard coded. eventually this will show different data from multiple tables
+
+
+            <!-- Two containers side by side -->
+            <div class="row mt-4" data-bs-theme="auto">
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="h4 card-header text-center" data-bs-theme="auto">
+                            Patient Notes
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="h4 card-header text-center" data-bs-theme="auto">
+                            Patient Med Orders
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="h4 card-header text-center" data-bs-theme="auto">
+                            Patient Lab Orders
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="h4 card-header text-center" data-bs-theme="auto">
+                            Patient Lab Results
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="h4 card-header text-center" data-bs-theme="auto">
+                            Patient Lab Results
+                        </div>
+                        <div class="card-body" data-bs-theme="auto">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                    <tr class="hover-highlighting">
+                                        <th scope="row">Example:</th>
+                                        <td>Example</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        *@
+    </div>
+</section>
