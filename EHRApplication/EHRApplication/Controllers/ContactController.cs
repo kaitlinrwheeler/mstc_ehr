@@ -28,6 +28,10 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientContact contact)
         {
+            if (contact.MHN == 0)
+            {
+                ModelState.AddModelError("MHN", "Please select a patient.");
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {

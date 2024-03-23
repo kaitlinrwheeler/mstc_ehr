@@ -1,14 +1,24 @@
 ﻿
 @{
+    ViewData["Title"] = "myEHR | All Patients";
     // The list of patients being pulled in.
     @model List<PatientDemographic>
+
+    <script src="~/js/allPatients.js" defer></script>
+
 }
 
 
 <section class="my-5 w-75 m-auto">
-    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Patients
+    <div class="card shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">All Patients</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="PatientOverView">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.Any())
@@ -21,19 +31,41 @@
                             <th scope="col">Last Name:</th>
                             <th scope="col">Date of Birth:</th>
                             <th scope="col">Gender:</th>
-                            <th scope="col"></th> <!-- Empty column for the button -->
+                            <th scope="col">Active:</th>
+                            <th scope="col"></th> <!-- Empty columns for the buttons -->
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var patient in Model)
                         {
-                            <tr class="hover-highlighting"> <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                            <tr class="hover-highlighting" id="patient-@patient.MHN"> <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
                                 <td>@patient.MHN</td>
                                 <td>@patient.firstName</td>
                                 <td>@patient.lastName</td>
                                 <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
                                 <td>@patient.gender</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN">View</a></td>
+@*                                 <td>@patient.Active</td>
+ *@
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Yes" : "No")</label>
+                                    </div>
+                                </td>
+
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                            
+                                <td>
+                                <div class="btn-group" role="group">
+                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
+                                            <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
+                                                <i class="fa-solid fa-trash me-2"></i>Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -46,3 +78,25 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete patient, <span id="patientNamePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
