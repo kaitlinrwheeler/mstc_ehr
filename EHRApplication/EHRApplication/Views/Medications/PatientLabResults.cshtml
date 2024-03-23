@@ -18,6 +18,7 @@
                         <tr>
                             <th scope="col">Test Name:</th>
                             <th scope="col">Result:</th>
+                            <th scope="col">Units:</th>
                             <th scope="col">Abnormal Flag:</th>
                             <th scope="col">Ordered By:</th>
                             <th scope="col">Date Ordered:</th>
@@ -31,6 +32,7 @@
                             <tr class="hover-highlighting">
                                 <td>@results.labTests.testName</td>
                                 <td>@results.resultValue</td>
+                                <td>@results.labTests.units</td>
                                 @* shows a yellow background if the priority for that plan is high otherwise it will be a gray background. *@
                                 <td style='background-color: @(results.abnormalFlag == "High" ? "yellow" : "unset"); color: @(results.abnormalFlag == "High" ? "black" : "inherit")'>
                                     @if (results.abnormalFlag == "High")
