@@ -194,63 +194,23 @@ namespace EHRApplication.Controllers
         public IActionResult PatientVisits(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
             
 
             // New list to hold all the patients in the database.
-            List<Visits> patientVisits = new List<Visits>();
+            List<Visits> patientVisits = _listService.GetPatientVisitsByMHN(mhn);
 
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                connection.Open();
+            viewModel.Visits = patientVisits;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
 
-                // Sql query.
-                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        // Create a new patient object for each record.
-                        Visits visit = new Visits();
-
-                        visit.visitsId = Convert.ToInt32(dataReader["visitsId"]);
-                        visit.MHN = Convert.ToInt32(dataReader["MHN"]);
-
-                        //Populate the visits object with data from the database.
-                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        visit.providers = _listService.GetProvidersByProviderId(visit.providerId);
-                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["date"].ToString());
-                        visit.date = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        visit.time = TimeOnly.Parse(dataReader["time"].ToString());
-                        visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
-                        visit.notes = Convert.ToString(dataReader["notes"]);
-
-                        // Add the patient to the list
-                        patientVisits.Add(visit);
-                    }
-                }
-
-                viewModel.Visits = patientVisits;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = mhn;
-                connection.Close();
-            }
             return View(viewModel);
         }
 
         public IActionResult PatientAllergies(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
          
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
@@ -285,7 +245,7 @@ namespace EHRApplication.Controllers
                         allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
 
                         //Gets the provider for this patient using the primary physician number that links to the providers table
-                        allergy.allergies = new ListService(this._connectionString).GetAllergyByAllergyId(allergy.allergyId);
+                        allergy.allergies = _listService.GetAllergyByAllergyId(allergy.allergyId);
 
 
 
@@ -309,11 +269,69 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-       
+        private PatientDemographic GetPatientByMHN(int mhn)
+        {
+            //Creating a new patientDemographic instance
+            PatientDemographic patientDemographic = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Assign properties for the patient demographic from the database
+                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        patientDemographic.race = Convert.ToString(dataReader["race"]);
+                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
+                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientDemographic;
+        }
+
+
+
+
+
         public IActionResult PatientInsurance(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
@@ -367,7 +385,7 @@ namespace EHRApplication.Controllers
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
@@ -384,7 +402,7 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
@@ -446,7 +464,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientNotes(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
