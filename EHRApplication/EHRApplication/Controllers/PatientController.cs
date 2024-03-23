@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -36,7 +37,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT MHN, firstName, lastName, DOB, gender FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -58,6 +59,7 @@ namespace EHRApplication.Controllers
                         DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
                         patient.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
                         patient.gender = Convert.ToString(dataReader["gender"]);
+                        patient.Active = Convert.ToBoolean(dataReader["Active"]);
 
                         // Add the patient to the list
                         allPatients.Add(patient);
@@ -459,6 +461,122 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+
+
+        [HttpPost]
+        public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[PatientDemographic] SET Active = @active WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+                cmd.Parameters.AddWithValue("@active", activeStatus);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return Ok("Successfully updated.");
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return BadRequest("Error, please try again.");
+                }
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult DeletePatient(int mhn)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Begin a transaction
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // SQL query to delete the patient and related records
+                    string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                    // All records related to the patient in some way or another that also must be deleted before we can.
+                    string deleteRelatedRecordsSql = @"
+                        DELETE FROM [dbo].[LabResults] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[Vitals] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
+    
+                        DELETE FROM [dbo].[LabOrders] WHERE visitsId IN (SELECT visitsId FROM [dbo].[Visits] WHERE MHN = @mhn);
+                        DELETE FROM [dbo].[MedOrders] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
+                        DELETE FROM [dbo].[Visits] WHERE MHN = @mhn;
+    
+                        DELETE FROM [dbo].[MedAdministrationHistory] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientAllergies] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientInsurance] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[Alerts] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientProblems] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientNotes] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientMedications] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[PatientContact] WHERE MHN = @mhn;
+                        DELETE FROM [dbo].[CarePlan] WHERE MHN = @mhn;
+                    ";
+
+
+                    // First, delete related records
+                    using (SqlCommand cmd = new SqlCommand(deleteRelatedRecordsSql, connection, transaction))
+                    {
+                        // Set parameters if needed
+                        cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                        int relatedRowsAffected = cmd.ExecuteNonQuery();
+                    }
+
+                    // Now, that everything related to the patient is deleted, delete the patient.
+                    using (SqlCommand cmd = new SqlCommand(deletePatientSql, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                        int patientRowsAffected = cmd.ExecuteNonQuery();
+
+                        // Check if the patient was deleted
+                        if (patientRowsAffected <= 0)
+                        {
+                            throw new Exception("Patient with MHN " + mhn + " not found.");
+                        }
+                    }
+
+                    // If everything went well, commit the transaction
+                    transaction.Commit();
+
+                    return Ok("Successfully deleted.");
+                }
+                catch (Exception ex)
+                {
+                    // Something went wrong, rollback the transaction
+                    transaction.Rollback();
+
+                    // Log the exception if needed
+                    Console.WriteLine("Error: " + ex.Message);
+
+                    // Return an error response
+                    return BadRequest("Failed to delete patient.");
+                }
+            }
+        }
 
 
         public IActionResult PatientNotes(int mhn)
