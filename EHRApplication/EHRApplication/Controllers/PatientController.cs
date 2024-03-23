@@ -398,15 +398,6 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-
-
-
-
-
-
-
-
-
         public IActionResult PatientVitals(int mhn)
         {
             // Needed to work with the patient banner properly.

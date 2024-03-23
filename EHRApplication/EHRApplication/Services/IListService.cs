@@ -29,6 +29,10 @@ namespace EHRApplication.Services
 
         List<CarePlan> GetCarePlanByMHN(int mhn);
 
+        List<LabOrders>GetPatientsLabOrdersByMHN(int mhn);
+
+        PatientDemographic GetPatientByMHN(int mhn);
+
         Visits GetVisitByVisitId(int visitId);
     }
 }
