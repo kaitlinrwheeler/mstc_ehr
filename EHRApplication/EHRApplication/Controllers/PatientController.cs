@@ -565,7 +565,11 @@ namespace EHRApplication.Controllers
                     string deleteRelatedRecordsSql = @"
                         DELETE FROM [dbo].[LabResults] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[Vitals] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
+    
+                        DELETE FROM [dbo].[LabOrders] WHERE visitsId IN (SELECT visitsId FROM [dbo].[Visits] WHERE MHN = @mhn);
+                        DELETE FROM [dbo].[MedOrders] WHERE visitId IN (SELECT visitId FROM [dbo].[Visits] WHERE MHN = @mhn);
                         DELETE FROM [dbo].[Visits] WHERE MHN = @mhn;
+    
                         DELETE FROM [dbo].[MedAdministrationHistory] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[PatientAllergies] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[PatientInsurance] WHERE MHN = @mhn;
@@ -575,8 +579,6 @@ namespace EHRApplication.Controllers
                         DELETE FROM [dbo].[PatientMedications] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[PatientContact] WHERE MHN = @mhn;
                         DELETE FROM [dbo].[CarePlan] WHERE MHN = @mhn;
-                        DELETE FROM [dbo].[LabOrders] WHERE MHN = @mhn;
-                        DELETE FROM [dbo].[MedOrders] WHERE MHN = @mhn;
                     ";
 
 
@@ -587,12 +589,6 @@ namespace EHRApplication.Controllers
                         cmd.Parameters.AddWithValue("@mhn", mhn);
 
                         int relatedRowsAffected = cmd.ExecuteNonQuery();
-
-                        // Check if any related records were deleted
-                        if (relatedRowsAffected <= 0)
-                        {
-                            throw new Exception("Failed to delete related records.");
-                        }
                     }
 
                     // Now, that everything related to the patient is deleted, delete the patient.
