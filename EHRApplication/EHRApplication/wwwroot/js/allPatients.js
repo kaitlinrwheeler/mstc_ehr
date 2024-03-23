@@ -40,11 +40,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     let currentMhn;
+    let currentPatientName;
 
     deleteButtons.forEach(button => {
         button.addEventListener('click', function (event) {
             event.preventDefault(); // Prevent the default form submission
             currentMhn = this.getAttribute('data-mhn');
+            currentPatientName = this.closest('tr').querySelector('td:nth-child(2)').textContent + " " + this.closest('tr').querySelector('td:nth-child(3)').textContent; // Get the first and last name of the patient
+            document.getElementById('patientNamePlaceholder').textContent = currentPatientName; // Update the patient's name placeholder
             modal.show();
         });
     });
