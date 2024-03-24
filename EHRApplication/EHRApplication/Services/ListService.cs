@@ -596,6 +596,7 @@ namespace EHRApplication.Services
                 {
                     while (dataReader.Read())
                     {
+                        visit.visitsId = dataReader.GetInt32("visitsId");
                         //Setting the data that was just pulled from the database into an instance of the visit model.
                         visit.MHN = dataReader.GetInt32("MHN");
                         visit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
@@ -605,7 +606,11 @@ namespace EHRApplication.Services
 
                         visit.admitted = dataReader.GetBoolean("admitted");
                         visit.notes = dataReader.GetString("notes");
-                        visit.providerId = dataReader.GetInt32("providerId");
+
+                        //Populate the visits object with data from the database.
+                        visit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        visit.providers = GetProvidersByProviderId(visit.providerId);
                     }
                 };
                 connection.Close();
