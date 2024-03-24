@@ -510,6 +510,7 @@ namespace EHRApplication.Services
                         // Create a new patient object for each record.
                         Visits visit = new Visits();
 
+                        visit.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //Populate the visits object with data from the database.
                         visit.providerId = Convert.ToInt32(dataReader["providerId"]);
                         //Gets the provider for this patient using the primary physician number that links to the providers table
@@ -521,6 +522,7 @@ namespace EHRApplication.Services
                         visit.time = TimeOnly.Parse(dataReader["time"].ToString());
                         visit.admitted = Convert.ToBoolean(dataReader["admitted"]);
                         visit.notes = Convert.ToString(dataReader["notes"]);
+
 
                         // Add the patient to the list
                         patientVisits.Add(visit);
