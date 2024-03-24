@@ -203,7 +203,8 @@
 
 
             <div class="form-group">
-                <label for="patientImageFile" class="mb-1">Patient Image:</label>
+                <label for="patientImageFile" class="mb-1">Patient Image (Optional):</label>
+                <small>Please select an image file of type .jpeg, .jpg, or .png.</small>
                 <input asp-for="patientImageFile" type="file" id="patientImageFile" name="PatientImageFile" class="form-control" data-bs-theme="auto" onblur="validateImageFile('patientImageFile', 'PatientImageFileError')" />
                 <span asp-validation-for="patientImage" id="PatientImageFileError" class="validation-msg"></span>
             </div>
