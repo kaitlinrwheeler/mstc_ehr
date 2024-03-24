@@ -25,20 +25,29 @@
 
             <div class="form-group">
                 <label for="MHN">Patient:</label>
-                <select data-bs-auto="auto" id="MHN" class="form-control" name="MHN" asp-for="MHN">
-                    @foreach (var patient in ListService.GetPatients())
-                    {
-                        // Check if the current patient's MHN is not in the patient contact table
-                        //This will make it so that only patients without their contact info in the table show up
-                        if (!ListService.GetContacts().Any(pc => pc.MHN == patient.MHN))
+                @* This will check to see if there are any patients in the database without a patient contact *@
+                @if (!ListService.GetPatients().Any(p => !ListService.GetContacts().Any(pc => pc.MHN == p.MHN)))
+                {
+                    <input type="text" class="form-control" value="No patients found" readonly />
+                }
+                else
+                {
+                    <select data-bs-auto="auto" id="MHN" class="form-control" name="MHN" asp-for="MHN">
+                        <option value="0"></option>
+                        @foreach (var patient in ListService.GetPatients())
                         {
-                            <option value="@patient.MHN.ToString()">
-                                @patient.MHN @patient.firstName @patient.lastName, @patient.DOB
-                            </option>
+                            // Check if the current patient's MHN is not in the patient contact table
+                            // This will make it so that only patients without their contact info in the table show up
+                            if (!ListService.GetContacts().Any(pc => pc.MHN == patient.MHN))
+                            {
+                                <option value="@patient.MHN.ToString()">
+                                    @patient.MHN @patient.firstName @patient.lastName, @patient.DOB
+                                </option>
+                            }
                         }
-                    }
-                </select>
-                <span asp-validation-for="MHN" id="MHNError" class="validation-msg"></span>
+                    </select>
+                }
+                <span asp-validation-for="MHN" id="PatientError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
