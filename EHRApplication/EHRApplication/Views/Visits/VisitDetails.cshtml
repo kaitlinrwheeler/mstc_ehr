@@ -28,7 +28,7 @@
                         <tr class="hover-highlighting">
                             <td>@visit.date.ToString("MM-dd-yyyy")</td>
                             <td>@visit.time.ToString("HH:mm")</td>
-                            <td>@visit.providers.firstName @visit.providers.lastName</td>
+                            <td>@visit.providers.providerId, @visit.providers.firstName @visit.providers.lastName</td>
                             <td>@(visit.admitted ? "Yes" : "No")</td>
                             <td>@visit.notes</td>
                         </tr>
