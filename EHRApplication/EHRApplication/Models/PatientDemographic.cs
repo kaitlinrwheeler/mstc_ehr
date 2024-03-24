@@ -41,6 +41,11 @@ namespace EHRApplication.Models
         [Display(Name = "Pronouns")]
         public string preferredPronouns { get; set; }
 
+        [StringLength(60, ErrorMessage = "Pronouns name must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please select pronouns.")]
+        [Display(Name = "Pronouns")]
+        public string? OtherPronouns { get; set; }
+
         [Required(ErrorMessage = "Please enter a date of birth.")]
         [DataType(DataType.Date)]
         public DateOnly DOB { get; set; }
@@ -50,6 +55,11 @@ namespace EHRApplication.Models
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string gender { get; set; }
+
+        [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "Gender")]
+        public string? OtherGender { get; set; }
 
         [Required(ErrorMessage = "Language is required.")]
         [StringLength(60, ErrorMessage = "Language must be between 1 and 60 characters.", MinimumLength = 1)]
@@ -70,6 +80,11 @@ namespace EHRApplication.Models
         [NotMapped]
         public List<string> raceList { get; set; }
 
+        [StringLength(60, ErrorMessage = "Race must be between 1 and 60 characters.", MinimumLength = 1)]
+        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
+        [Display(Name = "Race")]
+        public string? OtherRace { get; set; }
+
         [StringLength(60, ErrorMessage = "Religion must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Religion")]
@@ -82,7 +97,7 @@ namespace EHRApplication.Models
         [Required(ErrorMessage = "Primary physician is required.")]
         [Display(Name = "Primary physician")]
         public int primaryPhysician { get; set; }
-        
+
         [StringLength(60, ErrorMessage = "Guardian1 must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Guardian1")]
@@ -103,5 +118,19 @@ namespace EHRApplication.Models
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
         public string genderAssignedAtBirth { get; set; }
+
+        public bool Active { get; set; }
+
+        // needs to be changed to accept a file
+        // may need to add IFormFile as well 
+
+        [NotMapped]
+        [Display(Name = "Patient Image")]
+        public IFormFile? patientImageFile { get; set; }
+
+        [StringLength(60, ErrorMessage = "Image file must be of type .jpg, .jpeg, or .png.", MinimumLength = 5)]
+        [RegularExpression(@"^[a-zA-Z0-9]+\.(png|jpg|jpeg)$", ErrorMessage = "Please enter a valid file name.")]
+        [Display(Name = "Patient Image")]
+        public string? patientImage { get; set; }
     }
 }
