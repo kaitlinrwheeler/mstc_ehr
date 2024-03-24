@@ -99,13 +99,13 @@ namespace EHRApplication.Controllers
             if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
             {
                 // define permitted image file types
-                var allowedFileTypes = new[] { ".jpg", ".jpeg", ".png" };
+                var allowedFileTypes = new[] { ".jpg", ".png" };
                 var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
 
                 // validate file type
                 if (!allowedFileTypes.Contains(extentions))
                 {
-                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, .jpeg, or .png are permitted.");
+                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
                     return View(patient);
                 }
 

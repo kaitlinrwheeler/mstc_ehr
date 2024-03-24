@@ -321,7 +321,7 @@ function validateImage(inputID, errorSpanID) {
     const file = input.files[0];
 
     // declare permitted file extension
-    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    const allowedExtensions = /(\.jpg|\.png)$/i;
 
     // set validity status
     let valid = true;
@@ -330,7 +330,7 @@ function validateImage(inputID, errorSpanID) {
     if (file && !allowedExtensions.exec(file.name)) {
         // if invalid, set validity to false and display error message
         valid = false;
-        displayError(valid, errorSpan, "Invalid file type. Only image files ending in .jpg, .jpeg, or .png are permitted.");
+        displayError(valid, errorSpan, "Invalid file type. Only image files ending in .jpg or .png are permitted.");
     } else {
         // clear any existing error message
         displayError(true, errorSpan, "");
