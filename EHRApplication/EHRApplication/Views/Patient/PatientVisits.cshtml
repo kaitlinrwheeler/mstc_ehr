@@ -32,7 +32,7 @@
                             <tr class="hover-highlighting">
                                 <td>@visits.date.ToString("MM-dd-yyyy")</td>
                                 <td>@visits.time.ToString("HH:mm")</td>
-                                <td>@visits.providers.firstName @visits.providers.lastName</td>
+                                <td>@visits.providers.providerId, @visits.providers.firstName @visits.providers.lastName</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
                                 <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@visits.MHN">View</a></td>
