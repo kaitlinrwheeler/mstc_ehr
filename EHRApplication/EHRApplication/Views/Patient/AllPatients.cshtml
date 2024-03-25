@@ -45,8 +45,7 @@
                                 <td>@patient.lastName</td>
                                 <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
                                 <td>@patient.gender</td>
-@*                                 <td>@patient.Active</td>
- *@
+
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
@@ -58,8 +57,8 @@
                             
                                 <td>
                                 <div class="btn-group" role="group">
-                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                         <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
+                                            <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                             <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
                                                 <i class="fa-solid fa-trash me-2"></i>Delete
                                             </button>
