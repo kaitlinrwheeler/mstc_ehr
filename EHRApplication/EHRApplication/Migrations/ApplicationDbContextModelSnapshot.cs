@@ -422,19 +422,15 @@ namespace EHRApplication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("patientContactId"));
 
                     b.Property<string>("ECFirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ECLastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ECPhone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ECRelationship")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MHN")
@@ -449,7 +445,6 @@ namespace EHRApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("phone")
@@ -460,12 +455,14 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("zipcode")
+                    b.Property<int?>("zipcode")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("patientContactId");
 
-                    b.HasIndex("MHN");
+                    b.HasIndex("MHN")
+                        .IsUnique();
 
                     b.ToTable("PatientContact");
                 });
@@ -478,52 +475,66 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MHN"));
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<DateOnly>("DOB")
                         .HasColumnType("date");
 
                     b.Property<string>("ethnicity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("genderAssignedAtBirth")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("lastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("legalGuardian1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("legalGuardian2")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("middleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("patientImage")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("preferredLanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("preferredPronouns")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("previousName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
@@ -533,12 +544,16 @@ namespace EHRApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("religion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("religion")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("suffix")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.HasKey("MHN");
 
@@ -1100,6 +1115,9 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("assocProviderproviderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("associatedProvider")
                         .HasColumnType("int");
 
@@ -1122,6 +1140,8 @@ namespace EHRApplication.Migrations
                     b.HasKey("patientNotesId");
 
                     b.HasIndex("MHN");
+
+                    b.HasIndex("assocProviderproviderId");
 
                     b.HasIndex("createdBy");
 
@@ -1222,9 +1242,6 @@ namespace EHRApplication.Migrations
                     b.Property<int>("providerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("providersId")
-                        .HasColumnType("int");
-
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");
 
@@ -1232,7 +1249,7 @@ namespace EHRApplication.Migrations
 
                     b.HasIndex("MHN");
 
-                    b.HasIndex("providersId");
+                    b.HasIndex("providerId");
 
                     b.ToTable("Visits");
                 });
@@ -1501,7 +1518,7 @@ namespace EHRApplication.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EHRApplication.Models.ApplcationUser", b =>
+            modelBuilder.Entity("EHRApplication.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -1513,7 +1530,7 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("ApplcationUser");
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.Alerts", b =>
@@ -1692,8 +1709,8 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("EHRApplication.Models.PatientContact", b =>
                 {
                     b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
-                        .WithMany()
-                        .HasForeignKey("MHN")
+                        .WithOne("ContactId")
+                        .HasForeignKey("EHRApplication.Models.PatientContact", "MHN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1936,11 +1953,19 @@ namespace EHRApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Providers", "assocProvider")
+                        .WithMany()
+                        .HasForeignKey("assocProviderproviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EHRApplication.Models.Providers", "providers")
                         .WithMany()
                         .HasForeignKey("createdBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("assocProvider");
 
                     b.Navigation("patients");
 
@@ -1976,7 +2001,7 @@ namespace EHRApplication.Migrations
 
                     b.HasOne("EHRApplication.Models.Providers", "providers")
                         .WithMany()
-                        .HasForeignKey("providersId")
+                        .HasForeignKey("providerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2052,6 +2077,12 @@ namespace EHRApplication.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.PatientDemographic", b =>
+                {
+                    b.Navigation("ContactId")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

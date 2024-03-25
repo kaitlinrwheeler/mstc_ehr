@@ -7,8 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Media\PatientImages\**" />
+    <Content Remove="wwwroot\Media\PatientImages\**" />
+    <EmbeddedResource Remove="wwwroot\Media\PatientImages\**" />
+    <None Remove="wwwroot\Media\PatientImages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\AllModels.cs" />
     <Compile Remove="Views\Shared\_landingFooter.cs" />
     <Compile Remove="Views\Shared\_landingFooter.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\images\d7c35107-3c30-4624-84f8-5e1a4a87d72c.docx" />
   </ItemGroup>
 
   <ItemGroup>

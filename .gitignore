@@ -483,3 +483,7 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 /EHRApplication/EHRApplication/EHRApplication.csproj.user
+
+
+# Application-specific folders
+/EHRApplication/EHRApplication/wwwroot/images

@@ -1,6 +1,6 @@
 ﻿@{
-    // The list of patients being pulled in.
-    @model List<PatientProblems>
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "myEHR | Patient Problems";
 }
 
 
@@ -10,7 +10,7 @@
             Patient Problems
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (Model.Any())
+            @if (Model != null && Model.PatientProblems != null && Model.PatientProblems.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -22,13 +22,13 @@
                             <th scope="col">Description:</th>
                             <th scope="col">ICD_10:</th>
                             <th scope="col">Immediacy:</th>
-                            <th scope="col">Created At:</th>
+                            <th scope="col">Created On:</th>
                             <th scope="col">Created By:</th>
                             <th scope="col">Active:</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var problem in Model)
+                        @foreach (var problem in Model.PatientProblems)
                         {
                             <tr class="hover-highlighting">
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->
@@ -48,7 +48,7 @@
                                 <td>@problem.description</td>
                                 <td>@problem.ICD_10</td>
                                 <td>@problem.immediacy</td>
-                                <td>@problem.createdAt.ToString("MM/dd/yyyy HH:mm")</td>
+                                <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
                                 <td>@problem.providers.firstName @problem.providers.lastName</td>
                                 <td>@(problem.active ? "Yes" : "No")</td>                
                             </tr>

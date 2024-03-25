@@ -1,0 +1,15 @@
+﻿.requirements-popup {
+    z-index: 1000; /* Ensure it appears on top of other content */
+    top: -100%; /* Position above the table row */
+    left: -280px;
+    padding: 0;
+    width: 300px; /* Adjust width as needed */
+}
+
+.question-wrapper {
+    position: relative; /* Ensure relative positioning for absolute popup */
+}
+
+    .question-wrapper:hover .requirements-popup {
+        display: block;
+    }

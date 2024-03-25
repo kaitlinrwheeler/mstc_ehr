@@ -6,9 +6,9 @@
 <div id="headerContainer" class="sticky-top w-100">
     <header class="d-flex flex-wrap justify-content-center py-3">
 
-        <a id="logo" href="/" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap" /></svg>
-            <span class="fs-4">my<strong>EHR</strong></span>
+        <a id="logo" href="/" class="d-flex align-items-center mb-md-0 me-md-auto link-body-emphasis text-decoration-none ms-4">
+            <img src="~/Media/myehr2-white.png" alt="Logo" width="100" alt="Logo">
+
         </a>
 
         <ul id="topNav" class="nav nav-pills align-items-center">
@@ -36,9 +36,11 @@
             </li>
 
 
-            <li class="nav-item"><a asp-area="" asp-controller="Resources" asp-action="Index" class="nav-link">Resources</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Account</a></li>
-            <li class="nav-item"><a asp-area="" asp-controller="Patient" asp-action="Index" class="nav-link">Admin</a></li>
+            @* <li class="nav-item"><a asp-area="" asp-controller="Resources" asp-action="Index" class="nav-link">Resources</a></li> *@
+            @* <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="UserDashboard" class="nav-link">User Dashboard</a></li> *@
+            <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="UserDashboard" class="nav-link">Dashboard</a></li>
+            @* <li class="nav-item"><a href="#" class="nav-link">Account</a></li> *@
+            @* <li class="nav-item"><a asp-area="" asp-controller="Patient" asp-action="Index" class="nav-link">Admin</a></li> *@
 
             @if (SignInManager.IsSignedIn(User))
             {

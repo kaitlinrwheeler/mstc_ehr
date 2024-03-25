@@ -310,3 +310,70 @@ function validateRequiredInput(inputID, errorMessage) {
     // Call handleInputChange initially to perform initial validation
     handleInputChange();
 }
+
+// validate image input
+function validateImage(inputID, errorSpanID) {
+    // get input and error span elements
+    const input = document.getElementById(inputID);
+    const errorSpan = document.getElementById(errorSpanID);
+
+    // get any input files
+    const file = input.files[0];
+
+    // declare permitted file extension
+    const allowedExtensions = /(\.jpg|\.png)$/i;
+
+    // set validity status
+    let valid = true;
+
+    // check for file and verify extension
+    if (file && !allowedExtensions.exec(file.name)) {
+        // if invalid, set validity to false and display error message
+        valid = false;
+        displayError(valid, errorSpan, "Invalid file type. Only image files ending in .jpg or .png are permitted.");
+    } else {
+        // clear any existing error message
+        displayError(true, errorSpan, "");
+    }
+
+    return valid;
+}
+
+function dropdownOtherOption(dropdownId, textFieldId, errorSpanId, inputType) {
+    var selectedValue = document.getElementById(dropdownId).value;
+    var textField = document.getElementById(textFieldId);
+    var errorSpan = document.getElementById(errorSpanId);
+
+    if (selectedValue === "Other") {
+        textField.style.display = "block";
+        textField.required = true;
+        errorSpan.style.display = "block";
+
+        //Call validateRequiredTextInput for the optional text box
+        validateRequiredTextInput(textFieldId, 25, inputType);
+    } else {
+        textField.style.display = "none";
+        textField.required = false;
+        errorSpan.style.display = "none";
+    }
+}
+
+function otherRaceInput() {
+    var otherRaceCheckbox = document.getElementById("OtherRace");
+    var otherRaceInput = document.getElementById("OtherRaceInput");
+
+    if (otherRaceCheckbox.checked) {
+        otherRaceInput.style.display = "block";
+        otherRaceInput.required = true;
+        // Bind onblur event for validation when 'Other' is selected
+        otherRaceInput.onblur = function () {
+            validateOptionalTextInput('OtherRaceInput', 25, 'other race');
+        };
+    } else {
+        otherRaceInput.style.display = "none";
+        otherRaceInput.required = false;
+        // Clear the validation error message when 'Other' is not selected
+        document.getElementById("OtherRaceInputError").style.display = "none";
+    }
+}
+

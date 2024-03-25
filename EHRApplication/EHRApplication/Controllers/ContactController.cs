@@ -6,18 +6,18 @@ using System.Data;
 
 namespace EHRApplication.Controllers
 {
-    public class ContactController : Controller
+    public class ContactController : BaseController
     {
-        private readonly LogService _logService;
-        //Setting the default connection string
-        private string connectionString;
-        public IConfiguration Configuration { get; }
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public ContactController(LogService logService, IConfiguration configuration)
+        public ContactController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
             _logService = logService;
-            Configuration = configuration;
-            this.connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            this._connectionString = base._connectionString;
+            _listService = listService;
         }
 
         public IActionResult Index()
@@ -28,13 +28,17 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientContact contact)
         {
+            if (contact.MHN == 0)
+            {
+                ModelState.AddModelError("MHN", "Please select a patient.");
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 return View(contact);
             }
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
                 string sql = "INSERT INTO [PatientContact] (MHN, address, city, state, zipcode, phone, email, ECFirstName, ECLastName, ECRelationship, ECPhone) " +
@@ -53,10 +57,10 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@zipcode", SqlDbType.VarChar).Value = contact.zipcode;
                     command.Parameters.Add("@phone", SqlDbType.VarChar).Value = contact.phone;
                     command.Parameters.Add("@email", SqlDbType.VarChar).Value = contact.email;
-                    command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "NA" : contact.ECFirstName;
-                    command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "NA" : contact.ECLastName;
-                    command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "NA" : contact.ECRelationship;
-                    command.Parameters.Add("@ECPhone", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECPhone) ? "NA" : contact.ECPhone;
+                    command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "" : contact.ECFirstName;
+                    command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "" : contact.ECLastName;
+                    command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "" : contact.ECRelationship;
+                    command.Parameters.Add("@ECPhone", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECPhone) ? "" : contact.ECPhone;
 
                     connection.Open();
                     command.ExecuteNonQuery();
