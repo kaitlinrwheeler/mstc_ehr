@@ -510,6 +510,8 @@ namespace EHRApplication.Services
                         // Create a new patient object for each record.
                         Visits visit = new Visits();
 
+                        visit.MHN = Convert.ToInt32(dataReader["MHN"]);
+
                         visit.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //Populate the visits object with data from the database.
                         visit.providerId = Convert.ToInt32(dataReader["providerId"]);
