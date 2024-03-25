@@ -95,16 +95,82 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
+            // process file upload
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
+            {
+                // define permitted image file types
+                var allowedFileTypes = new[] { ".jpg", ".png" };
+                var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
+
+                // validate file type
+                if (!allowedFileTypes.Contains(extentions))
+                {
+                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
+                    return View(patient);
+                }
+
+                // create filepath to storage location
+                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                // check for existence of directory and create if it doesn't exist
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+
+                // create and assign new filename before storage
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(patient.patientImageFile.FileName);
+
+                // create full filepath
+                var filePath = Path.Combine(uploadDirectory, fileName);
+
+                // save file to disk
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    patient.patientImageFile.CopyToAsync(stream);
+                }
+
+                // save filepath to pt image property
+                patient.patientImage = fileName;
+
+            }
+
+            // process race selection
+            if (patient.race == null && !string.IsNullOrEmpty(patient.OtherRace))
+            {
+                // if other race is chosen rather than offered selection
+                // set race to 'other race' property
+                patient.race = patient.OtherRace;
+            }
+            else
+            {
+                patient.race = string.Join(",", patient.raceList);
+            }
+
+            // process preferred pronouns selection
+            if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
+            {
+                // if other pronouns is chosen rather than offered selection
+                // set pronouns to 'other preferred pronouns' property
+                patient.preferredPronouns = patient.OtherPronouns;
+            }
+
+            // process gender selection
+            if (patient.gender == "Other" && !string.IsNullOrEmpty(patient.OtherGender))
+            {
+                // if other gender is chosen rather than offered selection
+                // set gender to 'other gender' property
+                patient.gender = patient.OtherGender;
+            }            
+
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
-                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, genderAssignedAtBirth) " +
-                    "VALUES (@firstName, @middleName, @lastName, @suffix, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @genderAssignedAtBirth)";
+                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, previousName, genderAssignedAtBirth, patientImage) " +
+                    "VALUES (@firstName, @middleName, @lastName, @suffix, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @previousName, @genderAssignedAtBirth, @patientImage)";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
-
-                    patient.race = string.Join(",", patient.raceList);
 
                     //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
                     //adding parameters
@@ -122,7 +188,9 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
                     command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "" : patient.legalGuardian1;
                     command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "" : patient.legalGuardian2;
+                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "" : patient.previousName;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+                    command.Parameters.Add("@patientImage", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.patientImage) ? "" : patient.patientImage;
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -182,6 +250,7 @@ namespace EHRApplication.Controllers
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(portalViewModel.PatientDemographic.MHN);
+                        portalViewModel.PatientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
                     }
                 }
 
@@ -317,6 +386,8 @@ namespace EHRApplication.Controllers
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
                     }
                 }
 
