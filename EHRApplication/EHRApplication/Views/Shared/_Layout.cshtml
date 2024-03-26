@@ -32,6 +32,7 @@
     <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
+    || controllerName == "Patient" && actionName == "EditForm"
     || controllerName == "Patient" && actionName == "AllPatients"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders")
@@ -61,6 +62,7 @@
     <!-- This will hide the side nav if true. -->
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
+    || controllerName == "Patient" && actionName == "EditForm"
     || controllerName == "Patient" && actionName == "AllPatients"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders"
