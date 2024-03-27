@@ -80,7 +80,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public async Task<IActionResult> Index(PatientDemographic patient)
         {
             //Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
@@ -134,7 +134,7 @@ namespace EHRApplication.Controllers
                 // save file to disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    patient.patientImageFile.CopyToAsync(stream);
+                    await patient.patientImageFile.CopyToAsync(stream);
                 }
 
                 // save filepath to pt image property
