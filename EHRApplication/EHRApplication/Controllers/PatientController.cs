@@ -95,6 +95,13 @@ namespace EHRApplication.Controllers
                 return View(patient);
             }
 
+            // check if the file is too large
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 4 * 1024 * 1024)
+            {
+                ModelState.AddModelError("patientImageFile", "File size must be less than 4MB.");
+                return View(patient);
+            }
+
             // process file upload
             if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
             {
