@@ -449,12 +449,12 @@ namespace EHRApplication.Controllers
                         vital.temperature = dataReader.GetDecimal("temperature");
                         vital.bloodPressure = dataReader.GetInt32("bloodPressure");
                         vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
-                        vital.pulseOximetry = dataReader.GetDecimal("pulseOximetry");
+                        vital.pulseOximetry = dataReader.GetInt32("pulseOximetry");
                         vital.heightInches = dataReader.GetDecimal("heightInches");
                         vital.weightPounds = dataReader.GetDecimal("weightPounds");
                         vital.BMI = dataReader.GetDecimal("BMI");
-                        vital.intakeMilliLiters = dataReader.GetDecimal("intakeMilliliters");
-                        vital.outputMilliLiters = dataReader.GetDecimal("outputMilliliters");
+                        vital.intakeMilliLiters = dataReader.GetInt32("intakeMilliliters");
+                        vital.outputMilliLiters = dataReader.GetInt32("outputMilliliters");
 
                         // Add the vital to the list
                         vitals.Add(vital);
