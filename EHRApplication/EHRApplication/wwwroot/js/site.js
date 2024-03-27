@@ -149,7 +149,6 @@ document.addEventListener("click", function (event) {
 
 
 
-
 $(document).ready(function () {
     // Get the MHN number from the <p> element
     var mhnNumber = $('.mb-1.text-nowrap').text().trim().split(':')[1].trim();
@@ -157,3 +156,5 @@ $(document).ready(function () {
     // Set the value of asp-route-mhn attribute
     $('.Med-link').attr('asp-route-mhn', mhnNumber);
 });
+
+

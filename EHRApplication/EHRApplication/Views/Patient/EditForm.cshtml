@@ -4,6 +4,7 @@
     ViewData["Title"] = "myEHR | Edit Patient";
     <link rel="stylesheet" href="~/css/forms.css">
     <script src="~/js/validation.js"></script>
+    <script src="~/js/confirmModal.js"defer></script>
 }
 
 @if (TempData["SuccessMessage"] != null)
@@ -184,22 +185,22 @@
                 <div asp-for="raceList" id="Race" class="row text-nowrap">
                     <div class="col-sm-6 ms-4">
                         <div class="race-column">
-                            <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian or Alaska Native" @(Model.race.Contains("American Indian or Alaska Native") ? "checked" : "") />
+                            <input type="checkbox" id="AmericanIndian" name="RaceList" value="American Indian or Alaska Native" @(Model.race != null && Model.race.Contains("American Indian or Alaska Native") ? "checked" : "") />
                             <label for="AmericanIndianOrAlaskaNative" style="font-weight: normal;">American Indian or Alaska Native</label><br />
 
-                            <input type="checkbox" id="Asian" name="RaceList" value="Asian" @(Model.race.Contains("Asian") ? "checked" : "") />
+                            <input type="checkbox" id="Asian" name="RaceList" value="Asian" @(Model.race != null && Model.race.Contains("Asian") ? "checked" : "") />
                             <label for="Asian" style="font-weight: normal;">Asian</label><br />
 
-                            <input type="checkbox" id="Black" name="RaceList" value="Black or African American" @(Model.race.Contains("black or African American") ? "checked" : "") />
+                            <input type="checkbox" id="Black" name="RaceList" value="Black or African American" @(Model.race != null && Model.race.Contains("black or African American") ? "checked" : "") />
                             <label for="BlackOrAfricanAmerican" style="font-weight: normal;">Black or African American</label><br />
 
-                            <input type="checkbox" id="PacificIslander" name="RaceList" value="Native Hawaiian or Other Pacific Islander" @(Model.race.Contains("Native Hawaiian or Other Pacific Islander") ? "checked" : "") />
+                            <input type="checkbox" id="PacificIslander" name="RaceList" value="Native Hawaiian or Other Pacific Islander" @(Model.race != null && Model.race.Contains("Native Hawaiian or Other Pacific Islander") ? "checked" : "") />
                             <label for="NativeHawaiianrOrOtherPacificIslander" style="font-weight: normal;">Native Hawaiian or Other Pacific Islander</label><br />
 
-                            <input type="checkbox" id="White" name="RaceList" value="White" @(Model.race.Contains("White") ? "checked" : "") />
+                            <input type="checkbox" id="White" name="RaceList" value="White" @(Model.race != null && Model.race.Contains("White") ? "checked" : "") />
                             <label for="White" style="font-weight: normal;">White</label><br />
 
-                            <input type="checkbox" id="OtherRace" name="RaceList" value="Other" onchange="otherRaceInput()" />
+                            <input type="checkbox" id="OtherRace" name="RaceList" value="Other" onchange="otherRaceInput()" @(Model.race != null && Model.race.Contains("Other") ? "checked" : "") />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
                     </div><br />
@@ -207,7 +208,7 @@
                 <span asp-validation-for="raceList" id="RaceError" class="validation-msg"></span>
             </div>
             <div>
-                <input asp-for="OtherRace" type="text" id="OtherRaceInput" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." />
+                <input asp-for="OtherRace" type="text" id="OtherRaceInput" value="@Model.OtherRace" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." />
                 <span asp-validation-for="OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
             </div>
 
@@ -215,16 +216,42 @@
             <div class="form-group">
                 <label for="patientImageFile" class="mb-1">Patient Image (Optional):</label>
                 <small>Please select an image file of type .jpg or .png.</small>
-                <input asp-for="patientImageFile" type="file" id="patientImageFile" name="PatientImageFile" class="form-control" data-bs-theme="auto" onchange="validateImageFile('patientImageFile', 'PatientImageFileError')" value="@Model.patientImage"/>
+                <input asp-for="patientImageFile" type="file" id="patientImageFile" name="PatientImageFile" class="form-control" data-bs-theme="auto" onchange="validateImageFile('patientImageFile', 'PatientImageFileError')"
+                       value="@if(!string.IsNullOrEmpty(Model.patientImage))
+                       {
+                           <text>value="@Model.patientImage"</text>
+                       }"
+                       />
                 <span asp-validation-for="patientImage" id="PatientImageFileError" class="validation-msg"></span>
             </div>
 
+
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="AllPatients">Cancel</a>
-                <input type="submit" class="btn blue-button" data-bs-theme="auto" value="Update" />
+                <a type="button"  class="btn btn-secondary me-2" asp-controller="Patient" asp-action="AllPatients">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal"  value="Save" />
+            </div>
+
+            <!-- confirmation modal-->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save patient information?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </form>
     </div>
 </section>
+
