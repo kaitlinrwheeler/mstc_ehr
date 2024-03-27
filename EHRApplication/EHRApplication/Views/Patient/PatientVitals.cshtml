@@ -20,11 +20,11 @@
                     <thead>
                         <tr>
                             <th scope="col">Date/Time</th>
-                            <th scope="col">Pain Level:</th>
                             <th scope="col">Temperature:</th>
                             <th scope="col">Pulse Oximetry:</th>
                             <th scope="col">Respiratory Rate:</th>
                             <th scope="col">Blood Pressure:</th>
+                            <th scope="col">Pain Level:</th>
                             <th scope="col">Height:</th>
                             <th scope="col">Weight:</th>
                             <th scope="col">BMI:</th>
@@ -37,11 +37,11 @@
                         {
                             <tr class="hover-highlighting">
                                 <td>@vital.visits.date.ToString("MM-dd-yyyy") @vital.visits.time.ToString("HH:mm")</td>
-                                <td>@vital.painLevel</td>
                                 <td>@vital.temperature.ToString("F1") °F</td>
                                 <td>@vital.pulseOximetry%</td>
                                 <td>@vital.respiratoryRate</td>
                                 <td>@vital.bloodPressure</td>
+                                <td>@vital.painLevel</td>
                                 <td>@vital.heightInches.ToString("F1") in</td>
                                 <td>@vital.weightPounds.ToString("F1") lb</td>
                                 <td>@vital.BMI.ToString("F2")</td>
