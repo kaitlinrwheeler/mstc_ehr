@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Vitals Record";
+    // The list of Visits being pulled in.
+//@model List<Vitals>
+
+@model EHRApplication.ViewModels.PortalViewModel;
+    var patient = Model.PatientDemographic;
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Vitals
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (patient != null && Model.Vitals.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date/Time</th>
+                            <th scope="col">Temperature:</th>
+                            <th scope="col">Pulse Oximetry:</th>
+                            <th scope="col">Respiratory Rate:</th>
+                            <th scope="col">Blood Pressure:</th>
+                            <th scope="col">Pain Level:</th>
+                            <th scope="col">Height:</th>
+                            <th scope="col">Weight:</th>
+                            <th scope="col">BMI:</th>
+                            <th scope="col">Intake:</th>
+                            <th scope="col">Output:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var vital in Model.Vitals)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@vital.visits.date.ToString("MM-dd-yyyy") @vital.visits.time.ToString("HH:mm")</td>
+                                <td>@vital.temperature.ToString("F1") °F</td>
+                                <td>@vital.pulseOximetry%</td>
+                                <td>@vital.respiratoryRate</td>
+                                <td>@vital.bloodPressure</td>
+                                <td>@vital.painLevel</td>
+                                <td>@vital.heightInches.ToString("F1") in</td>
+                                <td>@vital.weightPounds.ToString("F1") lb</td>
+                                <td>@vital.BMI.ToString("F2")</td>
+                                <td>@vital.intakeMilliLiters ml</td>
+                                <td>@vital.outputMilliLiters ml</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No vitals found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>

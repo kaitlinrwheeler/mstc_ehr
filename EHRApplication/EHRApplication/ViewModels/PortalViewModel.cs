@@ -22,6 +22,7 @@ namespace EHRApplication.ViewModels
         public List<PatientProblems> PatientProblems { get; set; }
         public List<Providers> Providers { get; set; }
         public List<Visits> Visits { get; set; }
+        public Visits VisitDetails { get; set; }
         public List<Vitals> Vitals { get; set; }
     }
 }

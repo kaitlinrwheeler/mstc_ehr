@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Patient insurance";
+    // The list of patients being pulled in.
+    @model EHRApplication.ViewModels.PortalViewModel
+    var patient = Model.PatientDemographic;
+
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Insurance
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (patient != null && Model.PatientInsurance.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
+                            @*                             <th scope="col">MHN:</th>
+                        *@
+                            <th scope="col">Status:</th>
+                            <th scope="col">Insurance Provider:</th>
+                            <th scope="col">Member ID:</th>
+                            <th scope="col">Policy Number:</th>
+                            <th scope="col">Group Number:</th>
+                            <th scope="col">Priority:</th>
+                            <th scope="col">Primary Physician:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var insurance in Model.PatientInsurance)
+                        {
+                            <tr class="hover-highlighting">
+                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
+                                @*                                 <td>@insurance.MHN</td>
+                        *@
+                                <td>@(insurance.active ? "Active" : "Inactive")</td>
+                                <td>@insurance.providerName</td>
+                                <td>@insurance.memberId</td>
+                                <td>@insurance.policyNumber</td>
+                                <td>@insurance.groupNumber</td>
+                                <td>@insurance.priority</td>
+                                <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No insurance found.</h1>
+            }
+        </div>
+    </div>
+</section>

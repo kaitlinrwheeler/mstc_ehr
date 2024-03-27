@@ -139,7 +139,7 @@ html {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    margin-top: 184px;
+    margin-top: 196px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -383,6 +383,17 @@ main {
         filter: brightness(0.93)
     }
 
+
+.delete-button {
+    background-color: red;
+    color: white;
+}
+    
+    .delete-button:hover {
+        background-color: darkred;
+        color: white;
+    }
+
 /* End main styles */
 
 /*Start of Success banner override.*/
@@ -433,6 +444,14 @@ main {
 }
 /*End of requirment question mark popout*/
 
+/* Delete confirmation modal*/
+#deleteConfirmModal .modal-content {
+    background-color: var(--offwhite);
+}
+
+    [data-bs-theme=dark]#deleteConfirmModal .modal-content {
+        background-color: var(--dark-gray);
+    }
 
 /*This will make the tables span the whole length so that you don't have to scroll on it.*/
 @media only screen and (max-width: 1100px) {

@@ -13,6 +13,8 @@ namespace EHRApplication.Models
         [ForeignKey("MHN")]
         public PatientDemographic patients { get; set; }
 
+
+        [Required(ErrorMessage = "Please select a patient.")]
         public int MHN { get; set; }
 
         [Required(ErrorMessage = "Please enter an address.")]

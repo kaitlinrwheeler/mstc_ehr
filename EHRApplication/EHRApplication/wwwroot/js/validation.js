@@ -311,8 +311,35 @@ function validateRequiredInput(inputID, errorMessage) {
     handleInputChange();
 }
 
-//handles when OTHER option is clicked and adds a text box that the user can type in.
-function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, inputType) {
+// validate image input
+function validateImage(inputID, errorSpanID) {
+    // get input and error span elements
+    const input = document.getElementById(inputID);
+    const errorSpan = document.getElementById(errorSpanID);
+
+    // get any input files
+    const file = input.files[0];
+
+    // declare permitted file extension
+    const allowedExtensions = /(\.jpg|\.png)$/i;
+
+    // set validity status
+    let valid = true;
+
+    // check for file and verify extension
+    if (file && !allowedExtensions.exec(file.name)) {
+        // if invalid, set validity to false and display error message
+        valid = false;
+        displayError(valid, errorSpan, "Invalid file type. Only image files ending in .jpg or .png are permitted.");
+    } else {
+        // clear any existing error message
+        displayError(true, errorSpan, "");
+    }
+
+    return valid;
+}
+
+function dropdownOtherOption(dropdownId, textFieldId, errorSpanId, inputType) {
     var selectedValue = document.getElementById(dropdownId).value;
     var textField = document.getElementById(textFieldId);
     var errorSpan = document.getElementById(errorSpanId);
@@ -322,14 +349,7 @@ function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, input
         textField.required = true;
         errorSpan.style.display = "block";
 
-        // Set placeholder based on input type
-        if (inputType === 'gender') {
-            textField.placeholder = "Please specify a gender.";
-        } else if (inputType === 'pronoun') {
-            textField.placeholder = "Please specify other pronouns.";
-        }
-
-        // Call validateRequiredTextInput for the optional text box (validation)
+        //Call validateRequiredTextInput for the optional text box
         validateRequiredTextInput(textFieldId, 25, inputType);
     } else {
         textField.style.display = "none";
@@ -338,43 +358,22 @@ function handleDropdownWithTextField(dropdownId, textFieldId, errorSpanId, input
     }
 }
 
-//handles when the OTHER is selected in the race list. Had to do this one seperately because the js couldn't grab it successfully using the previous function.
-function handleOtherRaceSelection() {
+function otherRaceInput() {
     var otherRaceCheckbox = document.getElementById("OtherRace");
     var otherRaceInput = document.getElementById("OtherRaceInput");
 
     if (otherRaceCheckbox.checked) {
         otherRaceInput.style.display = "block";
         otherRaceInput.required = true;
-
+        // Bind onblur event for validation when 'Other' is selected
+        otherRaceInput.onblur = function () {
+            validateOptionalTextInput('OtherRaceInput', 25, 'other race');
+        };
     } else {
         otherRaceInput.style.display = "none";
         otherRaceInput.required = false;
+        // Clear the validation error message when 'Other' is not selected
+        document.getElementById("OtherRaceInputError").style.display = "none";
     }
 }
 
-function validateImageSize(input) {
-    const maxSize = 1000 * 1024; // 1000 KB in bytes
-    const minSize = 0;  // 500 KB in bytes
-
-    if (input.files && input.files[0]) {
-        const fileSize = input.files[0].size;
-
-        if (fileSize < minSize || fileSize > maxSize) {
-            document.getElementById("patientImage").innerText = "Image size should be between 500KB and 1000KB.";
-            input.value = ''; // Clear the file input to prevent submission
-        } else {
-            // File size within limits, proceed with the filename change
-            const file = input.files[0];
-            const filename = "MHN_" + file.name;
-
-            // Create a new File object with the updated filename
-            const newFile = new File([file], filename, { type: file.type });
-
-            // Replace the original file with the new file
-            input.files[0] = newFile;
-
-            document.getElementById("patientImage").innerText = ""; // Clear any previous error message
-        }
-    }
-}

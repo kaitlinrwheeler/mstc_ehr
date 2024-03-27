@@ -5,18 +5,19 @@ using Microsoft.Data.SqlClient;
 
 namespace EHRApplication.Controllers
 {
-    public class ProvidersController : Controller
+    public class ProvidersController : BaseController
     {
-        private readonly LogService _logService;
-
-        //database connection string
+        private readonly ILogService _logService;
         private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public ProvidersController(LogService logService, IConfiguration configuration)
+        public ProvidersController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
             _logService = logService;
-            _connectionString = configuration["ConnectionStrings:DefaultConnection"];
-        }
+            this._connectionString = base._connectionString;
+            _listService = listService;
+    }
 
         /// <summary>
         /// Displays the view that shows all the providers from the database

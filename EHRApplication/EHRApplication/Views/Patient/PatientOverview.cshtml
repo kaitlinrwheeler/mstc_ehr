@@ -2,7 +2,7 @@
 @model EHRApplication.ViewModels.PortalViewModel
 
 @{
-    ViewData["Title"] = "Patient Details";
+    ViewData["Title"] = "myEHR | Patient Details";
     <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
 
     var patient = Model.PatientDemographic;
@@ -106,7 +106,14 @@
                 {
                     <div class="col-md-12 mb-3">
                         <div class="card card-cover">
-                            <img src="~/images/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
+                        @if (string.IsNullOrEmpty(patient.patientImage))
+                        {
+                                <img src="~/images/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
+                        }
+                        else
+                        {
+                                <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image">
+                        }
                         </div>
                     </div>
                 }

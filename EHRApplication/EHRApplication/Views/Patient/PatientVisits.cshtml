@@ -1,4 +1,5 @@
 ﻿@{
+    ViewData["Title"] = "myEHR | Visit History";
     // The list of Visits being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
@@ -9,7 +10,7 @@
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header text-center" data-bs-theme="auto">
-            Visits
+            Patient Visits
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model != null && Model.Visits != null && Model.Visits.Any())
@@ -22,6 +23,7 @@
                             <th scope="col">Provider Name:</th>
                             <th scope="col">Admitted:</th>
                             <th scope="col">Notes:</th>
+                            <th scope="col"></th> <!-- Empty column for the button -->
                         </tr>
                     </thead>
                     <tbody>
@@ -30,9 +32,10 @@
                             <tr class="hover-highlighting">
                                 <td>@visits.date.ToString("MM-dd-yyyy")</td>
                                 <td>@visits.time.ToString("HH:mm")</td>
-                                <td>@visits.providers.firstName @visits.providers.lastName</td>
+                                <td>@visits.providers.providerId, @visits.providers.firstName @visits.providers.lastName</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@visits.MHN">View</a></td>
                             </tr>
                         }
                     </tbody>
