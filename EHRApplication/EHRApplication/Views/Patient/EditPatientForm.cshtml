@@ -211,6 +211,7 @@
                 <input asp-for="OtherRace" type="text" id="OtherRaceInput" value="@Model.OtherRace" name="OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." />
                 <span asp-validation-for="OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
             </div>
+            <input asp-for="patientImage" value="@Model.patientImage" hidden/>
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
