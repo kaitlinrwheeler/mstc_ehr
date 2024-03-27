@@ -715,16 +715,16 @@ namespace EHRApplication.Controllers
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
 
-                // Determines if searchTerm is an integer, and sets the SQL query accordingly
+                // checks if searchTerm is int, sets query based on term type
                 if (int.TryParse(searchTerm, out int mhn))
                 {
-                    // Direct comparison without wildcards for MHN
+                    // selects pt by MHN if it's a match
                     cmd.CommandText = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
                     cmd.Parameters.AddWithValue("@mhn", mhn);
                 }
                 else
                 {
-                    // Using LIKE with wildcards for textual search
+                    // accepts string fragments, returns similar results
                     cmd.CommandText = @"SELECT * FROM [dbo].[PatientDemographic] 
                                 WHERE firstName LIKE @searchTerm 
                                 OR lastName LIKE @searchTerm 
@@ -740,7 +740,6 @@ namespace EHRApplication.Controllers
                         DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
                         PatientDemographic patient = new PatientDemographic
                         {
-                            // Assuming these are the properties of PatientDemographic
                             MHN = Convert.ToInt32(dataReader["MHN"]),
                             firstName = Convert.ToString(dataReader["firstName"]),
                             middleName = Convert.ToString(dataReader["middleName"]),
@@ -749,11 +748,14 @@ namespace EHRApplication.Controllers
                             DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
                             gender = Convert.ToString(dataReader["gender"])
                         };
+
+                        // adds results to list
                         searchResults.Add(patient);
                     }
                 }
             }
 
+            // returns any results found
             return View("PatientSearchResults", searchResults);
         }
 
