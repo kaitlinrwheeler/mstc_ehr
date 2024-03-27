@@ -26,7 +26,7 @@ namespace EHRApplication.Models
 
         public int respiratoryRate { get; set; }
 
-        public decimal pulseOximetry { get; set; }
+        public int pulseOximetry { get; set; }
 
         public decimal heightInches { get; set; }
 
@@ -34,8 +34,8 @@ namespace EHRApplication.Models
 
         public decimal BMI { get; set; }
 
-        public decimal intakeMilliLiters { get; set; }
+        public int intakeMilliLiters { get; set; }
 
-        public decimal outputMilliLiters { get; set; }
+        public int outputMilliLiters { get; set; }
     }
 }
