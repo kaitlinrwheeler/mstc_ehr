@@ -644,46 +644,15 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-        public IActionResult EditForm(int mhn)
+        public IActionResult EditPatientForm(int mhn)
         {
             PatientDemographic patient = _listService.GetPatientByMHN(mhn);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", patient.patientImage);
-
-
-            if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
-            {
-                var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                var fileName = Path.GetFileName(filePath);
-                var contentType = GetContentType(filePath);
-
-                // Create a mock IFormFile
-                var mockFile = new Mock<IFormFile>();
-                mockFile.Setup(_ => _.FileName).Returns(fileName);
-                mockFile.Setup(_ => _.Length).Returns(fileBytes.Length);
-                mockFile.Setup(_ => _.ContentType).Returns(contentType);
-                mockFile.Setup(_ => _.OpenReadStream()).Returns(new MemoryStream(fileBytes));
-
-                patient.patientImageFile = mockFile.Object;
-            }
 
             return View(patient);
         }
-        private string GetContentType(string filePath)
-        {
-            var fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
-            switch (fileExtension)
-            {
-                case ".jpg":
-                    return "image/jpeg";
-                case ".png":
-                    return "image/png";
-                default:
-                    return "application/octet-stream"; // fallback content type
-            }
-        }
 
         [HttpPost]
-        public IActionResult EditForm(PatientDemographic patient)
+        public IActionResult EditPatientForm(PatientDemographic patient)
         {
             //Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
