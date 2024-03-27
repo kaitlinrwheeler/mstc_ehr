@@ -1,5 +1,4 @@
-﻿//Everything in this function loads when the page is loaded. Loads when page is loaded.
-
+﻿// Everything in this function loads when the page is loaded.
 
 // search bar toggle
 $(document).ready(function () {

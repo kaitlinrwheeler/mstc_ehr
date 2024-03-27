@@ -33,6 +33,7 @@
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
     || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders")
     {
@@ -62,6 +63,7 @@
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
     || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders"
     || controllerName == "Home" && actionName == "UserDashboard"
