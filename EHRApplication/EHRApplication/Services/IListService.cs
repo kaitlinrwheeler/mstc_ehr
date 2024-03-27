@@ -34,5 +34,19 @@ namespace EHRApplication.Services
         PatientDemographic GetPatientByMHN(int mhn);
 
         Visits GetVisitByVisitId(int visitId);
+
+        LabResults GetLabResultsByVisitId(int visitId);
+
+        LabOrders GetLabOrdersByVisitId(int visitId);
+
+        MedOrders GetMedOrdersByVisitId(int visitId);
+
+        PatientNotes GetPatientNotesByVisitId(int visistId);
+
+        PatientProblems GetPatientProblemsByVisitId(int visitId);
+
+        CarePlan GetCarePlanByVisitId(int visitId);
+
+        MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
     }
 }
