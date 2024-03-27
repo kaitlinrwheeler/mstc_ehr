@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Moq;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -266,7 +267,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientVisits(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
 
             // New list to hold all the patients in the database.
@@ -282,7 +283,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientAllergies(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
@@ -341,71 +342,10 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-        private PatientDemographic GetPatientByMHN(int mhn)
-        {
-            //Creating a new patientDemographic instance
-            PatientDemographic patientDemographic = new PatientDemographic();
-
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                connection.Open();
-
-                // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        //Assign properties for the patient demographic from the database
-                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
-                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
-                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
-                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
-                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
-                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
-                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
-                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
-                        patientDemographic.race = Convert.ToString(dataReader["race"]);
-                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
-                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
-                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
-                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
-                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
-                        //Gets the contact info for this patient using the MHN that links to the contact info table
-                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
-                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
-                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return patientDemographic;
-        }
-
-
-
-
-
         public IActionResult PatientInsurance(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
@@ -459,7 +399,7 @@ namespace EHRApplication.Controllers
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
@@ -476,7 +416,7 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
@@ -654,7 +594,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientNotes(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
@@ -706,7 +646,40 @@ namespace EHRApplication.Controllers
 
         public IActionResult EditForm(int mhn)
         {
-            return View(_listService.GetPatientByMHN(mhn));
+            PatientDemographic patient = _listService.GetPatientByMHN(mhn);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", patient.patientImage);
+
+
+            if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
+            {
+                var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                var fileName = Path.GetFileName(filePath);
+                var contentType = GetContentType(filePath);
+
+                // Create a mock IFormFile
+                var mockFile = new Mock<IFormFile>();
+                mockFile.Setup(_ => _.FileName).Returns(fileName);
+                mockFile.Setup(_ => _.Length).Returns(fileBytes.Length);
+                mockFile.Setup(_ => _.ContentType).Returns(contentType);
+                mockFile.Setup(_ => _.OpenReadStream()).Returns(new MemoryStream(fileBytes));
+
+                patient.patientImageFile = mockFile.Object;
+            }
+
+            return View(patient);
+        }
+        private string GetContentType(string filePath)
+        {
+            var fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
+            switch (fileExtension)
+            {
+                case ".jpg":
+                    return "image/jpeg";
+                case ".png":
+                    return "image/png";
+                default:
+                    return "application/octet-stream"; // fallback content type
+            }
         }
 
         [HttpPost]
@@ -722,6 +695,7 @@ namespace EHRApplication.Controllers
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
+                patient.race = string.Join(",", patient.raceList);
                 return View(patient);
             }
 
@@ -796,14 +770,32 @@ namespace EHRApplication.Controllers
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 //SQL query that is going to insert the data that the user entered into the database table.
-                string sql = "INSERT INTO [PatientDemographic] (firstName, middleName, lastName, suffix, preferredPronouns, DOB, gender, preferredLanguage, ethnicity, race, religion, primaryPhysician, legalGuardian1, legalGuardian2, previousName, genderAssignedAtBirth, patientImage) " +
-                    "VALUES (@firstName, @middleName, @lastName, @suffix, @preferredPronouns, @DOB, @gender, @preferredLanguage, @ethnicity, @race, @religion, @primaryPhysician, @legalGuardian1, @legalGuardian2, @previousName, @genderAssignedAtBirth, @patientImage)";
+                string sql = @"UPDATE [PatientDemographic] 
+                   SET firstName = @firstName, 
+                       middleName = @middleName, 
+                       lastName = @lastName, 
+                       suffix = @suffix, 
+                       preferredPronouns = @preferredPronouns, 
+                       DOB = @DOB, 
+                       gender = @gender, 
+                       preferredLanguage = @preferredLanguage, 
+                       ethnicity = @ethnicity, 
+                       race = @race, 
+                       religion = @religion, 
+                       primaryPhysician = @primaryPhysician, 
+                       legalGuardian1 = @legalGuardian1, 
+                       legalGuardian2 = @legalGuardian2, 
+                       previousName = @previousName, 
+                       genderAssignedAtBirth = @genderAssignedAtBirth, 
+                       patientImage = @patientImage
+                   WHERE MHN = @MHN";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
 
                     //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
                     //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.Int).Value = patient.MHN;
                     command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
                     command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "" : patient.middleName;
                     command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
@@ -825,11 +817,10 @@ namespace EHRApplication.Controllers
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
-                    TempData["SuccessMessage"] = "You have successfully created a patient!";
                 }
             }
             ModelState.Clear();
-            return View();
+            return RedirectToAction("AllPatients", "Patient");
         }
     }
 }
