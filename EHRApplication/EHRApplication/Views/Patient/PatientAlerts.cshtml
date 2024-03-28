@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Alerts";
+
+
+    @model EHRApplication.ViewModels.PortalViewModel;
+    var patient = Model.PatientDemographic;
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Alerts
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (patient != null && Model.Alerts.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name:</th>
+                            <th scope="col">Start Date:</th>
+                            <th scope="col">End Date:</th>
+                            <th scope="col">Active:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model.Alerts)
+                        {
+                            <tr class="hover-highlighting">
+
+                                <td>@alert.alertName</td>
+                                <td>@alert.startDate.ToString("MM-dd-yyyy")</td>
+                                <td>@alert.endDate.ToString("MM-dd-yyyy")</td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Yes" : "No")</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No alerts found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>
