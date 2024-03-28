@@ -763,7 +763,7 @@ namespace EHRApplication.Services
                     {
                         vitals.vitalsId = Convert.ToInt32(dataReader["vitalsId"]);
                         vitals.visitId = Convert.ToInt32(dataReader["visitId"]);
-                        //vitals.visits = GetVisitByVisitId(vitals.visitId);
+                        vitals.visits = GetVisitByVisitId(vitals.visitId);
                         
                         vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
                         vitals.patients = GetPatientByMHN(vitals.patientId);

@@ -11,6 +11,7 @@
     var patientNotes = Model.PatientNotesDetails;
     var patientProblems = Model.PatientProblemsDetails;
     var medHistory = Model.MedAdministrationHistoriesDetails;
+    var vitals = Model.VitalsDetails;
 }
 
 <section class="my-5 w-75 m-auto">
@@ -116,7 +117,7 @@
                                             <td>@medOrders.fulfillmentStatus</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">:</th>
+                                            <th scope="row">Ordered By:</th>
                                             <td>@medOrders.providers.firstName @medOrders.providers.lastName</td>
                                         </tr>
                                         <tr class="hover-highlighting">
@@ -405,44 +406,60 @@
                             Vitals
                         </div>
                         <div class="card-body" data-bs-theme="auto">
-                            @if (medHistory.visitsId != 0)
+                            @if (vitals.visitId != 0)
                             {
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Med Name:</th>
-                                            <td>@medHistory.medProfile.medName</td>
+                                            <th scope="col">Date/Time</th>
+                                            <td>@vitals.visits.date.ToString("MM-dd-yyyy") @vitals.visits.time.ToString("HH:mm")</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Date Given:</th>
-                                            <td>@medHistory.dateGiven.ToString("MM-dd-yyyy")</td>
+                                            <th scope="col">Temperature:</th>
+                                            <td>@vitals.temperature.ToString("F1") °F</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Time Given:</th>
-                                            <td>@medHistory.timeGiven.ToString("HH:mm")</td>
+                                            <th scope="col">Pulse Oximetry:</th>
+                                            <td>@vitals.pulseOximetry%</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Category:</th>
-                                            <td>@medHistory.category</td>
+                                            <th scope="col">Respiratory Rate:</th>
+                                            <td>@vitals.respiratoryRate</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">status:</th>
-                                            <td>@medHistory.status</td>
+                                            <th scope="col">Blood Pressure:</th>
+                                            <td>@vitals.bloodPressure</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Frequency:</th>
-                                            <td>@medHistory.frequency</td>
+                                            <th scope="col">Pain Level:</th>
+                                            <td>@vitals.painLevel</td>
                                         </tr>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Administered By:</th>
-                                            <td>@medHistory.providers.firstName @medHistory.providers.lastName</td>
+                                            <th scope="col">Height:</th>
+                                            <td>@vitals.heightInches.ToString("F1") in</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Weight:</th>
+                                            <td>@vitals.weightPounds.ToString("F1") lb</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">BMI:</th>
+                                            <td>@vitals.BMI.ToString("F2")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Intake:</th>
+                                            <td>@vitals.intakeMilliLiters ml</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Output:</th>
+                                            <td>@vitals.outputMilliLiters ml</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             }
                             else
                             {
-                                <h1 class="text-center display-6">No med history found.</h1>
+                                <h1 class="text-center display-6">No vitals found.</h1>
                             }
                         </div>
                     </div>
