@@ -67,10 +67,7 @@ namespace EHRApplication.Models
         [Display(Name = "Language")]
         public string preferredLanguage { get; set; }
 
-        [Required(ErrorMessage = "Ethnicity is required.")]
-        [StringLength(60, ErrorMessage = "Ethnicity must be between 1 and 60 characters.", MinimumLength = 1)]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
-        [Display(Name = "Ethnicity")]
+        [Required(ErrorMessage = "Please select one.")]
         public string ethnicity { get; set; }
 
         [ValidateNever]

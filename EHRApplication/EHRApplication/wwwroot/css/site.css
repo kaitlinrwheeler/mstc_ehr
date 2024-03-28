@@ -56,6 +56,32 @@ body {
 #flexSwitchCheckChecked {
     cursor: pointer;
 }
+
+/* Search Bar */
+
+#searchBar .form-inline {
+    display: flex;
+    align-items: center;
+}
+
+#searchBar .form-control, #searchBar .btn {
+    margin-right: 5px;
+}
+
+#searchBar .btn {
+    color: white;
+    background-color: var(--darker-gray);
+}
+
+#searchBar .btn:hover {
+    filter: brightness(1.5);
+}
+
+#searchBar .form-control {
+    margin-left: 10px;
+}
+
+
 /* End top nav */
 
 
