@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Services
 {
@@ -738,6 +739,54 @@ namespace EHRApplication.Services
             return patientDemographic;
         }
 
+        public Vitals GetVitalsByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            Vitals vitals = new Vitals();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters " +
+                    "FROM [dbo].[Vitals] WHERE visitId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        vitals.vitalsId = Convert.ToInt32(dataReader["vitalsId"]);
+                        vitals.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        //vitals.visits = GetVisitByVisitId(vitals.visitId);
+                        
+                        vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
+                        vitals.patients = GetPatientByMHN(vitals.patientId);
+                        vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
+                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.bloodPressure = Convert.ToInt32(dataReader["bloodPressure"]);
+                        vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
+                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+
+                        vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
+                        vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
+                        vitals.BMI = Convert.ToInt32(dataReader["BMI"]);
+                        vitals.intakeMilliLiters = Convert.ToInt32(dataReader["intakeMilliLiters"]);
+                        vitals.outputMilliLiters = Convert.ToInt32(dataReader["outputMilliLiters"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return vitals;
+        }
+
         public LabResults GetLabResultsByVisitId(int visitId)
         {
             //Creating a new patientDemographic instance
@@ -748,8 +797,8 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT labId, MHN, visitId, testId, resultValue, abnormalFlag, orderedBy, date, time " +
-                    "FROM [dbo].[LabResults] WHERE visitId = @visitId";
+                string sql = "SELECT labId, MHN, visitsId, testId, resultValue, abnormalFlag, orderedBy, date, time " +
+                    "FROM [dbo].[LabResults] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -797,7 +846,7 @@ namespace EHRApplication.Services
 
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT orderId, MHN, testId, visitsId, completionStatus, orderDate, orderTime, orderedBy " +
-                    "FROM [dbo].[LabOrders] WHERE visitId = @visitId";
+                    "FROM [dbo].[LabOrders] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -819,7 +868,8 @@ namespace EHRApplication.Services
                         //labResults.visits = GetVisitByVisitId(labResults.visitsId);
 
                         labOrders.completionStatus = Convert.ToString(dataReader["completionStatus"]);
-                        labOrders.orderDate = DateOnly.Parse(dataReader["orderDate"].ToString());
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        labOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
                         labOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
                         labOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
                         labOrders.providers = GetProvidersByProviderId(labOrders.orderedBy);
@@ -842,8 +892,8 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTiime, orderedBy " +
-                    "FROM [dbo].[PatientDemographic] WHERE visitId = @visitId";
+                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
+                    "FROM [dbo].[MedOrders] WHERE visitId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -858,7 +908,7 @@ namespace EHRApplication.Services
                         medOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medOrders.patients = GetPatientByMHN(medOrders.MHN);
 
-                        medOrders.visitId = Convert.ToInt32(dataReader["visitsId"]);
+                        medOrders.visitId = Convert.ToInt32(dataReader["visitId"]);
                         //medOrders.visits = GetVisitByVisitId(medOrders.visitId);
 
                         medOrders.medId = Convert.ToInt32(dataReader["medId"]);
@@ -866,7 +916,8 @@ namespace EHRApplication.Services
 
                         medOrders.frequency = Convert.ToString(dataReader["frequency"]);
                         medOrders.fulfillmentStatus = Convert.ToString(dataReader["fulfillmentStatus"]);
-                        medOrders.orderDate = DateOnly.Parse(dataReader["orderDate"].ToString());
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        medOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
                         medOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
                         medOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
                         medOrders.providers = GetProvidersByProviderId(medOrders.orderedBy);
@@ -890,7 +941,7 @@ namespace EHRApplication.Services
                     
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT patientNotesId, MHN, Note, occurredOn, createdAt, createdBy, associatedProvider, updatedAt, category, visitsId " +
-                    "FROM [dbo].[PatientNotes] WHERE visitId = @visitId";
+                    "FROM [dbo].[PatientNotes] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -906,7 +957,8 @@ namespace EHRApplication.Services
                         patientNotes.patients = GetPatientByMHN(patientNotes.MHN);
 
                         patientNotes.Note = Convert.ToString(dataReader["Note"]);
-                        patientNotes.occurredOn = DateOnly.Parse(dataReader["occurredOn"].ToString());
+                        DateTime date = DateTime.Parse(dataReader["occurredOn"].ToString());
+                        patientNotes.occurredOn = new DateOnly(date.Year, date.Month, date.Day);
                         patientNotes.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
                         patientNotes.createdBy = Convert.ToInt32(dataReader["createdBy"]);
                         patientNotes.providers = GetProvidersByProviderId(patientNotes.createdBy);
@@ -937,7 +989,7 @@ namespace EHRApplication.Services
 
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy active, visitsId " +
-                    "FROM [dbo].[PatientDemographic] WHERE visitId = @visitId";
+                    "FROM [dbo].[PatientProblems] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -983,7 +1035,7 @@ namespace EHRApplication.Services
 
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT CPId, MHN, priority, startDate, endDate, activeStatus, title, diagnosis " +
-                    "FROM [dbo].[CarePlan] WHERE visitId = @visitId";
+                    "FROM [dbo].[CarePlan] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -1027,7 +1079,7 @@ namespace EHRApplication.Services
 
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT administrationId, MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId " +
-                    "FROM [dbo].[MedAdministrationHistory] WHERE visitId = @visitId";
+                    "FROM [dbo].[MedAdministrationHistory] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -1048,7 +1100,8 @@ namespace EHRApplication.Services
                         medHistory.status = Convert.ToString(dataReader["status"]);
                         medHistory.frequency = Convert.ToString(dataReader["frequency"]);
 
-                        medHistory.dateGiven = DateOnly.Parse(dataReader["dateGiven"].ToString());
+                        DateTime date = DateTime.Parse(dataReader["dateGiven"].ToString());
+                        medHistory.dateGiven = new DateOnly(date.Year, date.Month, date.Day);
                         medHistory.timeGiven = TimeOnly.Parse(dataReader["timeGiven"].ToString());
 
                         medHistory.administeredBy = Convert.ToInt32(dataReader["administeredBy"]);
@@ -1061,7 +1114,6 @@ namespace EHRApplication.Services
 
                 connection.Close();
             }
-
             return medHistory;
         }
     }

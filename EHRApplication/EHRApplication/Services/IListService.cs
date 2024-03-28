@@ -35,6 +35,8 @@ namespace EHRApplication.Services
 
         Visits GetVisitByVisitId(int visitId);
 
+        Vitals GetVitalsByVisitId(int visitId);
+
         LabResults GetLabResultsByVisitId(int visitId);
 
         LabOrders GetLabOrdersByVisitId(int visitId);

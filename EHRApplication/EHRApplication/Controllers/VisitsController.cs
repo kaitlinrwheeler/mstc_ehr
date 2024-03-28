@@ -21,31 +21,24 @@ namespace EHRApplication.Controllers
             viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //This will the specific visit
-            Visits visit = _listService.GetVisitByVisitId(visitId);
+            viewModel.VisitDetails = _listService.GetVisitByVisitId(visitId);
 
             //This will grab the lab results associated with the visit.
-            LabResults labResults = _listService.GetLabResultsByVisitId(visitId);
+            viewModel.LabResultsDetails = _listService.GetLabResultsByVisitId(visitId);
             //This will grab the lab order associated with the visit.
-            LabOrders labOrders = _listService.GetLabOrdersByVisitId(visitId);
+            viewModel.LabOrdersDetails = _listService.GetLabOrdersByVisitId(visitId);
             //This will grab the med order associated with the visit.
-            MedOrders medOrders = _listService.GetMedOrdersByVisitId(visitId);
+            viewModel.MedOrdersDetails = _listService.GetMedOrdersByVisitId(visitId);
             //This will grab the patient notes associated with the visit.
-            PatientNotes patientNotes = _listService.GetPatientNotesByVisitId(visitId);
+            viewModel.PatientNotesDetails = _listService.GetPatientNotesByVisitId(visitId);
             //This will grab the patient problems associated with the visit.
-            PatientProblems patientProblems = _listService.GetPatientProblemsByVisitId(visitId);
+            viewModel.PatientProblemsDetails = _listService.GetPatientProblemsByVisitId(visitId);
             //This will grab the care plan associated with the visit.
-            CarePlan carePlan = _listService.GetCarePlanByVisitId(visitId);
+            viewModel.CarePlansDetails = _listService.GetCarePlanByVisitId(visitId);
             //This will grab the med administration history associated with the visit.
-            MedAdministrationHistory medHistory = _listService.GetMedHistoryByVisitId(visitId);
-
-            viewModel.VisitDetails = visit;/*
-            viewModel.LabResults = labResults;
-            viewModel.LabOrders = labOrders;
-            viewModel.MedOrders = medOrders;
-            viewModel.PatientNotes = patientNotes;
-            viewModel.PatientProblems = patientProblems;
-            viewModel.CarePlans = carePlan;
-            viewModel.MedAdministrationHistories = medHistory;*/
+            viewModel.MedAdministrationHistoriesDetails = _listService.GetMedHistoryByVisitId(visitId);
+            //This will grab the vitals associated with the visit.
+            viewModel.VitalsDetails = _listService.GetVitalsByVisitId(visitId);
 
             //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
             ViewBag.Patient = viewModel.PatientDemographic;
