@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -84,14 +85,15 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult Index(PatientDemographic patient)
         {
-            //Testing to see if the date of birth entered was a future date or not
+            // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
-                //adding an error to the DOB model to display an error.
+                // Adding an error to the DOB model to display an error.
                 ModelState.AddModelError("DOB", "Date cannot be in the future.");
                 return View(patient);
             }
-            //returns the model if null because there were errors in validating it
+
+            // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 return View(patient);
@@ -203,6 +205,7 @@ namespace EHRApplication.Controllers
             ModelState.Clear();
             return View();
         }
+
 
         public IActionResult PatientOverview(int mhn)
         {
@@ -341,6 +344,73 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+        private PatientDemographic GetPatientByMHN(int mhn)
+        {
+            //Creating a new patientDemographic instance
+            PatientDemographic patientDemographic = new PatientDemographic();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Assign properties for the patient demographic from the database
+                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
+                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
+                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
+                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
+                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
+                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
+                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
+                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
+                        patientDemographic.race = Convert.ToString(dataReader["race"]);
+                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
+                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
+                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
+                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
+                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
+                        //Gets the contact info for this patient using the MHN that links to the contact info table
+                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
+                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientDemographic;
+        }
+
+
+
+
+
+
+
+
+
+
 
         public IActionResult PatientInsurance(int mhn)
         {
@@ -621,7 +691,7 @@ namespace EHRApplication.Controllers
 
                         // Populate the note object with data from the database.
                         //TODO: make this get the right date only data type.
-                        //note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
+                        //note.occurredOn = Convert.ToString(dataReader["occurredOn"]);
                         note.occurredOn = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("occurredOn")));
                         note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
                         note.providers = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
@@ -634,11 +704,6 @@ namespace EHRApplication.Controllers
                         notes.Add(note);
                     }
                 }
-
-                viewModel.PatientNotes = notes;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = mhn;
-                connection.Close();
             }
 
             return View(viewModel);
@@ -790,6 +855,61 @@ namespace EHRApplication.Controllers
             }
             ModelState.Clear();
             return RedirectToAction("AllPatients", "Patient");
+        }
+
+        // takes search term and returns relevant results
+        public IActionResult Search(string searchTerm)
+        {
+            List<PatientDemographic> searchResults = new List<PatientDemographic>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+
+                // checks if searchTerm is int, sets query based on term type
+                if (int.TryParse(searchTerm, out int mhn))
+                {
+                    // selects pt by MHN if it's a match
+                    cmd.CommandText = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+                }
+                else
+                {
+                    // accepts string fragments, returns similar results
+                    cmd.CommandText = @"SELECT * FROM [dbo].[PatientDemographic] 
+                                WHERE firstName LIKE @searchTerm 
+                                OR lastName LIKE @searchTerm 
+                                OR middleName LIKE @searchTerm 
+                                OR suffix LIKE @searchTerm";
+                    cmd.Parameters.AddWithValue("@searchTerm", "%" + searchTerm + "%");
+                }
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        PatientDemographic patient = new PatientDemographic
+                        {
+                            MHN = Convert.ToInt32(dataReader["MHN"]),
+                            firstName = Convert.ToString(dataReader["firstName"]),
+                            middleName = Convert.ToString(dataReader["middleName"]),
+                            lastName = Convert.ToString(dataReader["lastName"]),
+                            suffix = Convert.ToString(dataReader["suffix"]),
+                            DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
+                            gender = Convert.ToString(dataReader["gender"])
+                        };
+
+                        // adds results to list
+                        searchResults.Add(patient);
+                    }
+                }
+            }
+
+            // returns any results found
+            return View("PatientSearchResults", searchResults);
         }
     }
 }
