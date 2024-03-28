@@ -27,12 +27,13 @@
 </head>
 <body data-bs-theme="auto">
 
-    <partial name="_topNav" />
+    <partial name="_topNav" model="@new { Controller = controllerName, Action = actionName }"/>
 
     <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
     || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders")
     {
@@ -62,6 +63,7 @@
     @if (controllers.Contains(controllerName)
     || controllerName == "Patient" && actionName == "Index"
     || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
     || controllerName == "Medications" && actionName == "AllMedications"
     || controllerName == "Providers" && actionName == "AllProviders"
     || controllerName == "Home" && actionName == "UserDashboard"
