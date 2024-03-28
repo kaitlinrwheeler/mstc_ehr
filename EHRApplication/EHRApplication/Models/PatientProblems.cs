@@ -13,6 +13,11 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
+        [ForeignKey("visitsId")]
+        public Visits visits { get; set; }
+
+        public int visitsId { get; set; }
+
         public string priority { get; set; }
 
         public string description { get; set; }

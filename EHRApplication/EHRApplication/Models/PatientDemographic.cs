@@ -44,6 +44,7 @@ namespace EHRApplication.Models
         [StringLength(60, ErrorMessage = "Pronouns name must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please select pronouns.")]
         [Display(Name = "Pronouns")]
+        [NotMapped]
         public string? OtherPronouns { get; set; }
 
         [Required(ErrorMessage = "Please enter a date of birth.")]
@@ -59,6 +60,7 @@ namespace EHRApplication.Models
         [StringLength(60, ErrorMessage = "Gender must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Gender")]
+        [NotMapped]
         public string? OtherGender { get; set; }
 
         [Required(ErrorMessage = "Language is required.")]
@@ -80,6 +82,7 @@ namespace EHRApplication.Models
         [StringLength(60, ErrorMessage = "Race must be between 1 and 60 characters.", MinimumLength = 1)]
         [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         [Display(Name = "Race")]
+        [NotMapped]
         public string? OtherRace { get; set; }
 
         [StringLength(60, ErrorMessage = "Religion must be between 1 and 60 characters.", MinimumLength = 1)]

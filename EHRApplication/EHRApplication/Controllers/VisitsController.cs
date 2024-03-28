@@ -20,11 +20,27 @@ namespace EHRApplication.Controllers
             PortalViewModel viewModel = new PortalViewModel();
             viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
-            //This will grab a list of the care plans from the list services for the patient.
-            Visits visit = _listService.GetVisitByVisitId(visitId);
+            //This will the specific visit
+            viewModel.VisitDetails = _listService.GetVisitByVisitId(visitId);
+
+            //This will grab the lab results associated with the visit.
+            viewModel.LabResultsDetails = _listService.GetLabResultsByVisitId(visitId);
+            //This will grab the lab order associated with the visit.
+            viewModel.LabOrdersDetails = _listService.GetLabOrdersByVisitId(visitId);
+            //This will grab the med order associated with the visit.
+            viewModel.MedOrdersDetails = _listService.GetMedOrdersByVisitId(visitId);
+            //This will grab the patient notes associated with the visit.
+            viewModel.PatientNotesDetails = _listService.GetPatientNotesByVisitId(visitId);
+            //This will grab the patient problems associated with the visit.
+            viewModel.PatientProblemsDetails = _listService.GetPatientProblemsByVisitId(visitId);
+            //This will grab the care plan associated with the visit.
+            viewModel.CarePlansDetails = _listService.GetCarePlanByVisitId(visitId);
+            //This will grab the med administration history associated with the visit.
+            viewModel.MedAdministrationHistoriesDetails = _listService.GetMedHistoryByVisitId(visitId);
+            //This will grab the vitals associated with the visit.
+            viewModel.VitalsDetails = _listService.GetVitalsByVisitId(visitId);
 
             //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
-            viewModel.VisitDetails = visit;
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
 
