@@ -175,6 +175,10 @@ document.addEventListener("click", function (event) {
     }
 });
 
+//End of quesiton mark popout
+
+
+
 //End of question mark popout
 $(document).ready(function () {
     // Get the MHN number from the <p> element
@@ -183,3 +187,5 @@ $(document).ready(function () {
     // Set the value of asp-route-mhn attribute
     $('.Med-link').attr('asp-route-mhn', mhnNumber);
 });
+
+

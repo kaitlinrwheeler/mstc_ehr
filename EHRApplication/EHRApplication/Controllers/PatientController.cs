@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Moq;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -27,7 +28,7 @@ namespace EHRApplication.Controllers
             _logService = logService;
             this._connectionString = base._connectionString;
             _listService = listService;
-    }
+        }
 
         public IActionResult AllPatients()
         {
@@ -164,7 +165,7 @@ namespace EHRApplication.Controllers
                 // if other gender is chosen rather than offered selection
                 // set gender to 'other gender' property
                 patient.gender = patient.OtherGender;
-            }            
+            }
 
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
@@ -269,8 +270,8 @@ namespace EHRApplication.Controllers
         public IActionResult PatientVisits(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
-            
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
 
             // New list to hold all the patients in the database.
             List<Visits> patientVisits = _listService.GetPatientVisitsByMHN(mhn);
@@ -285,8 +286,8 @@ namespace EHRApplication.Controllers
         public IActionResult PatientAllergies(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
-         
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
 
@@ -402,10 +403,19 @@ namespace EHRApplication.Controllers
         }
 
 
+
+
+
+
+
+
+
+
+
         public IActionResult PatientInsurance(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
@@ -426,7 +436,7 @@ namespace EHRApplication.Controllers
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
-                    { 
+                    {
                         // Create a new allergy object for each record.
                         PatientInsurance insurance = new PatientInsurance();
 
@@ -459,7 +469,7 @@ namespace EHRApplication.Controllers
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
@@ -476,7 +486,7 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
@@ -654,7 +664,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientNotes(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
@@ -694,14 +704,157 @@ namespace EHRApplication.Controllers
                         notes.Add(note);
                     }
                 }
-
-                viewModel.PatientNotes = notes;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = mhn;
-                connection.Close();
             }
 
             return View(viewModel);
+        }
+
+        public IActionResult EditPatientForm(int mhn)
+        {
+            PatientDemographic patient = _listService.GetPatientByMHN(mhn);
+
+            return View(patient);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientForm(PatientDemographic patient)
+        {
+            //Testing to see if the date of birth entered was a future date or not
+            if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
+            {
+                //adding an error to the DOB model to display an error.
+                ModelState.AddModelError("DOB", "Date cannot be in the future.");
+                return View(patient);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                patient.race = string.Join(",", patient.raceList);
+                return View(patient);
+            }
+
+            // process file upload
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
+            {
+                // define permitted image file types
+                var allowedFileTypes = new[] { ".jpg", ".png" };
+                var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
+
+                // validate file type
+                if (!allowedFileTypes.Contains(extentions))
+                {
+                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
+                    return View(patient);
+                }
+
+                // create filepath to storage location
+                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                // check for existence of directory and create if it doesn't exist
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+
+                // create and assign new filename before storage
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(patient.patientImageFile.FileName);
+
+                // create full filepath
+                var filePath = Path.Combine(uploadDirectory, fileName);
+
+                // save file to disk
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    patient.patientImageFile.CopyToAsync(stream);
+                }
+
+                // save filepath to pt image property
+                patient.patientImage = fileName;
+
+            }
+
+            // process race selection
+            if (patient.race == null && !string.IsNullOrEmpty(patient.OtherRace))
+            {
+                // if other race is chosen rather than offered selection
+                // set race to 'other race' property
+                patient.race = patient.OtherRace;
+            }
+            else
+            {
+                patient.race = string.Join(",", patient.raceList);
+            }
+
+            // process preferred pronouns selection
+            if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
+            {
+                // if other pronouns is chosen rather than offered selection
+                // set pronouns to 'other preferred pronouns' property
+                patient.preferredPronouns = patient.OtherPronouns;
+            }
+
+            // process gender selection
+            if (patient.gender == "Other" && !string.IsNullOrEmpty(patient.OtherGender))
+            {
+                // if other gender is chosen rather than offered selection
+                // set gender to 'other gender' property
+                patient.gender = patient.OtherGender;
+            }
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = @"UPDATE [PatientDemographic] 
+                   SET firstName = @firstName, 
+                       middleName = @middleName, 
+                       lastName = @lastName, 
+                       suffix = @suffix, 
+                       preferredPronouns = @preferredPronouns, 
+                       DOB = @DOB, 
+                       gender = @gender, 
+                       preferredLanguage = @preferredLanguage, 
+                       ethnicity = @ethnicity, 
+                       race = @race, 
+                       religion = @religion, 
+                       primaryPhysician = @primaryPhysician, 
+                       legalGuardian1 = @legalGuardian1, 
+                       legalGuardian2 = @legalGuardian2, 
+                       previousName = @previousName, 
+                       genderAssignedAtBirth = @genderAssignedAtBirth, 
+                       patientImage = @patientImage
+                   WHERE MHN = @MHN";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.Int).Value = patient.MHN;
+                    command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
+                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "" : patient.middleName;
+                    command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
+                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "" : patient.suffix;
+                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "" : patient.preferredPronouns;
+                    command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "" : patient.gender;
+                    command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
+                    command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
+                    command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
+                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "" : patient.religion;
+                    command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
+                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "" : patient.legalGuardian1;
+                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "" : patient.legalGuardian2;
+                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "" : patient.previousName;
+                    command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+                    command.Parameters.Add("@patientImage", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.patientImage) ? "" : patient.patientImage;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            ModelState.Clear();
+            return RedirectToAction("AllPatients", "Patient");
         }
 
         // takes search term and returns relevant results
@@ -758,6 +911,5 @@ namespace EHRApplication.Controllers
             // returns any results found
             return View("PatientSearchResults", searchResults);
         }
-
     }
 }
