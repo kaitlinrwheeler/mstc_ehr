@@ -813,18 +813,18 @@ namespace EHRApplication.Services
                         labResults.MHN = Convert.ToInt32(dataReader["MHN"]);
                         labResults.patients = GetPatientByMHN(labResults.MHN);
 
-                        labResults.visitsId = Convert.ToInt32(dataReader["visitId"]);
+                        labResults.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //labResults.visits = GetVisitByVisitId(labResults.visitsId);
 
                         labResults.testId = Convert.ToInt32(dataReader["testId"]);
                         labResults.labTests = GetLabTestByTestId(labResults.testId);
 
                         labResults.resultValue = Convert.ToString(dataReader["resultValue"]);
-                        labResults.abnormalFlag = Convert.ToString(dataReader["abnormalFlan"]);
+                        labResults.abnormalFlag = Convert.ToString(dataReader["abnormalFlag"]);
                         labResults.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
                         labResults.providers = GetProvidersByProviderId(labResults.orderedBy);
-
-                        labResults.date = DateOnly.Parse(dataReader["date"].ToString());
+                        DateTime date = DateTime.Parse(dataReader["date"].ToString());
+                        labResults.date = new DateOnly(date.Year, date.Month, date.Day);
                         labResults.time = TimeOnly.Parse(dataReader["time"].ToString());
                     }
                 }
