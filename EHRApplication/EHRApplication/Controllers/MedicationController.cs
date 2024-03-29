@@ -247,5 +247,29 @@ namespace EHRApplication.Controllers
                 }
             }
         }
+
+        public IActionResult CreateMedication()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateMedication(MedicationProfile medProfile)
+        {
+            if (medProfile.route == "")
+            {
+                ModelState.AddModelError("route", "Please select a route.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(medProfile);
+            }
+            return View();
+        }
+
+        public IActionResult EditMedication(int medId)
+        {
+            return View();
+        }
     }
 }

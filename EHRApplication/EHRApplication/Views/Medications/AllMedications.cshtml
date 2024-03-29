@@ -12,7 +12,7 @@
                 All Medications
             </div>
             <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="Index">
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedication">
                     <i class="fa-solid fa-plus me-2"></i>
                     <span>Add</span>
                 </a>
@@ -49,7 +49,7 @@
                                 <td>
                                     <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
                                     <form method="post">
-                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="MedEditForm" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedication" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                     </form>
                                 </td>
                             </tr>

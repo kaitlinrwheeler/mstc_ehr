@@ -33,54 +33,24 @@
             <!-- Description -->
             <div class="form-group">
                 <label for="description">Description:</label>
-                <input asp-for="description" type="text" id="description" name="description" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('description', 35, 'description')" />
+                <input asp-for="description" type="text" id="description" name="description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 35, 'description')" />
                 <span asp-validation-for="description" id="descriptionError" class="validation-msg"></span>
             </div>
 
             <!-- Route -->
             <div class="form-group">
-                <label for="route">Route:</label>
-                <input asp-for="route" type="text" id="LastName" name="route" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('route', 25,'route')" />
-                <span asp-validation-for="route" id="routeError" class="validation-msg"></span>
+            <label for="route">Route:</label>
+                <select asp-for="route" id="route" name="route" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="Oral">Oral</option>
+                    <option value="Inhalation">Inhalation</option>
+                </select>
+                <span asp-validation-for="route" class="validation-msg"></span>
             </div>
-
-
-            @* maybe make Route a select statement to make it easier for julie to select data.
-            <div class="form-group">
-            <label for="Pronouns">Preferred Pronouns:</label>
-            <select asp-for="preferredPronouns" id="Pronouns" name="preferredPronouns" class="form-control" data-bs-theme="auto" required onchange="dropdownOtherOption('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun')">
-            <option value=""></option>
-            <option value="He/Him">He/Him</option>
-            <option value="She/Her">She/Her</option>
-            <option value="They/Them">They/Them</option>
-            <option value="Other">Other</option>
-            </select>
-            <input asp-for="OtherPronouns" type="text" id="OtherPronouns" name="OtherPronouns" class="form-control" style="display: none;" data-bs-theme="auto" />
-            <span asp-validation-for="OtherPronouns" id="OtherPronounsError" class="validation-msg"></span>
-            </div> *@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Submit" />
-            </div>
-
-            <!-- confirmation modal-->
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
-                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save patient information?
-                        </div>
-                        <div class="modal-footer">
-                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
-                        </div>
-                    </div>
-                </div>
+                <input type="submit" class="btn blue-button" value="Submit" />
             </div>
 
         </form>
