@@ -739,9 +739,10 @@ namespace EHRApplication.Controllers
                         alert.startDate = dataReader.GetDateTime("startDate");
 
                         alert.endDate = dataReader.GetDateTime("endDate");
+                        alert.activeStatus = dataReader.GetString("activeStatus");
 
                         // If the alert should be inactive.
-                        if(alert.endDate < DateTime.Now)
+                        if(alert.activeStatus == "Active" && alert.endDate < DateTime.Now)
                         {
                             // Call function that updates the alert status to be inactive.
                             if (SetAlertInactive(alert.alertId))
@@ -752,7 +753,7 @@ namespace EHRApplication.Controllers
                             else
                             {
                                 // Set an error message
-                                TempData["ErrorMessage"] = "Failed to update alert status.";
+                                // TODO: should log it here.
                             }
                         }
 

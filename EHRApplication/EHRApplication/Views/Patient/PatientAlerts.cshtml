@@ -29,15 +29,24 @@
                         {
                             <tr class="hover-highlighting">
 
+
+
+                                <td style='background-color: @(alert.activeStatus == "Active" ? "yellow" : "unset"); color: @(alert.activeStatus == "Active" ? "black" : "inherit")'>
+                                    @if (alert.activeStatus == "Active")
+                                    {
+                                        <span>
+                                            <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                        </span>
+                                    }
+                                    @alert.activeStatus
+                                </td>
+
+
+
+
                                 <td>@alert.alertName</td>
                                 <td>@alert.startDate.ToString("MM-dd-yyyy")</td>
                                 <td>@alert.endDate.ToString("MM-dd-yyyy")</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Yes" : "No")</label>
-                                    </div>
-                                </td>
                             </tr>
                         }
                     </tbody>
