@@ -536,7 +536,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
+        public IActionResult UpdatePatientActiveStatus(int mhn, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
@@ -734,9 +734,27 @@ namespace EHRApplication.Controllers
                         Alerts alert = new Alerts();
 
                         // Populate the alert object with data from the database.
+                        alert.alertId = dataReader.GetInt32("alertId");
                         alert.alertName = dataReader.GetString("alertName");
                         alert.startDate = dataReader.GetDateTime("startDate");
+
                         alert.endDate = dataReader.GetDateTime("endDate");
+
+                        // If the alert should be inactive.
+                        if(alert.endDate < DateTime.Now)
+                        {
+                            // Call function that updates the alert status to be inactive.
+                            if (SetAlertInactive(alert.alertId))
+                            {
+                                // Set active status to inactive here since we just changed it in the database.
+                                alert.activeStatus = "Inactive";
+                            }
+                            else
+                            {
+                                // Set an error message
+                                TempData["ErrorMessage"] = "Failed to update alert status.";
+                            }
+                        }
 
                         // Add the alert to the list
                         alerts.Add(alert);
@@ -755,5 +773,38 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        public bool SetAlertInactive(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'Inactive' WHERE alertId = @id";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@id", id);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return true;
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return false;
+                }
+            }
+
+        }
     }
 }
