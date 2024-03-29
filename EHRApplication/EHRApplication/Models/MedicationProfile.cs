@@ -12,5 +12,7 @@ namespace EHRApplication.Models
         public string description { get; set; }
 
         public string route { get; set; }
+
+        public bool activeStatus { get; set; }
     }
 }
