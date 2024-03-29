@@ -8,7 +8,7 @@
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
-            <div class="h4 card-header text-center" data-bs-theme="auto">
+            <div class="text-center w-100" data-bs-theme="auto">
                 All Medications
             </div>
             <div>
@@ -46,18 +46,11 @@
                                         <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Yes" : "No")</label>
                                     </div>
                                 </td>
-                                <!--the following won't work for anything because the edit form is not created and the delete form is not either.-->
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-medId="@med.medId"><i class="fa-solid fa-eye me-2"></i>View</a></td>
-
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <form method="post" asp-controller="Medications" asp-action="DeleteMedication" asp-route-medId="@med.medId" id="deleteForm-@med.medId">
-                                            <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="MedEditForm" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                            <button type="submit" class="btn delete-button" data-medId="@med.medId">
-                                                <i class="fa-solid fa-trash me-2"></i>Delete
-                                            </button>
-                                        </form>
-                                    </div>
+                                    <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
+                                    <form method="post">
+                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="MedEditForm" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                    </form>
                                 </td>
                             </tr>
                         }
