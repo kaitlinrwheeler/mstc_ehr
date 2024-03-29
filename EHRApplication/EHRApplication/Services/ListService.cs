@@ -965,7 +965,7 @@ namespace EHRApplication.Services
 
                         patientNotes.associatedProvider = Convert.ToInt32(dataReader["associatedProvider"]);
                         patientNotes.assocProvider = GetProvidersByProviderId(patientNotes.associatedProvider);
-                        patientNotes.updatedAt = DateTime.Parse(dataReader["updatedAd"].ToString());
+                        patientNotes.updatedAt = DateTime.Parse(dataReader["updatedAt"].ToString());
                         patientNotes.category = Convert.ToString(dataReader["category"]);
                         patientNotes.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //patientNotes.visits = GetVisitByVisitId(patientNotes.visitsId);

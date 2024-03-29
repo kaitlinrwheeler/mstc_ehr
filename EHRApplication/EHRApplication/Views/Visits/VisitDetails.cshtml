@@ -53,55 +53,53 @@
             <!-- Two containers side by side -->
             <div class="row mt-4" data-bs-theme="auto">
 
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Lab Orders
+                <!--This will display the lab orders if ther is one associated with the visit.-->
+                @if(labOrders.visitsId != 0)
+                {
+                    <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="h4 card-header text-center" data-bs-theme="auto">
+                                    Lab Orders
+                                </div>
+                                <div class="card-body" data-bs-theme="auto">                           
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Order Date:</th>
+                                                <td>@labOrders.orderDate.ToString("MM-dd-yyyy")</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Order Time:</th>
+                                                <td>@labOrders.orderTime.ToString("HH:mm")</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Test:</th>
+                                                <td>@labOrders.labTests.testName</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Status:</th>
+                                                <td>@labOrders.completionStatus</td>
+                                            </tr>     
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Ordered By:</th>
+                                                <td>@labOrders.providers.firstName @labOrders.providers.lastName</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body" data-bs-theme="auto">
-                        @if (labOrders.visitsId != 0)
-                        {                            
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Order Date:</th>
-                                        <td>@labOrders.orderDate.ToString("MM-dd-yyyy")</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Order Time:</th>
-                                        <td>@labOrders.orderTime.ToString("HH:mm")</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Test:</th>
-                                        <td>@labOrders.labTests.testName</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Status:</th>
-                                        <td>@labOrders.completionStatus</td>
-                                    </tr>     
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Ordered By:</th>
-                                        <td>@labOrders.providers.firstName @labOrders.providers.lastName</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        }
-                        else
-                        {
-                            <h1 class="text-center display-6">No lab orders found.</h1>
-                        }
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Med Order
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (medOrders.visitId != 0)
-                            {
+                
+                }
+            <!--This will display the med orders if ther is one associated with the visit.-->
+            @if(medOrders.visitId != 0)
+                {
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Med Order
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -130,23 +128,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No med orders found.</h1>
-                            }
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Lab Results
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (labResults.visitsId != 0)
-                            {
+                    </div>                
+                }
+            <!--This will display the lab results if ther is one associated with the visit.-->
+            @if(labResults.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Lab Results
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -187,23 +181,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No lab results found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Notes
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (patientNotes.visitsId != 0)
-                            {
+                }
+            <!--This will display the patient notes if ther is one associated with the visit.-->
+            @if(patientNotes.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Patient Notes
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -232,23 +222,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No notes found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Problems
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (patientProblems.visitsId != 0)
-                            {
+                }
+            <!--This will display the patient problems if ther is one associated with the visit.-->
+            @if(patientProblems.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Patient Problems
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -289,23 +275,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No problems found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Care Plan
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (carePlan.visitsId != 0)
-                            {
+                }
+            <!--This will display the care plan if ther is one associated with the visit.-->
+            @if(carePlan.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Care Plan
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -342,23 +324,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No care plan found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            PatientMed History
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (medHistory.visitsId != 0)
-                            {
+                }
+            <!--This will display the med history if ther is one associated with the visit.-->
+            @if(medHistory.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                PatientMed History
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -391,23 +369,19 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No med history found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Vitals
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            @if (vitals.visitId != 0)
-                            {
+                }
+            <!--This will display the vitals if ther is one associated with the visit.-->
+            @if(vitals.visitId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Vitals
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
@@ -456,16 +430,12 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            }
-                            else
-                            {
-                                <h1 class="text-center display-6">No vitals found.</h1>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+
             </div>
         </div>
-
     </div>
 </section>
