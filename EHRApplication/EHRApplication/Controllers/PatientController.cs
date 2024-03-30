@@ -711,9 +711,13 @@ namespace EHRApplication.Controllers
 
         public IActionResult EditPatientForm(int mhn)
         {
-            PatientDemographic patient = _listService.GetPatientByMHN(mhn);
+            PortalViewModel viewModel = new PortalViewModel();
 
-            return View(patient);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+            return View(viewModel);
         }
 
         [HttpPost]
