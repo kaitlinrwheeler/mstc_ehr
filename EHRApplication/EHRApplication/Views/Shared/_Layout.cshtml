@@ -10,6 +10,20 @@
     // sets the MHN
     var mhn = ViewBag.MHN as int?;
 
+    var patient = ViewBag.Patient as PatientDemographic;
+
+    bool showAlertBar = false;
+
+
+    if(patient != null)
+    {
+        if (patient.HasAlerts)
+        {
+            // patient has no alerts so hide alert part of banner and adjust side nav.
+            showAlertBar = true;
+        }
+    }
+
     // Controllers with views we want to hide things on.
     string[] controllers = new string[] { "Login_Register", "Resources" };
 }
