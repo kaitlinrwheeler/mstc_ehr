@@ -34,5 +34,8 @@ namespace EHRApplication.Services
         PatientDemographic GetPatientByMHN(int mhn);
 
         Visits GetVisitByVisitId(int visitId);
+
+        void InsertIntoMedProfile(MedicationProfile medProfile);
+        void UpdateMedProfile(MedicationProfile medProfile);
     }
 }

@@ -737,5 +737,34 @@ namespace EHRApplication.Services
 
             return patientDemographic;
         }
+
+        public void InsertIntoMedProfile(MedicationProfile medProfile)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [MedicationProfile] (medName, description, route) " +
+                    "VALUES (@medName, @description, @route)";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@medName", SqlDbType.VarChar).Value = medProfile.medName;
+                    command.Parameters.Add("@description", SqlDbType.VarChar).Value = medProfile.description;
+                    command.Parameters.Add("@route", SqlDbType.VarChar).Value = medProfile.route;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void UpdateMedProfile(MedicationProfile medProfile)
+        {
+
+        }
     }
 }

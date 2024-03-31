@@ -264,11 +264,33 @@ namespace EHRApplication.Controllers
             {
                 return View(medProfile);
             }
+            else
+            {
+                _listService.InsertIntoMedProfile(medProfile);
+            }
             return View();
         }
 
         public IActionResult EditMedication(int medId)
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EditMedication(MedicationProfile medProfile)
+        {
+            if (medProfile.route == "")
+            {
+                ModelState.AddModelError("route", "Please select a route.");
+            }
+            if(!ModelState.IsValid)
+            {
+                return View(medProfile);
+            }
+            else
+            {
+                _listService.UpdateMedProfile(medProfile);
+            }
             return View();
         }
     }
