@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@model dynamic
 
 
 <div id="headerContainer" class="sticky-top w-100">
@@ -27,20 +28,27 @@
                 </div>
                 <i class="fa-solid fa-moon"></i>
             </li>
+            @if (Model.Controller != "Login_Register" || Model.Action != "Login")
+            {
+                <li class="">
+                    <button id="srchBtn" class="btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <!-- Hidden Search Bar -->
+                    <div id="searchBar" class="d-none">
+                        @using (Html.BeginForm("Search", "Patient", FormMethod.Get, new { @class = "form-inline" }))
+                        {
+                            <input type="text" id="searchInput" name="searchTerm" class="form-control" placeholder="Patient Name or MHN">
+                            <button type="submit" class="btn btn-default">Search</button>
+                        }
+                    </div>
+                    <!-- End Hidden Search Bar -->
+                </li>
+            }
 
-
-            <li class="nav-item">
-                <button id="srchBtn" class="btn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </li>
-
-
-            @* <li class="nav-item"><a asp-area="" asp-controller="Resources" asp-action="Index" class="nav-link">Resources</a></li> *@
-            @* <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="UserDashboard" class="nav-link">User Dashboard</a></li> *@
+            @* when RBAC is implemented, the asp-action will have to operate on a variable which will be set based on whether the
+                logged in user is a user or an admin. the variable will be set here and inserted into the asp-action.*@
             <li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="UserDashboard" class="nav-link">Dashboard</a></li>
-            @* <li class="nav-item"><a href="#" class="nav-link">Account</a></li> *@
-            @* <li class="nav-item"><a asp-area="" asp-controller="Patient" asp-action="Index" class="nav-link">Admin</a></li> *@
 
             @if (SignInManager.IsSignedIn(User))
             {
