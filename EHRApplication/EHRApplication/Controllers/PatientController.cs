@@ -590,6 +590,23 @@ namespace EHRApplication.Controllers
 
                 try
                 {
+                    // get patient image file name
+                    string getImageSql = "SELECT patientImage FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    string patientImageFileName = string.Empty;
+
+                    using (SqlCommand getImageCmd = new SqlCommand(getImageSql, connection, transaction))
+                    {
+                        getImageCmd.Parameters.AddWithValue("@mhn", mhn);
+                        using (var reader = getImageCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // check if db value is null before assigning
+                                patientImageFileName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                            }
+                        }
+                    }
+
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
 
@@ -635,6 +652,16 @@ namespace EHRApplication.Controllers
                         {
                             throw new Exception("Patient with MHN " + mhn + " not found.");
                         }
+                    }
+
+                    // delete the patient image file if it exists
+                    var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var imageFilePath = Path.Combine(imageDirectory, patientImageFileName);
+
+                    // check if file exists before deleting
+                    if (System.IO.File.Exists(imageFilePath))
+                    {
+                        System.IO.File.Delete(imageFilePath);
                     }
 
                     // If everything went well, commit the transaction
