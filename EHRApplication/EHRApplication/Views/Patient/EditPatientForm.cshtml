@@ -25,6 +25,7 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="patientForm" enctype="multipart/form-data">
 
+            <input asp-for="@patient.MHN" value="@patient.MHN" hidden/>
             <!-- First Name -->
             <div class="form-group">
                 <label asp-for="@patient.firstName">First Name:</label>
@@ -169,11 +170,11 @@
                 <label asp-for="@patient.ethnicity">Is the patient of Hispanic, Latino, or Spanish origin?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input type="radio" id="Yes" value="Hispanic" name="@patient.ethnicity" @(@patient.ethnicity == "Hispanic" ? "checked" : "") />
+                        <input type="radio" id="Yes" value="Hispanic" name="patient.ethnicity" @(@patient.ethnicity == "Hispanic" ? "checked" : "") />
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input type="radio" id="No" value="Non-Hispanic" name="@patient.ethnicity" @(@patient.ethnicity == "Non-Hispanic" ? "checked" : "") />
+                        <input type="radio" id="No" value="Non-Hispanic" name="patient.ethnicity" @(@patient.ethnicity == "Non-Hispanic" ? "checked" : "") />
                         <label for="No" style="font-weight: normal;">No</label><br />
-                        <input type="radio" id="Unknown" value="Unknown" name="@patient.ethnicity" @(@patient.ethnicity == "Unknown" ? "checked" : "") />
+                        <input type="radio" id="Unknown" value="Unknown" name="patient.ethnicity" @(@patient.ethnicity == "Unknown" ? "checked" : "") />
                         <label for="Unknown" style="font-weight: normal;">Unknown</label><br />
                     </div>
                 </div>
@@ -186,22 +187,22 @@
                 <div asp-for="@patient.raceList" id="Race" class="row text-nowrap">
                     <div class="col-sm-6 ms-4">
                         <div class="race-column">
-                            <input for="@patient.raceList" type="checkbox" id="AmericanIndian" value="American Indian or Alaska Native" @(patient.race != null && patient.race.Contains("American Indian or Alaska Native") ? "checked" : "") />
+                            <input name="patient.raceList" type="checkbox" id="AmericanIndian" value="American Indian or Alaska Native" @(patient.race != null && patient.race.Contains("American Indian or Alaska Native") ? "checked" : "") />
                             <label for="AmericanIndianOrAlaskaNative" style="font-weight: normal;">American Indian or Alaska Native</label><br />
 
-                            <input for="@patient.raceList" type="checkbox" id="Asian" value="Asian" name="@patient.raceList" @(patient.race != null && patient.race.Contains("Asian") ? "checked" : "") />
+                            <input name="patient.raceList" type="checkbox" id="Asian" value="Asian" @(patient.race != null && patient.race.Contains("Asian") ? "checked" : "") />
                             <label for="Asian" style="font-weight: normal;">Asian</label><br />
 
-                            <input for="@patient.raceList" type="checkbox" id="Black" value="Black or African American" name="@patient.raceList" @(patient.race != null && patient.race.Contains("black or African American") ? "checked" : "") />
+                            <input name="patient.raceList" type="checkbox" id="Black" value="Black or African American" @(patient.race != null && patient.race.Contains("black or African American") ? "checked" : "") />
                             <label for="BlackOrAfricanAmerican" style="font-weight: normal;">Black or African American</label><br />
 
-                            <input for="@patient.raceList" type="checkbox" id="PacificIslander" value="Native Hawaiian or Other Pacific Islander" name="@patient.raceList" @(patient.race != null && patient.race.Contains("Native Hawaiian or Other Pacific Islander") ? "checked" : "") />
+                            <input name="patient.raceList" type="checkbox" id="PacificIslander" value="Native Hawaiian or Other Pacific Islander" @(patient.race != null && patient.race.Contains("Native Hawaiian or Other Pacific Islander") ? "checked" : "") />
                             <label for="NativeHawaiianrOrOtherPacificIslander" style="font-weight: normal;">Native Hawaiian or Other Pacific Islander</label><br />
 
-                            <input for="@patient.raceList" type="checkbox" id="White" value="White" name="@patient.raceList" @(patient.race != null && patient.race.Contains("White") ? "checked" : "")/>
+                            <input name="patient.raceList" type="checkbox" id="White" value="White" @(patient.race != null && patient.race.Contains("White") ? "checked" : "") />
                             <label for="White" style="font-weight: normal;">White</label><br />
 
-                            <input for="@patient.raceList" type="checkbox" id="OtherRace" value="Other" onchange="otherRaceInput()" name="@patient.raceList" @(patient.race != null && patient.race.Contains("Other") ? "checked" : "") />
+                            <input name="patient.raceList" type="checkbox" id="OtherRace" value="Other" onchange="otherRaceInput()" @(patient.race != null && patient.race.Contains("Other") ? "checked" : "") />
                             <label for="OtherRace" style="font-weight: normal;">Other</label><br />
                         </div>
                     </div><br />
