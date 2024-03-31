@@ -507,7 +507,7 @@ namespace EHRApplication.Controllers
                         vital.visits = _listService.GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
                         vital.temperature = dataReader.GetDecimal("temperature");
-                        vital.bloodPressure = dataReader.GetInt32("bloodPressure");
+                        vital.bloodPressure = dataReader.GetString("bloodPressure");
                         vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
                         vital.pulseOximetry = dataReader.GetInt32("pulseOximetry");
                         vital.heightInches = dataReader.GetDecimal("heightInches");
@@ -515,6 +515,7 @@ namespace EHRApplication.Controllers
                         vital.BMI = dataReader.GetDecimal("BMI");
                         vital.intakeMilliLiters = dataReader.GetInt32("intakeMilliliters");
                         vital.outputMilliLiters = dataReader.GetInt32("outputMilliliters");
+                        vital.pulse = dataReader.GetInt32("pulse");
 
                         // Add the vital to the list
                         vitals.Add(vital);

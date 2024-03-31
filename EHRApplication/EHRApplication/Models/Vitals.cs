@@ -22,7 +22,9 @@ namespace EHRApplication.Models
 
         public decimal temperature { get; set; }
 
-        public int bloodPressure { get; set; }
+        public string bloodPressure { get; set; }
+
+        public int pulse { get; set; }
 
         public int respiratoryRate { get; set; }
 
