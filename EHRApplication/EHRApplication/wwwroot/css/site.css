@@ -529,3 +529,11 @@ footer[data-bs-theme=dark] {
 
 
 /* End dark mode styles */
+
+/* patient profile picture styling */
+#ptImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}

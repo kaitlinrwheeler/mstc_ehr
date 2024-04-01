@@ -85,7 +85,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public async Task<IActionResult> Index(PatientDemographic patient)
         {
             // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
@@ -98,6 +98,13 @@ namespace EHRApplication.Controllers
             // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
+                return View(patient);
+            }
+
+            // check if the file is too large
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 4 * 1024 * 1024)
+            {
+                ModelState.AddModelError("patientImageFile", "File size must be less than 4MB.");
                 return View(patient);
             }
 
@@ -133,7 +140,7 @@ namespace EHRApplication.Controllers
                 // save file to disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    patient.patientImageFile.CopyToAsync(stream);
+                    await patient.patientImageFile.CopyToAsync(stream);
                 }
 
                 // save filepath to pt image property
@@ -593,6 +600,23 @@ namespace EHRApplication.Controllers
 
                 try
                 {
+                    // get patient image file name
+                    string getImageSql = "SELECT patientImage FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    string patientImageFileName = string.Empty;
+
+                    using (SqlCommand getImageCmd = new SqlCommand(getImageSql, connection, transaction))
+                    {
+                        getImageCmd.Parameters.AddWithValue("@mhn", mhn);
+                        using (var reader = getImageCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // check if db value is null before assigning
+                                patientImageFileName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                            }
+                        }
+                    }
+
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
 
@@ -638,6 +662,16 @@ namespace EHRApplication.Controllers
                         {
                             throw new Exception("Patient with MHN " + mhn + " not found.");
                         }
+                    }
+
+                    // delete the patient image file if it exists
+                    var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var imageFilePath = Path.Combine(imageDirectory, patientImageFileName);
+
+                    // check if file exists before deleting
+                    if (System.IO.File.Exists(imageFilePath))
+                    {
+                        System.IO.File.Delete(imageFilePath);
                     }
 
                     // If everything went well, commit the transaction
