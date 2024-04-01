@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System;
 using System.ComponentModel;
@@ -141,16 +142,14 @@ namespace EHRApplication.Controllers
             }
 
             // process race selection
-            if (patient.race == null && !string.IsNullOrEmpty(patient.OtherRace))
+            if (patient.race == null && patient.raceList.Contains("Other") && !string.IsNullOrEmpty(patient.OtherRace))
             {
-                // if other race is chosen rather than offered selection
-                // set race to 'other race' property
-                patient.race = patient.OtherRace;
+                //removes all elements form race list that equal the parameter given in this case that is Other
+                patient.raceList.RemoveAll(r => string.Equals(r, "Other", StringComparison.OrdinalIgnoreCase));
+                patient.raceList.Add(patient.OtherRace);
             }
-            else
-            {
-                patient.race = string.Join(",", patient.raceList);
-            }
+
+            patient.race = string.Join(",", patient.raceList);
 
             // process preferred pronouns selection
             if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
@@ -504,7 +503,6 @@ namespace EHRApplication.Controllers
                 // Replace placeholder with paramater to avoid sql injection.
                 cmd.Parameters.AddWithValue("@mhn", mhn);
 
-
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
@@ -716,6 +714,40 @@ namespace EHRApplication.Controllers
 
             viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
+            // Define the list of races to remove
+            List<string> racesToRemove = new List<string>
+            {
+                "Asian",
+                "American Indian or Alaska Native",
+                "black or African American",
+                "White"
+            };
+            // Remove the specified races from the race field
+            var otherRace = string.Join(", ", viewModel.PatientDemographic.race.Split(',')
+                .Select(r => r.Trim())
+                .Where(r => !racesToRemove.Contains(r))
+                .ToList());
+
+            //This will see if the data in the table was entered using the other table text input and display that for the user.
+            if(viewModel.PatientDemographic.gender != "Male" && viewModel.PatientDemographic.gender != "Female" && viewModel.PatientDemographic.gender != "Non-binary")
+            {
+                //Setting the other gender object equal to what is in the table as there is no other gender column in the table
+                viewModel.PatientDemographic.OtherGender = viewModel.PatientDemographic.gender;
+                viewModel.PatientDemographic.gender = "Other";
+            }
+            if (viewModel.PatientDemographic.preferredPronouns != "He/Him" && viewModel.PatientDemographic.preferredPronouns != "She/Her" && viewModel.PatientDemographic.preferredPronouns != "They/Them")
+            {
+                //Setting the other pronouns object equal to what is in the table as there is no other pronouns column in the table
+                viewModel.PatientDemographic.OtherPronouns = viewModel.PatientDemographic.preferredPronouns;
+                viewModel.PatientDemographic.preferredPronouns = "Other";
+            }
+            if (!otherRace.IsNullOrEmpty())
+            {
+                //Setting the other race if there was an input entered using the other race input
+                viewModel.PatientDemographic.OtherRace = otherRace;
+                viewModel.PatientDemographic.race += "Other";
+            }
+
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
             return View(viewModel);
@@ -779,16 +811,14 @@ namespace EHRApplication.Controllers
             }
 
             // process race selection
-            if (patient.race == null && !string.IsNullOrEmpty(patient.OtherRace))
+            if (patient.race == null && patient.raceList.Contains("Other") && !string.IsNullOrEmpty(patient.OtherRace))
             {
-                // if other race is chosen rather than offered selection
-                // set race to 'other race' property
-                patient.race = patient.OtherRace;
+                //removes all elements form race list that equal the parameter given in this case that is Other
+                patient.raceList.RemoveAll(r => string.Equals(r, "Other", StringComparison.OrdinalIgnoreCase));
+                patient.raceList.Add(patient.OtherRace);
             }
-            else
-            {
-                patient.race = string.Join(",", patient.raceList);
-            }
+            
+            patient.race = string.Join(",", patient.raceList);
 
             // process preferred pronouns selection
             if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
