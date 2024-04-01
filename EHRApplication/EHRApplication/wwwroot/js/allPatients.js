@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Selects the label associated with the checkbox that was changed
             const statusLabel = this.parentElement.querySelector('.form-check-label');
 
-            fetch(`/Patient/UpdateActiveStatus?mhn=${mhn}&activeStatus=${isActive}`, {
+            fetch(`/Patient/UpdatePatientActiveStatus?mhn=${mhn}&activeStatus=${isActive}`, {
                 method: 'POST',
                 headers: {
                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value

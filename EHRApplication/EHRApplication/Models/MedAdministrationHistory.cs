@@ -13,6 +13,11 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
+        [ForeignKey("visitsId")]
+        public Visits visits { get; set; }
+
+        public int visitsId { get; set; }
+
         public string category { get; set; }
 
         [ForeignKey("medId")]
@@ -32,5 +37,10 @@ namespace EHRApplication.Models
         public Providers providers { get; set; }
 
         public int administeredBy { get; set; }
+
+        public static implicit operator List<object>(MedAdministrationHistory v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

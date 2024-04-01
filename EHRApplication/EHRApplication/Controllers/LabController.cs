@@ -25,7 +25,8 @@ namespace EHRApplication.Controllers
             viewModel.LabOrders = labOrders;
 
             //This will add all of the data to a view bag the will be grabbed else where to display data correctly.
-            ViewBag.Patient = viewModel.LabOrders;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.LabOrders = viewModel.LabOrders;
             ViewBag.MHN = mhn;
 
             return View(viewModel);

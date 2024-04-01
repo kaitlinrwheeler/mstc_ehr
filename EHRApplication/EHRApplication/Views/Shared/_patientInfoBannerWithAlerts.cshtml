@@ -45,7 +45,7 @@
     </div>
     <!-- End Patient Info Banner -->
     <!-- Alert bar -->
-    <div class="alert-bar d-flex align-items-center justify-content-center" onclick="window.location.href='#'">
+    <div class="alert-bar d-flex align-items-center justify-content-center" onclick="window.location.href='@Url.Action("PatientAlerts", "Patient", new { mhn = mhn })'">
         <i class="fa-solid fa-triangle-exclamation me-1"></i>
         <p class="mb-0">Alerts</p>
     </div>
