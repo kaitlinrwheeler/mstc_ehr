@@ -12,15 +12,24 @@
 
     var patient = ViewBag.Patient as PatientDemographic;
 
+    bool showPatientBanner = false;
     bool showAlertBar = false;
 
-
+    // Check to see if we even have a patient to show a banner for.
     if(patient != null)
     {
-        if (patient.HasAlerts)
+        // Make sure their mhn is set.
+        if (patient.MHN != 0)
         {
-            // patient has no alerts so hide alert part of banner and adjust side nav.
-            showAlertBar = true;
+            // Show the alerts bar.
+            showPatientBanner = true;
+
+            // Check to see if patient has any alerts.
+            if (patient.HasAlerts)
+            {
+                // Patient has no alerts so hide alert part of banner and adjust side nav.
+                showAlertBar = true;
+            }
         }
     }
 
@@ -45,11 +54,11 @@
 
     <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
     @if (controllers.Contains(controllerName)
-    || controllerName == "Patient" && actionName == "Index"
-    || controllerName == "Patient" && actionName == "AllPatients"
-    || controllerName == "Patient" && actionName == "Search"
-    || controllerName == "Medications" && actionName == "AllMedications"
-    || controllerName == "Providers" && actionName == "AllProviders")
+        || controllerName == "Patient" && actionName == "Index"
+        || controllerName == "Patient" && actionName == "AllPatients"
+        || controllerName == "Patient" && actionName == "Search"
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders")
     {
         <style>
             #sidebar-wrapper {
@@ -64,10 +73,39 @@
     {
         <div id="patient-info-banner">
             @{
-                // if viewbag patient is set, render the banner
-                if (mhn.HasValue)
+                //Show the correct banner based on if there is a patient selected, and if they have any alerts.
+                if (showPatientBanner == true)
                 {
-                    await Html.RenderPartialAsync("_patientInfoBanner");
+                    if (showAlertBar == true)
+                    {
+                        // Load patient banner with alerts.
+                        await Html.RenderPartialAsync("_patientInfoBannerWithAlerts");
+
+                        <style>
+                            #sidebar-wrapper {
+                                margin-top: 198px;
+                            }
+
+                            main {
+                                margin-top: 90px;
+                            }
+                        </style>
+                    }
+                    else
+                    {
+                        // Load patient banner without alerts.
+                        await Html.RenderPartialAsync("_patientInfoBanner");
+
+                        <style>
+                            #sidebar-wrapper {
+                                margin-top: 176px;
+                            }
+                            main {
+                                margin-top: 70px;
+                            }
+                        </style>
+
+                    }
                 }
             }
         </div>
@@ -75,13 +113,13 @@
 
     <!-- This will hide the side nav if true. -->
     @if (controllers.Contains(controllerName)
-    || controllerName == "Patient" && actionName == "Index"
-    || controllerName == "Patient" && actionName == "AllPatients"
-    || controllerName == "Patient" && actionName == "Search"
-    || controllerName == "Medications" && actionName == "AllMedications"
-    || controllerName == "Providers" && actionName == "AllProviders"
-    || controllerName == "Home" && actionName == "UserDashboard"
-    || controllerName == "LabTestProfile" && actionName == "AllLabTests")
+        || controllerName == "Patient" && actionName == "Index"
+        || controllerName == "Patient" && actionName == "AllPatients"
+        || controllerName == "Patient" && actionName == "Search"
+        || controllerName == "Medications" && actionName == "AllMedications"
+        || controllerName == "Providers" && actionName == "AllProviders"
+        || controllerName == "Home" && actionName == "UserDashboard"
+        || controllerName == "LabTestProfile" && actionName == "AllLabTests")
     {
         <style>
             #sidebar-wrapper {
@@ -101,7 +139,7 @@
         <div id="sidebar-wrapper" class="sticky-top overflow-hidden">
             <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
                 <li>
-                    <a href="#" class="navbar-toggle collapsed ps-3" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars fa-lg"></i></a>
+                    <a href="#" class="navbar-toggle collapsed ps-3 fa-lg  py-1" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars fa-lg"></i></a>
                 </li>
 
                 <li class="active">
@@ -167,7 +205,7 @@
         </div>
         <!-- /#sidebar-wrapper -->
 
-        <main role="main" class="pb-3" style="z-index:1; margin-top:90px">
+        <main role="main" class="pb-3" style="z-index:1;">
 
             <!-- Page Content -->
             @RenderBody()
