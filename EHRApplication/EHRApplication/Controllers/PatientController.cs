@@ -263,6 +263,7 @@ namespace EHRApplication.Controllers
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                         portalViewModel.PatientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        portalViewModel.PatientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -400,6 +401,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
                         patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
                         patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
+                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 

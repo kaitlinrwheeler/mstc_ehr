@@ -121,6 +121,8 @@ namespace EHRApplication.Models
 
         public bool Active { get; set; }
 
+        public bool HasAlerts { get; set; }
+
         // needs to be changed to accept a file
         // may need to add IFormFile as well 
 
