@@ -766,7 +766,10 @@ namespace EHRApplication.Controllers
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
-                patient.race = string.Join(",", patient.raceList);
+                if (!patient.raceList.IsNullOrEmpty())
+                {
+                    patient.race = string.Join(",", patient.raceList);
+                }
                 return View(patient);
             }
 
