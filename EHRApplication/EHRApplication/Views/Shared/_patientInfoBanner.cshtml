@@ -13,11 +13,11 @@
                 <div class="col d-flex align-items-center">
                     @if (string.IsNullOrEmpty(@Model.PatientDemographic.patientImage))
                     {
-                        <img src="~/images/blank-profile-picture.png" class="img-fluid rounded-circle me-3" style="max-width: 60px" alt="Patient Image">
+                        <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
                     }
                     else
                     {
-                        <img src="~/images/@Model.PatientDemographic.patientImage" class="img-fluid rounded-circle me-3" style="max-width: 60px" alt="Patient Image">
+                        <img src="~/images/@Model.PatientDemographic.patientImage" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
                     }
 
                     <div class="">
