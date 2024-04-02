@@ -128,11 +128,10 @@ namespace EHRApplication.Models
 
         [NotMapped]
         [Display(Name = "Patient Image")]
-        [StringLength(60, ErrorMessage = "Image file must be of type .jpg, .jpeg, or .png.", MinimumLength = 5)]
-        [RegularExpression(@"^[a-zA-Z0-9]+\.(png|jpg|jpeg)$", ErrorMessage = "Please enter a valid file name.")]
         public IFormFile? patientImageFile { get; set; }
 
-        [ValidateNever]
+        [StringLength(60, ErrorMessage = "Image file must be of type .jpg, .jpeg, or .png.", MinimumLength = 5)]
+        [RegularExpression(@"^[a-zA-Z0-9]+\.(png|jpg|jpeg)$", ErrorMessage = "Please enter a valid file name.")]
         [Display(Name = "Patient Image")]
         public string? patientImage { get; set; }
     }
