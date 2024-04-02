@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Builder;
 using EHRApplication.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 public class Program
 {
@@ -41,6 +42,18 @@ public class Program
         {
             return new ListService(connectionString);
         });
+
+        builder.Services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.MaxRequestBodySize = 4 * 1024 * 1024; // 4 MB
+        });
+
+        builder.Services.Configure<IISServerOptions>(options =>
+        {
+            options.MaxRequestBodySize = 4 * 1024 * 1024; // 4 MB
+        });
+
+
 
         //Tries to build the application
         var app = builder.Build();

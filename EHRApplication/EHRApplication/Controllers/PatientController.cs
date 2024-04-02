@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
@@ -82,7 +83,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public async Task<IActionResult> Index(PatientDemographic patient)
         {
             // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
@@ -95,6 +96,13 @@ namespace EHRApplication.Controllers
             // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
+                return View(patient);
+            }
+
+            // check if the file is too large
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 4 * 1024 * 1024)
+            {
+                ModelState.AddModelError("patientImageFile", "File size must be less than 4MB.");
                 return View(patient);
             }
 
@@ -130,7 +138,7 @@ namespace EHRApplication.Controllers
                 // save file to disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    patient.patientImageFile.CopyToAsync(stream);
+                    await patient.patientImageFile.CopyToAsync(stream);
                 }
 
                 // save filepath to pt image property
@@ -255,6 +263,7 @@ namespace EHRApplication.Controllers
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                         portalViewModel.PatientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        portalViewModel.PatientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -392,6 +401,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
                         patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
                         patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
+                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -537,7 +547,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
+        public IActionResult UpdatePatientActiveStatus(int mhn, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
@@ -585,6 +595,23 @@ namespace EHRApplication.Controllers
 
                 try
                 {
+                    // get patient image file name
+                    string getImageSql = "SELECT patientImage FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    string patientImageFileName = string.Empty;
+
+                    using (SqlCommand getImageCmd = new SqlCommand(getImageSql, connection, transaction))
+                    {
+                        getImageCmd.Parameters.AddWithValue("@mhn", mhn);
+                        using (var reader = getImageCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // check if db value is null before assigning
+                                patientImageFileName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                            }
+                        }
+                    }
+
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
 
@@ -630,6 +657,16 @@ namespace EHRApplication.Controllers
                         {
                             throw new Exception("Patient with MHN " + mhn + " not found.");
                         }
+                    }
+
+                    // delete the patient image file if it exists
+                    var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var imageFilePath = Path.Combine(imageDirectory, patientImageFileName);
+
+                    // check if file exists before deleting
+                    if (System.IO.File.Exists(imageFilePath))
+                    {
+                        System.IO.File.Delete(imageFilePath);
                     }
 
                     // If everything went well, commit the transaction
@@ -760,5 +797,109 @@ namespace EHRApplication.Controllers
             return View("PatientSearchResults", searchResults);
         }
 
+
+        public IActionResult PatientAlerts(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            // List to hold the patient's list of allergies.
+            List<Alerts> alerts = new List<Alerts>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        Alerts alert = new Alerts();
+
+                        // Populate the alert object with data from the database.
+                        alert.alertId = dataReader.GetInt32("alertId");
+                        alert.alertName = dataReader.GetString("alertName");
+                        alert.startDate = dataReader.GetDateTime("startDate");
+
+                        alert.endDate = dataReader.GetDateTime("endDate");
+                        alert.activeStatus = dataReader.GetString("activeStatus");
+
+                        // If the alert should be inactive.
+                        if(alert.activeStatus == "Active" && alert.endDate < DateTime.Now)
+                        {
+                            // Call function that updates the alert status to be inactive.
+                            if (SetAlertInactive(alert.alertId))
+                            {
+                                // Set active status to inactive here since we just changed it in the database.
+                                alert.activeStatus = "Inactive";
+                            }
+                            else
+                            {
+                                // Set an error message
+                                // TODO: should log it here.
+                            }
+                        }
+
+                        // Add the alert to the list
+                        alerts.Add(alert);
+                    }
+                }
+
+                // Order the list by start date newest to oldest.
+                viewModel.Alerts = alerts.OrderByDescending(a => a.startDate).ToList();
+
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+
+                connection.Close();
+            }
+
+            return View(viewModel);
+        }
+
+        public bool SetAlertInactive(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'Inactive' WHERE alertId = @id";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@id", id);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return true;
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return false;
+                }
+            }
+
+        }
     }
 }
