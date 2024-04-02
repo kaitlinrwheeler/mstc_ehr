@@ -750,7 +750,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters " +
+                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse " +
                     "FROM [dbo].[Vitals] WHERE visitId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -770,7 +770,7 @@ namespace EHRApplication.Services
                         vitals.patients = GetPatientByMHN(vitals.patientId);
                         vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
                         vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
-                        vitals.bloodPressure = Convert.ToInt32(dataReader["bloodPressure"]);
+                        vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
                         vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
                         vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
 
@@ -779,6 +779,7 @@ namespace EHRApplication.Services
                         vitals.BMI = Convert.ToInt32(dataReader["BMI"]);
                         vitals.intakeMilliLiters = Convert.ToInt32(dataReader["intakeMilliLiters"]);
                         vitals.outputMilliLiters = Convert.ToInt32(dataReader["outputMilliLiters"]);
+                        vitals.pulse = Convert.ToInt32(dataReader["pulse"]);
                     }
                 }
 
