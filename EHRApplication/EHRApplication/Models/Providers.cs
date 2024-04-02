@@ -12,5 +12,7 @@ namespace EHRApplication.Models
         public string lastName { get; set; }
 
         public string specialty { get; set; }
+
+        public bool active { get; set; }
     }
 }

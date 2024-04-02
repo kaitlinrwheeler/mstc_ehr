@@ -41,25 +41,22 @@
                                 <td>@provider.specialty</td>
                                 <td>
                                     <div class="form-check form-switch">
-                                        @*
-                                            // need to configure active status and css
-                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
                                         
-                                            // Need to add active status to db for providers
-                                            //<label class="form-check-label" for="switch@patient.MHN">@(provider.Active ? "Yes" : "No")</label>
-                                        *@
+                                            @* // need to configure active status and css *@
+                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@provider.providerId" data-providerId="@provider.providerId" @(provider.active ? "checked" : "")>
+                                        
+                                            @* // Need to add active status to db for providers *@
+                                            <label class="form-check-label" for="switch@provider.providerId">@(provider.active ? "Yes" : "No")</label>
+                                       
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="btn-group" role="group">
-                                        @* // won't need delete, but need to configure edit'
-                                            <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
-                                            <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                            <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
-                                                <i class="fa-solid fa-trash me-2"></i>Delete
-                                            </button>
-                                        </form> *@
+                                        @* // won't need delete, but need to configure edit' *@
+                                            <form method="post" asp-controller="Providers" asp-action="EditProvider" asp-route-providerId="@provider.providerId" id="editForm-@provider.providerId">
+                                                <a type="button" class="btn blue-button" asp-controller="Providers" asp-action="EditProvider" asp-route-mhn="@provider.providerId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                            </form>
                                     </div>
                                 </td>
                             </tr>
