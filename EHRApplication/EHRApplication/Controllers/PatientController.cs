@@ -753,7 +753,7 @@ namespace EHRApplication.Controllers
             {
                 "Asian",
                 "American Indian or Alaska Native",
-                "black or African American",
+                "Black or African American",
                 "White"
             };
             // Remove the specified races from the race field
@@ -779,7 +779,9 @@ namespace EHRApplication.Controllers
             {
                 //Setting the other race if there was an input entered using the other race input
                 viewModel.PatientDemographic.OtherRace = otherRace;
-                viewModel.PatientDemographic.race += "Other";
+                //removes data from the race.
+                viewModel.PatientDemographic.race = string.Join(",", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
+                viewModel.PatientDemographic.race += ",Other";
             }
 
             ViewBag.Patient = viewModel.PatientDemographic;
