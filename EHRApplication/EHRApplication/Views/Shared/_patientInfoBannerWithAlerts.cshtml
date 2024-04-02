@@ -13,11 +13,11 @@
                 <div class="col d-flex align-items-center">
                     @if (string.IsNullOrEmpty(@Model.PatientDemographic.patientImage))
                     {
-                        <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
+                        <img src="~/images/blank-profile-picture.png" class="img-fluid rounded-circle me-3" style="max-width: 60px" alt="Patient Image">
                     }
                     else
                     {
-                        <img src="~/images/@Model.PatientDemographic.patientImage" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
+                        <img src="~/images/@Model.PatientDemographic.patientImage" class="img-fluid rounded-circle me-3" style="max-width: 60px" alt="Patient Image">
                     }
 
                     <div class="">
@@ -44,5 +44,11 @@
         </div>
     </div>
     <!-- End Patient Info Banner -->
+    <!-- Alert bar -->
+    <div class="alert-bar d-flex align-items-center justify-content-center" onclick="window.location.href='@Url.Action("PatientAlerts", "Patient", new { mhn = mhn })'">
+        <i class="fa-solid fa-triangle-exclamation me-1"></i>
+        <p class="mb-0">Alerts</p>
+    </div>
+    <!-- End alert bar -->
 </div>
 <!-- /Patient banner wrapper -->

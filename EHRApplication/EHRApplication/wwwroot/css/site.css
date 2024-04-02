@@ -349,6 +349,11 @@ main {
     width: 100%;
 }
 
+#patient-info-banner {
+    border-bottom: ridge;
+    border-width: 2px
+}
+
 .bg-red {
     color: var(--offwhite);
     background-color: var(--red);
@@ -374,7 +379,6 @@ main {
     cursor: pointer;
     height: 22px;
     font-size: 14px;
-    border-top: ridge;
     border-bottom: ridge;
     border-width: 2px
 }
