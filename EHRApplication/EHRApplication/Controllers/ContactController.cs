@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -71,5 +72,27 @@ namespace EHRApplication.Controllers
             ModelState.Clear();
             return View();
         }
+
+        [HttpGet]
+        public IActionResult EditContact(int mhn)
+        {
+            PortalViewModel portalViewModel = new PortalViewModel();
+
+            // Gets patient contact object
+            portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(mhn);
+
+            ViewBag.Patient = portalViewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(portalViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditContact(PatientContact contact)
+        {
+            return null;
+        }
+
+
     }
 }
