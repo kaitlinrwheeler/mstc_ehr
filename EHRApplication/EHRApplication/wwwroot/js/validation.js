@@ -339,6 +339,22 @@ function validateImage(inputID, errorSpanID) {
     return valid;
 }
 
+// Check the initial state of the dropdown and checkbox upon page load
+window.addEventListener('DOMContentLoaded', (event) => {
+    // Check dropdown for 'Other' option
+    if (document.getElementById('Pronouns').value === 'Other') {
+        dropdownOtherOption('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun');
+    }
+    if (document.getElementById('Gender').value == 'Other') {
+        dropdownOtherOption('Gender', 'OtherGender', 'OtherGenderError', 'gender');
+    }
+
+    // Check checkbox for 'OtherRace' checked state
+    if (document.getElementById('OtherRace').checked) {
+        otherRaceInput();
+    }
+});
+
 function dropdownOtherOption(dropdownId, textFieldId, errorSpanId, inputType) {
     var selectedValue = document.getElementById(dropdownId).value;
     var textField = document.getElementById(textFieldId);
