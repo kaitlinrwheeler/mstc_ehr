@@ -730,6 +730,8 @@ namespace EHRApplication.Services
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         patientDemographic.ContactId = GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
                         patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
