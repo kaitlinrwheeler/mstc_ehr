@@ -13,6 +13,7 @@ namespace EHRApplication.ViewModels
         public List<LabTestProfile> LabTests { get; set; }
         public List<MedAdministrationHistory> MedAdministrationHistories { get; set; }
         public List<MedicationProfile> Medications { get; set; }
+        public MedicationProfile MedicationProfile { get; set; }
         public List<MedOrders> MedOrders { get; set; }
         public List<PatientAllergies> PatientAllergies { get; set; }
         public List<PatientContact> PatientContacts { get; set; }

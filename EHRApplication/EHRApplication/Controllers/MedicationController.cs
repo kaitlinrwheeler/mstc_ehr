@@ -268,12 +268,15 @@ namespace EHRApplication.Controllers
             {
                 _listService.InsertIntoMedProfile(medProfile);
             }
-            return View();
+            return RedirectToAction("AllMedications");
         }
 
         public IActionResult EditMedication(int medId)
         {
-            return View();
+
+            MedicationProfile medProfile= _listService.GetMedicationProfileByMedId(medId);
+
+            return View(medProfile);
         }
 
         [HttpPost]
@@ -291,7 +294,7 @@ namespace EHRApplication.Controllers
             {
                 _listService.UpdateMedProfile(medProfile);
             }
-            return View();
+            return RedirectToAction("AllMedications");
         }
     }
 }
