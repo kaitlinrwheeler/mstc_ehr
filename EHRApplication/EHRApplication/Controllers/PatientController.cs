@@ -156,7 +156,7 @@ namespace EHRApplication.Controllers
                 patient.raceList.Add(patient.OtherRace);
             }
 
-            patient.race = string.Join(",", patient.raceList);
+            patient.race = string.Join(", ", patient.raceList);
 
             // process preferred pronouns selection
             if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
@@ -783,7 +783,7 @@ namespace EHRApplication.Controllers
                 //Setting the other race if there was an input entered using the other race input
                 viewModel.PatientDemographic.OtherRace = otherRace;
                 //removes data from the race.
-                viewModel.PatientDemographic.race = string.Join(",", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
+                viewModel.PatientDemographic.race = string.Join(", ", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
                 viewModel.PatientDemographic.race += ",Other";
             }
 
@@ -807,7 +807,7 @@ namespace EHRApplication.Controllers
             {
                 if (!patient.raceList.IsNullOrEmpty())
                 {
-                    patient.race = string.Join(",", patient.raceList);
+                    patient.race = string.Join(", ", patient.raceList);
                 }
                 return View(patient);
             }
@@ -860,7 +860,7 @@ namespace EHRApplication.Controllers
                 patient.raceList.Add(patient.OtherRace);
             }
             
-            patient.race = string.Join(",", patient.raceList);
+            patient.race = string.Join(", ", patient.raceList);
 
             // process preferred pronouns selection
             if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
