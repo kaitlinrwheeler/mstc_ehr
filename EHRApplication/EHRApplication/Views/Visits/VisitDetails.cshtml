@@ -4,6 +4,14 @@
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
     var visit = Model.VisitDetails;
+    var labOrders = Model.LabOrdersDetails;
+    var medOrders = Model.MedOrdersDetails;
+    var labResults = Model.LabResultsDetails;
+    var carePlan = Model.CarePlansDetails;
+    var patientNotes = Model.PatientNotesDetails;
+    var patientProblems = Model.PatientProblemsDetails;
+    var medHistory = Model.MedAdministrationHistoriesDetails;
+    var vitals = Model.VitalsDetails;
 }
 
 <section class="my-5 w-75 m-auto">
@@ -40,123 +48,398 @@
                 <h1 class="text-center display-6">No Visit data found.</h1>
             }
         </div>
-@* This is commented so we don't show code that is hard coded. eventually this will show different data from multiple tables
 
 
             <!-- Two containers side by side -->
             <div class="row mt-4" data-bs-theme="auto">
 
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Notes
+                <!--This will display the lab orders if ther is one associated with the visit.-->
+                @if(labOrders.visitsId != 0)
+                {
+                    <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="h4 card-header text-center" data-bs-theme="auto">
+                                    Lab Orders
+                                </div>
+                                <div class="card-body" data-bs-theme="auto">                           
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Order Date:</th>
+                                                <td>@labOrders.orderDate.ToString("MM-dd-yyyy")</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Order Time:</th>
+                                                <td>@labOrders.orderTime.ToString("HH:mm")</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Test:</th>
+                                                <td>@labOrders.labTests.testName</td>
+                                            </tr>
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Status:</th>
+                                                <td>@labOrders.completionStatus</td>
+                                            </tr>     
+                                            <tr class="hover-highlighting">
+                                                <th scope="row">Ordered By:</th>
+                                                <td>@labOrders.providers.firstName @labOrders.providers.lastName</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                
+                }
+            <!--This will display the med orders if ther is one associated with the visit.-->
+            @if(medOrders.visitId != 0)
+                {
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Med Order
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Medication:</th>
+                                            <td>@medOrders.medProfile.medName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">frequency:</th>
+                                            <td>@medOrders.frequency</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">fulfillmentStatus:</th>
+                                            <td>@medOrders.fulfillmentStatus</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Ordered By:</th>
+                                            <td>@medOrders.providers.firstName @medOrders.providers.lastName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Date Ordered:</th>
+                                            <td>@medOrders.orderDate.ToString("MM-dd-yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Time Ordered:</th>
+                                            <td>@medOrders.orderTime.ToString("HH:mm")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>                
+                }
+            <!--This will display the lab results if ther is one associated with the visit.-->
+            @if(labResults.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Lab Results
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Test:</th>
+                                            <td>@labResults.labTests.testName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Result:</th>
+                                            <td>@labResults.resultValue</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Units:</th>
+                                            <td>@labResults.labTests.units</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Abnormal Flag:</th>
+                                            <td style='background-color: @(labResults.abnormalFlag == "High" ? "yellow" : "unset"); color: @(labResults.abnormalFlag == "High" ? "black" : "inherit")'>
+                                                @if (labResults.abnormalFlag == "High")
+                                                {
+                                                    <span>
+                                                        <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                                    </span>
+                                                }
+                                                @labResults.abnormalFlag
+                                            </td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Ordered By:</th>
+                                            <td>@labResults.providers.firstName @labResults.providers.lastName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Date Ordered:</th>
+                                            <td>@labResults.date.ToString("MM-dd-yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Time Ordered:</th>
+                                            <td>@labResults.time.ToString("HH:mm")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+            <!--This will display the patient notes if ther is one associated with the visit.-->
+            @if(patientNotes.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Patient Notes
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Occurred On:</th>
+                                            <td>@patientNotes.occurredOn.ToString("MM-dd-yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Created At:</th>
+                                            <td>@patientNotes.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Created By:</th>
+                                            <td>@patientNotes.providers.firstName @patientNotes.providers.lastName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Provider:</th>
+                                            <td>@patientNotes.assocProvider.firstName @patientNotes.assocProvider.lastName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Category:</th>
+                                            <td>@patientNotes.category</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Note:</th>
+                                            <td>@patientNotes.Note</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            <!--This will display the patient problems if ther is one associated with the visit.-->
+            @if(patientProblems.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Patient Problems
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Priority:</th>
+                                            <td style='background-color: @(patientProblems.priority == "High" ? "yellow" : "unset"); color: @(patientProblems.priority == "High" ? "black" : "inherit")'>
+                                                @if (patientProblems.priority == "High")
+                                                {
+                                                    <span>
+                                                        <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                                    </span>
+                                                }
+                                                @patientProblems.priority
+                                            </td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Description:</th>
+                                            <td>@patientProblems.description</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">ICD_10:</th>
+                                            <td>@patientProblems.ICD_10</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Immediacy:</th>
+                                            <td>@patientProblems.immediacy</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Created On:</th>
+                                            <td>@patientProblems.createdAt.ToString("MM-dd-yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Created By:</th>
+                                            <td>@patientProblems.providers.firstName @patientProblems.providers.lastName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Active:</th>
+                                            <td>@(patientProblems.active ? "Yes" : "No")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            <!--This will display the care plan if ther is one associated with the visit.-->
+            @if(carePlan.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Care Plan
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Priority:</th>
+                                            <td style='background-color: @(carePlan.priority == "High" ? "yellow" : "unset"); color: @(carePlan.priority == "High" ? "black" : "inherit")'>
+                                                @if (carePlan.priority == "High")
+                                                {
+                                                    <span>
+                                                        <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                                    </span>
+                                                }
+                                                @carePlan.priority
+                                            </td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Status:</th>
+                                            <td>@carePlan.activeStatus</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Title:</th>
+                                            <td>@carePlan.title</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Diagnosis:</th>
+                                            <td>@carePlan.diagnosis</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Start Date:</th>
+                                            <td>@carePlan.startDate.ToString("MM/dd/yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">End Date:</th>
+                                            <td>@carePlan.endDate.ToString("MM/dd/yyyy")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            <!--This will display the med history if ther is one associated with the visit.-->
+            @if(medHistory.visitsId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                PatientMed History
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Med Name:</th>
+                                            <td>@medHistory.medProfile.medName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Date Given:</th>
+                                            <td>@medHistory.dateGiven.ToString("MM-dd-yyyy")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Time Given:</th>
+                                            <td>@medHistory.timeGiven.ToString("HH:mm")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Category:</th>
+                                            <td>@medHistory.category</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">status:</th>
+                                            <td>@medHistory.status</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Frequency:</th>
+                                            <td>@medHistory.frequency</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Administered By:</th>
+                                            <td>@medHistory.providers.firstName @medHistory.providers.lastName</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            <!--This will display the vitals if ther is one associated with the visit.-->
+            @if(vitals.visitId != 0)
+                {                
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="h4 card-header text-center" data-bs-theme="auto">
+                                Vitals
+                            </div>
+                            <div class="card-body" data-bs-theme="auto">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Date/Time</th>
+                                            <td>@vitals.visits.date.ToString("MM-dd-yyyy") @vitals.visits.time.ToString("HH:mm")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Temperature:</th>
+                                            <td>@vitals.temperature.ToString("F1") °F</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Pulse:</th>
+                                            <td>@vitals.pulse</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Respiratory Rate:</th>
+                                            <td>@vitals.respiratoryRate</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Pulse Oximetry:</th>
+                                            <td>@vitals.pulseOximetry%</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Blood Pressure:</th>
+                                            <td>@vitals.bloodPressure</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Pain Level:</th>
+                                            <td>@vitals.painLevel</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Height:</th>
+                                            <td>@vitals.heightInches.ToString("F1") in</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Weight:</th>
+                                            <td>@vitals.weightPounds.ToString("F1") lb</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">BMI:</th>
+                                            <td>@vitals.BMI.ToString("F2")</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Intake:</th>
+                                            <td>@vitals.intakeMilliLiters ml</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="col">Output:</th>
+                                            <td>@vitals.outputMilliLiters ml</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
 
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Med Orders
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Lab Orders
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Lab Results
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="h4 card-header text-center" data-bs-theme="auto">
-                            Patient Lab Results
-                        </div>
-                        <div class="card-body" data-bs-theme="auto">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                    <tr class="hover-highlighting">
-                                        <th scope="row">Example:</th>
-                                        <td>Example</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-
-        *@
     </div>
 </section>

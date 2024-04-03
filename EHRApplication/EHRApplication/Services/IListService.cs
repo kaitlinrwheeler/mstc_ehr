@@ -35,6 +35,22 @@ namespace EHRApplication.Services
 
         Visits GetVisitByVisitId(int visitId);
 
+        Vitals GetVitalsByVisitId(int visitId);
+
+        LabResults GetLabResultsByVisitId(int visitId);
+
+        LabOrders GetLabOrdersByVisitId(int visitId);
+
+        MedOrders GetMedOrdersByVisitId(int visitId);
+
+        PatientNotes GetPatientNotesByVisitId(int visistId);
+
+        PatientProblems GetPatientProblemsByVisitId(int visitId);
+
+        CarePlan GetCarePlanByVisitId(int visitId);
+
+        MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
+
         void InsertIntoMedProfile(MedicationProfile medProfile);
         void UpdateMedProfile(MedicationProfile medProfile);
     }

@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Services
 {
@@ -729,6 +730,9 @@ namespace EHRApplication.Services
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         patientDemographic.ContactId = GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
+                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -786,6 +790,385 @@ namespace EHRApplication.Services
                 }
             }
             return;
+        }
+
+        public Vitals GetVitalsByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            Vitals vitals = new Vitals();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse " +
+                    "FROM [dbo].[Vitals] WHERE visitId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        vitals.vitalsId = Convert.ToInt32(dataReader["vitalsId"]);
+                        vitals.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        vitals.visits = GetVisitByVisitId(vitals.visitId);
+                        
+                        vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
+                        vitals.patients = GetPatientByMHN(vitals.patientId);
+                        vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
+                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
+                        vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
+                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+
+                        vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
+                        vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
+                        vitals.BMI = Convert.ToInt32(dataReader["BMI"]);
+                        vitals.intakeMilliLiters = Convert.ToInt32(dataReader["intakeMilliLiters"]);
+                        vitals.outputMilliLiters = Convert.ToInt32(dataReader["outputMilliLiters"]);
+                        vitals.pulse = Convert.ToInt32(dataReader["pulse"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return vitals;
+        }
+
+        public LabResults GetLabResultsByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            LabResults labResults = new LabResults();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT labId, MHN, visitsId, testId, resultValue, abnormalFlag, orderedBy, date, time " +
+                    "FROM [dbo].[LabResults] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        labResults.labId = Convert.ToInt32(dataReader["labId"]);
+                        labResults.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        labResults.patients = GetPatientByMHN(labResults.MHN);
+
+                        labResults.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //labResults.visits = GetVisitByVisitId(labResults.visitsId);
+
+                        labResults.testId = Convert.ToInt32(dataReader["testId"]);
+                        labResults.labTests = GetLabTestByTestId(labResults.testId);
+
+                        labResults.resultValue = Convert.ToString(dataReader["resultValue"]);
+                        labResults.abnormalFlag = Convert.ToString(dataReader["abnormalFlag"]);
+                        labResults.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        labResults.providers = GetProvidersByProviderId(labResults.orderedBy);
+                        DateTime date = DateTime.Parse(dataReader["date"].ToString());
+                        labResults.date = new DateOnly(date.Year, date.Month, date.Day);
+                        labResults.time = TimeOnly.Parse(dataReader["time"].ToString());
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return labResults;
+        }
+
+        public LabOrders GetLabOrdersByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            LabOrders labOrders = new LabOrders();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT orderId, MHN, testId, visitsId, completionStatus, orderDate, orderTime, orderedBy " +
+                    "FROM [dbo].[LabOrders] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        labOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
+                        labOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        labOrders.patients = GetPatientByMHN(labOrders.MHN);
+
+                        labOrders.testId = Convert.ToInt32(dataReader["testId"]);
+                        labOrders.labTests = GetLabTestByTestId(labOrders.testId);
+
+                        labOrders.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //labResults.visits = GetVisitByVisitId(labResults.visitsId);
+
+                        labOrders.completionStatus = Convert.ToString(dataReader["completionStatus"]);
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        labOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
+                        labOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
+                        labOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        labOrders.providers = GetProvidersByProviderId(labOrders.orderedBy);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return labOrders;
+        }
+
+        public MedOrders GetMedOrdersByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            MedOrders medOrders = new MedOrders();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
+                    "FROM [dbo].[MedOrders] WHERE visitId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        medOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
+                        medOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        medOrders.patients = GetPatientByMHN(medOrders.MHN);
+
+                        medOrders.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        //medOrders.visits = GetVisitByVisitId(medOrders.visitId);
+
+                        medOrders.medId = Convert.ToInt32(dataReader["medId"]);
+                        medOrders.medProfile = GetMedicationProfileByMedId(medOrders.medId);
+
+                        medOrders.frequency = Convert.ToString(dataReader["frequency"]);
+                        medOrders.fulfillmentStatus = Convert.ToString(dataReader["fulfillmentStatus"]);
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        medOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
+                        medOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
+                        medOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        medOrders.providers = GetProvidersByProviderId(medOrders.orderedBy);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return medOrders;
+        }
+
+        public PatientNotes GetPatientNotesByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            PatientNotes patientNotes = new PatientNotes();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                    
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT patientNotesId, MHN, Note, occurredOn, createdAt, createdBy, associatedProvider, updatedAt, category, visitsId " +
+                    "FROM [dbo].[PatientNotes] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        patientNotes.patientNotesId = Convert.ToInt32(dataReader["patientNotesId"]);
+                        patientNotes.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientNotes.patients = GetPatientByMHN(patientNotes.MHN);
+
+                        patientNotes.Note = Convert.ToString(dataReader["Note"]);
+                        DateTime date = DateTime.Parse(dataReader["occurredOn"].ToString());
+                        patientNotes.occurredOn = new DateOnly(date.Year, date.Month, date.Day);
+                        patientNotes.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
+                        patientNotes.createdBy = Convert.ToInt32(dataReader["createdBy"]);
+                        patientNotes.providers = GetProvidersByProviderId(patientNotes.createdBy);
+
+                        patientNotes.associatedProvider = Convert.ToInt32(dataReader["associatedProvider"]);
+                        patientNotes.assocProvider = GetProvidersByProviderId(patientNotes.associatedProvider);
+                        patientNotes.updatedAt = DateTime.Parse(dataReader["updatedAt"].ToString());
+                        patientNotes.category = Convert.ToString(dataReader["category"]);
+                        patientNotes.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //patientNotes.visits = GetVisitByVisitId(patientNotes.visitsId);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientNotes;
+        }
+
+        public PatientProblems GetPatientProblemsByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            PatientProblems patientProblems = new PatientProblems();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy active, visitsId " +
+                    "FROM [dbo].[PatientProblems] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        patientProblems.patientProblemsId = Convert.ToInt32(dataReader["patientProblemsId"]);
+                        patientProblems.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientProblems.patients = GetPatientByMHN(patientProblems.MHN);
+
+                        patientProblems.priority = Convert.ToString(dataReader["priority"]);
+                        patientProblems.description = Convert.ToString(dataReader["description"]);
+                        patientProblems.ICD_10 = Convert.ToString(dataReader["ICD_10"]);
+                        patientProblems.immediacy = Convert.ToString(dataReader["immediacy"]);
+                        patientProblems.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
+                        patientProblems.createdBy = Convert.ToInt32(dataReader["createdBy"]);
+                        patientProblems.providers = GetProvidersByProviderId(patientProblems.createdBy);
+
+                        patientProblems.active = Convert.ToBoolean(dataReader["active"]);
+                        patientProblems.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //patientProblems.visits = GetVisitByVisitId(patientProblems.visitsId);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return patientProblems;
+        }
+
+        public CarePlan GetCarePlanByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            CarePlan carePlan = new CarePlan();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT CPId, MHN, priority, startDate, endDate, activeStatus, title, diagnosis " +
+                    "FROM [dbo].[CarePlan] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        carePlan.CPId = Convert.ToInt32(dataReader["CPId"]);
+                        carePlan.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        carePlan.patients = GetPatientByMHN(carePlan.MHN);
+
+                        carePlan.priority = Convert.ToString(dataReader["priority"]);
+                        carePlan.startDate = DateTime.Parse(dataReader["startDate"].ToString());
+                        carePlan.endDate = DateTime.Parse(dataReader["endDate"].ToString());
+                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
+                        carePlan.title = Convert.ToString(dataReader["title"]);
+                        carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
+
+                        carePlan.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //carePlan.visits = GetVisitByVisitId(carePlan.visitsId);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return carePlan;
+        }
+
+        public MedAdministrationHistory GetMedHistoryByVisitId(int visitId)
+        {
+            //Creating a new patientDemographic instance
+            MedAdministrationHistory medHistory = new MedAdministrationHistory();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT administrationId, MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId " +
+                    "FROM [dbo].[MedAdministrationHistory] WHERE visitsId = @visitId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        medHistory.administrationId = Convert.ToInt32(dataReader["administrationId"]);
+                        medHistory.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        medHistory.patients = GetPatientByMHN(medHistory.MHN);
+
+                        medHistory.category = Convert.ToString(dataReader["category"]);
+                        medHistory.medId = Convert.ToInt32(dataReader["medId"]);
+                        medHistory.medProfile = GetMedicationProfileByMedId(medHistory.medId);
+                        medHistory.status = Convert.ToString(dataReader["status"]);
+                        medHistory.frequency = Convert.ToString(dataReader["frequency"]);
+
+                        DateTime date = DateTime.Parse(dataReader["dateGiven"].ToString());
+                        medHistory.dateGiven = new DateOnly(date.Year, date.Month, date.Day);
+                        medHistory.timeGiven = TimeOnly.Parse(dataReader["timeGiven"].ToString());
+
+                        medHistory.administeredBy = Convert.ToInt32(dataReader["administeredBy"]);
+                        medHistory.providers = GetProvidersByProviderId(medHistory.administrationId);
+
+                        medHistory.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        //medHistory.visits = GetVisitByVisitId(medHistory.visitsId);
+                    }
+                }
+
+                connection.Close();
+            }
+            return medHistory;
         }
     }
 }
