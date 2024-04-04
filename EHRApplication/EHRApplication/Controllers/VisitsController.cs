@@ -46,5 +46,45 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult PatientVisits(int mhn)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+
+            // New list to hold all the patients in the database.
+            List<Visits> patientVisits = _listService.GetPatientVisitsByMHN(mhn);
+
+            viewModel.Visits = patientVisits;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        public IActionResult CreateVisitForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateVisitForm(Visits visit)
+        {
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(visit);
+            }
+
+            return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+        }
     }
 }
