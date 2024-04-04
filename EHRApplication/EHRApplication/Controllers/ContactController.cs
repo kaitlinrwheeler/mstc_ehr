@@ -91,8 +91,6 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditContact(PatientContact contact)
         {
-
-
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
