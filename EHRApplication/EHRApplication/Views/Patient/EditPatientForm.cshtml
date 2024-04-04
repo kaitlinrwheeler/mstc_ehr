@@ -1,0 +1,247 @@
+﻿@inject EHRApplication.Services.IListService ListService
+    @model EHRApplication.ViewModels.PortalViewModel
+@{
+    var patient = Model.PatientDemographic;
+    ViewData["Title"] = "myEHR | Edit Patient";
+    <link rel="stylesheet" href="~/css/forms.css">
+    <script src="~/js/validation.js"></script>
+    <script src="~/js/confirmModal.js"defer></script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Edit Patient</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="patientForm" enctype="multipart/form-data">
+
+            <input asp-for="@patient.MHN" value="@patient.MHN" hidden/>
+            <!-- First Name -->
+            <div class="form-group">
+                <label asp-for="@patient.firstName">First Name:</label>
+                <input asp-for="@patient.firstName" type="text" id="FirstName" class="form-control" value="@patient.firstName" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
+                <span asp-validation-for="@patient." id="FirstNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Middle Name -->
+            <div class="form-group">
+                <label asp-for="@patient.middleName">Middle Name (if applicable):</label>
+                <input asp-for="@patient.middleName" type="text" id="MiddleName" class="form-control" value="@patient.middleName" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 25, 'middle name')" />
+                <span asp-validation-for="@patient.middleName" id="MiddleNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label asp-for="@patient.lastName">Last Name:</label>
+                <input asp-for="@patient.lastName" type="text" id="LastName" class="form-control" value="@patient.lastName" data-bs-theme="auto" onblur="validateRequiredTextInput('LastName', 25,'last name')" />
+                <span asp-validation-for="@patient.lastName" id="LastNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Suffix -->
+            <div class="form-group">
+                <label asp-for="@patient.suffix">Suffix (if applicable):</label>
+                <input asp-for="@patient.suffix" type="text" id="Suffix" class="form-control" value="@patient.suffix" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 20,  'suffix')" />
+                <span asp-validation-for="@patient.suffix" id="SuffixError" class="validation-msg"></span>
+            </div>
+
+            <!-- Previous Name -->
+            <div class="form-group">
+                <label asp-for="@patient.previousName">Previous Name (if applicable):</label>
+                <input asp-for="@patient.previousName" type="text" id="PreviousName" class="form-control" value="@patient.previousName" data-bs-theme="auto" onblur="validateOptionalTextInput('PreviousName', 60,  'previous name')" />
+                <span asp-validation-for="@patient.previousName" id="PreviousNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="form-group">
+                <label asp-for="@patient.DOB">Date of Birth:</label>
+                <input asp-for="@patient.DOB" type="date" id="DOB" class="form-control" value="@patient.DOB.ToString("yyyy-MM-dd")" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" required />
+                <span asp-validation-for="@patient.DOB" id="DOBError" class="validation-msg"></span>
+            </div>
+
+            <!-- Primary Physician -->
+            <div class="form-group">
+                <label asp-for="@patient.primaryPhysician">Primary Physician:</label>
+                <select id="primaryPhysician" class="form-control" asp-for="@patient.primaryPhysician" data-bs-theme="auto">
+                    <option value=""></option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="@patient.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
+
+            <!-- Legal Guardian 1 -->
+            <div class="form-group">
+                <label asp-for="@patient.legalGuardian1">Legal Guardian 1 (if applicable):</label>
+                <input asp-for="@patient.legalGuardian1" type="text" id="LegalGuardian1" class="form-control" value="@patient.legalGuardian1" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian1', 100, 'legal guardian')" />
+                <span asp-validation-for="@patient.legalGuardian1" id="LegalGuardian1Error" class="validation-msg"></span>
+            </div>
+
+            <!-- Legal Guardian 2 -->
+            <div class="form-group">
+                <label asp-for="@patient.legalGuardian2">Legal Guardian 2 (if applicable):</label>
+                <input asp-for="@patient.legalGuardian2" type="text" id="LegalGuardian2" class="form-control" value="@patient.legalGuardian2" data-bs-theme="auto" onblur="validateOptionalTextInput('LegalGuardian2', 100, 'legal guardian')" />
+                <span asp-validation-for="@patient.legalGuardian2" id="LegalGuardian2Error" class="validation-msg"></span>
+            </div>
+
+            <!-- Religion -->
+            <div class="form-group">
+                <label asp-for="@patient.religion">Religion (optional):</label>
+                <input asp-for="@patient.religion" type="text" id="Religion" class="form-control" value="@patient.religion" data-bs-theme="auto" onblur="validateOptionalTextInput('Religion', 100,  'religion')" />
+                <span asp-validation-for="@patient.religion" id="ReligionError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@patient.preferredPronouns">Preferred Pronouns:</label>
+                <select asp-for="@patient.preferredPronouns" id="Pronouns" class="form-control" data-bs-theme="auto" required onchange="dropdownOtherOption('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun')">
+                    <option value=""></option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="She/Her">She/Her</option>
+                    <option value="They/Them">They/Them</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input asp-for="@patient.OtherPronouns" type="text" id="OtherPronouns" class="form-control" style="display: none;" data-bs-theme="auto" />
+                <span asp-validation-for="@patient.OtherPronouns" id="OtherPronounsError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@patient.gender">Gender:</label>
+                <select asp-for="@patient.gender" id="Gender" class="form-control" data-bs-theme="auto" required onchange="dropdownOtherOption('Gender', 'OtherGender', 'OtherGenderError', 'gender')">
+                    <option value=""></option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input asp-for="@patient.OtherGender" type="text" id="OtherGender" class="form-control" style="display: none;" data-bs-theme="auto" />
+                <span asp-validation-for="@patient.OtherGender" id="OtherGenderError" class="validation-msg"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="@patient.genderAssignedAtBirth">Gender assigned at birth:</label>
+                <select asp-for="@patient.genderAssignedAtBirth" id="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Intersex">Intersex</option>
+                </select>
+                <span asp-validation-for="@patient.genderAssignedAtBirth" id="GenderAssignedAtBirthError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@patient.preferredLanguage">Preferred Language:</label>
+                <select asp-for="@patient.preferredLanguage" id="PreferredLanguage" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="English">English</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Bengali">Bengali</option>
+                    <option value="Dutch">Dutch</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Hmong">Hmong</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Mandarin">Mandarin</option>
+                    <option value="Portuguese">Portuguese</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Spanish">Spanish</option>
+                </select>
+                <span asp-validation-for="@Model.PatientDemographic.preferredLanguage" id="PreferredLanguageError" class="validation-msg"></span>
+            </div>
+
+            <!-- Ethnicity -->
+            <div class="form-group">
+                <label asp-for="@patient.ethnicity">Is the patient of Hispanic, Latino, or Spanish origin?</label>
+                <div class="col-sm-6 ms-4">
+                    <div class="race-column">
+                        <input type="radio" id="Yes" value="Hispanic" name="patient.ethnicity" @(@patient.ethnicity == "Hispanic" ? "checked" : "") />
+                        <label for="Yes" style="font-weight: normal;">Yes</label><br />
+                        <input type="radio" id="No" value="Non-Hispanic" name="patient.ethnicity" @(@patient.ethnicity == "Non-Hispanic" ? "checked" : "") />
+                        <label for="No" style="font-weight: normal;">No</label><br />
+                        <input type="radio" id="Unknown" value="Unknown" name="patient.ethnicity" @(@patient.ethnicity == "Unknown" ? "checked" : "") />
+                        <label for="Unknown" style="font-weight: normal;">Unknown</label><br />
+                    </div>
+                </div>
+                <span asp-validation-for="@patient.ethnicity" id="EthnicityError" class="validation-msg"></span>
+            </div>
+
+            <!-- Race -->
+            <div class="form-group">
+                <label asp-for="@patient.raceList" class="mb-1">Race:</label>
+                <div asp-for="@patient.raceList" id="Race" class="row text-nowrap">
+                    <div class="col-sm-6 ms-4">
+                        <div class="race-column">
+                            <input name="patient.raceList" type="checkbox" id="AmericanIndian" value="American Indian or Alaska Native" @(patient.race != null && patient.race.Contains("American Indian or Alaska Native") ? "checked" : "") />
+                            <label for="AmericanIndianOrAlaskaNative" style="font-weight: normal;">American Indian or Alaska Native</label><br />
+
+                            <input name="patient.raceList" type="checkbox" id="Asian" value="Asian" @(patient.race != null && patient.race.Contains("Asian") ? "checked" : "") />
+                            <label for="Asian" style="font-weight: normal;">Asian</label><br />
+
+                            <input name="patient.raceList" type="checkbox" id="Black" value="Black or African American" @(patient.race != null && patient.race.Contains("Black or African American") ? "checked" : "") />
+                            <label for="BlackOrAfricanAmerican" style="font-weight: normal;">Black or African American</label><br />
+
+                            <input name="patient.raceList" type="checkbox" id="PacificIslander" value="Native Hawaiian or Other Pacific Islander" @(patient.race != null && patient.race.Contains("Native Hawaiian or Other Pacific Islander") ? "checked" : "") />
+                            <label for="NativeHawaiianrOrOtherPacificIslander" style="font-weight: normal;">Native Hawaiian or Other Pacific Islander</label><br />
+
+                            <input name="patient.raceList" type="checkbox" id="White" value="White" @(patient.race != null && patient.race.Contains("White") ? "checked" : "") />
+                            <label for="White" style="font-weight: normal;">White</label><br />
+
+                            <input name="patient.raceList" type="checkbox" id="OtherRace" value="Other" onchange="otherRaceInput()" @(patient.race != null && patient.race.Contains("Other") ? "checked" : "") />
+                            <label for="OtherRace" style="font-weight: normal;">Other</label><br />
+                        </div>
+                    </div><br />
+                </div>
+                <span asp-validation-for="@patient.raceList" id="RaceError" class="validation-msg"></span>
+            </div>
+            <div>
+                <input asp-for="@patient.OtherRace" type="text" id="OtherRaceInput" value="@patient.OtherRace" class="form-control" style="display: none;" data-bs-theme="auto" placeholder="Please specify a race." />
+                <span asp-validation-for="@patient.OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
+            </div>
+
+            <input asp-for="@patient.patientImage" value="@patient.patientImage" hidden />
+
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button"  class="btn btn-secondary me-2" asp-controller="Patient" asp-action="AllPatients">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal"  value="Save" />
+            </div>
+
+            <!-- confirmation modal-->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save patient information?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+
