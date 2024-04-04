@@ -276,7 +276,7 @@ namespace EHRApplication.Services
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "SELECT address, city, state, zipcode, phone, email  FROM [dbo].[PatientContact] WHERE MHN = @mhn";
+                string sql = "SELECT address, city, state, zipcode, phone, email, patientContactId  FROM [dbo].[PatientContact] WHERE MHN = @mhn";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 // Replace placeholder with paramater to avoid sql injection.
@@ -286,6 +286,7 @@ namespace EHRApplication.Services
                     while (dataReader.Read())
                     {
                         //Setting the data that was just pulled from the database into an instance of the patient contact model.
+                        patientContact.patientContactId = Convert.ToInt32(dataReader["patientContactId"]);
                         patientContact.address = Convert.ToString(dataReader["address"]);
                         patientContact.city = Convert.ToString(dataReader["city"]);
                         patientContact.state = Convert.ToString(dataReader["state"]);
@@ -295,6 +296,7 @@ namespace EHRApplication.Services
                     }
                 };
                 connection.Close();
+                patientContact.MHN = mhn;
                 return patientContact;
             }
         }

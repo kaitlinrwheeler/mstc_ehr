@@ -136,10 +136,20 @@
                         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                             <div class="text-center w-100">Contact Info</div>
                             <div>
-                                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditContact" asp-route-mhn="@patient.MHN">
-                                    <i class="fa-solid fa-pen me-2"></i>
-                                    <span>Edit</span>
-                                </a>
+                                @if(patient.ContactId != null)
+                                {
+                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
+                                        <i class="fa-solid fa-pen me-2"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
+                                        <i class="fa-solid fa-plus me-2"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                }
                             </div>
                         </div>
 
