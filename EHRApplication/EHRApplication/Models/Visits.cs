@@ -19,7 +19,7 @@ namespace EHRApplication.Models
         [ValidateNever]
         public Providers providers { get; set; }
 
-
+        [Required(ErrorMessage ="Please select a provider.")]
         public int providerId { get; set; }
 
         public DateOnly date { get; set; }
