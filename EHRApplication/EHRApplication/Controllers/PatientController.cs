@@ -1023,36 +1023,42 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateVitalsForm(Visits visit)
+        public IActionResult CreateVitalsForm(Vitals vital)
         {
-            if (visit.providerId == 0)
+            if (vital.visitId == 0)
             {
-                ModelState.AddModelError("providerId", "Please select a provider.");
+                ModelState.AddModelError("visitId", "Please select a visit.");
             }
+            if (vital.painLevel == 0)
+            { ModelState.AddModelError("painLevel", "Please enter a pain level.");};
+
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 PortalViewModel viewModel = new PortalViewModel();
-                viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
-                viewModel.Visit = visit;
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
                 ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = visit.MHN;
+                ViewBag.MHN = vital.patientId;
 
                 return View(viewModel);
             }
-            else if (visit.MHN != 0)
+            else if (vital.patientId != 0)
             {
+                //Calculate the BMI
+
                 //go to the void list service that will input the data into the database.
+                _listService.InsertIntoVitals(vital);
             }
 
-            return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
 
-        public IActionResult EditVitalsForm(int visitId)
+        public IActionResult EditVitalsForm(int vitalsId)
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.Visit = _listService.GetVisitByVisitId(visitId);
+            viewModel.Vital = _listService.GetVitalsByVisitId(vitalsId);
             viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Visit.MHN);
 
             ViewBag.Patient = viewModel.PatientDemographic;
@@ -1062,29 +1068,32 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditVitalsForm(Visits visit)
+        public IActionResult EditVitalsForm(Vitals vital)
         {
-            if (visit.providerId == 0)
+            if (vital.visitId == 0)
             {
-                ModelState.AddModelError("providerId", "Please select a provider.");
+                ModelState.AddModelError("visitId", "Please select a visit.");
             }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 PortalViewModel viewModel = new PortalViewModel();
-                viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
-                viewModel.Visit = visit;
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
                 ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = visit.MHN;
+                ViewBag.MHN = vital.patientId;
 
                 return View(viewModel);
             }
-            else if (visit.MHN != 0)
+            else if (vital.patientId != 0)
             {
+                //Calculate the BMI
+
                 //go to the void list service that will update the data into the database.
+                _listService.UpdateVitals(vital);
             }
 
-            return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
     }
 }

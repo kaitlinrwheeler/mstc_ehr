@@ -13,6 +13,15 @@
         <div class="h4 card-header text-center" data-bs-theme="auto">
             Vitals
         </div>
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Vitals</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateVitalsForm" asp-route-mhn="@patient.MHN">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
+        </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (patient != null && Model.Vitals.Any())
             {
@@ -31,6 +40,7 @@
                             <th scope="col">BMI:</th>
                             <th scope="col">Intake:</th>
                             <th scope="col">Output:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,6 +59,7 @@
                                 <td>@vital.BMI.ToString("F2")</td>
                                 <td>@vital.intakeMilliLiters ml</td>
                                 <td>@vital.outputMilliLiters ml</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

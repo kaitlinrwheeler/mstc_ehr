@@ -1188,53 +1188,82 @@ namespace EHRApplication.Services
         }
 
         /// <summary>
-        /// Gets the visit from the database that matches the visit id.
+        /// Inserting a new vital into the database
         /// </summary>
-        /// <param name="visitId"></param>
-        /// <returns></returns>
-        public IEnumerable<Visits> GetEnumerableVisitByVisitId(int visitId)
+        /// <param name="visit"></param>
+        public void InsertIntoVitals(Vitals vital)
         {
-            //Creating a new instance of the patient contact class to store data from the database
-            List<Visits> visits = new List<Visits>();
-
-            //Setting up the connection with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
-                connection.Open();
-                //SQL command to select the data from the table
-                string sql = "Select * From [dbo].[Visits] WHERE visitsId = @visitId";
-                SqlCommand cmd = new SqlCommand(sql, connection);
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Vitals] (visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse) " +
+                    "VALUES (@visitId, @patientId, @painLevel, @temperature, @bloodPressure, @respiratoryRate, @pulseOximetry, @heightInches, @weightPounds, @BMI, @intakeMilliLiters, @outputMilliLiters, @pulse)";
 
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@visitId", visitId);
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    while (dataReader.Read())
-                    {
-                        Visits tempVisit = new Visits();
+                    command.CommandType = CommandType.Text;
 
-                        tempVisit.visitsId = dataReader.GetInt32("visitsId");
-                        //Setting the data that was just pulled from the database into an instance of the visit model.
-                        tempVisit.MHN = dataReader.GetInt32("MHN");
-                        tempVisit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
+                    //adding parameters
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = vital.visitId;
+                    command.Parameters.Add("@patientId", SqlDbType.VarChar).Value = vital.patientId;
+                    command.Parameters.Add("@painLevel", SqlDbType.VarChar).Value = vital.painLevel;
+                    command.Parameters.Add("@temperature", SqlDbType.VarChar).Value = vital.temperature;
+                    command.Parameters.Add("@bloodPressure", SqlDbType.VarChar).Value = vital.bloodPressure;
+                    command.Parameters.Add("@respiratoryRate", SqlDbType.VarChar).Value = vital.respiratoryRate;
+                    command.Parameters.Add("@pulseOximetry", SqlDbType.VarChar).Value = vital.pulseOximetry;
+                    command.Parameters.Add("@heightInches", SqlDbType.VarChar).Value = vital.heightInches;
+                    command.Parameters.Add("@weightPounds", SqlDbType.VarChar).Value = vital.weightPounds;
+                    command.Parameters.Add("@BMI", SqlDbType.VarChar).Value = vital.BMI;
+                    command.Parameters.Add("@intakeMilliLiters", SqlDbType.VarChar).Value = vital.intakeMilliLiters;
+                    command.Parameters.Add("@outputMilliLiters", SqlDbType.VarChar).Value = vital.outputMilliLiters;
+                    command.Parameters.Add("@pulse", SqlDbType.VarChar).Value = vital.pulse;
 
-                        TimeSpan timeSpan = dataReader.GetTimeSpan(dataReader.GetOrdinal("time"));
-                        tempVisit.time = new TimeOnly(timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
-
-                        tempVisit.admitted = dataReader.GetBoolean("admitted");
-                        tempVisit.notes = dataReader.GetString("notes");
-
-                        //Populate the visits object with data from the database.
-                        tempVisit.providerId = Convert.ToInt32(dataReader["providerId"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        tempVisit.providers = GetProvidersByProviderId(tempVisit.providerId);
-
-                        visits.Add(tempVisit);
-                    }
-                };
-                connection.Close();
-                return visits;
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current vital that is in the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void UpdateVitals(Vitals vital)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [Vitals] " +
+                    "SET visitId = @visitId, patientId = @patientId, painLevel = @painLevel, temperature = @temperature, bloodPressure = @bloodPressure, respiratoryRate = @respiratoryRate, pulseOximetry = @pulseOximetry, " +
+                    "heightInches = @heightInches, weightPounds = @weightPounds, BMI = @BMI, intakeMilliLiters = @intakeMilliLiters, outputMilliLiters = @outputMilliLiters, pulse = @pulse " +
+                    "WHERE vitalsId = @vitalsId";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = vital.visitId;
+                    command.Parameters.Add("@patientId", SqlDbType.VarChar).Value = vital.patientId;
+                    command.Parameters.Add("@painLevel", SqlDbType.VarChar).Value = vital.painLevel;
+                    command.Parameters.Add("@temperature", SqlDbType.VarChar).Value = vital.temperature;
+                    command.Parameters.Add("@bloodPressure", SqlDbType.VarChar).Value = vital.bloodPressure;
+                    command.Parameters.Add("@respiratoryRate", SqlDbType.VarChar).Value = vital.respiratoryRate;
+                    command.Parameters.Add("@pulseOximetry", SqlDbType.VarChar).Value = vital.pulseOximetry;
+                    command.Parameters.Add("@heightInches", SqlDbType.VarChar).Value = vital.heightInches;
+                    command.Parameters.Add("@weightPounds", SqlDbType.VarChar).Value = vital.weightPounds;
+                    command.Parameters.Add("@BMI", SqlDbType.VarChar).Value = vital.BMI;
+                    command.Parameters.Add("@intakeMilliLiters", SqlDbType.VarChar).Value = vital.intakeMilliLiters;
+                    command.Parameters.Add("@outputMilliLiters", SqlDbType.VarChar).Value = vital.outputMilliLiters;
+                    command.Parameters.Add("@pulse", SqlDbType.VarChar).Value = vital.pulse;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
         }
     }
 }

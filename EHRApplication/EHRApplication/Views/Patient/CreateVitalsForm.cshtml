@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="~/css/forms.css">
     var mhn = ViewBag.MHN;
     <script src="~/js/validation.js"></script>
-    var vital = Model.Vital;
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -15,14 +14,15 @@
     </div>
 
     <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="visitForm" enctype="multipart/form-data">
+        <form method="post" id="vitalForm" enctype="multipart/form-data">
 
+            <input asp-for="Vital.patientId" value="@mhn" hidden />
 
             <div class="form-group">
                 <label for="visitId">Visit:</label>
-                <select id="visitId" class="form-control" name="Vital.visitId" data-bs-theme="auto">
+                <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
                     <option value="0"></option>
-                    @foreach (var visit in ListService.GetEnumerableVisitByVisitId(vital.visitId))
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">
                             @visit.date @visit.time
@@ -33,62 +33,62 @@
             </div>
 
             <div class="form-group">
+                <label for="painLevel">Pain Level:</label>
+                <input type="number" id="painlevel" asp-for="Vital.painLevel" class="form-control" data-bs-theme="auto" />
+                <span asp-validation-for="Vital.painLevel" id="painLevelError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
                 <label for="temperature">Temperature:</label>
-                <input type="text" id="temperature" name="Vital.temperature" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('temperature', 100, 'temperature')" />
+                <input type="text" id="temperature" asp-for="Vital.temperature" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('temperature', 100, 'temperature')" />
                 <span asp-validation-for="Vital.temperature" id="temperatureError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="bloodPressure">Blood Pressure:</label>
-                <input type="text" id="bloodPressure" name="Visit.bloodPressure" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('bloodPressure', 100, 'blood Pressure')" />
+                <input type="text" id="bloodPressure" asp-for="Vital.bloodPressure" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('bloodPressure', 100, 'blood Pressure')" />
                 <span asp-validation-for="Vital.bloodPressure" id="bloodPressureError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="respiratoryRate">Respiratory Rate:</label>
-                <input type="text" id="respiratoryRate" name="Visit.respiratoryRate" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('respiratoryRate', 100, 'respiratory rate')" />
+                <input type="text" id="respiratoryRate" asp-for="Vital.respiratoryRate" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('respiratoryRate', 100, 'respiratory rate')" />
                 <span asp-validation-for="Vital.respiratoryRate" id="respiratoryRateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="pulseOximetry">Pulse Oximetry:</label>
-                <input type="text" id="pulseOximetry" name="Visit.pulseOximetry" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('pulseOximetry', 100, 'pulse oximetry')" />
+                <input type="text" id="pulseOximetry" asp-for="Vital.pulseOximetry" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('pulseOximetry', 100, 'pulse oximetry')" />
                 <span asp-validation-for="Vital.pulseOximetry" id="pulseOximetryError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="heightInches">Height Inches:</label>
-                <input type="text" id="heightInches" name="Visit.heightInches" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('heightInches', 100, 'height inches')" />
+                <input type="text" id="heightInches" asp-for="Vital.heightInches" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('heightInches', 100, 'height inches')" />
                 <span asp-validation-for="Vital.heightInches" id="heightInchesError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="weightPounds">Weight Pounds:</label>
-                <input type="text" id="weightPounds" name="Visit.weightPounds" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('weightPounds', 100, 'weight pounds')" />
+                <input type="text" id="weightPounds" asp-for="Vital.weightPounds" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('weightPounds', 100, 'weight pounds')" />
                 <span asp-validation-for="Vital.weightPounds" id="weightPoundsError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="BMI">BMI:</label>
-                <input type="text" id="BMI" name="Visit.BMI" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('BMI', 100, 'BMI')" />
-                <span asp-validation-for="Vital.BMI" id="BMIError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
                 <label for="intakeMilliLiters">Intake in Milliliters:</label>
-                <input type="text" id="intakeMilliLiters" name="Visit.intakeMilliLiters" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('intakeMilliLiters', 100, 'intake MilliLiters')" />
+                <input type="text" id="intakeMilliLiters" asp-for="Vital.intakeMilliLiters" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('intakeMilliLiters', 100, 'intake MilliLiters')" />
                 <span asp-validation-for="Vital.intakeMilliLiters" id="intakeMilliLitersError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="outputMilliLiters">Output in Milliliters:</label>
-                <input type="text" id="outputMilliLiters" name="Visit.outputMilliLiters" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('outputMilliLiters', 100, 'output MilliLiters')" />
+                <input type="text" id="outputMilliLiters" asp-for="Vital.outputMilliLiters" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('outputMilliLiters', 100, 'output MilliLiters')" />
                 <span asp-validation-for="Vital.outputMilliLiters" id="outputMilliLitersError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="pulse">Pulse:</label>
-                <input type="text" id="pulse" name="Visit.pulse" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('pulse', 100, 'pulse')" />
+                <input type="text" id="pulse" name="Vital.pulse" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('pulse', 100, 'pulse')" />
                 <span asp-validation-for="Vital.pulse" id="pulseError" class="validation-msg"></span>
             </div>
 

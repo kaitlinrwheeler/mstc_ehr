@@ -35,8 +35,6 @@ namespace EHRApplication.Services
 
         Visits GetVisitByVisitId(int visitId);
 
-        IEnumerable<Visits> GetEnumerableVisitByVisitId(int visitId);
-
         Vitals GetVitalsByVisitId(int visitId);
 
         LabResults GetLabResultsByVisitId(int visitId);
@@ -56,5 +54,9 @@ namespace EHRApplication.Services
         void InsertIntoVisits(Visits visit);
 
         void UpdateVisits(Visits visit);
+
+        void InsertIntoVitals(Vitals vital);
+
+        void UpdateVitals(Vitals vital);
     }
 }
