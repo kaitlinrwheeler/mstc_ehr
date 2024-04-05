@@ -805,51 +805,16 @@ namespace EHRApplication.Controllers
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(patient.MHN);
+
                 if (!patient.raceList.IsNullOrEmpty())
                 {
                     patient.race = string.Join(", ", patient.raceList);
                 }
-                return View(patient);
-            }
-
-            // process file upload
-            if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
-            {
-                // define permitted image file types
-                var allowedFileTypes = new[] { ".jpg", ".png" };
-                var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
-
-                // validate file type
-                if (!allowedFileTypes.Contains(extentions))
-                {
-                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
-                    return View(patient);
-                }
-
-                // create filepath to storage location
-                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
-                // check for existence of directory and create if it doesn't exist
-                if (!Directory.Exists(uploadDirectory))
-                {
-                    Directory.CreateDirectory(uploadDirectory);
-                }
-
-                // create and assign new filename before storage
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(patient.patientImageFile.FileName);
-
-                // create full filepath
-                var filePath = Path.Combine(uploadDirectory, fileName);
-
-                // save file to disk
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    patient.patientImageFile.CopyToAsync(stream);
-                }
-
-                // save filepath to pt image property
-                patient.patientImage = fileName;
-
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = patient.MHN;
+                return View(viewModel);
             }
 
             // process race selection
