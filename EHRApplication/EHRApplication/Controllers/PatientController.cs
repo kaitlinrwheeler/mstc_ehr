@@ -1009,5 +1009,82 @@ namespace EHRApplication.Controllers
             }
 
         }
+
+        public IActionResult CreateVitalsForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateVitalsForm(Visits visit)
+        {
+            if (visit.providerId == 0)
+            {
+                ModelState.AddModelError("providerId", "Please select a provider.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
+                viewModel.Visit = visit;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = visit.MHN;
+
+                return View(viewModel);
+            }
+            else if (visit.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+            }
+
+            return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+        }
+
+        public IActionResult EditVitalsForm(int visitId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.Visit = _listService.GetVisitByVisitId(visitId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Visit.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.Visit.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditVitalsForm(Visits visit)
+        {
+            if (visit.providerId == 0)
+            {
+                ModelState.AddModelError("providerId", "Please select a provider.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
+                viewModel.Visit = visit;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = visit.MHN;
+
+                return View(viewModel);
+            }
+            else if (visit.MHN != 0)
+            {
+                //go to the void list service that will update the data into the database.
+            }
+
+            return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+        }
     }
 }

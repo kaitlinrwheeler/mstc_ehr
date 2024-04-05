@@ -32,6 +32,7 @@ namespace EHRApplication.ViewModels
         public PatientNotes PatientNotesDetails { get; set; }
         public PatientProblems PatientProblemsDetails { get; set; }
         public Visits Visit { get; set; }
+        public Vitals Vital { get; set; }
         public Vitals VitalsDetails { get; set; }
     }
 }

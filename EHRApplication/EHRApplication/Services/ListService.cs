@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -1119,6 +1120,121 @@ namespace EHRApplication.Services
                 connection.Close();
             }
             return medHistory;
+        }
+
+        /// <summary>
+        /// Inserting a new visit into the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void InsertIntoVisits(Visits visit)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Visits] (MHN, providerId, date, time, admitted, notes) " +
+                    "VALUES (@MHN, @providerId, @date, @time, @admitted, @notes)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
+                    command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
+                    command.Parameters.Add("@date", SqlDbType.VarChar).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.VarChar).Value = visit.time;
+                    command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
+                    command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current visit that is in the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void UpdateVisits(Visits visit)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [Visits] " +
+                    "SET MHN = @MHN, providerId = @providerId, date = @date, time = @time, admitted = @admitted, notes = @notes " +
+                    "WHERE visitsId = @visitsId";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = visit.visitsId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
+                    command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
+                    command.Parameters.Add("@date", SqlDbType.VarChar).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.VarChar).Value = visit.time;
+                    command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
+                    command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Gets the visit from the database that matches the visit id.
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
+        public IEnumerable<Visits> GetEnumerableVisitByVisitId(int visitId)
+        {
+            //Creating a new instance of the patient contact class to store data from the database
+            List<Visits> visits = new List<Visits>();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select * From [dbo].[Visits] WHERE visitsId = @visitId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@visitId", visitId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Visits tempVisit = new Visits();
+
+                        tempVisit.visitsId = dataReader.GetInt32("visitsId");
+                        //Setting the data that was just pulled from the database into an instance of the visit model.
+                        tempVisit.MHN = dataReader.GetInt32("MHN");
+                        tempVisit.date = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("date")));
+
+                        TimeSpan timeSpan = dataReader.GetTimeSpan(dataReader.GetOrdinal("time"));
+                        tempVisit.time = new TimeOnly(timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+
+                        tempVisit.admitted = dataReader.GetBoolean("admitted");
+                        tempVisit.notes = dataReader.GetString("notes");
+
+                        //Populate the visits object with data from the database.
+                        tempVisit.providerId = Convert.ToInt32(dataReader["providerId"]);
+                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        tempVisit.providers = GetProvidersByProviderId(tempVisit.providerId);
+
+                        visits.Add(tempVisit);
+                    }
+                };
+                connection.Close();
+                return visits;
+            }
         }
     }
 }

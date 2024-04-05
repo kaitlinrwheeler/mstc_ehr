@@ -101,6 +101,7 @@ namespace EHRApplication.Controllers
                 visit.admitted = true;
 
                 //go to the void list service that will input the data into the database.
+                _listService.InsertIntoVisits(visit);
             }
 
             return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
@@ -139,8 +140,8 @@ namespace EHRApplication.Controllers
             }
             else if (visit.MHN != 0)
             {
-
                 //go to the void list service that will update the data into the database.
+                _listService.UpdateVisits(visit);
             }
 
             return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
