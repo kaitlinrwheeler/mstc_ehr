@@ -2,6 +2,7 @@
     ViewData["Title"] = "myEHR | Lab Tests";
     @model List<LabTestProfile>
 
+    <script src="~/js/allLabTests.js" defer></script>
 }
 
 <section class="my-5 w-75 m-auto">
@@ -9,30 +10,41 @@
         <div class="h4 card-header text-center" data-bs-theme="auto">
             All Laboratory Tests
         </div>
-        <div class="card-body" data-bs-theme="auto">
+        <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.Any())
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Test ID</th>
                             <th scope="col">Test Name</th>
                             <th scope="col">Description</th>
                             <th scope="col">Units</th>
                             <th scope="col">Reference Range</th>
                             <th scope="col">Category</th>
+                            <th scope="col">Active</th>
+                            <th scope="col"></th> <!-- Empty columns for the button -->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var labTest in Model)
                         {
                             <tr class="hover-highlighting">
-                                <td>@labTest.testId</td>
                                 <td>@labTest.testName</td>
                                 <td>@labTest.description</td>
                                 <td>@labTest.units</td>
                                 <td>@labTest.referenceRange</td>
                                 <td>@labTest.category</td>
+
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
+                                    </div>
+                                </td>
+
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@labTest.testId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+
+
                             </tr>
                         }
                     </tbody>

@@ -16,5 +16,7 @@ namespace EHRApplication.Models
         public string referenceRange { get; set; }
 
         public string category { get; set; }
+
+        public bool Active { get; set; }
     }
 }
