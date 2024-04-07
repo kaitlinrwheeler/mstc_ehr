@@ -16,6 +16,14 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="visitForm" enctype="multipart/form-data">
 
+            <!--These are here and hidden so so that when the form is submitted it will take the data that was used to populate
+                the form and re use that. none of this data is allowed to be changed by the user.
+            -->
+            <input asp-for="Visit.MHN" hidden/>
+            <input asp-for="Visit.visitsId" hidden/>
+            <input asp-for="Visit.date" hidden/>
+            <input asp-for="Visit.time" hidden/>
+
             <div class="form-group">
                 <label for="providerId">Provider:</label>
                 <select asp-for="Visit.providerId" id="providerId" class="form-control" name="Visit.providerId" data-bs-theme="auto">

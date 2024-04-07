@@ -1,4 +1,5 @@
 ﻿using EHRApplication.Models;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -743,6 +744,11 @@ namespace EHRApplication.Services
             return patientDemographic;
         }
 
+        /// <summary>
+        /// Uses visit Id to get data
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
         public Vitals GetVitalsByVisitId(int visitId)
         {
             //Creating a new patientDemographic instance
@@ -791,6 +797,60 @@ namespace EHRApplication.Services
 
             return vitals;
         }
+        /// <summary>
+        /// uses vitalsId to get data
+        /// </summary>
+        /// <param name="vitalsId"></param>
+        /// <returns></returns>
+        public Vitals GetVitalsByVitalsId(int vitalsId)
+        {
+            //Creating a new patientDemographic instance
+            Vitals vitals = new Vitals();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse " +
+                    "FROM [dbo].[Vitals] WHERE vitalsId = @vitalsId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@vitalsId", vitalsId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        vitals.vitalsId = Convert.ToInt32(dataReader["vitalsId"]);
+                        vitals.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        vitals.visits = GetVisitByVisitId(vitals.visitId);
+
+                        vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
+                        vitals.patients = GetPatientByMHN(vitals.patientId);
+                        vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
+                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
+                        vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
+                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+
+                        vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
+                        vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
+                        vitals.BMI = Convert.ToInt32(dataReader["BMI"]);
+                        vitals.intakeMilliLiters = Convert.ToInt32(dataReader["intakeMilliLiters"]);
+                        vitals.outputMilliLiters = Convert.ToInt32(dataReader["outputMilliLiters"]);
+                        vitals.pulse = Convert.ToInt32(dataReader["pulse"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return vitals;
+        }
+
 
         public LabResults GetLabResultsByVisitId(int visitId)
         {
@@ -1141,8 +1201,8 @@ namespace EHRApplication.Services
                     //adding parameters
                     command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
                     command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
-                    command.Parameters.Add("@date", SqlDbType.VarChar).Value = visit.date;
-                    command.Parameters.Add("@time", SqlDbType.VarChar).Value = visit.time;
+                    command.Parameters.Add("@date", SqlDbType.Date).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.Time).Value = visit.time;
                     command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
                     command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
 
@@ -1174,8 +1234,8 @@ namespace EHRApplication.Services
                     command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = visit.visitsId;
                     command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
                     command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
-                    command.Parameters.Add("@date", SqlDbType.VarChar).Value = visit.date;
-                    command.Parameters.Add("@time", SqlDbType.VarChar).Value = visit.time;
+                    command.Parameters.Add("@date", SqlDbType.Date).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.Time).Value = visit.time;
                     command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
                     command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
 
@@ -1239,11 +1299,14 @@ namespace EHRApplication.Services
                     "SET visitId = @visitId, patientId = @patientId, painLevel = @painLevel, temperature = @temperature, bloodPressure = @bloodPressure, respiratoryRate = @respiratoryRate, pulseOximetry = @pulseOximetry, " +
                     "heightInches = @heightInches, weightPounds = @weightPounds, BMI = @BMI, intakeMilliLiters = @intakeMilliLiters, outputMilliLiters = @outputMilliLiters, pulse = @pulse " +
                     "WHERE vitalsId = @vitalsId";
+
+
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
 
                     // Adding parameters
+                    command.Parameters.Add("@vitalsId", SqlDbType.VarChar).Value = vital.vitalsId;
                     command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = vital.visitId;
                     command.Parameters.Add("@patientId", SqlDbType.VarChar).Value = vital.patientId;
                     command.Parameters.Add("@painLevel", SqlDbType.VarChar).Value = vital.painLevel;
@@ -1264,6 +1327,11 @@ namespace EHRApplication.Services
                 }
             }
             return;
+        }
+
+        public decimal BMICalculator(decimal weight, decimal height)
+        {
+            return 703 * (weight / (height * height));
         }
     }
 }

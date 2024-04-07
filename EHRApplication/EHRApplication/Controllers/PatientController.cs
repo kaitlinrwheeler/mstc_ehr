@@ -437,6 +437,7 @@ namespace EHRApplication.Controllers
 
                         // Populate the vital object with data from the database.
                         vital.patientId = dataReader.GetInt32("patientID");
+                        vital.vitalsId = dataReader.GetInt32("vitalsId");
                         // Single visit where the vitals were taken.
                         vital.visits = _listService.GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
@@ -1029,8 +1030,6 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("visitId", "Please select a visit.");
             }
-            if (vital.painLevel == 0)
-            { ModelState.AddModelError("painLevel", "Please enter a pain level.");};
 
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -1046,7 +1045,7 @@ namespace EHRApplication.Controllers
             else if (vital.patientId != 0)
             {
                 //Calculate the BMI
-
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
                 //go to the void list service that will input the data into the database.
                 _listService.InsertIntoVitals(vital);
             }
@@ -1058,11 +1057,11 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.Vital = _listService.GetVitalsByVisitId(vitalsId);
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Visit.MHN);
+            viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
 
             ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = viewModel.Visit.MHN;
+            ViewBag.MHN = viewModel.Vital.patientId;
 
             return View(viewModel);
         }
@@ -1088,7 +1087,7 @@ namespace EHRApplication.Controllers
             else if (vital.patientId != 0)
             {
                 //Calculate the BMI
-
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
                 //go to the void list service that will update the data into the database.
                 _listService.UpdateVitals(vital);
             }
