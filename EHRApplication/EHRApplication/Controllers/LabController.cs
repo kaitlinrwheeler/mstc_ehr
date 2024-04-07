@@ -88,7 +88,7 @@ namespace EHRApplication.Controllers
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 // Replace placeholder with parameter to avoid SQL injection.
-                cmd.Parameters.AddWithValue("@mhn", id);
+                cmd.Parameters.AddWithValue("@Id", id);
                 cmd.Parameters.AddWithValue("@active", activeStatus);
 
                 // Execute the SQL command.
@@ -108,7 +108,6 @@ namespace EHRApplication.Controllers
                     return BadRequest("Error, please try again.");
                 }
             }
-
         }
 
     }

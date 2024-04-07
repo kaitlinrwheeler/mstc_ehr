@@ -42,7 +42,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY Active DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 

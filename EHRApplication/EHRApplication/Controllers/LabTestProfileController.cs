@@ -33,7 +33,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 //query to grab the testId, testName, description, units, referenceRange, category from LabTestProfile table
-                string sql = "SELECT testId, testName, description, units, referenceRange, category FROM [dbo].[LabTestProfile] ORDER BY testId ASC";
+                string sql = "SELECT testId, testName, description, units, referenceRange, category, Active FROM [dbo].[LabTestProfile] ORDER BY Active DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -48,7 +48,8 @@ namespace EHRApplication.Controllers
                             description = Convert.ToString(dataReader["description"]),
                             units = Convert.ToString(dataReader["units"]),
                             referenceRange = Convert.ToString(dataReader["referenceRange"]),
-                            category = Convert.ToString(dataReader["category"])
+                            category = Convert.ToString(dataReader["category"]),
+                            Active = Convert.ToBoolean(dataReader["active"])
                         };
 
                         allTests.Add(labTest);
