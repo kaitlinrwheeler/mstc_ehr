@@ -61,5 +61,24 @@ namespace EHRApplication.Controllers
 
             return View(allTests);
         }
+
+        public IActionResult CreateLabTest()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult EditLabTest(int testId)
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult EditLabTest()
+        {
+            return View();
+        }
+
     }
 }

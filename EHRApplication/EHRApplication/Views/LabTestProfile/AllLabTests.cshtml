@@ -6,8 +6,14 @@
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Laboratory Tests
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">All Lab Tests</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="LabTestProfile" asp-action="CreateLabTest">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.Any())
