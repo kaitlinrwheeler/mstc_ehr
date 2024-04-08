@@ -741,6 +741,9 @@ namespace EHRApplication.Controllers
                     }
                 }
             }
+            viewModel.PatientNotes = notes;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
 
             return View(viewModel);
         }

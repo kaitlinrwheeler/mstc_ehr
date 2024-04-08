@@ -1,28 +1,42 @@
 ﻿
 /*Gets rid of the extra space at the end of the table*/
-.table{
+.table {
     margin-bottom: 0;
 }
 
 
 /*style for picture card on overview page*/
 .card-cover {
-    height: 436px;
+    height: 403px;
     overflow: hidden;
 }
-.card-cover .card-img-top {
-    object-fit: cover; /* Ensure the image covers the entire card */
-    height: 100%; /* Take full height of the container */
-    width: 100%; /* Take full width of the container */
-}
+
+    .card-cover .card-img-top {
+        object-fit: cover; /* Ensure the image covers the entire card */
+        height: 100%; /* Take full height of the container */
+        width: 100%; /* Take full width of the container */
+    }
 /*This switches the striped pattern because the first row in the table looked funny against the dark header bg*/
 [data-bs-theme=light].table-striped tbody tr:nth-of-type(odd) {
     background-color: #ffffff; /* Set background color for odd rows */
 }
+
 [data-bs-theme=light].table-striped tbody tr:nth-of-type(even) {
     background-color: var(--bs-table-striped-bg); /* Set background color for even rows */
 }
 /*This extends the table rows to the edge of the table box I think it looks better*/
 .card-body {
     padding: 0;
+}
+
+@media (max-width: 1078px) {
+    .card-cover {
+        height: 444px;
+    }
+}
+
+@media (max-width: 948px) {
+    .card-cover {
+        height: 465px;
+    }
 }
