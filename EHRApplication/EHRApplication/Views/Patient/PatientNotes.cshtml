@@ -39,17 +39,24 @@
                                 <td>@note.category</td>
                                  <td>
                                     @*This will only display the first 20 characters in the saved data in the model*@
-                                    @note.Note.Substring(0, 15)
-                                    <div class="question-wrapper" onmouseover="showRequirements(@popupId)" onmouseout="hideRequirements(@popupId)">
-                                        <div data-bs-theme="auto">
-                                            ...
+                                    @if(note.Note.Length <= 15)
+                                    {
+                                        @note.Note
+                                    }
+                                    else
+                                    {
+                                        @note.Note.Substring(0, 15)
+                                        <div class="question-wrapper" onmouseover="showRequirements(@popupId)" onmouseout="hideRequirements(@popupId)">
+                                            <div data-bs-theme="auto">
+                                                ...
+                                            </div>
+                                            <div class="requirements-popup" data-bs-theme="auto" id="@popupId">
+                                                <ul>
+                                                    @note.Note
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div class="requirements-popup" data-bs-theme="auto" id="@popupId">
-                                            <ul>
-                                                @note.Note
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    }
                                 </td>
                             </tr>
                         }
