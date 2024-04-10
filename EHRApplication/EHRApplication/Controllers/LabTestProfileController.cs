@@ -62,8 +62,19 @@ namespace EHRApplication.Controllers
             return View(allTests);
         }
 
+        [HttpGet]
         public IActionResult CreateLabTest()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateLabTest(LabTestProfile test)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(test);
+            }
             return View();
         }
 

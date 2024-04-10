@@ -17,7 +17,7 @@
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="testName">Test Name:</label>
-                <input asp-for="testName" type="text" name="testName" id="testName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('testName', 50, 'test name')" />
+                <input asp-for="testName" type="text" name="testName" id="testName" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInput('testName', 100, 'test name')" />
                 <span asp-validation-for="testName" id="testNameError" class="validation-msg"></span>
             </div>
 
@@ -30,19 +30,19 @@
 
             <div class="form-group">
                 <label for="units">Units:</label>
-                <input asp-for="units" type="text" name="units" id="units" class="form-control" onblur="validateRequiredTextInput('units', 30,'units')" data-bs-theme="auto" />
+                <input asp-for="units" type="text" name="units" id="units" class="form-control" maxlength="100" onblur="validateRequiredTextInput('units', 100,'units')" data-bs-theme="auto" />
                 <span asp-validation-for="units" id="unitsError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="referenceRange">Reference Range:</label>
-                <input asp-for="referenceRange" type="text" name="referenceRange" id="referenceRange" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('referenceRange', 100,  'reference range')" />
+                <input asp-for="referenceRange" type="text" name="referenceRange" id="referenceRange" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInput('referenceRange', 100,  'reference range')" />
                 <span asp-validation-for="referenceRange" id="referenceRangeError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="category">Category:</label>
-                <input asp-for="category" type="text" name="category" id="category" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('category', 30,  'category')" />
+                <input asp-for="category" type="text" name="category" id="category" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInput('category', 100,  'category')" />
                 <span asp-validation-for="category" id="categoryError" class="validation-msg"></span>
             </div>
 
