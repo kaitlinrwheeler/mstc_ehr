@@ -26,7 +26,7 @@
 
             <div class="form-group">
                 <label for="providerId">Provider:</label>
-                <select asp-for="Visit.providerId" id="providerId" class="form-control" name="Visit.providerId" data-bs-theme="auto">
+                <select asp-for="Visit.providerId" id="providerId" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('PrimaryPhysician', 'provider')">
                     <option value=""></option>
                     @foreach (var provider in ListService.GetProviders())
                     {
@@ -40,7 +40,7 @@
 
             <div class="form-group">
                 <label for="notes">Notes:</label>
-                <input type="text" asp-for="Visit.notes" id="notes" name="Visit.notes" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('notes', 100, 'notes')" />
+                <input type="text" asp-for="Visit.notes" id="notes" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('notes', 'note')" />
                 <span asp-validation-for="Visit.notes" id="notesError" class="validation-msg"></span>
             </div>
 

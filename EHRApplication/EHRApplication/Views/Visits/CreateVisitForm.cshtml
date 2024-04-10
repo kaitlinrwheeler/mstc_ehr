@@ -20,7 +20,7 @@
 
             <div class="form-group">
                 <label for="providerId">Provider:</label>
-                <select id="providerId" class="form-control" name="Visit.providerId" data-bs-theme="auto">
+                <select id="providerId" class="form-control" asp-for="Visit.providerId" data-bs-theme="auto" onblur="validateRequiredInput('PrimaryPhysician', 'provider')">
                     <option value="0"></option>
                     @foreach (var provider in ListService.GetProviders())
                     {
@@ -34,8 +34,33 @@
 
             <div class="form-group">
                 <label for="notes">Notes:</label>
-                <input type="text" id="notes" name="Visit.notes" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('notes', 100, 'notes')" />
+                <input type="text" id="notes" asp-for="Visit.notes" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('notes', 'note')" />
                 <span asp-validation-for="Visit.notes" id="notesError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Visit.date">Date of Visit:</label>
+                <input asp-for="Visit.date" type="date" id="date" class="form-control" onblur="validateDatePicker('date', 'date of visit')" data-bs-theme="auto" required />
+                <span asp-validation-for="Visit.date" id="dateError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Visit.time">Time of Visit:</label>
+                <input asp-for="Visit.time" type="time" id="time" class="form-control" data-bs-theme="auto" required />
+                <span asp-validation-for="Visit.time" id="timeError" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Visit.admitted">Was the patient admitted or not?</label>
+                <div class="col-sm-6 ms-4">
+                    <div class="race-column">
+                        <input type="radio" id="Yes" asp-for="Visit.admitted" value="True" />
+                        <label for="Yes" style="font-weight: normal;">Yes</label><br />
+                        <input type="radio" id="No" asp-for="Visit.admitted" value="False" />
+                        <label for="No" style="font-weight: normal;">No</label><br />
+                    </div>
+                </div>
+                <span asp-validation-for="Visit.admitted" id="admittedError" class="validation-msg"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">
