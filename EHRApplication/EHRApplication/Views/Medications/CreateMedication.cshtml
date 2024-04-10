@@ -1,18 +1,11 @@
 ﻿@model MedicationProfile
 @{
-    ViewData["Title"] = "myEHR | Edit Medication";
+    ViewData["Title"] = "myEHR | Create Medication";
     <link rel="stylesheet" href="~/css/forms.css">
     <script src="~/js/validation.js"></script>
     //<script src="~/js/confirmModal.js" defer></script>
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <section class="my-5 w-75" data-bs-theme="auto">
 
@@ -25,7 +18,7 @@
 
             <!-- Medication Name -->
             <div class="form-group">
-                <label for="medName">Medicatin Name:</label>
+                <label for="medName">Medication Name:</label>
                 <input asp-for="medName" type="text" id="medName" name="medName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('medName', 25, 'med name')" />
                 <span asp-validation-for="medName" id="medNameError" class="validation-msg"></span>
             </div>
@@ -43,7 +36,9 @@
                 <select asp-for="route" id="route" name="route" class="form-control" data-bs-theme="auto">
                     <option value=""></option>
                     <option value="Oral">Oral</option>
-                    <option value="Inhalation">Inhalation</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Rectal">Rectal</option>
                 </select>
                 <span asp-validation-for="route" class="validation-msg"></span>
             </div>

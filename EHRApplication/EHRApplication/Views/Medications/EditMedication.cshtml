@@ -6,13 +6,6 @@
     <script src="~/js/confirmModal.js" defer></script>
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <section class="my-5 w-75" data-bs-theme="auto">
 
@@ -25,7 +18,7 @@
 
             <!-- Medication Name -->
             <div class="form-group">
-                <label for="medName">Medicatin Name:</label>
+                <label for="medName">Medication Name:</label>
                 <input asp-for="medName" value="@Model.medName" type="text" id="medName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('medName', 25, 'med name')" />
                 <span asp-validation-for="medName" id="medNameError" class="validation-msg"></span>
             </div>
@@ -63,7 +56,7 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save patient information?
+                            Are you sure you want to save Medication information?
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
