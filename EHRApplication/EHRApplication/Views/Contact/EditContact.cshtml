@@ -111,26 +111,26 @@
             </div>
 
             <div class="form-group">
-                <label for="ECFirstname">EC First Name (Optional):</label>
+                <label for="ECFirstname">Emergency Contact First Name (Optional):</label>
                 <input asp-for="@contact.ECFirstName" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECFirstName', 100, 'EC first name')" />
                 <span asp-validation-for="@contact.ECFirstName" id="ECFirstNameError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="ECLastname">EC Last Name (Optional):</label>
+                <label for="ECLastname">Emergency Contact Last Name (Optional):</label>
                 <input asp-for="@contact.ECLastName" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECLastName', 100, 'EC last name')" />
                 <span asp-validation-for="@contact.ECLastName" id="ECLastNameError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="ECRelationship">EC Relationship (Optional):</label>
-                <input asp-for="@contact.ECRelationship" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECRelationship', 100,  'EC Relationship')" />
+                <label for="ECRelationship">Emergency Contact Relationship (Optional):</label>
+                <input asp-for="@contact.ECRelationship" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInput('ECRelationship', 100, 'EC Relationship')" />
                 <span asp-validation-for="@contact.ECRelationship" id="ECRelationshipError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="ECPhone">EC Phone (Optional):</label>
-                <input asp-for="@contact.ECPhone" type="text" class="form-control" data-bs-theme="auto" onblur="validateOptionalNumberInput('ECPhone', 25,  'EC phone')" />
+                <label for="ECPhone">Emergency Contact Phone (Optional):</label>
+                <input asp-for="@contact.ECPhone" type="tel" class="form-control" data-bs-theme="auto" onblur="validateOptionalNumberInput('ECPhone', 25, 'EC phone')" />
                 <span asp-validation-for="@contact.ECPhone" id="ECPhoneError" class="validation-msg"></span>
             </div>
 

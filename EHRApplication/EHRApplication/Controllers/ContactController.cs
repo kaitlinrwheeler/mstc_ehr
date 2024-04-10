@@ -57,7 +57,7 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@state", SqlDbType.VarChar).Value = contact.state;
                     command.Parameters.Add("@zipcode", SqlDbType.VarChar).Value = contact.zipcode;
                     command.Parameters.Add("@phone", SqlDbType.VarChar).Value = contact.phone;
-                    command.Parameters.Add("@email", SqlDbType.VarChar).Value = contact.email;
+                    command.Parameters.Add("@email", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.email) ? "" : contact.email;
                     command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "" : contact.ECFirstName;
                     command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "" : contact.ECLastName;
                     command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "" : contact.ECRelationship;
@@ -132,7 +132,12 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@state", SqlDbType.VarChar).Value = contact.state;
                     command.Parameters.Add("@zipcode", SqlDbType.VarChar).Value = contact.zipcode;
                     command.Parameters.Add("@phone", SqlDbType.VarChar).Value = contact.phone;
-                    command.Parameters.Add("@email", SqlDbType.VarChar).Value = contact.email;
+                    
+                    
+                    
+                    command.Parameters.Add("@email", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.email) ? "" : contact.email;
+
+
                     command.Parameters.Add("@ECFirstName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECFirstName) ? "" : contact.ECFirstName;
                     command.Parameters.Add("@ECLastName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECLastName) ? "" : contact.ECLastName;
                     command.Parameters.Add("@ECRelationship", SqlDbType.VarChar).Value = string.IsNullOrEmpty(contact.ECRelationship) ? "" : contact.ECRelationship;

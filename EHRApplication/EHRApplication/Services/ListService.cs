@@ -276,7 +276,7 @@ namespace EHRApplication.Services
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "SELECT address, city, state, zipcode, phone, email, patientContactId  FROM [dbo].[PatientContact] WHERE MHN = @mhn";
+                string sql = "SELECT address, city, state, zipcode, phone, email, patientContactId, ECFirstName, ECLastName, ECRelationship, ECPhone FROM [dbo].[PatientContact] WHERE MHN = @mhn";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 // Replace placeholder with paramater to avoid sql injection.
@@ -293,6 +293,10 @@ namespace EHRApplication.Services
                         patientContact.zipcode = Convert.ToInt32(dataReader["zipcode"]);
                         patientContact.phone = Convert.ToString(dataReader["phone"]);
                         patientContact.email = Convert.ToString(dataReader["email"]);
+                        patientContact.ECFirstName = Convert.ToString(dataReader["ECFirstName"]);
+                        patientContact.ECLastName = Convert.ToString(dataReader["ECLastName"]);
+                        patientContact.ECRelationship = Convert.ToString(dataReader["ECFirstName"]);
+                        patientContact.ECPhone = Convert.ToString(dataReader["ECPhone"]);
                     }
                 };
                 connection.Close();
