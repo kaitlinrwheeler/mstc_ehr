@@ -35,7 +35,7 @@ function isAlphabetic(input, errorSpanID, errorMessage) {
 // Function to check if the input value conatins only numeric characters
 function isANumber(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
-    const numericRegex = /^[0-9]+$/;
+    const numericRegex = /^[0-9]+(\.[0-9]+)?$/;
     let valid = numericRegex.test(input.value.trim());
 
     // Display error message if input contains non-numeric characters

@@ -444,7 +444,7 @@ namespace EHRApplication.Controllers
                         vital.temperature = dataReader.GetDecimal("temperature");
                         vital.bloodPressure = dataReader.GetString("bloodPressure");
                         vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
-                        vital.pulseOximetry = dataReader.GetInt32("pulseOximetry");
+                        vital.pulseOximetry = dataReader.GetDecimal("pulseOximetry");
                         vital.heightInches = dataReader.GetDecimal("heightInches");
                         vital.weightPounds = dataReader.GetDecimal("weightPounds");
                         vital.BMI = dataReader.GetDecimal("BMI");
@@ -1028,9 +1028,8 @@ namespace EHRApplication.Controllers
         {
             if (vital.visitId == 0)
             {
-                ModelState.AddModelError("visitId", "Please select a visit.");
+                ModelState.AddModelError("Vital.visitId", "Please select a visit.");
             }
-
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {

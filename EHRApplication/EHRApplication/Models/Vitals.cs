@@ -31,7 +31,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Please enter a temperature.")]
         [Range(typeof(decimal), "0", "100", ErrorMessage = "Temperature must be between 0 and 100.")]
-        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Pain level must be a number.")]
+        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Temperature must be a number.")]
         public decimal temperature { get; set; }
 
         [Required(ErrorMessage = "Please enter a blood pressure.")]
@@ -45,35 +45,35 @@ namespace EHRApplication.Models
         public int pulse { get; set; }
 
         [Required(ErrorMessage = "Please enter a respiratory rate.")]
-        [Range(10, 40, ErrorMessage = "Respiratory rate must be between 10 and 40.")]
+        [Range(typeof(int), "10", "40", ErrorMessage = "Respiratory rate must be between 10 and 40.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
         public int respiratoryRate { get; set; }
 
         [Required(ErrorMessage = "Please enter a pulse oximetry.")]
-        [Range(50, 100, ErrorMessage = "Pulse oximetry must be between 50 and 100.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
-        public int pulseOximetry { get; set; }
+        [Range(typeof(decimal), "50", "100", ErrorMessage = "Pulse oximetry must be between 50 and 100.")]
+        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Pulse Oximetry must be a number.")]
+        public decimal pulseOximetry { get; set; }
 
         [Required(ErrorMessage = "Please enter a height in inches.")]
         [Range(typeof(decimal), "0", "100", ErrorMessage = "Height must be between 0 and 100.")]
-        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Pain level must be a number.")]
+        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Height must be a number.")]
         public decimal heightInches { get; set; }
 
         [Required(ErrorMessage = "Please enter a weight in pounds.")]
         [Range(typeof(decimal), "0", "1000", ErrorMessage = "Weight must be between 0 and 1000.")]
-        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Pain level must be a number.")]
+        [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "Weight must be a number.")]
         public decimal weightPounds { get; set; }
 
         [ValidateNever]
         public decimal BMI { get; set; }
 
         [Required(ErrorMessage = "Please enter an intake in milliliters.")]
-        [Range(0, 5000, ErrorMessage = "Intake must be between 0 and 5000.")]
+        [Range(typeof(int), "0", "5000", ErrorMessage = "Intake must be between 0 and 5000.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
         public int intakeMilliLiters { get; set; }
 
         [Required(ErrorMessage = "Please enter a output in milliliters.")]
-        [Range(0, 5000, ErrorMessage = "Output must be between 0 and 5000.")]
+        [Range(typeof(int), "0", "5000", ErrorMessage = "Output must be between 0 and 5000.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
         public int outputMilliLiters { get; set; }
     }

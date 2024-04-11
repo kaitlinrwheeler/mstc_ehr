@@ -132,19 +132,33 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditVisitForm(Visits visit)
         {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
+            viewModel.Visit = visit;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = visit.MHN;
+
             if (visit.providerId == 0)
             {
                 ModelState.AddModelError("Visit.providerId", "Please select a provider.");
             }
+            // Testing to see if the date of birth entered was a future date or not
+            if (visit.date >= DateOnly.FromDateTime(DateTime.Now))
+            {
+                // Adding an error to the DOB model to display an error.
+                ModelState.AddModelError("Visit.date", "Date cannot be in the future.");
+                return View(viewModel);
+            }
+            // Testing to see if the date of birth entered is before 1920 or not
+            if (visit.date < DateOnly.FromDateTime(new DateTime(1900, 1, 1)))
+            {
+                // Adding an error to the date model to display an error.
+                ModelState.AddModelError("Visit.date", "Date cannot be before 1920.");
+                return View(viewModel);
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
-                PortalViewModel viewModel = new PortalViewModel();
-                viewModel.PatientDemographic = _listService.GetPatientByMHN(visit.MHN);
-                viewModel.Visit = visit;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = visit.MHN;
-
                 return View(viewModel);
             }
             else if (visit.MHN != 0)
