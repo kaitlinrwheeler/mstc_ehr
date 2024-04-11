@@ -136,7 +136,7 @@
                         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                             <div class="text-center w-100">Contact Info</div>
                             <div>
-                                @if(patient.ContactId != null)
+                                @if(patient.ContactId.address != null)
                                 {
                                     <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
                                         <i class="fa-solid fa-pen me-2"></i>
@@ -147,7 +147,7 @@
                                 {
                                     <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
                                         <i class="fa-solid fa-plus me-2"></i>
-                                        <span>Edit</span>
+                                        <span>Add</span>
                                     </a>
                                 }
                             </div>
@@ -155,7 +155,7 @@
 
 
                         <div class="card-body" data-bs-theme="auto">
-                            @if (patient.ContactId != null)
+                            @if (patient.ContactId.address != null)
                             {
                                 <table class="table table-striped">
                                     <tbody>

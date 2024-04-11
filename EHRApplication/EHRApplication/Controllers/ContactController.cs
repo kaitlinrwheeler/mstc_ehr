@@ -21,22 +21,29 @@ namespace EHRApplication.Controllers
             _listService = listService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int mhn)
         {
-            return View();
+            PortalViewModel portalViewModel = new PortalViewModel();
+            portalViewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            ViewBag.Patient = portalViewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(portalViewModel);
         }
 
         [HttpPost]
-        public IActionResult Index(PatientContact contact)
+        public IActionResult Index(PatientContact contact, int mhn)
         {
-            if (contact.MHN == 0)
-            {
-                ModelState.AddModelError("MHN", "Please select a patient.");
-            }
+            PortalViewModel portalViewModel = new PortalViewModel();
+            portalViewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+            portalViewModel.PatientContact = contact;
+            ViewBag.Patient = portalViewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
-                return View(contact);
+                return View(portalViewModel);
             }
 
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -66,11 +73,10 @@ namespace EHRApplication.Controllers
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
-                    TempData["SuccessMessage"] = "You have successfully created contact info for the patient!";
                 }
             }
             ModelState.Clear();
-            return View();
+            return RedirectToAction("PatientOverview", "Patient", new { mhn = mhn });
         }
 
         [HttpGet]
