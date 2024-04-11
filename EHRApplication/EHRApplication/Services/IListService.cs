@@ -50,5 +50,9 @@ namespace EHRApplication.Services
         CarePlan GetCarePlanByVisitId(int visitId);
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
+        PatientProblems GetPatientProblemsByProblemId(int problemId);
+
+        public void InsertIntoProblems(PatientProblems problem);
+        public void UpdateProblems(PatientProblems problem);
     }
 }

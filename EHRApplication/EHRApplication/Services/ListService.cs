@@ -1120,5 +1120,131 @@ namespace EHRApplication.Services
             }
             return medHistory;
         }
+
+        /// <summary>
+        /// Gets the specific patient problem using the problem id
+        /// </summary>
+        /// <param name="problemId"></param>
+        /// <returns></returns>
+        public PatientProblems GetPatientProblemsByProblemId(int problemId)
+        {
+            //Creating a new patientDemographic instance
+            PatientProblems patientProblem = new PatientProblems();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy, active, visitsId " +
+                    "FROM [dbo].[PatientProblems] WHERE patientProblemsId = @problemId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@problemId", problemId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        patientProblem.patientProblemsId = Convert.ToInt32(dataReader["patientProblemsId"]);
+                        patientProblem.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientProblem.patients = GetPatientByMHN(patientProblem.MHN);
+
+                        patientProblem.priority = Convert.ToString(dataReader["priority"]);
+                        patientProblem.description = Convert.ToString(dataReader["description"]);
+                        patientProblem.ICD_10 = Convert.ToString(dataReader["ICD_10"]);
+                        patientProblem.immediacy = Convert.ToString(dataReader["immediacy"]);
+
+                        patientProblem.createdAt = DateTime.Parse(dataReader["dateGiven"].ToString());
+                        patientProblem.createdBy = Convert.ToInt32(dataReader["createdBy"]);
+                        patientProblem.providers = GetProvidersByProviderId(patientProblem.createdBy);
+                        patientProblem.active = Convert.ToBoolean(dataReader["active"]);
+
+                        patientProblem.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        patientProblem.visits = GetVisitByVisitId(patientProblem.visitsId);
+
+                    }
+                }
+
+                connection.Close();
+            }
+            return patientProblem;
+        }
+
+        /// <summary>
+        /// inserting a new problem into the database
+        /// </summary>
+        /// <param name="problem"></param>
+        public void InsertIntoProblems(PatientProblems problem)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [PatientProblems] (MHN, priority, description, ICD_10, immediacy, createdAt, createdBy, active, visitsId) " +
+                    "VALUES (@MHN, @priority, @description, @ICD_10, @immediacy, @createdAt, @createdBy, @active, @visitsId)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = problem.visitsId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = problem.MHN;
+                    command.Parameters.Add("@priority", SqlDbType.VarChar).Value = problem.priority;
+                    command.Parameters.Add("@description", SqlDbType.VarChar).Value = problem.description;
+                    command.Parameters.Add("@ICD_10", SqlDbType.VarChar).Value = problem.ICD_10;
+                    command.Parameters.Add("@immediacy", SqlDbType.VarChar).Value = problem.immediacy;
+                    command.Parameters.Add("@createdAt", SqlDbType.VarChar).Value = problem.createdAt;
+                    command.Parameters.Add("@createdBy", SqlDbType.VarChar).Value = problem.createdBy;
+                    command.Parameters.Add("@active", SqlDbType.VarChar).Value = problem.active;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current problem that is in the database
+        /// </summary>
+        /// <param name="problem"></param>
+        public void UpdateProblems(PatientProblems problem)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [PatientProblems] " +
+                    "SET MHN = @MHN, priority = @priority, description = @description, ICD_10 = @ICD_10, immediacy = @immediacy, createdAt = @createdAt, createdBy = @createdBy, active = @active, visitsId = @visitsId" +
+                    "WHERE patientProblemsId = @problemId";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@problemId", SqlDbType.VarChar).Value = problem.patientProblemsId;
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = problem.visitsId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = problem.MHN;
+                    command.Parameters.Add("@priority", SqlDbType.VarChar).Value = problem.priority;
+                    command.Parameters.Add("@description", SqlDbType.VarChar).Value = problem.description;
+                    command.Parameters.Add("@ICD_10", SqlDbType.VarChar).Value = problem.ICD_10;
+                    command.Parameters.Add("@immediacy", SqlDbType.VarChar).Value = problem.immediacy;
+                    command.Parameters.Add("@createdAt", SqlDbType.VarChar).Value = problem.createdAt;
+                    command.Parameters.Add("@createdBy", SqlDbType.VarChar).Value = problem.createdBy;
+                    command.Parameters.Add("@active", SqlDbType.VarChar).Value = problem.active;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
     }
 }

@@ -138,5 +138,132 @@ namespace EHRApplication.Controllers
 
             return patientDemographic;
         }
+
+        public IActionResult CreateProblemForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateProblemForm(PatientProblems problem)
+        {
+            //Validation
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("PatientProblem.createdBy", "Please select a provider.");
+            } 
+            if (problem.priority == null)
+            {
+                ModelState.AddModelError("PatientProblem.priority", "Please select a priority.");
+            }
+            if (problem.immediacy == null)
+            {
+                ModelState.AddModelError("PatientProblem.immediacy", "Please select an immediacy.");
+            }      
+            if (problem.description == null || problem.description == "")
+            {
+                ModelState.AddModelError("PatientProblem.description", "Please enter something for description.");
+            }          
+            if (problem.ICD_10 == null || problem.ICD_10 == "")
+            {
+                ModelState.AddModelError("PatientProblem.ICD_10", "Please something for ICD_10.");
+            }
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("PatientProblem.visitsId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
+                viewModel.PatientProblem = problem;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = problem.MHN;
+
+                return View(viewModel);
+            }
+            else if (problem.MHN != 0)
+            {
+                problem.createdAt = DateTime.Now;
+
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoProblems(problem);
+            }
+
+            return RedirectToAction("index", new { mhn = problem.MHN });
+        }
+
+        public IActionResult EditProblemForm(int problemId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientProblem = _listService.GetPatientProblemsByProblemId(problemId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientProblem.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientProblem.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditProblemForm(PatientProblems problem)
+        {
+            //Validation
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("PatientProblem.createdBy", "Please select a provider.");
+            }
+            if (problem.priority == null)
+            {
+                ModelState.AddModelError("PatientProblem.priority", "Please select a priority.");
+            }
+            if (problem.immediacy == null)
+            {
+                ModelState.AddModelError("PatientProblem.immediacy", "Please select an immediacy.");
+            }
+            if (problem.description == null || problem.description == "")
+            {
+                ModelState.AddModelError("PatientProblem.description", "Please enter something for description.");
+            }
+            if (problem.ICD_10 == null || problem.ICD_10 == "")
+            {
+                ModelState.AddModelError("PatientProblem.ICD_10", "Please something for ICD_10.");
+            }
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("PatientProblem.visitsId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
+                viewModel.PatientProblem = problem;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = problem.MHN;
+
+                return View(viewModel);
+            }
+            else if (problem.MHN != 0)
+            {
+                problem.createdAt = DateTime.Now;
+
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateProblems(problem);
+            }
+
+            return RedirectToAction("index", new { mhn = problem.MHN });
+        }
     }
 }
