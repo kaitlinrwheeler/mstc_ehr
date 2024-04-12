@@ -1167,10 +1167,58 @@ namespace EHRApplication.Services
 
                     }
                 }
-
                 connection.Close();
             }
             return patientProblem;
+        }
+        
+
+        public PatientMedications GetPatientsMedByPatientMedId(int patientMedId)
+        {
+            //Creating a new patientDemographic instance
+            PatientMedications patientMedication = new PatientMedications();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT patientMedId, MHN, medId, category, activeStatus, prescriptionInstructions, dosage, route, prescribedBy, datePrescribed, endDate " +
+                    "FROM [dbo].[PatientMedications] WHERE patientMedId = @patientMedId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@PatientMedId", patientMedId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        patientMedication.patientMedId = Convert.ToInt32(dataReader["patientMedId"]);
+                        patientMedication.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        patientMedication.patients = GetPatientByMHN(patientMedication.MHN);
+
+                        patientMedication.medId = Convert.ToInt32(dataReader["medId"]);
+                        patientMedication.medProfile = GetMedicationProfileByMedId(patientMedication.medId);
+
+                        patientMedication.category = Convert.ToString(dataReader["category"]);
+                        patientMedication.activeStatus = Convert.ToString(dataReader["activeStatus"]);
+                        patientMedication.prescriptionInstructions = Convert.ToString(dataReader["prescriptionInstructions"]);
+                        patientMedication.dosage = Convert.ToString(dataReader["dosage"]);
+                        patientMedication.route = Convert.ToString(dataReader["route"]);
+
+                        patientMedication.prescribedBy = Convert.ToInt32(dataReader["prescribedBy"]);
+                        patientMedication.providers = GetProvidersByProviderId(patientMedication.prescribedBy);
+
+                        patientMedication.datePrescribed = DateTime.Parse(dataReader["datePrescribed"].ToString());
+                        patientMedication.endDate = DateTime.Parse(dataReader["endDate"].ToString());
+
+                    }
+                }
+                connection.Close();
+            }
+            return patientMedication;
         }
 
         /// <summary>
@@ -1246,5 +1294,79 @@ namespace EHRApplication.Services
             return;
         }
 
+        /// <summary>
+        /// inserting a new patient medication into the database
+        /// </summary>
+        /// <param name="medication"></param>
+        public void InsertIntoPatientMed(PatientMedications medication)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [PatientMedications] (MHN, medId, category, activeStatus, prescriptionInstructions, dosage, route, prescribedBy, datePrescribed, endDate) " +
+                    "VALUES (@MHN, @medId, @category, @activeStatus, @prescriptionInstructions, @dosage, @route, @prescribedBy, @datePrescribed, @endDate)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@patientMedId", SqlDbType.VarChar).Value = medication.patientMedId;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medication.medId;
+                    command.Parameters.Add("@category", SqlDbType.VarChar).Value = medication.category;
+                    command.Parameters.Add("@activeStatus", SqlDbType.VarChar).Value = medication.activeStatus;
+                    command.Parameters.Add("@prescriptionInstructions", SqlDbType.VarChar).Value = medication.prescriptionInstructions;
+                    command.Parameters.Add("@dosage", SqlDbType.VarChar).Value = medication.dosage;
+                    command.Parameters.Add("@route", SqlDbType.VarChar).Value = medication.route;
+                    command.Parameters.Add("@prescribedBy", SqlDbType.VarChar).Value = medication.prescribedBy;
+                    command.Parameters.Add("@datePrescribed", SqlDbType.VarChar).Value = medication.datePrescribed;
+                    command.Parameters.Add("@endDate", SqlDbType.VarChar).Value = medication.endDate;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current patient medication that is in the database
+        /// </summary>
+        /// <param name="medication"></param>
+        public void UpdatePatientMed(PatientMedications medication)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [PatientMedications] " +
+                    "SET medId = @medId, category = @category, activeStatus = @activeStatus, prescriptionInstructions = @prescriptionInstructions, dosage = @dosage, route = @route, " +
+                    "prescribedBy = @prescribedBy, datePrescribed = @datePrescribed, endDate = @endDate " +
+                    "WHERE patientMedId = @patientMedId";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@patientMedId", SqlDbType.VarChar).Value = medication.patientMedId;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medication.medId;
+                    command.Parameters.Add("@category", SqlDbType.VarChar).Value = medication.category;
+                    command.Parameters.Add("@activeStatus", SqlDbType.VarChar).Value = medication.activeStatus;
+                    command.Parameters.Add("@prescriptionInstructions", SqlDbType.VarChar).Value = medication.prescriptionInstructions;
+                    command.Parameters.Add("@dosage", SqlDbType.VarChar).Value = medication.dosage;
+                    command.Parameters.Add("@route", SqlDbType.VarChar).Value = medication.route;
+                    command.Parameters.Add("@prescribedBy", SqlDbType.VarChar).Value = medication.prescribedBy;
+                    command.Parameters.Add("@datePrescribed", SqlDbType.VarChar).Value = medication.datePrescribed;
+                    command.Parameters.Add("@endDate", SqlDbType.VarChar).Value = medication.endDate;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
     }
 }

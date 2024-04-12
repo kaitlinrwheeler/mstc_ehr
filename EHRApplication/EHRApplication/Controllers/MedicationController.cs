@@ -212,5 +212,78 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult CreatePatientMedForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientMedForm(PatientMedications medication)
+        {
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medication.MHN);
+                viewModel.PatientMedication = medication;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medication.MHN;
+
+                return View(viewModel);
+            }
+            else if (medication.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoPatientMed(medication);
+            }
+
+            return RedirectToAction("PatientMedHistory", new { mhn = medication.MHN });
+        }
+
+        public IActionResult EditPatientMedForm(int patientMedId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientMedication = _listService.GetPatientsMedByPatientMedId(patientMedId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientMedication.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientMedication.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientMedForm(PatientMedications medication)
+        {
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medication.MHN);
+                viewModel.PatientMedication = medication;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medication.MHN;
+
+                return View(viewModel);
+            }
+            else if (medication.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdatePatientMed(medication);
+            }
+
+            return RedirectToAction("PatientMedHistory", new { mhn = medication.MHN });
+        }
     }
 }
