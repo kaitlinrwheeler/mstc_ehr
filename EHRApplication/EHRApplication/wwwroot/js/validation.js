@@ -32,6 +32,18 @@ function isAlphabetic(input, errorSpanID, errorMessage) {
     return valid;
 }
 
+// Checks if the input value contains only alphanumeric characters
+function isAlphaNumeric(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const alphaNumericRegex = /^[a-zA-Z0-9\s'\/\-]+$/;
+    let valid = alphaNumericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-alphanumeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
 // Function to check if the input value conatins only numeric characters
 function isANumber(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
@@ -393,14 +405,29 @@ function otherRaceInput() {
     }
 }
 
-// Counts and updates the text area's character counter.
-function updateCharacterCount(textAreaId, counterId) {
-    const textArea = document.getElementById(textAreaId);
-    const counter = document.getElementById(counterId);
-    // Must set the max length of the text area for this line to grab.
-    const maxLength = textArea.getAttribute('maxlength');
-    const currentLength = textArea.value.length;
-    counter.textContent = `${currentLength}/${maxLength}`;
+//Use when validating a required text input when you only want alpha numeric characters. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateRequiredTextInputAlphaNumeric(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alpha numberic characters only.');
+            if (isAlphaNumeric) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
 }
-
-

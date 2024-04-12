@@ -60,7 +60,7 @@ namespace EHRApplication.Controllers
             }
 
             return View(allTests);
-        }
+        } 
 
         [HttpGet]
         public IActionResult CreateLabTest()
@@ -81,15 +81,79 @@ namespace EHRApplication.Controllers
         [HttpGet]
         public IActionResult EditLabTest(int testId)
         {
-            return View();
+            LabTestProfile labTest = new LabTestProfile();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                //query to grab the testId, testName, description, units, referenceRange, category from LabTestProfile table
+                string sql = "SELECT testId, testName, description, units, referenceRange, category, Active FROM [dbo].[LabTestProfile] WHERE testId = @testId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                cmd.Parameters.AddWithValue("@testId", testId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        labTest.testId = Convert.ToInt32(dataReader["testId"]);
+                        labTest.testName = Convert.ToString(dataReader["testName"]);
+                        labTest.description = Convert.ToString(dataReader["description"]);
+                        labTest.units = Convert.ToString(dataReader["units"]);
+                        labTest.referenceRange = Convert.ToString(dataReader["referenceRange"]);
+                        labTest.category = Convert.ToString(dataReader["category"]);
+                        labTest.Active = Convert.ToBoolean(dataReader["active"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return View(labTest);
         }
 
 
         [HttpPost]
-        public IActionResult EditLabTest()
+        public IActionResult EditLabTest(LabTestProfile labTest)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string sql = @"UPDATE [dbo].[LabTestProfile] 
+                           SET testName = @testName, 
+                               description = @description, 
+                               units = @units, 
+                               referenceRange = @referenceRange, 
+                               category = @category, 
+                               Active = @active
+                           WHERE testId = @testId";
+
+                    SqlCommand cmd = new SqlCommand(sql, connection);
+                    cmd.Parameters.AddWithValue("@testId", labTest.testId);
+                    cmd.Parameters.AddWithValue("@testName", labTest.testName);
+                    cmd.Parameters.AddWithValue("@description", labTest.description);
+                    cmd.Parameters.AddWithValue("@units", labTest.units);
+                    cmd.Parameters.AddWithValue("@referenceRange", labTest.referenceRange);
+                    cmd.Parameters.AddWithValue("@category", labTest.category);
+                    cmd.Parameters.AddWithValue("@active", labTest.Active);
+
+                    cmd.ExecuteNonQuery();
+
+                    connection.Close();
+                }
+
+                return RedirectToAction("AllLabTests");
+            }
+
+            // If the model state is not valid, return the view with errors
+            return View(labTest);
         }
+
 
     }
 }
