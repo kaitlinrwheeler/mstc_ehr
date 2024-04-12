@@ -6,6 +6,7 @@
     var mhn = ViewBag.MHN;
     <script src="~/js/validation.js"></script>
     <script src="~/js/confirmModal.js" defer></script>
+    var problem = Model.PatientProblemsDetails;
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -17,45 +18,45 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="visitForm" enctype="multipart/form-data">
 
-            <input asp-for="PatientProblem.MHN" value="@mhn" hidden />
-            <input asp-for="PatientProblem.patientProblemsId" hidden />
+            <input asp-for="@problem.MHN" value="@mhn" hidden />
+            <input asp-for="@problem.patientProblemsId" hidden />
 
             <div class="form-group">
                 <label for="priority">Priority Level:</label>
-                <select asp-for="PatientProblem.priority" value="" class="form-control" data-bs-theme="auto">
+                <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
                     <option value=""></option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
                 </select>
-                <span asp-validation-for="PatientProblem.priority" id="priorityError" class="validation-msg"></span>
+                <span asp-validation-for="@problem.priority" id="priorityError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="description">Description:</label>
-                <input type="text" id="description" asp-for="PatientProblem.description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
-                <span asp-validation-for="PatientProblem.description" id="descriptionError" class="validation-msg"></span>
+                <input type="text" id="description" asp-for="@problem.description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
+                <span asp-validation-for="@problem.description" id="descriptionError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="ICD_10">ICD_10:</label>
-                <input type="text" id="ICD_10" asp-for="PatientProblem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'ICD_10')" />
-                <span asp-validation-for="PatientProblem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
+                <input type="text" id="ICD_10" asp-for="@problem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'ICD_10')" />
+                <span asp-validation-for="@problem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="immediacy">Immediacy:</label>
-                <select asp-for="PatientProblem.immediacy" value="" class="form-control" data-bs-theme="auto">
+                <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
                     <option value=""></option>
                     <option value="Routine">Routine</option>
                     <option value="Urgent">Urgent</option>
                 </select>
-                <span asp-validation-for="PatientProblem.immediacy" id="immediacyError" class="validation-msg"></span>
+                <span asp-validation-for="@problem.immediacy" id="immediacyError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
-                <select id="createdBy" class="form-control" asp-for="PatientProblem.createdBy" data-bs-theme="auto">
+                <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
                     <option value="0"></option>
                     @foreach (var provider in ListService.GetProviders())
                     {
@@ -64,12 +65,12 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="PatientProblem.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+                <span asp-validation-for="@problem.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="visitsId">Visit:</label>
-                <select id="visitsId" class="form-control" asp-for="PatientProblem.visitsId" data-bs-theme="auto">
+                <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
                     <option value="0"></option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
@@ -78,20 +79,20 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="PatientProblem.visitsId" id="vitalError" class="validation-msg"></span>
+                <span asp-validation-for="@problem.visitsId" id="vitalError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="active">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input type="radio" id="Yes" asp-for="PatientProblem.active" value="True" />
+                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" />
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input type="radio" id="No" asp-for="PatientProblem.active" value="False" />
+                        <input type="radio" id="No" asp-for="@problem.active" value="False" />
                         <label for="No" style="font-weight: normal;">No</label><br />
                     </div>
                 </div>
-                <span asp-validation-for="PatientProblem.active" id="admittedError" class="validation-msg"></span>
+                <span asp-validation-for="@problem.active" id="admittedError" class="validation-msg"></span>
             </div>
 
             <!-- Submit Button -->

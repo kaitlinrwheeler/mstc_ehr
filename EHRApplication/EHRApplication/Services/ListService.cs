@@ -1157,7 +1157,7 @@ namespace EHRApplication.Services
                         patientProblem.ICD_10 = Convert.ToString(dataReader["ICD_10"]);
                         patientProblem.immediacy = Convert.ToString(dataReader["immediacy"]);
 
-                        patientProblem.createdAt = DateTime.Parse(dataReader["dateGiven"].ToString());
+                        patientProblem.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
                         patientProblem.createdBy = Convert.ToInt32(dataReader["createdBy"]);
                         patientProblem.providers = GetProvidersByProviderId(patientProblem.createdBy);
                         patientProblem.active = Convert.ToBoolean(dataReader["active"]);
@@ -1218,7 +1218,7 @@ namespace EHRApplication.Services
             {
                 //SQL query that is going to update the medication with new data entered by the user.
                 string sql = "UPDATE [PatientProblems] " +
-                    "SET MHN = @MHN, priority = @priority, description = @description, ICD_10 = @ICD_10, immediacy = @immediacy, createdAt = @createdAt, createdBy = @createdBy, active = @active, visitsId = @visitsId" +
+                    "SET MHN = @MHN, priority = @priority, description = @description, ICD_10 = @ICD_10, immediacy = @immediacy, createdAt = @createdAt, createdBy = @createdBy, active = @active, visitsId = @visitsId " +
                     "WHERE patientProblemsId = @problemId";
 
 

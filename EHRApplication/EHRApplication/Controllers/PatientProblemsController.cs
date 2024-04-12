@@ -154,38 +154,13 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult CreateProblemForm(PatientProblems problem)
         {
-            //Validation
-            if (problem.createdBy == 0)
-            {
-                ModelState.AddModelError("PatientProblem.createdBy", "Please select a provider.");
-            } 
-            if (problem.priority == null)
-            {
-                ModelState.AddModelError("PatientProblem.priority", "Please select a priority.");
-            }
-            if (problem.immediacy == null)
-            {
-                ModelState.AddModelError("PatientProblem.immediacy", "Please select an immediacy.");
-            }      
-            if (problem.description == null || problem.description == "")
-            {
-                ModelState.AddModelError("PatientProblem.description", "Please enter something for description.");
-            }          
-            if (problem.ICD_10 == null || problem.ICD_10 == "")
-            {
-                ModelState.AddModelError("PatientProblem.ICD_10", "Please something for ICD_10.");
-            }
-            if (problem.visitsId == 0)
-            {
-                ModelState.AddModelError("PatientProblem.visitsId", "Please select a visit.");
-            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 // Needed to work with the patient banner properly.
                 PortalViewModel viewModel = new PortalViewModel();
                 viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
-                viewModel.PatientProblem = problem;
+                viewModel.PatientProblemsDetails = problem;
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = problem.MHN;
 
@@ -206,11 +181,11 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientProblem = _listService.GetPatientProblemsByProblemId(problemId);
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientProblem.MHN);
+            viewModel.PatientProblemsDetails = _listService.GetPatientProblemsByProblemId(problemId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientProblemsDetails.MHN);
 
             ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = viewModel.PatientProblem.MHN;
+            ViewBag.MHN = viewModel.PatientProblemsDetails.MHN;
 
             return View(viewModel);
         }
@@ -218,38 +193,13 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditProblemForm(PatientProblems problem)
         {
-            //Validation
-            if (problem.createdBy == 0)
-            {
-                ModelState.AddModelError("PatientProblem.createdBy", "Please select a provider.");
-            }
-            if (problem.priority == null)
-            {
-                ModelState.AddModelError("PatientProblem.priority", "Please select a priority.");
-            }
-            if (problem.immediacy == null)
-            {
-                ModelState.AddModelError("PatientProblem.immediacy", "Please select an immediacy.");
-            }
-            if (problem.description == null || problem.description == "")
-            {
-                ModelState.AddModelError("PatientProblem.description", "Please enter something for description.");
-            }
-            if (problem.ICD_10 == null || problem.ICD_10 == "")
-            {
-                ModelState.AddModelError("PatientProblem.ICD_10", "Please something for ICD_10.");
-            }
-            if (problem.visitsId == 0)
-            {
-                ModelState.AddModelError("PatientProblem.visitsId", "Please select a visit.");
-            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
                 // Needed to work with the patient banner properly.
                 PortalViewModel viewModel = new PortalViewModel();
                 viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
-                viewModel.PatientProblem = problem;
+                viewModel.PatientProblemsDetails = problem;
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = problem.MHN;
 

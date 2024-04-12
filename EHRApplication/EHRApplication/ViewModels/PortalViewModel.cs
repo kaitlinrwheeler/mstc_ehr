@@ -20,7 +20,6 @@ namespace EHRApplication.ViewModels
         public List<PatientMedications> PatientMedications { get; set; }
         public List<PatientNotes> PatientNotes { get; set; }
         public List<PatientProblems> PatientProblems { get; set; }
-        public PatientProblems PatientProblem { get; set; }
         public List<Providers> Providers { get; set; }
         public List<Visits> Visits { get; set; }
         public List<Vitals> Vitals { get; set; }
@@ -32,7 +31,8 @@ namespace EHRApplication.ViewModels
         public MedOrders MedOrdersDetails { get; set; }
         public PatientNotes PatientNotesDetails { get; set; }
         public PatientProblems PatientProblemsDetails { get; set; }
-        public Visits VisitDetailsDetails { get; set; }
+        public Visits Visit { get; set; }
+        public Vitals Vital { get; set; }
         public Vitals VitalsDetails { get; set; }
     }
 }
