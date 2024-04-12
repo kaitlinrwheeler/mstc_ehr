@@ -1,0 +1,52 @@
+﻿@inject EHRApplication.Services.IListService listService
+@model EHRApplication.Models.Providers
+@{
+    var provider = Model;
+    ViewData["Title"] = "myEHR | Create Provider";
+    <link rel="stylesheet" href="~/css/forms.css" />
+    <script src="~/js/validation.js"></script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Create Provider</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="providerForm">
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="FirstName">First Name:</label>
+                <input asp-for="firstName" type="text" id="FirstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
+                <span asp-validation-for="firstName" id="FirstNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="LastName">Last Name:</label>
+                <input asp-for="lastName" type="text" id="LastName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('LastName', 25, 'last name')" />
+                <span asp-validation-for="lastName" id="LastNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Specialty -->
+            <div class="form-group">
+                <label for="Specialty">Specialty:</label>
+                <input asp-for="specialty" type="text" id="Specialty" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('Specialty', 25, 'specialty')" />
+                <span asp-validation-for="specialty" id="SpecialtyError" class="validation-msg"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+            </div>
+        </form>
+    </div>
+</section>
