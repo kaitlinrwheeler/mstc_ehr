@@ -1,4 +1,3 @@
-
 // Adds event listener to active status switch boxes to handle database changes.
 document.addEventListener('DOMContentLoaded', function () {
     // Gets all active checkboxes/sliders
@@ -7,12 +6,16 @@ document.addEventListener('DOMContentLoaded', function () {
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function (event) {
             event.preventDefault(); // Prevent the default form submission
-            const providerId = this.dataset.providerId; // Only the one that was selected
+            const testId = this.dataset.providerId; // Only the one that was selected
             const isActive = this.checked; // New switch position
             // Selects the label associated with the checkbox that was changed
             const statusLabel = this.parentElement.querySelector('.form-check-label');
 
-            fetch(`/Providers/UpdateProviderActiveStatus?providerId=${providerId}&activeStatus=${isActive}`)
+            fetch(`/Providers/UpdateProviderActiveStatus?id=${providerId}&activeStatus=${isActive}`, {
+                method: 'POST',
+                headers: {
+                }
+            })
                 .then(response => {
                     if (response.ok) {
                         // If the server returns a success status, update the <span> text based on the new active status
