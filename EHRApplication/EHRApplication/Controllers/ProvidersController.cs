@@ -34,7 +34,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 //query to grab the providerID, firstname, lastname, and specialty
-                string sql = "SELECT providerId, firstName, lastName, specialty FROM [dbo].[Providers] ORDER BY providerId ASC";
+                string sql = "SELECT providerId, firstName, lastName, specialty, active FROM [dbo].[Providers] ORDER BY CASE WHEN active = 1 THEN 0 ELSE 1 END, providerId ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -47,7 +47,8 @@ namespace EHRApplication.Controllers
                             providerId = Convert.ToInt32(dataReader["providerId"]),
                             firstName = Convert.ToString(dataReader["firstName"]),
                             lastName = Convert.ToString(dataReader["lastName"]),
-                            specialty = Convert.ToString(dataReader["specialty"])
+                            specialty = Convert.ToString(dataReader["specialty"]),
+                            active = Convert.ToBoolean(dataReader["active"])
                         };
 
                         allProviders.Add(provider);
@@ -131,7 +132,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "UPDATE [dbo].[Providers] SET Active = @active WHERE providerId = @providerId";
+                string sql = "UPDATE [dbo].[Providers] SET active = @active WHERE providerId = @providerId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 

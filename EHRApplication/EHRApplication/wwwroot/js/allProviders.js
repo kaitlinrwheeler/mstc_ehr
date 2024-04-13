@@ -6,14 +6,15 @@ document.addEventListener('DOMContentLoaded', function () {
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function (event) {
             event.preventDefault(); // Prevent the default form submission
-            const testId = this.dataset.providerId; // Only the one that was selected
+            const providerId = this.getAttribute('data-providerId'); // Only the one that was selected
             const isActive = this.checked; // New switch position
             // Selects the label associated with the checkbox that was changed
             const statusLabel = this.parentElement.querySelector('.form-check-label');
 
-            fetch(`/Providers/UpdateProviderActiveStatus?id=${providerId}&activeStatus=${isActive}`, {
+            fetch(`/Providers/UpdateProviderActiveStatus?providerId=${providerId}&activeStatus=${isActive}`, {
                 method: 'POST',
                 headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                 }
             })
                 .then(response => {
