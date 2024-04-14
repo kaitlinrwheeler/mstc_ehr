@@ -11,6 +11,7 @@ namespace EHRApplication.Models
         public string medName { get; set; }
 
         [Required(ErrorMessage ="Please enter a description.")]
+        [StringLength(100, ErrorMessage = "Description must nut exceed 100 characters.")]
         public string description { get; set; }
 
         [Required(ErrorMessage ="Please enter a route")]
