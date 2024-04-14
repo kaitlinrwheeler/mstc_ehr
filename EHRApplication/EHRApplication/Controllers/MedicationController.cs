@@ -91,6 +91,7 @@ namespace EHRApplication.Controllers
                         PatientMedications medication = new PatientMedications();
 
                         // Populate the medication object with data from the database.
+                        medication.patientMedId = Convert.ToInt32(dataReader["patientMedId"]);
                         medication.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medication.medId = Convert.ToInt32(dataReader["medId"]);
                         medication.medProfile = _listService.GetMedicationProfileByMedId(medication.medId);
@@ -283,7 +284,7 @@ namespace EHRApplication.Controllers
                 _listService.UpdatePatientMed(medication);
             }
 
-            return RedirectToAction("PatientMedHistory", new { mhn = medication.MHN });
+            return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
         }
     }
 }
