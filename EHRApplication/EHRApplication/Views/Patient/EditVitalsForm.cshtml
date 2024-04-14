@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group">
-                <label for="temperature">Temperature:</label>
+                <label for="temperature">Temperature (°F):</label>
                 <input type="number" step="any" id="temperature" asp-for="Vital.temperature" class="form-control" data-bs-theme="auto" maxlength="9" onblur="validateRequiredNumberInput('temperature', 100, 'temperature')" required />
                 <span asp-validation-for="Vital.temperature" id="temperatureError" class="validation-msg"></span>
             </div>
@@ -79,25 +79,25 @@
             </div>
 
             <div class="form-group">
-                <label for="heightInches">Height Inches:</label>
+                <label for="heightInches">Height (inches):</label>
                 <input type="text" step="any" id="heightInches" asp-for="Vital.heightInches" class="form-control" data-bs-theme="auto" onblur="validateRequiredNumberInput('heightInches', 100, 'height inches')" required />
                 <span asp-validation-for="Vital.heightInches" id="heightInchesError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="weightPounds">Weight Pounds:</label>
+                <label for="weightPounds">Weight (pounds):</label>
                 <input type="text" step="any" id="weightPounds" asp-for="Vital.weightPounds" class="form-control" data-bs-theme="auto" onblur="validateRequiredNumberInput('weightPounds', 100, 'weight pounds')" required />
                 <span asp-validation-for="Vital.weightPounds" id="weightPoundsError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="intakeMilliLiters">Intake in Milliliters:</label>
+                <label for="intakeMilliLiters">Intake (mL):</label>
                 <input type="number" id="intakeMilliLiters" asp-for="Vital.intakeMilliLiters" class="form-control" data-bs-theme="auto" maxlength="9" onblur="validateRequiredNumberInput('intakeMilliLiters', 100, 'intake MilliLiters')" required />
                 <span asp-validation-for="Vital.intakeMilliLiters" id="intakeMilliLitersError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="outputMilliLiters">Output in Milliliters:</label>
+                <label for="outputMilliLiters">Output (mL):</label>
                 <input type="number" id="outputMilliLiters" asp-for="Vital.outputMilliLiters" class="form-control" data-bs-theme="auto" maxlength="9" onblur="validateRequiredNumberInput('outputMilliLiters', 100, 'output MilliLiters')" required />
                 <span asp-validation-for="Vital.outputMilliLiters" id="outputMilliLitersError" class="validation-msg"></span>
             </div>
