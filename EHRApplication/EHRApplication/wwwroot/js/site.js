@@ -132,18 +132,17 @@ var requirementsVisible = false; // Indicates whether the requirements popup is 
 var hoveringPopup = false; // Indicates whether the mouse is currently hovering over the requirements popup
 
 // Function to display the requirements popup
-function showRequirements() {
+function showRequirements(popupId) {
     // Set the display style of the requirements popup to block to make it visible
-    document.getElementById("requirementsPopup").style.display = "block";
+    document.getElementById(popupId).style.display = "block";
 }
-
 // Function to hide the requirements popup
-function hideRequirements() {
+function hideRequirements(popupId) {
     // Check if the requirements popup should be hidden
     if (!requirementsVisible && !hoveringPopup) {
         // If neither the requirements popup is visible nor the mouse is hovering over it,
         // set the display style of the requirements popup to none to hide it
-        document.getElementById("requirementsPopup").style.display = "none";
+        document.getElementById(popupId).style.display = "none";
     }
 }
 

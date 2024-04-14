@@ -1,24 +1,34 @@
 ﻿@{
     ViewData["Title"] = "myEHR | All Medications";
     @model List<MedicationProfile>
-
+    <script src="~/js/allMedications.js" defer></script>
 }
 
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            All Medications
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100" data-bs-theme="auto">
+                All Medications
+            </div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedication">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.Any()){
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">MedId:</th>
+                            <th scope="col">Med Id:</th>
                             <th scope="col">Med Name:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">Route:</th>
+                            <th scope="col">Active Status:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +39,19 @@
                                 <td>@med.medName</td>
                                 <td>@med.description</td>
                                 <td>@med.route</td>
+
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@med.medId" data-medId="@med.medId" @(med.activeStatus ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Yes" : "No")</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
+                                    <form method="post">
+                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedication" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                    </form>
+                                </td>
                             </tr>
                         }
                     </tbody>
