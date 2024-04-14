@@ -29,23 +29,32 @@
                     <tbody>
                         @foreach (var medication in Model.PatientMedications)
                         {
+                            var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
+
                             <tr class="hover-highlighting">
                                 <td>@medication.medProfile.medName</td>@* 
                                 <td>@medication.category</td> *@
                                 <td>@medication.activeStatus</td>
                                 <td>
-                                    @*This will only display the first 20 characters in the saved data in the model*@
-                                    @medication.prescriptionInstructions.Substring(0,15)
-                                    <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(this)" onmouseout="hideRequirements(this)">
-                                        <div class="" data-bs-theme="auto" id="questionIcon">
-                                            ...
-                                        </div>
-                                        <div class="requirements-popup" data-bs-theme="auto" id="requirementsPopup">
-                                            <ul>
-                                                @medication.prescriptionInstructions
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    @if(medication.prescriptionInstructions.Length <= 15)
+                                    {
+                                        @medication.prescriptionInstructions
+                                    }
+                                    else
+                                    {
+                                        @*This will only display the first 20 characters in the saved data in the model*@
+                                        @medication.prescriptionInstructions.Substring(0,15)
+                                        <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(@popupId)" onmouseout="hideRequirements(@popupId)">
+                                            <div class="" data-bs-theme="auto" id="questionIcon">
+                                                ...
+                                            </div>
+                                            <div class="requirements-popup" data-bs-theme="auto" id="@popupId">
+                                                <ul>
+                                                    @medication.prescriptionInstructions
+                                                </ul>
+                                            </div>
+                                        </div>                                        
+                                    }
                                 </td>
                                 <td>@medication.dosage</td>
                                 <td>@medication.providers.firstName @medication.providers.lastName</td>
