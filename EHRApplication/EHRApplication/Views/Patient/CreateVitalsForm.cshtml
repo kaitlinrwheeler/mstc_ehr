@@ -10,7 +10,7 @@
 <section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Record Vital</h3>
+        <h3 class="my-3">Record Vitals</h3>
     </div>
 
     <div class="card-body" data-bs-theme="auto">
@@ -33,15 +33,15 @@
             </div>
 
             <div class="form-group">
-                <label for="painLevel">Pain Level:</label>
+                <label for="painLevel">Pain Level (5 is most severe):</label>
                 <select asp-for="Vital.painLevel" value="" class="form-control" data-bs-theme="auto">
-                    <option value="-1"></option>
-                    <option value="0">No Pain</option>
-                    <option value="1">Minor Pain</option>
-                    <option value="2">Moderate Pain</option>
-                    <option value="3">Strong Pain</option>
-                    <option value="4">Intense Pain</option>
-                    <option value="5">Worst Pain</option>
+                    <option value=""></option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                 </select>
                 <span asp-validation-for="Vital.painLevel" id="painLevelError" class="validation-msg"></span>
             </div>
