@@ -61,5 +61,8 @@ namespace EHRApplication.Services
         void UpdateVitals(Vitals vital);
 
         public decimal BMICalculator(decimal weight, decimal height);
+
+        void InsertIntoMedProfile(MedicationProfile medProfile);
+        void UpdateMedProfile(MedicationProfile medProfile);
     }
 }

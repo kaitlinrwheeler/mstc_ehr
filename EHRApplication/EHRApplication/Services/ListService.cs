@@ -278,7 +278,7 @@ namespace EHRApplication.Services
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "SELECT address, city, state, zipcode, phone, email  FROM [dbo].[PatientContact] WHERE MHN = @mhn";
+                string sql = "SELECT address, city, state, zipcode, phone, email, patientContactId, ECFirstName, ECLastName, ECRelationship, ECPhone FROM [dbo].[PatientContact] WHERE MHN = @mhn";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 // Replace placeholder with paramater to avoid sql injection.
@@ -288,15 +288,21 @@ namespace EHRApplication.Services
                     while (dataReader.Read())
                     {
                         //Setting the data that was just pulled from the database into an instance of the patient contact model.
+                        patientContact.patientContactId = Convert.ToInt32(dataReader["patientContactId"]);
                         patientContact.address = Convert.ToString(dataReader["address"]);
                         patientContact.city = Convert.ToString(dataReader["city"]);
                         patientContact.state = Convert.ToString(dataReader["state"]);
                         patientContact.zipcode = Convert.ToInt32(dataReader["zipcode"]);
                         patientContact.phone = Convert.ToString(dataReader["phone"]);
                         patientContact.email = Convert.ToString(dataReader["email"]);
+                        patientContact.ECFirstName = Convert.ToString(dataReader["ECFirstName"]);
+                        patientContact.ECLastName = Convert.ToString(dataReader["ECLastName"]);
+                        patientContact.ECRelationship = Convert.ToString(dataReader["ECFirstName"]);
+                        patientContact.ECPhone = Convert.ToString(dataReader["ECPhone"]);
                     }
                 };
                 connection.Close();
+                patientContact.MHN = mhn;
                 return patientContact;
             }
         }
@@ -742,6 +748,56 @@ namespace EHRApplication.Services
             }
 
             return patientDemographic;
+        }
+
+        public void InsertIntoMedProfile(MedicationProfile medProfile)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [MedicationProfile] (medName, description, route) " +
+                    "VALUES (@medName, @description, @route)";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@medName", SqlDbType.VarChar).Value = medProfile.medName;
+                    command.Parameters.Add("@description", SqlDbType.VarChar).Value = medProfile.description;
+                    command.Parameters.Add("@route", SqlDbType.VarChar).Value = medProfile.route;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void UpdateMedProfile(MedicationProfile medProfile)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [MedicationProfile] " +
+                    "SET medName = @medName, description = @description, route = @route " +
+                    "WHERE medId = @medId";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@medName", SqlDbType.VarChar).Value = medProfile.medName;
+                    command.Parameters.Add("@description", SqlDbType.VarChar).Value = medProfile.description;
+                    command.Parameters.Add("@route", SqlDbType.VarChar).Value = medProfile.route;
+                    command.Parameters.Add("@medId", SqlDbType.Int).Value = medProfile.medId; 
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
         }
 
         /// <summary>
