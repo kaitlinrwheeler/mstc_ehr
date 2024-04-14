@@ -10,7 +10,7 @@
 <section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Edit Medication</h3>
+        <h3 class="my-3">Create Medication</h3>
     </div>
 
     <div class="card-body" data-bs-theme="auto">
@@ -35,10 +35,21 @@
             <label for="route">Route:</label>
                 <select asp-for="route" id="route" name="route" class="form-control" data-bs-theme="auto">
                     <option value=""></option>
-                    <option value="Oral">Oral</option>
+                    <option value="Buccal">Buccal</option>
+                    <option value="Inhalation">Inhalation</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intravenous">Intravenous</option>
                     <option value="Nasal">Nasal</option>
-                    <option value="Injection">Injection</option>
+                    <option value="Ophthalmic">Ophthalmic</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Otic">Otic</option>
                     <option value="Rectal">Rectal</option>
+                    <option value="Subcutaneous">Subcutaneous</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Topical">Topical</option>
+                    <option value="Transdermal">Transdermal</option>
+                    <option value="Vaginal">Vaginal</option>
+
                 </select>
                 <span asp-validation-for="route" class="validation-msg"></span>
             </div>
