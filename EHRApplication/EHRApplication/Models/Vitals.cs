@@ -25,7 +25,7 @@ namespace EHRApplication.Models
         public int patientId { get; set; }
 
         [Required(ErrorMessage = "Please enter a pain level.")]
-        [Range(0, 3, ErrorMessage = "Please select a pain level.")]
+        [Range(0, 5, ErrorMessage = "Please select a pain level.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
         public int painLevel { get; set; }
 
@@ -45,7 +45,7 @@ namespace EHRApplication.Models
         public int pulse { get; set; }
 
         [Required(ErrorMessage = "Please enter a respiratory rate.")]
-        [Range(typeof(int), "10", "40", ErrorMessage = "Respiratory rate must be between 10 and 40.")]
+        [Range(typeof(int), "10", "60", ErrorMessage = "Respiratory rate must be between 10 and 60.")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Pain level must be a number.")]
         public int respiratoryRate { get; set; }
 
