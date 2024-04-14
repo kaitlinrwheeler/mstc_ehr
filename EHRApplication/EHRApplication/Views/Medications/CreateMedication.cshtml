@@ -1,0 +1,64 @@
+﻿@model MedicationProfile
+@{
+    ViewData["Title"] = "myEHR | Create Medication";
+    <link rel="stylesheet" href="~/css/forms.css">
+    <script src="~/js/validation.js"></script>
+    //<script src="~/js/confirmModal.js" defer></script>
+}
+
+
+<section class="my-5 w-75" data-bs-theme="auto">
+
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Create Medication</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="patientForm" enctype="multipart/form-data">
+
+            <!-- Medication Name -->
+            <div class="form-group">
+                <label for="medName">Medication Name:</label>
+                <input asp-for="medName" type="text" id="medName" name="medName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('medName', 25, 'med name')" />
+                <span asp-validation-for="medName" id="medNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input asp-for="description" type="text" id="description" name="description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
+                <span asp-validation-for="description" id="descriptionError" class="validation-msg"></span>
+            </div>
+
+            <!-- Route -->
+            <div class="form-group">
+            <label for="route">Route:</label>
+                <select asp-for="route" id="route" name="route" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="Buccal">Buccal</option>
+                    <option value="Inhalation">Inhalation</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intravenous">Intravenous</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Ophthalmic">Ophthalmic</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Otic">Otic</option>
+                    <option value="Rectal">Rectal</option>
+                    <option value="Subcutaneous">Subcutaneous</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Topical">Topical</option>
+                    <option value="Transdermal">Transdermal</option>
+                    <option value="Vaginal">Vaginal</option>
+
+                </select>
+                <span asp-validation-for="route" class="validation-msg"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <input type="submit" class="btn blue-button" value="Submit" />
+            </div>
+
+        </form>
+    </div>
+</section>

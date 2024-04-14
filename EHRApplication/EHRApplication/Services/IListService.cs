@@ -50,5 +50,8 @@ namespace EHRApplication.Services
         CarePlan GetCarePlanByVisitId(int visitId);
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
+
+        void InsertIntoMedProfile(MedicationProfile medProfile);
+        void UpdateMedProfile(MedicationProfile medProfile);
     }
 }
