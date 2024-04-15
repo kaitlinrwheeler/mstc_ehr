@@ -789,7 +789,10 @@ namespace EHRApplication.Controllers
                 viewModel.PatientDemographic.race = string.Join(", ", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
                 viewModel.PatientDemographic.race += ",Other";
             }
-
+            if(viewModel.PatientDemographic.preferredPronouns == "Other")
+            {
+                viewModel.PatientDemographic.preferredPronouns = viewModel.PatientDemographic.OtherPronouns;
+            }
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
             return View(viewModel);
