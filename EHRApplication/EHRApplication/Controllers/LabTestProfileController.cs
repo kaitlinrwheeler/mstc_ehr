@@ -2,6 +2,7 @@
 using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EHRApplication.Controllers
 {
@@ -69,13 +70,41 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateLabTest(LabTestProfile test)
+        public IActionResult CreateLabTest(LabTestProfile labTest)
         {
+            // We want to default to active when created.
+            labTest.Active = true;
+
             if (!ModelState.IsValid)
             {
-                return View(test);
+                return View(labTest);
             }
-            return View();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Insert a new record into the LabTestProfile table
+                string sql = @"INSERT INTO [dbo].[LabTestProfile] 
+                           (testName, description, units, referenceRange, category, Active)
+                           VALUES 
+                           (@testName, @description, @units, @referenceRange, @category, @active)";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@testName", labTest.testName);
+                cmd.Parameters.AddWithValue("@description", labTest.description);
+                cmd.Parameters.AddWithValue("@units", labTest.units);
+                cmd.Parameters.AddWithValue("@referenceRange", labTest.referenceRange);
+                cmd.Parameters.AddWithValue("@category", labTest.category);
+                cmd.Parameters.AddWithValue("@active", labTest.Active);
+
+                cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+
+
+            return RedirectToAction("AllLabTests");
         }
 
         [HttpGet]
@@ -118,6 +147,9 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditLabTest(LabTestProfile labTest)
         {
+            // We want to default to active when edited.
+            labTest.Active = true;
+
             if (ModelState.IsValid)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
