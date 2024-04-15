@@ -129,6 +129,7 @@ namespace EHRApplication.Controllers
                         //Gets the contact info for this patient using the MHN that links to the contact info table
                         patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
+                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 

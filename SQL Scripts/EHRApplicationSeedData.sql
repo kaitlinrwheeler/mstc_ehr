@@ -162,52 +162,52 @@ VALUES
 
 -- Dummy data for Visits table
 -- Patient Johnny (MHN = 1)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (1, 1, 1, '2023-01-10', '10:00:00', 1, 'Routine check-up'),
-    (1, 2, 2, '2023-02-15', '14:30:00', 0, 'Discussion about medication'),
-    (1, 3, 3, '2023-03-20', '11:15:00', 0, 'Follow-up after recent illness');
+    (1, 1, '2023-01-10', '10:00:00', 1, 'Routine check-up'),
+    (1, 2, '2023-02-15', '14:30:00', 0, 'Discussion about medication'),
+    (1, 3, '2023-03-20', '11:15:00', 0, 'Follow-up after recent illness');
 
 -- Patient Moira (MHN = 2)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (2, 2, 2, '2023-01-05', '09:45:00', 0, 'Prescription renewal'),
-    (2, 1, 1, '2023-02-20', '13:30:00', 1, 'Admitted for minor surgery');
+    (2, 2, '2023-01-05', '09:45:00', 0, 'Prescription renewal'),
+    (2, 1, '2023-02-20', '13:30:00', 1, 'Admitted for minor surgery');
 
 -- Patient David (MHN = 3)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (3, 3, 3, '2023-03-05', '10:30:00', 0, 'Discussion about anxiety levels'),
-    (3, 1, 1, '2023-04-15', '15:00:00', 0, 'Follow-up on gastritis treatment');
+    (3, 3, '2023-03-05', '10:30:00', 0, 'Discussion about anxiety levels'),
+    (3, 1, '2023-04-15', '15:00:00', 0, 'Follow-up on gastritis treatment');
 
 -- Patient Alexis (MHN = 4)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (4, 4, 4, '2023-05-10', '11:30:00', 0, 'Annual check-up'),
-    (4, 2, 2, '2023-06-20', '14:00:00', 0, 'Discussion about allergies');
+    (4, 4, '2023-05-10', '11:30:00', 0, 'Annual check-up'),
+    (4, 2, '2023-06-20', '14:00:00', 0, 'Discussion about allergies');
 
 -- Patient Stevie (MHN = 5)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (5, 3, 3, '2023-07-15', '13:45:00', 0, 'Physical therapy session'),
-    (5, 1, 1, '2023-08-25', '12:15:00', 0, 'Follow-up after injury');
+    (5, 3, '2023-07-15', '13:45:00', 0, 'Physical therapy session'),
+    (5, 1, '2023-08-25', '12:15:00', 0, 'Follow-up after injury');
 
 
 
 -- Dummy data for Vitals table
 INSERT INTO [dbo].[Vitals] ([visitId], [patientId], [painLevel], [temperature], [bloodPressure], [respiratoryRate], [pulseOximetry], [heightInches], [weightPounds], [BMI], [intakeMilliLiters], [outputMilliLiters])
 VALUES 
-(1, 1, 2, 98.6, 120, 18, 98.5, 68.5, 155, 23.3, 1500, 1200),
-(2, 1, 1, 99.2, 118, 16, 99.0, 70.2, 160, 23.9, 1300, 1100),
-(3, 1, 0, 98.9, 122, 20, 97.8, 68.9, 152, 22.8, 1600, 1400),
-(4, 2, 1, 98.0, 115, 22, 98.7, 67.4, 145, 22.6, 1400, 1300),
-(5, 2, 2, 99.5, 121, 19, 98.2, 69.8, 158, 24.3, 1200, 1000),
-(6, 3, 0, 98.8, 117, 21, 99.3, 66.5, 138, 21.0, 1800, 1600),
-(7, 3, 1, 99.1, 120, 18, 98.9, 68.3, 153, 23.0, 1700, 1500),
-(8, 4, 2, 98.7, 116, 20, 97.5, 70.1, 162, 24.5, 1100, 900),
-(9, 4, 0, 98.4, 114, 24, 98.0, 68.7, 149, 22.3, 1900, 1800),
-(10, 5, 1, 99.3, 119, 19, 98.4, 67.9, 142, 21.5, 2000, 1700),
-(11, 5, 0, 98.5, 118, 23, 97.7, 66.8, 140, 22.1, 1600, 1400);
+(1, 1, 2, 98.6, 120, 18, 98, 68.5, 155, 23.3, 1500, 1200),
+(2, 1, 1, 99.2, 118, 16, 99, 70.2, 160, 23.9, 1300, 1100),
+(3, 1, 0, 98.9, 122, 20, 97, 68.9, 152, 22.8, 1600, 1400),
+(4, 2, 1, 98.0, 115, 22, 98, 67.4, 145, 22.6, 1400, 1300),
+(5, 2, 2, 99.5, 121, 19, 98, 69.8, 158, 24.3, 1200, 1000),
+(6, 3, 0, 98.8, 117, 21, 99, 66.5, 138, 21.0, 1800, 1600),
+(7, 3, 1, 99.1, 120, 18, 98, 68.3, 153, 23.0, 1700, 1500),
+(8, 4, 2, 98.7, 116, 20, 97, 70.1, 162, 24.5, 1100, 900),
+(9, 4, 0, 98.4, 114, 24, 98, 68.7, 149, 22.3, 1900, 1800),
+(10, 5, 1, 99.3, 119, 19, 98, 67.9, 142, 21.5, 2000, 1700),
+(11, 5, 0, 98.5, 118, 23, 97, 66.8, 140, 22.1, 1600, 1400);
 
 
 

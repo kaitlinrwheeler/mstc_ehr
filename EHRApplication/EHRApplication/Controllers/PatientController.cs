@@ -5,9 +5,14 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using Moq;
+using System;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -25,7 +30,7 @@ namespace EHRApplication.Controllers
             _logService = logService;
             this._connectionString = base._connectionString;
             _listService = listService;
-    }
+        }
 
         public IActionResult AllPatients()
         {
@@ -80,18 +85,26 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(PatientDemographic patient)
+        public async Task<IActionResult> Index(PatientDemographic patient)
         {
-            //Testing to see if the date of birth entered was a future date or not
+            // Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
-                //adding an error to the DOB model to display an error.
+                // Adding an error to the DOB model to display an error.
                 ModelState.AddModelError("DOB", "Date cannot be in the future.");
                 return View(patient);
             }
-            //returns the model if null because there were errors in validating it
+
+            // Returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
+                return View(patient);
+            }
+
+            // check if the file is too large
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 4 * 1024 * 1024)
+            {
+                ModelState.AddModelError("patientImageFile", "File size must be less than 4MB.");
                 return View(patient);
             }
 
@@ -127,7 +140,7 @@ namespace EHRApplication.Controllers
                 // save file to disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    patient.patientImageFile.CopyToAsync(stream);
+                    await patient.patientImageFile.CopyToAsync(stream);
                 }
 
                 // save filepath to pt image property
@@ -136,16 +149,14 @@ namespace EHRApplication.Controllers
             }
 
             // process race selection
-            if (patient.race == null && !string.IsNullOrEmpty(patient.OtherRace))
+            if (patient.race == null && patient.raceList.Contains("Other") && !string.IsNullOrEmpty(patient.OtherRace))
             {
-                // if other race is chosen rather than offered selection
-                // set race to 'other race' property
-                patient.race = patient.OtherRace;
+                //removes all elements form race list that equal the parameter given in this case that is Other
+                patient.raceList.RemoveAll(r => string.Equals(r, "Other", StringComparison.OrdinalIgnoreCase));
+                patient.raceList.Add(patient.OtherRace);
             }
-            else
-            {
-                patient.race = string.Join(",", patient.raceList);
-            }
+
+            patient.race = string.Join(", ", patient.raceList);
 
             // process preferred pronouns selection
             if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
@@ -161,7 +172,7 @@ namespace EHRApplication.Controllers
                 // if other gender is chosen rather than offered selection
                 // set gender to 'other gender' property
                 patient.gender = patient.OtherGender;
-            }            
+            }
 
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
@@ -201,6 +212,7 @@ namespace EHRApplication.Controllers
             ModelState.Clear();
             return View();
         }
+
 
         public IActionResult PatientOverview(int mhn)
         {
@@ -251,6 +263,7 @@ namespace EHRApplication.Controllers
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                         portalViewModel.PatientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
+                        portalViewModel.PatientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -265,8 +278,8 @@ namespace EHRApplication.Controllers
         public IActionResult PatientVisits(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
-            
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
 
             // New list to hold all the patients in the database.
             List<Visits> patientVisits = _listService.GetPatientVisitsByMHN(mhn);
@@ -281,8 +294,8 @@ namespace EHRApplication.Controllers
         public IActionResult PatientAllergies(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
-         
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
             // List to hold the patient's list of allergies.
             List<PatientAllergies> allergies = new List<PatientAllergies>();
 
@@ -388,6 +401,7 @@ namespace EHRApplication.Controllers
                         patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
                         patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
                         patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
+                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
                     }
                 }
 
@@ -401,10 +415,16 @@ namespace EHRApplication.Controllers
 
 
 
+
+
+
+
+
+
         public IActionResult PatientInsurance(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientInsurance> insurances = new List<PatientInsurance>();
@@ -425,7 +445,7 @@ namespace EHRApplication.Controllers
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
-                    { 
+                    {
                         // Create a new allergy object for each record.
                         PatientInsurance insurance = new PatientInsurance();
 
@@ -458,7 +478,7 @@ namespace EHRApplication.Controllers
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
@@ -475,7 +495,7 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<Vitals> vitals = new List<Vitals>();
@@ -492,7 +512,6 @@ namespace EHRApplication.Controllers
                 // Replace placeholder with paramater to avoid sql injection.
                 cmd.Parameters.AddWithValue("@mhn", mhn);
 
-
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
                     while (dataReader.Read())
@@ -506,14 +525,15 @@ namespace EHRApplication.Controllers
                         vital.visits = _listService.GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
                         vital.temperature = dataReader.GetDecimal("temperature");
-                        vital.bloodPressure = dataReader.GetInt32("bloodPressure");
+                        vital.bloodPressure = dataReader.GetString("bloodPressure");
                         vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
-                        vital.pulseOximetry = dataReader.GetDecimal("pulseOximetry");
+                        vital.pulseOximetry = dataReader.GetInt32("pulseOximetry");
                         vital.heightInches = dataReader.GetDecimal("heightInches");
                         vital.weightPounds = dataReader.GetDecimal("weightPounds");
                         vital.BMI = dataReader.GetDecimal("BMI");
-                        vital.intakeMilliLiters = dataReader.GetDecimal("intakeMilliliters");
-                        vital.outputMilliLiters = dataReader.GetDecimal("outputMilliliters");
+                        vital.intakeMilliLiters = dataReader.GetInt32("intakeMilliliters");
+                        vital.outputMilliLiters = dataReader.GetInt32("outputMilliliters");
+                        vital.pulse = dataReader.GetInt32("pulse");
 
                         // Add the vital to the list
                         vitals.Add(vital);
@@ -535,7 +555,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateActiveStatus(int mhn, bool activeStatus)
+        public IActionResult UpdatePatientActiveStatus(int mhn, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
@@ -583,6 +603,23 @@ namespace EHRApplication.Controllers
 
                 try
                 {
+                    // get patient image file name
+                    string getImageSql = "SELECT patientImage FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    string patientImageFileName = string.Empty;
+
+                    using (SqlCommand getImageCmd = new SqlCommand(getImageSql, connection, transaction))
+                    {
+                        getImageCmd.Parameters.AddWithValue("@mhn", mhn);
+                        using (var reader = getImageCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // check if db value is null before assigning
+                                patientImageFileName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                            }
+                        }
+                    }
+
                     // SQL query to delete the patient and related records
                     string deletePatientSql = "DELETE FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
 
@@ -630,6 +667,16 @@ namespace EHRApplication.Controllers
                         }
                     }
 
+                    // delete the patient image file if it exists
+                    var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var imageFilePath = Path.Combine(imageDirectory, patientImageFileName);
+
+                    // check if file exists before deleting
+                    if (System.IO.File.Exists(imageFilePath))
+                    {
+                        System.IO.File.Delete(imageFilePath);
+                    }
+
                     // If everything went well, commit the transaction
                     transaction.Commit();
 
@@ -653,7 +700,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientNotes(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<PatientNotes> notes = new List<PatientNotes>();
@@ -680,7 +727,7 @@ namespace EHRApplication.Controllers
 
                         // Populate the note object with data from the database.
                         //TODO: make this get the right date only data type.
-                        //note.occurredOn = Convert.ToString(dataReader["occurrdeOn"]);
+                        //note.occurredOn = Convert.ToString(dataReader["occurredOn"]);
                         note.occurredOn = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("occurredOn")));
                         note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
                         note.providers = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
@@ -693,14 +740,361 @@ namespace EHRApplication.Controllers
                         notes.Add(note);
                     }
                 }
+            }
+            viewModel.PatientNotes = notes;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
 
-                viewModel.PatientNotes = notes;
+            return View(viewModel);
+        }
+
+        public IActionResult EditPatientForm(int mhn)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            // Define the list of races to remove
+            List<string> racesToRemove = new List<string>
+            {
+                "Asian",
+                "American Indian or Alaska Native",
+                "Black or African American",
+                "White"
+            };
+            // Remove the specified races from the race field
+            var otherRace = string.Join(", ", viewModel.PatientDemographic.race.Split(',')
+                .Select(r => r.Trim())
+                .Where(r => !racesToRemove.Contains(r))
+                .ToList());
+
+            //This will see if the data in the table was entered using the other table text input and display that for the user.
+            if(viewModel.PatientDemographic.gender != "Male" && viewModel.PatientDemographic.gender != "Female" && viewModel.PatientDemographic.gender != "Non-binary")
+            {
+                //Setting the other gender object equal to what is in the table as there is no other gender column in the table
+                viewModel.PatientDemographic.OtherGender = viewModel.PatientDemographic.gender;
+                viewModel.PatientDemographic.gender = "Other";
+            }
+            if (viewModel.PatientDemographic.preferredPronouns != "He/Him" && viewModel.PatientDemographic.preferredPronouns != "She/Her" && viewModel.PatientDemographic.preferredPronouns != "They/Them")
+            {
+                //Setting the other pronouns object equal to what is in the table as there is no other pronouns column in the table
+                viewModel.PatientDemographic.OtherPronouns = viewModel.PatientDemographic.preferredPronouns;
+                viewModel.PatientDemographic.preferredPronouns = "Other";
+            }
+            if (!otherRace.IsNullOrEmpty())
+            {
+                //Setting the other race if there was an input entered using the other race input
+                viewModel.PatientDemographic.OtherRace = otherRace;
+                //removes data from the race.
+                viewModel.PatientDemographic.race = string.Join(", ", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
+                viewModel.PatientDemographic.race += ",Other";
+            }
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientForm(PatientDemographic patient)
+        {
+            //Testing to see if the date of birth entered was a future date or not
+            if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
+            {
+                //adding an error to the DOB model to display an error.
+                ModelState.AddModelError("DOB", "Date cannot be in the future.");
+                return View(patient);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                if (!patient.raceList.IsNullOrEmpty())
+                {
+                    patient.race = string.Join(", ", patient.raceList);
+                }
+                return View(patient);
+            }
+
+            // process file upload
+            if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
+            {
+                // define permitted image file types
+                var allowedFileTypes = new[] { ".jpg", ".png" };
+                var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
+
+                // validate file type
+                if (!allowedFileTypes.Contains(extentions))
+                {
+                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
+                    return View(patient);
+                }
+
+                // create filepath to storage location
+                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                // check for existence of directory and create if it doesn't exist
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+
+                // create and assign new filename before storage
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(patient.patientImageFile.FileName);
+
+                // create full filepath
+                var filePath = Path.Combine(uploadDirectory, fileName);
+
+                // save file to disk
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    patient.patientImageFile.CopyToAsync(stream);
+                }
+
+                // save filepath to pt image property
+                patient.patientImage = fileName;
+
+            }
+
+            // process race selection
+            if (patient.race == null && patient.raceList.Contains("Other") && !string.IsNullOrEmpty(patient.OtherRace))
+            {
+                //removes all elements form race list that equal the parameter given in this case that is Other
+                patient.raceList.RemoveAll(r => string.Equals(r, "Other", StringComparison.OrdinalIgnoreCase));
+                patient.raceList.Add(patient.OtherRace);
+            }
+            
+            patient.race = string.Join(", ", patient.raceList);
+
+            // process preferred pronouns selection
+            if (patient.preferredPronouns == "Other" && !string.IsNullOrEmpty(patient.OtherPronouns))
+            {
+                // if other pronouns is chosen rather than offered selection
+                // set pronouns to 'other preferred pronouns' property
+                patient.preferredPronouns = patient.OtherPronouns;
+            }
+
+            // process gender selection
+            if (patient.gender == "Other" && !string.IsNullOrEmpty(patient.OtherGender))
+            {
+                // if other gender is chosen rather than offered selection
+                // set gender to 'other gender' property
+                patient.gender = patient.OtherGender;
+            }
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = @"UPDATE [PatientDemographic] 
+                   SET firstName = @firstName, 
+                       middleName = @middleName, 
+                       lastName = @lastName, 
+                       suffix = @suffix, 
+                       preferredPronouns = @preferredPronouns, 
+                       DOB = @DOB, 
+                       gender = @gender, 
+                       preferredLanguage = @preferredLanguage, 
+                       ethnicity = @ethnicity, 
+                       race = @race, 
+                       religion = @religion, 
+                       primaryPhysician = @primaryPhysician, 
+                       legalGuardian1 = @legalGuardian1, 
+                       legalGuardian2 = @legalGuardian2, 
+                       previousName = @previousName, 
+                       genderAssignedAtBirth = @genderAssignedAtBirth, 
+                       patientImage = @patientImage
+                   WHERE MHN = @MHN";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //The some of them test to see if the value if null or empty because they are optional on the form so if it is null or empty it will display NA otherwise will add the data enterd by the user.
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.Int).Value = patient.MHN;
+                    command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
+                    command.Parameters.Add("@middleName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.middleName) ? "" : patient.middleName;
+                    command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
+                    command.Parameters.Add("@suffix", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.suffix) ? "" : patient.suffix;
+                    command.Parameters.Add("@preferredPronouns", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.preferredPronouns) ? "" : patient.preferredPronouns;
+                    command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.gender) ? "" : patient.gender;
+                    command.Parameters.Add("@preferredLanguage", SqlDbType.VarChar).Value = patient.preferredLanguage;
+                    command.Parameters.Add("@ethnicity", SqlDbType.VarChar).Value = patient.ethnicity;
+                    command.Parameters.Add("@race", SqlDbType.VarChar).Value = patient.race;
+                    command.Parameters.Add("@religion", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.religion) ? "" : patient.religion;
+                    command.Parameters.Add("@primaryPhysician", SqlDbType.VarChar).Value = patient.primaryPhysician;
+                    command.Parameters.Add("@legalGuardian1", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian1) ? "" : patient.legalGuardian1;
+                    command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "" : patient.legalGuardian2;
+                    command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "" : patient.previousName;
+                    command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
+                    command.Parameters.Add("@patientImage", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.patientImage) ? "" : patient.patientImage;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            ModelState.Clear();
+            return RedirectToAction("AllPatients", "Patient");
+        }
+
+        // takes search term and returns relevant results
+        public IActionResult Search(string searchTerm)
+        {
+            List<PatientDemographic> searchResults = new List<PatientDemographic>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+
+                // checks if searchTerm is int, sets query based on term type
+                if (int.TryParse(searchTerm, out int mhn))
+                {
+                    // selects pt by MHN if it's a match
+                    cmd.CommandText = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+                }
+                else
+                {
+                    // accepts string fragments, returns similar results
+                    cmd.CommandText = @"SELECT * FROM [dbo].[PatientDemographic] 
+                                WHERE firstName LIKE @searchTerm 
+                                OR lastName LIKE @searchTerm 
+                                OR middleName LIKE @searchTerm 
+                                OR suffix LIKE @searchTerm";
+                    cmd.Parameters.AddWithValue("@searchTerm", "%" + searchTerm + "%");
+                }
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
+                        PatientDemographic patient = new PatientDemographic
+                        {
+                            MHN = Convert.ToInt32(dataReader["MHN"]),
+                            firstName = Convert.ToString(dataReader["firstName"]),
+                            middleName = Convert.ToString(dataReader["middleName"]),
+                            lastName = Convert.ToString(dataReader["lastName"]),
+                            suffix = Convert.ToString(dataReader["suffix"]),
+                            DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
+                            gender = Convert.ToString(dataReader["gender"])
+                        };
+
+                        // adds results to list
+                        searchResults.Add(patient);
+                    }
+                }
+            }
+
+            // returns any results found
+            return View("PatientSearchResults", searchResults);
+        }
+
+
+        public IActionResult PatientAlerts(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            // List to hold the patient's list of allergies.
+            List<Alerts> alerts = new List<Alerts>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@mhn", mhn);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        Alerts alert = new Alerts();
+
+                        // Populate the alert object with data from the database.
+                        alert.alertId = dataReader.GetInt32("alertId");
+                        alert.alertName = dataReader.GetString("alertName");
+                        alert.startDate = dataReader.GetDateTime("startDate");
+
+                        alert.endDate = dataReader.GetDateTime("endDate");
+                        alert.activeStatus = dataReader.GetString("activeStatus");
+
+                        // If the alert should be inactive.
+                        if(alert.activeStatus == "Active" && alert.endDate < DateTime.Now)
+                        {
+                            // Call function that updates the alert status to be inactive.
+                            if (SetAlertInactive(alert.alertId))
+                            {
+                                // Set active status to inactive here since we just changed it in the database.
+                                alert.activeStatus = "Inactive";
+                            }
+                            else
+                            {
+                                // Set an error message
+                                // TODO: should log it here.
+                            }
+                        }
+
+                        // Add the alert to the list
+                        alerts.Add(alert);
+                    }
+                }
+
+                // Order the list by start date newest to oldest.
+                viewModel.Alerts = alerts.OrderByDescending(a => a.startDate).ToList();
+
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = mhn;
+
                 connection.Close();
             }
 
             return View(viewModel);
+        }
+
+        public bool SetAlertInactive(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'Inactive' WHERE alertId = @id";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@id", id);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return true;
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return false;
+                }
+            }
+
         }
     }
 }

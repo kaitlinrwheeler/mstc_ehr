@@ -1,4 +1,34 @@
-﻿//Everything in this function loads when the page is loaded. Loads when page is loaded.
+﻿// Everything in this function loads when the page is loaded.
+
+// search bar toggle
+$(document).ready(function () {
+    const searchButton = document.getElementById('srchBtn');
+    if (searchButton) {
+        const searchBar = document.getElementById('searchBar');
+        const searchInput = document.getElementById('searchInput');
+
+        searchButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            searchBar.classList.toggle('d-none');
+            searchButton.style.display = searchBar.classList.contains('d-none') ? '' : 'none';
+            if (!searchBar.classList.contains('d-none')) {
+                searchInput.focus();
+            }
+        });
+
+        searchInput.addEventListener('blur', function (e) {
+            if (e.target.value.trim() === '') {
+                searchBar.classList.add('d-none');
+                searchButton.style.display = '';
+            }
+        });
+    } else {
+        console.log('Search button not found.');
+    }
+});
+
+
+
 $(function () {
 
     initMenu();
@@ -102,18 +132,17 @@ var requirementsVisible = false; // Indicates whether the requirements popup is 
 var hoveringPopup = false; // Indicates whether the mouse is currently hovering over the requirements popup
 
 // Function to display the requirements popup
-function showRequirements() {
+function showRequirements(popupId) {
     // Set the display style of the requirements popup to block to make it visible
-    document.getElementById("requirementsPopup").style.display = "block";
+    document.getElementById(popupId).style.display = "block";
 }
-
 // Function to hide the requirements popup
-function hideRequirements() {
+function hideRequirements(popupId) {
     // Check if the requirements popup should be hidden
     if (!requirementsVisible && !hoveringPopup) {
         // If neither the requirements popup is visible nor the mouse is hovering over it,
         // set the display style of the requirements popup to none to hide it
-        document.getElementById("requirementsPopup").style.display = "none";
+        document.getElementById(popupId).style.display = "none";
     }
 }
 
@@ -149,7 +178,7 @@ document.addEventListener("click", function (event) {
 
 
 
-
+//End of question mark popout
 $(document).ready(function () {
     // Get the MHN number from the <p> element
     var mhnNumber = $('.mb-1.text-nowrap').text().trim().split(':')[1].trim();
@@ -157,3 +186,5 @@ $(document).ready(function () {
     // Set the value of asp-route-mhn attribute
     $('.Med-link').attr('asp-route-mhn', mhnNumber);
 });
+
+
