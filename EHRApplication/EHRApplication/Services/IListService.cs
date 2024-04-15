@@ -53,5 +53,8 @@ namespace EHRApplication.Services
 
         void InsertIntoMedProfile(MedicationProfile medProfile);
         void UpdateMedProfile(MedicationProfile medProfile);
+        Providers GetProviderById(int providerId);
+        void UpdateProvider(Providers provider);
+        void AddProvider(Providers provider);
     }
 }

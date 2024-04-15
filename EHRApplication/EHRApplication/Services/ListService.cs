@@ -1,5 +1,7 @@
 ﻿using EHRApplication.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
+using NuGet.Protocol;
 using System;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
@@ -1176,5 +1178,82 @@ namespace EHRApplication.Services
             }
             return medHistory;
         }
+
+        public Providers GetProviderById(int providerId)
+        {
+            Providers provider = new Providers();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM [dbo].[Providers] WHERE providerId = @providerId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                cmd.Parameters.AddWithValue("@providerId", providerId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        provider.firstName = Convert.ToString(dataReader["firstName"]);
+                        provider.lastName = Convert.ToString(dataReader["lastName"]);
+                        provider.specialty = Convert.ToString(dataReader["specialty"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return provider;
+        }
+
+        public void UpdateProvider(Providers provider)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "UPDATE [Providers] " +
+                    "SET firstName = @firstName, lastName = @lastName, specialty = @specialty " +
+                    "WHERE providerId = @providerId";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    cmd.Parameters.Add("@firstName", SqlDbType.VarChar).Value = provider.firstName;
+                    cmd.Parameters.Add("@lastName", SqlDbType.VarChar).Value = provider.lastName;
+                    cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = provider.specialty;
+                    cmd.Parameters.Add("@providerId", SqlDbType.Int).Value = provider.providerId;
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void AddProvider(Providers provider)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "INSERT INTO [Providers] (firstName, lastName, specialty) " +
+                    "VALUES (@firstName, @lastName, @specialty)";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    cmd.Parameters.Add("@firstName", SqlDbType.VarChar).Value = provider.firstName;
+                    cmd.Parameters.Add("@lastName", SqlDbType.VarChar).Value = provider.lastName;
+                    cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = provider.specialty;
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }   
     }
 }

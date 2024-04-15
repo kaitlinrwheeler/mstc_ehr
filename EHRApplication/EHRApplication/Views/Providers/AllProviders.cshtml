@@ -27,8 +27,7 @@
                             <th scope="col">Last Name:</th>
                             <th scope="col">Specialty:</th>
                             <th scope="col">Active:</th>
-                            <th scope="col"></th> <!-- Empty columns for the buttons -->
-                            <th scope="col"></th>
+                            <th scope="col"></th> <!-- Empty column for the buttons -->
                         </tr>
                     </thead>
                     <tbody>
@@ -50,9 +49,8 @@
 
                                 <td>
                                     <div class="btn-group" role="group">
-                                        @* // won't need delete, but need to configure edit' *@
-                                            <form method="post" asp-controller="Providers" asp-action="EditProvider" asp-route-providerId="@provider.providerId" id="editForm-@provider.providerId">
-                                                <a type="button" class="btn blue-button" asp-controller="Providers" asp-action="EditProvider" asp-route-mhn="@provider.providerId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                            <form method="post">
+                                                <a type="button" class="btn blue-button" asp-controller="Providers" asp-action="EditProvider" asp-route-providerId="@provider.providerId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                             </form>
                                     </div>
                                 </td>

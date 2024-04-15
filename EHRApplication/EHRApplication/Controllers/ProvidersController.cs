@@ -61,7 +61,7 @@ namespace EHRApplication.Controllers
             return View(allProviders);
         }
 
-        public IActionResult CreateProvider(int providerId)
+        public IActionResult CreateProvider()
         {
             return View();
         }
@@ -73,55 +73,32 @@ namespace EHRApplication.Controllers
             {
                 return View(provider);
             }
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            else
             {
-                string sql = "INSERT INTO [Providers] (firstName, lastName, specialty) VALUES (@firstName, @lastName, @specialty)";
-
-                using (SqlCommand cmd = new SqlCommand(sql, connection))
-                {
-                    cmd.CommandType = CommandType.Text;
-
-                    cmd.Parameters.AddWithValue("@firstName", provider.firstName);
-                    cmd.Parameters.AddWithValue("@lastName", provider.lastName);
-                    cmd.Parameters.AddWithValue("@specialty", provider.specialty);
-
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
+                _listService.AddProvider(provider);
             }
-            return View();
+            return RedirectToAction("AllProviders");
         }
 
         public IActionResult EditProvider(int providerId)
         {
-            Providers provider = new Providers();
+            Providers provider = _listService.GetProviderById(providerId);
+            return View(provider);
+        }
 
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+        [HttpPost]
+        public IActionResult EditProvider(Providers provider)
+        {
+            if (!ModelState.IsValid)
             {
-                connection.Open();
-
-                string sql = "SELECT providerId, firstName, lastName, specialty FROM [dbo].[Providers] WHERE providerId = @providerId";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-                cmd.Parameters.AddWithValue("@providerId", providerId);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        provider.providerId = Convert.ToInt32(dataReader["providerId"]);
-                        provider.firstName = Convert.ToString(dataReader["firstName"]);
-                        provider.lastName = Convert.ToString(dataReader["lastName"]);
-                        provider.specialty = Convert.ToString(dataReader["specialty"]);
-                    }
-                }
-
-                connection.Close();
+                return View(provider);
+            }
+            else
+            {
+                _listService.UpdateProvider(provider);
             }
 
-            return View(provider);
+            return RedirectToAction("AllProviders");
         }
 
         [HttpPost]

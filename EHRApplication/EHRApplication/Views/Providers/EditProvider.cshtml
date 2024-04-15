@@ -22,26 +22,26 @@
 
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="providerForm" enctype="multipart/form-data">
-            <input asp-for="@provider.providerId" value="@provider.providerId" hidden />
+            @* <input asp-for="@provider.providerId" value="@provider.providerId" hidden /> *@
             <!-- First Name -->
             <div class="form-group">
-                <label asp-for="@provider.firstName">First Name:</label>
-                <input asp-for="@provider.firstName"  type="text" id="FirstName" class="form-control" value="@provider.firstName" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')"/>
-                <span asp-validation-for="@provider.firstName" id="FirstNameError" class="validation-msg"></span>
+                <label for="firstName">First Name:</label>
+                <input asp-for="firstName" value="@provider.firstName" type="text" id="firstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('firstName', 25, 'first name')"/>
+                <span asp-validation-for="firstName" id="firstNameError" class="validation-msg"></span>
             </div>
 
             <!-- Last Name -->
             <div class="form-group">
-                <label asp-for="@provider.lastName">Last Name:</label>
-                <input asp-for="@provider.lastName" type="text" id="LastName" class="form-control" value="@provider.lastName" data-bs-theme="auto" onblur="validateRequiredTextInput('LastName', 25, 'last name')"/>
-                <span asp-validation-for="@provider.lastName" id="LastNameError" class="validation-msg"></span>
+                <label for="lastName">Last Name:</label>
+                <input asp-for="lastName" type="text" id="lastName" class="form-control" value="@provider.lastName" data-bs-theme="auto" onblur="validateRequiredTextInput('lastName', 25, 'last name')"/>
+                <span asp-validation-for="lastName" id="lastNameError" class="validation-msg"></span>
             </div>
 
             <!-- Specialty -->
             <div class="form-group">
-                <label asp-for="@provider.specialty">Specialty:</label>
-                <input asp-for="@provider.specialty" type="text" id="Specialty" class="form-control" value="@provider.specialty" data-bs-theme="auto" onblur="validateRequiredTextInput('Specialty', 25, 'specialty')"/>
-                <span asp-validation-for="@provider.specialty" id="SpecialtyError" class="validation-msg"></span>
+                <label for="specialty">Specialty:</label>
+                <input asp-for="specialty" type="text" id="specialty" class="form-control" value="@provider.specialty" data-bs-theme="auto" onblur="validateRequiredTextInput('specialty', 25, 'specialty')"/>
+                <span asp-validation-for="specialty" id="specialtyError" class="validation-msg"></span>
             </div>
             
             <!-- Cancel and Submit Buttons -->
