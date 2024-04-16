@@ -34,7 +34,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[MedicationProfile] ORDER BY medName ASC";
+                string sql = "SELECT medId, medName, description, route, activeStatus FROM [dbo].[MedicationProfile] ORDER BY CASE WHEN activeStatus = 1 THEN 0 ELSE 1 END, medName ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -50,6 +50,7 @@ namespace EHRApplication.Controllers
                         medication.medName = Convert.ToString(dataReader["medName"]);
                         medication.description = Convert.ToString(dataReader["description"]);
                         medication.route = Convert.ToString(dataReader["route"]);
+                        medication.activeStatus = Convert.ToBoolean(dataReader["activeStatus"]);
 
                         // Add the patient to the list
                         allMeds.Add(medication);
@@ -285,6 +286,90 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateActiveStatusForMedProfile(int medId, bool activeStatus)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[MedicationProfile] SET activeStatus = @active WHERE medId = @medId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@medId", medId);
+                cmd.Parameters.AddWithValue("@active", activeStatus);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return Ok("Successfully updated.");
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return BadRequest("Error, please try again.");
+                }
+            }
+        }
+
+        public IActionResult CreateMedication()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateMedication(MedicationProfile medProfile)
+        {
+            if (medProfile.route == "")
+            {
+                ModelState.AddModelError("route", "Please select a route.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(medProfile);
+            }
+            else
+            {
+                _listService.InsertIntoMedProfile(medProfile);
+            }
+            return RedirectToAction("AllMedications");
+        }
+
+        public IActionResult EditMedication(int medId)
+        {
+
+            MedicationProfile medProfile= _listService.GetMedicationProfileByMedId(medId);
+
+            return View(medProfile);
+        }
+
+        [HttpPost]
+        public IActionResult EditMedication(MedicationProfile medProfile)
+        {
+            if (medProfile.route == "")
+            {
+                ModelState.AddModelError("route", "Please select a route.");
+            }
+            if(!ModelState.IsValid)
+            {
+                return View(medProfile);
+            }
+            else
+            {
+                _listService.UpdateMedProfile(medProfile);
+            }
+            return RedirectToAction("AllMedications");
         }
     }
 }

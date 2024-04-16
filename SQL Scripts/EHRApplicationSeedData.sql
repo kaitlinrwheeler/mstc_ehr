@@ -162,35 +162,35 @@ VALUES
 
 -- Dummy data for Visits table
 -- Patient Johnny (MHN = 1)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (1, 1, 1, '2023-01-10', '10:00:00', 1, 'Routine check-up'),
-    (1, 2, 2, '2023-02-15', '14:30:00', 0, 'Discussion about medication'),
-    (1, 3, 3, '2023-03-20', '11:15:00', 0, 'Follow-up after recent illness');
+    (1, 1, '2023-01-10', '10:00:00', 1, 'Routine check-up'),
+    (1, 2, '2023-02-15', '14:30:00', 0, 'Discussion about medication'),
+    (1, 3, '2023-03-20', '11:15:00', 0, 'Follow-up after recent illness');
 
 -- Patient Moira (MHN = 2)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (2, 2, 2, '2023-01-05', '09:45:00', 0, 'Prescription renewal'),
-    (2, 1, 1, '2023-02-20', '13:30:00', 1, 'Admitted for minor surgery');
+    (2, 2, '2023-01-05', '09:45:00', 0, 'Prescription renewal'),
+    (2, 1, '2023-02-20', '13:30:00', 1, 'Admitted for minor surgery');
 
 -- Patient David (MHN = 3)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (3, 3, 3, '2023-03-05', '10:30:00', 0, 'Discussion about anxiety levels'),
-    (3, 1, 1, '2023-04-15', '15:00:00', 0, 'Follow-up on gastritis treatment');
+    (3, 3, '2023-03-05', '10:30:00', 0, 'Discussion about anxiety levels'),
+    (3, 1, '2023-04-15', '15:00:00', 0, 'Follow-up on gastritis treatment');
 
 -- Patient Alexis (MHN = 4)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (4, 4, 4, '2023-05-10', '11:30:00', 0, 'Annual check-up'),
-    (4, 2, 2, '2023-06-20', '14:00:00', 0, 'Discussion about allergies');
+    (4, 4, '2023-05-10', '11:30:00', 0, 'Annual check-up'),
+    (4, 2, '2023-06-20', '14:00:00', 0, 'Discussion about allergies');
 
 -- Patient Stevie (MHN = 5)
-INSERT INTO [dbo].[Visits] ([MHN], [providersId], [providerId], [date], [time], [admitted], [notes])
+INSERT INTO [dbo].[Visits] ([MHN], [providerId], [date], [time], [admitted], [notes])
 VALUES
-    (5, 3, 3, '2023-07-15', '13:45:00', 0, 'Physical therapy session'),
-    (5, 1, 1, '2023-08-25', '12:15:00', 0, 'Follow-up after injury');
+    (5, 3, '2023-07-15', '13:45:00', 0, 'Physical therapy session'),
+    (5, 1, '2023-08-25', '12:15:00', 0, 'Follow-up after injury');
 
 
 

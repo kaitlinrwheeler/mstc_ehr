@@ -26,6 +26,7 @@
         <form method="post" id="patientForm" enctype="multipart/form-data">
 
             <input asp-for="@patient.MHN" value="@patient.MHN" hidden/>
+
             <!-- First Name -->
             <div class="form-group">
                 <label asp-for="@patient.firstName">First Name:</label>
@@ -214,7 +215,6 @@
                 <span asp-validation-for="@patient.OtherRace" id="OtherRaceInputError" class="validation-msg"></span>
             </div>
 
-            <input asp-for="@patient.patientImage" value="@patient.patientImage" hidden />
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">

@@ -34,6 +34,8 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Please enter a phone number.")]
         [RegularExpression(@"^[0-9\s\+\-]*$", ErrorMessage = "Please enter numbers only.")]
+        [MinLength(10, ErrorMessage = "Please enter 10 digits.")]
+        [MaxLength(10, ErrorMessage = "Please enter 10 digits.")]
         public string phone { get; set; }
 
         [RegularExpression(@"^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov|org)$", ErrorMessage = "Please enter a valid email.")]
@@ -50,6 +52,8 @@ namespace EHRApplication.Models
         public string? ECRelationship { get; set; }
 
         [RegularExpression(@"^[0-9\s\+\-]*$", ErrorMessage = "Please enter numbers only.")]
+        [MinLength(10, ErrorMessage = "Please enter 10 digits.")]
+        [MaxLength(10, ErrorMessage = "Please enter 10 digits.")]
         public string? ECPhone { get; set; }
     }
 }

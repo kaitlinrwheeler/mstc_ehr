@@ -789,7 +789,10 @@ namespace EHRApplication.Controllers
                 viewModel.PatientDemographic.race = string.Join(", ", viewModel.PatientDemographic.race.Split(',').Select(r => r.Trim()).Where(r => !otherRace.Contains(r)).ToList());
                 viewModel.PatientDemographic.race += ",Other";
             }
-
+            if(viewModel.PatientDemographic.preferredPronouns == "Other")
+            {
+                viewModel.PatientDemographic.preferredPronouns = viewModel.PatientDemographic.OtherPronouns;
+            }
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
             return View(viewModel);
@@ -798,6 +801,12 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditPatientForm(PatientDemographic patient)
         {
+            PortalViewModel viewModel = new PortalViewModel();
+
+            viewModel.PatientDemographic = patient;
+            ViewBag.Patient = _listService.GetPatientByMHN(patient.MHN);
+            ViewBag.MHN = patient.MHN;
+
             //Testing to see if the date of birth entered was a future date or not
             if (patient.DOB >= DateOnly.FromDateTime(DateTime.Now))
             {
@@ -812,47 +821,7 @@ namespace EHRApplication.Controllers
                 {
                     patient.race = string.Join(", ", patient.raceList);
                 }
-                return View(patient);
-            }
-
-            // process file upload
-            if (patient.patientImageFile != null && patient.patientImageFile.Length > 0)
-            {
-                // define permitted image file types
-                var allowedFileTypes = new[] { ".jpg", ".png" };
-                var extentions = Path.GetExtension(patient.patientImageFile.FileName).ToLowerInvariant();
-
-                // validate file type
-                if (!allowedFileTypes.Contains(extentions))
-                {
-                    ModelState.AddModelError("patientImage", "Invalid file type. Only image files ending in .jpg, or .png are permitted.");
-                    return View(patient);
-                }
-
-                // create filepath to storage location
-                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
-                // check for existence of directory and create if it doesn't exist
-                if (!Directory.Exists(uploadDirectory))
-                {
-                    Directory.CreateDirectory(uploadDirectory);
-                }
-
-                // create and assign new filename before storage
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(patient.patientImageFile.FileName);
-
-                // create full filepath
-                var filePath = Path.Combine(uploadDirectory, fileName);
-
-                // save file to disk
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    patient.patientImageFile.CopyToAsync(stream);
-                }
-
-                // save filepath to pt image property
-                patient.patientImage = fileName;
-
+                return View(viewModel);
             }
 
             // process race selection
@@ -900,8 +869,7 @@ namespace EHRApplication.Controllers
                        legalGuardian1 = @legalGuardian1, 
                        legalGuardian2 = @legalGuardian2, 
                        previousName = @previousName, 
-                       genderAssignedAtBirth = @genderAssignedAtBirth, 
-                       patientImage = @patientImage
+                       genderAssignedAtBirth = @genderAssignedAtBirth
                    WHERE MHN = @MHN";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -926,7 +894,6 @@ namespace EHRApplication.Controllers
                     command.Parameters.Add("@legalGuardian2", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.legalGuardian2) ? "" : patient.legalGuardian2;
                     command.Parameters.Add("@previousName", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.previousName) ? "" : patient.previousName;
                     command.Parameters.Add("@genderAssignedAtBirth", SqlDbType.VarChar).Value = patient.genderAssignedAtBirth;
-                    command.Parameters.Add("@patientImage", SqlDbType.VarChar).Value = string.IsNullOrEmpty(patient.patientImage) ? "" : patient.patientImage;
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -934,7 +901,7 @@ namespace EHRApplication.Controllers
                 }
             }
             ModelState.Clear();
-            return RedirectToAction("AllPatients", "Patient");
+            return RedirectToAction("PatientOverview", "Patient", new {mhn = patient.MHN});
         }
 
         // takes search term and returns relevant results

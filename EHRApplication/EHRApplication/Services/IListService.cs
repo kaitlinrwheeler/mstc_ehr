@@ -57,5 +57,8 @@ namespace EHRApplication.Services
         public void UpdateProblems(PatientProblems problem);
         public void InsertIntoPatientMed(PatientMedications medication);
         public void UpdatePatientMed(PatientMedications medication);
+
+        void InsertIntoMedProfile(MedicationProfile medProfile);
+        void UpdateMedProfile(MedicationProfile medProfile);
     }
 }
