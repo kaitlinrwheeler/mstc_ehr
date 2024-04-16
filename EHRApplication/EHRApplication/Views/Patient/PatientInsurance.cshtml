@@ -9,11 +9,17 @@
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Insurance
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Insurance</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (patient != null && Model.PatientInsurance.Any())
+            @if (patient != null && Model.PatientInsurances.Any())
             {
                 <table class="table table-striped">
                     <thead>
@@ -31,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var insurance in Model.PatientInsurance)
+                        @foreach (var insurance in Model.PatientInsurances)
                         {
                             <tr class="hover-highlighting">
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->

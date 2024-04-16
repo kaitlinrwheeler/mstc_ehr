@@ -414,8 +414,11 @@ namespace EHRApplication.Controllers
 
 
 
-
-
+        [HttpGet]
+        public IActionResult CreatePatientInsurance()
+        {
+            return View();
+        }
 
 
 
@@ -465,7 +468,7 @@ namespace EHRApplication.Controllers
                     }
                 }
 
-                viewModel.PatientInsurance = insurances;
+                viewModel.PatientInsurances = insurances;
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = mhn;
                 connection.Close();
