@@ -4,6 +4,7 @@ using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240410235834_changedPulseOximetryToDecimal")]
+    partial class changedPulseOximetryToDecimal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,9 +224,6 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("testId"));
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
                     b.Property<string>("category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -382,9 +382,6 @@ namespace EHRApplication.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("medId"));
-
-                    b.Property<bool>("activeStatus")
-                        .HasColumnType("bit");
 
                     b.Property<string>("description")
                         .IsRequired()
