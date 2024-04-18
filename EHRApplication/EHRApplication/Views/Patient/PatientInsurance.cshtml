@@ -12,7 +12,7 @@
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Patient Insurance</div>
             <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance">
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
                     <i class="fa-solid fa-plus me-2"></i>
                     <span>Add</span>
                 </a>

@@ -14,6 +14,7 @@ using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Controllers
@@ -415,11 +416,70 @@ namespace EHRApplication.Controllers
 
 
         [HttpGet]
-        public IActionResult CreatePatientInsurance()
+        public IActionResult CreatePatientInsurance(int mhn)
         {
-            return View();
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
         }
 
+        [HttpPost]
+        public IActionResult CreatePatientInsurance(PatientInsurance insurance)
+        {
+            if (insurance.primaryPhysician == -1)
+            {
+                ModelState.AddModelError("insurance.primaryPhysician", "Please select a value");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel portalViewModel = new PortalViewModel();
+                portalViewModel.PatientDemographic = _listService.GetPatientByMHN(insurance.MHN);
+                portalViewModel.PatientInsurance = insurance;
+                ViewBag.Patient = portalViewModel.PatientDemographic;
+                ViewBag.MHN = insurance.MHN;
+
+                return View(portalViewModel);
+
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Insert a new record into the LabTestProfile table
+                string sql = @"INSERT INTO [dbo].[[PatientInsurance]] 
+                           (MHN, providerName, memberId, policyNumber, groupNumber, priority, primaryPhysician, active)
+                           VALUES 
+                           (@MHN, @providerName, @memberId, @policyNumber, @groupNumber, @priority, @primaryPhysician, @active)";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@MHN", insurance.MHN);
+                cmd.Parameters.AddWithValue("@providerName", insurance.providerName);
+                cmd.Parameters.AddWithValue("@memberId", insurance.memberId);
+                cmd.Parameters.AddWithValue("@policyNumber", insurance.policyNumber);
+                cmd.Parameters.AddWithValue("@groupNumber", insurance.groupNumber);
+                cmd.Parameters.AddWithValue("@priority", insurance.priority);
+                cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician); 
+                cmd.Parameters.AddWithValue("@active", true);
+
+
+                cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+
+
+
+
+
+
+            return RedirectToAction();
+        }
 
 
 
