@@ -505,7 +505,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
+                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC, time DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
