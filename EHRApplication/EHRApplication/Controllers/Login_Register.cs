@@ -130,9 +130,14 @@ namespace EHRApplication.Controllers
             else
             {
                 //Will set the errors for the input if they are null
+                if(account.Email == null)
+                {
                 ModelState.AddModelError("Email", "Email must not be null");
+                }
+                if(account.Password == null)
+                {
                 ModelState.AddModelError("Password", "Password must not be null");
-                ModelState.AddModelError("ConfirmPassword", "ConfirmPassword must not be null");
+                }
             }
 
             // If the ModelState is not valid, redisplay the login form
@@ -238,6 +243,19 @@ namespace EHRApplication.Controllers
             }
             else
             {
+                //Will set the errors for the input if they are null
+                if (account.Email == null)
+                {
+                    ModelState.AddModelError("Email", "Email must not be empyt");
+                }
+                if (account.Password == null)
+                {
+                    ModelState.AddModelError("Password", "Password must not be empty");
+                }
+                if(account.ConfirmPassword == null)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "ConfimrPassword must not be empty.");
+                }
             }
             // If we got this far, something failed, redisplay form
             return View(account);
