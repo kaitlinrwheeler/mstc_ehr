@@ -1,6 +1,8 @@
 ﻿using EHRApplication.Models;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -503,7 +505,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC";
+                string sql = "SELECT * FROM [dbo].[Visits] WHERE MHN = @mhn ORDER BY date DESC, time DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -798,6 +800,11 @@ namespace EHRApplication.Services
             return;
         }
 
+        /// <summary>
+        /// Uses visit Id to get data
+        /// </summary>
+        /// <param name="visitId"></param>
+        /// <returns></returns>
         public Vitals GetVitalsByVisitId(int visitId)
         {
             //Creating a new patientDemographic instance
@@ -846,6 +853,60 @@ namespace EHRApplication.Services
 
             return vitals;
         }
+        /// <summary>
+        /// uses vitalsId to get data
+        /// </summary>
+        /// <param name="vitalsId"></param>
+        /// <returns></returns>
+        public Vitals GetVitalsByVitalsId(int vitalsId)
+        {
+            //Creating a new patientDemographic instance
+            Vitals vitals = new Vitals();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT vitalsId, visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse " +
+                    "FROM [dbo].[Vitals] WHERE vitalsId = @vitalsId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@vitalsId", vitalsId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        vitals.vitalsId = Convert.ToInt32(dataReader["vitalsId"]);
+                        vitals.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        vitals.visits = GetVisitByVisitId(vitals.visitId);
+
+                        vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
+                        vitals.patients = GetPatientByMHN(vitals.patientId);
+                        vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
+                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
+                        vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
+                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+
+                        vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
+                        vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
+                        vitals.BMI = Convert.ToInt32(dataReader["BMI"]);
+                        vitals.intakeMilliLiters = Convert.ToInt32(dataReader["intakeMilliLiters"]);
+                        vitals.outputMilliLiters = Convert.ToInt32(dataReader["outputMilliLiters"]);
+                        vitals.pulse = Convert.ToInt32(dataReader["pulse"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return vitals;
+        }
+
 
         public LabResults GetLabResultsByVisitId(int visitId)
         {
@@ -1175,6 +1236,158 @@ namespace EHRApplication.Services
                 connection.Close();
             }
             return medHistory;
+        }
+
+        /// <summary>
+        /// Inserting a new visit into the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void InsertIntoVisits(Visits visit)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Visits] (MHN, providerId, date, time, admitted, notes) " +
+                    "VALUES (@MHN, @providerId, @date, @time, @admitted, @notes)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
+                    command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
+                    command.Parameters.Add("@date", SqlDbType.Date).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.Time).Value = visit.time;
+                    command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
+                    command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current visit that is in the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void UpdateVisits(Visits visit)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [Visits] " +
+                    "SET MHN = @MHN, providerId = @providerId, date = @date, time = @time, admitted = @admitted, notes = @notes " +
+                    "WHERE visitsId = @visitsId";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = visit.visitsId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = visit.MHN;
+                    command.Parameters.Add("@providerId", SqlDbType.VarChar).Value = visit.providerId;
+                    command.Parameters.Add("@date", SqlDbType.Date).Value = visit.date;
+                    command.Parameters.Add("@time", SqlDbType.Time).Value = visit.time;
+                    command.Parameters.Add("@admitted", SqlDbType.VarChar).Value = visit.admitted;
+                    command.Parameters.Add("@notes", SqlDbType.VarChar).Value = visit.notes;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Inserting a new vital into the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void InsertIntoVitals(Vitals vital)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Vitals] (visitId, patientId, painLevel, temperature, bloodPressure, respiratoryRate, pulseOximetry, heightInches, weightPounds, BMI, intakeMilliLiters, outputMilliLiters, pulse) " +
+                    "VALUES (@visitId, @patientId, @painLevel, @temperature, @bloodPressure, @respiratoryRate, @pulseOximetry, @heightInches, @weightPounds, @BMI, @intakeMilliLiters, @outputMilliLiters, @pulse)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = vital.visitId;
+                    command.Parameters.Add("@patientId", SqlDbType.VarChar).Value = vital.patientId;
+                    command.Parameters.Add("@painLevel", SqlDbType.VarChar).Value = vital.painLevel;
+                    command.Parameters.Add("@temperature", SqlDbType.VarChar).Value = vital.temperature;
+                    command.Parameters.Add("@bloodPressure", SqlDbType.VarChar).Value = vital.bloodPressure;
+                    command.Parameters.Add("@respiratoryRate", SqlDbType.VarChar).Value = vital.respiratoryRate;
+                    command.Parameters.Add("@pulseOximetry", SqlDbType.VarChar).Value = vital.pulseOximetry;
+                    command.Parameters.Add("@heightInches", SqlDbType.VarChar).Value = vital.heightInches;
+                    command.Parameters.Add("@weightPounds", SqlDbType.VarChar).Value = vital.weightPounds;
+                    command.Parameters.Add("@BMI", SqlDbType.VarChar).Value = vital.BMI;
+                    command.Parameters.Add("@intakeMilliLiters", SqlDbType.VarChar).Value = vital.intakeMilliLiters;
+                    command.Parameters.Add("@outputMilliLiters", SqlDbType.VarChar).Value = vital.outputMilliLiters;
+                    command.Parameters.Add("@pulse", SqlDbType.VarChar).Value = vital.pulse;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current vital that is in the database
+        /// </summary>
+        /// <param name="visit"></param>
+        public void UpdateVitals(Vitals vital)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [Vitals] " +
+                    "SET visitId = @visitId, patientId = @patientId, painLevel = @painLevel, temperature = @temperature, bloodPressure = @bloodPressure, respiratoryRate = @respiratoryRate, pulseOximetry = @pulseOximetry, " +
+                    "heightInches = @heightInches, weightPounds = @weightPounds, BMI = @BMI, intakeMilliLiters = @intakeMilliLiters, outputMilliLiters = @outputMilliLiters, pulse = @pulse " +
+                    "WHERE vitalsId = @vitalsId";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@vitalsId", SqlDbType.VarChar).Value = vital.vitalsId;
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = vital.visitId;
+                    command.Parameters.Add("@patientId", SqlDbType.VarChar).Value = vital.patientId;
+                    command.Parameters.Add("@painLevel", SqlDbType.VarChar).Value = vital.painLevel;
+                    command.Parameters.Add("@temperature", SqlDbType.VarChar).Value = vital.temperature;
+                    command.Parameters.Add("@bloodPressure", SqlDbType.VarChar).Value = vital.bloodPressure;
+                    command.Parameters.Add("@respiratoryRate", SqlDbType.VarChar).Value = vital.respiratoryRate;
+                    command.Parameters.Add("@pulseOximetry", SqlDbType.VarChar).Value = vital.pulseOximetry;
+                    command.Parameters.Add("@heightInches", SqlDbType.VarChar).Value = vital.heightInches;
+                    command.Parameters.Add("@weightPounds", SqlDbType.VarChar).Value = vital.weightPounds;
+                    command.Parameters.Add("@BMI", SqlDbType.VarChar).Value = vital.BMI;
+                    command.Parameters.Add("@intakeMilliLiters", SqlDbType.VarChar).Value = vital.intakeMilliLiters;
+                    command.Parameters.Add("@outputMilliLiters", SqlDbType.VarChar).Value = vital.outputMilliLiters;
+                    command.Parameters.Add("@pulse", SqlDbType.VarChar).Value = vital.pulse;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public decimal BMICalculator(decimal weight, decimal height)
+        {
+            return 703 * (weight / (height * height));
         }
     }
 }

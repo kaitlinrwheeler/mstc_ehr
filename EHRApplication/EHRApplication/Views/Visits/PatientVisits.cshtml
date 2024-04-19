@@ -9,8 +9,14 @@
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Visits
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Visits</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="CreateVisitForm" asp-route-mhn="@mhn">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model != null && Model.Visits != null && Model.Visits.Any())
@@ -24,6 +30,7 @@
                             <th scope="col">Admitted:</th>
                             <th scope="col">Notes:</th>
                             <th scope="col"></th> <!-- Empty column for the button -->
+                            <th scope="col"></th> <!-- Empty column for the button -->
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +42,8 @@
                                 <td>@visits.providers.providerId, @visits.providers.firstName @visits.providers.lastName</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@visits.MHN">View</a></td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@mhn">View</a></td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="EditVisitForm" asp-route-visitId="@visits.visitsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
