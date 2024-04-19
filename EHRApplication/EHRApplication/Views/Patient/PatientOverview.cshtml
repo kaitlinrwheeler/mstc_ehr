@@ -17,12 +17,16 @@
 
                 <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                     <div class="text-center w-100">Demographic Info</div>
-                    <div>
-                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN">
-                            <i class="fa-solid fa-pen me-2"></i>
-                            <span>Edit</span>
-                        </a>
-                    </div>
+                    <!--This is coded here to only display if you are logged in as an Admin-->
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div>
+                            <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN">
+                                <i class="fa-solid fa-pen me-2"></i>
+                                <span>Edit</span>
+                            </a>
+                        </div>
+                    }
                 </div>
 
 
@@ -135,22 +139,26 @@
 
                         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                             <div class="text-center w-100">Contact Info</div>
-                            <div>
-                                @if(patient.ContactId.address != null)
-                                {
-                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
-                                        <i class="fa-solid fa-pen me-2"></i>
-                                        <span>Edit</span>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
-                                        <i class="fa-solid fa-plus me-2"></i>
-                                        <span>Add</span>
-                                    </a>
-                                }
-                            </div>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    @if (patient.ContactId.address != null)
+                                    {
+                                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
+                                            <i class="fa-solid fa-pen me-2"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
+                                            <i class="fa-solid fa-plus me-2"></i>
+                                            <span>Add</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
                         </div>
 
 

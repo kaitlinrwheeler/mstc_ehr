@@ -13,12 +13,16 @@
     <div class="card shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">All Patients</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="Index">
+            <!--This is coded here to only display if you are logged in as an Admin-->
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="Index">
                     <i class="fa-solid fa-plus me-2"></i>
                     <span>Add</span>
                 </a>
-            </div>
+                </div>
+            }
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.Any())
@@ -33,7 +37,11 @@
                             <th scope="col">Gender:</th>
                             <th scope="col">Active:</th>
                             <th scope="col"></th> <!-- Empty columns for the buttons -->
-                            <th scope="col"></th>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -54,17 +62,22 @@
                                 </td>
 
                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                                
+                                <!--This is coded here to only display if you are logged in as an Admin-->
+                                @if (User.IsInRole("Admin"))
+                                {                                    
                             
-                                <td>
-                                <div class="btn-group" role="group">
-                                        <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
-                                            <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                            <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
-                                                <i class="fa-solid fa-trash me-2"></i>Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                                    <td>
+                                    <div class="btn-group" role="group">
+                                            <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
+                                                <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                                <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
+                                                    <i class="fa-solid fa-trash me-2"></i>Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

@@ -17,70 +17,72 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    <!--This is coded here to only display if you are logged in as an Admin-->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Edit Patient</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Edit Patient</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="patientForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="patientForm" enctype="multipart/form-data">
+                <input asp-for="@patient.MHN" value="@patient.MHN" hidden/>
 
-            <input asp-for="@patient.MHN" value="@patient.MHN" hidden/>
+                <!-- First Name -->
+                <div class="form-group">
+                    <label asp-for="@patient.firstName">First Name:</label>
+                    <input asp-for="@patient.firstName" type="text" id="FirstName" class="form-control" value="@patient.firstName" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
+                    <span asp-validation-for="@patient." id="FirstNameError" class="validation-msg"></span>
+                </div>
 
-            <!-- First Name -->
-            <div class="form-group">
-                <label asp-for="@patient.firstName">First Name:</label>
-                <input asp-for="@patient.firstName" type="text" id="FirstName" class="form-control" value="@patient.firstName" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
-                <span asp-validation-for="@patient." id="FirstNameError" class="validation-msg"></span>
-            </div>
+                <!-- Middle Name -->
+                <div class="form-group">
+                    <label asp-for="@patient.middleName">Middle Name (if applicable):</label>
+                    <input asp-for="@patient.middleName" type="text" id="MiddleName" class="form-control" value="@patient.middleName" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 25, 'middle name')" />
+                    <span asp-validation-for="@patient.middleName" id="MiddleNameError" class="validation-msg"></span>
+                </div>
 
-            <!-- Middle Name -->
-            <div class="form-group">
-                <label asp-for="@patient.middleName">Middle Name (if applicable):</label>
-                <input asp-for="@patient.middleName" type="text" id="MiddleName" class="form-control" value="@patient.middleName" data-bs-theme="auto" onblur="validateOptionalTextInput('MiddleName', 25, 'middle name')" />
-                <span asp-validation-for="@patient.middleName" id="MiddleNameError" class="validation-msg"></span>
-            </div>
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label asp-for="@patient.lastName">Last Name:</label>
+                    <input asp-for="@patient.lastName" type="text" id="LastName" class="form-control" value="@patient.lastName" data-bs-theme="auto" onblur="validateRequiredTextInput('LastName', 25,'last name')" />
+                    <span asp-validation-for="@patient.lastName" id="LastNameError" class="validation-msg"></span>
+                </div>
 
-            <!-- Last Name -->
-            <div class="form-group">
-                <label asp-for="@patient.lastName">Last Name:</label>
-                <input asp-for="@patient.lastName" type="text" id="LastName" class="form-control" value="@patient.lastName" data-bs-theme="auto" onblur="validateRequiredTextInput('LastName', 25,'last name')" />
-                <span asp-validation-for="@patient.lastName" id="LastNameError" class="validation-msg"></span>
-            </div>
+                <!-- Suffix -->
+                <div class="form-group">
+                    <label asp-for="@patient.suffix">Suffix (if applicable):</label>
+                    <input asp-for="@patient.suffix" type="text" id="Suffix" class="form-control" value="@patient.suffix" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 20,  'suffix')" />
+                    <span asp-validation-for="@patient.suffix" id="SuffixError" class="validation-msg"></span>
+                </div>
 
-            <!-- Suffix -->
-            <div class="form-group">
-                <label asp-for="@patient.suffix">Suffix (if applicable):</label>
-                <input asp-for="@patient.suffix" type="text" id="Suffix" class="form-control" value="@patient.suffix" data-bs-theme="auto" onblur="validateOptionalTextInput('Suffix', 20,  'suffix')" />
-                <span asp-validation-for="@patient.suffix" id="SuffixError" class="validation-msg"></span>
-            </div>
+                <!-- Previous Name -->
+                <div class="form-group">
+                    <label asp-for="@patient.previousName">Previous Name (if applicable):</label>
+                    <input asp-for="@patient.previousName" type="text" id="PreviousName" class="form-control" value="@patient.previousName" data-bs-theme="auto" onblur="validateOptionalTextInput('PreviousName', 60,  'previous name')" />
+                    <span asp-validation-for="@patient.previousName" id="PreviousNameError" class="validation-msg"></span>
+                </div>
 
-            <!-- Previous Name -->
-            <div class="form-group">
-                <label asp-for="@patient.previousName">Previous Name (if applicable):</label>
-                <input asp-for="@patient.previousName" type="text" id="PreviousName" class="form-control" value="@patient.previousName" data-bs-theme="auto" onblur="validateOptionalTextInput('PreviousName', 60,  'previous name')" />
-                <span asp-validation-for="@patient.previousName" id="PreviousNameError" class="validation-msg"></span>
-            </div>
+                <!-- Date of Birth -->
+                <div class="form-group">
+                    <label asp-for="@patient.DOB">Date of Birth:</label>
+                    <input asp-for="@patient.DOB" type="date" id="DOB" class="form-control" value="@patient.DOB.ToString("yyyy-MM-dd")" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" required />
+                    <span asp-validation-for="@patient.DOB" id="DOBError" class="validation-msg"></span>
+                </div>
 
-            <!-- Date of Birth -->
-            <div class="form-group">
-                <label asp-for="@patient.DOB">Date of Birth:</label>
-                <input asp-for="@patient.DOB" type="date" id="DOB" class="form-control" value="@patient.DOB.ToString("yyyy-MM-dd")" onblur="validateDatePicker('DOB', 'date of birth')" data-bs-theme="auto" required />
-                <span asp-validation-for="@patient.DOB" id="DOBError" class="validation-msg"></span>
-            </div>
-
-            <!-- Primary Physician -->
-            <div class="form-group">
-                <label asp-for="@patient.primaryPhysician">Primary Physician:</label>
-                <select id="primaryPhysician" class="form-control" asp-for="@patient.primaryPhysician" data-bs-theme="auto">
-                    <option value=""></option>
-                    @foreach (var provider in ListService.GetProviders())
-                    {
-                        <option value="@provider.providerId.ToString()">
-                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                        </option>
-                    }
-                </select>
+                <!-- Primary Physician -->
+                <div class="form-group">
+                    <label asp-for="@patient.primaryPhysician">Primary Physician:</label>
+                    <select id="primaryPhysician" class="form-control" asp-for="@patient.primaryPhysician" data-bs-theme="auto">
+                        <option value=""></option>
+                        @foreach (var provider in ListService.GetProviders())
+                        {
+                            <option value="@provider.providerId.ToString()">
+                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                            </option>
+                        }
+                    </select>
                 <span asp-validation-for="@patient.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
@@ -242,6 +244,21 @@
             </div>
 
         </form>
-    </div>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>
 

@@ -9,28 +9,31 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    <!--This is coded here to only display if you are logged in as an Admin-->
+    @if (User.IsInRole("Admin"))
+    {
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Edit Vitals</h3>
-    </div>
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Edit Vitals</h3>
+        </div>
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="vitalForm" enctype="multipart/form-data">
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="vitalForm" enctype="multipart/form-data">
 
-            <input asp-for="Vital.patientId" value="@mhn" hidden />
-            <input asp-for="Vital.vitalsId" hidden />
+                <input asp-for="Vital.patientId" value="@mhn" hidden />
+                <input asp-for="Vital.vitalsId" hidden />
 
-            <div class="form-group">
-                <label for="visitId">Visit:</label>
-                <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
-                    <option value="-1"></option>
-                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                    {
-                        <option value="@visit.visitsId.ToString()">
-                            @visit.date @visit.time
-                        </option>
-                    }
-                </select>
+                <div class="form-group">
+                    <label for="visitId">Visit:</label>
+                    <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
+                        <option value="-1"></option>
+                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                        {
+                            <option value="@visit.visitsId.ToString()">
+                                @visit.date @visit.time
+                            </option>
+                        }
+                    </select>
                 <span asp-validation-for="Vital.visitId" id="vitalError" class="validation-msg"></span>
             </div>
 
@@ -127,5 +130,20 @@
                 </div>
             </div>
         </form>
-    </div>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>
