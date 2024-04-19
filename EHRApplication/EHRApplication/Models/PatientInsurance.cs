@@ -38,7 +38,6 @@ namespace EHRApplication.Models
         public Providers providers { get; set; }
 
         [Required(ErrorMessage = "Primary physician is required")]
-        //[Range(0, 100000, ErrorMessage = "Please select a value")]
         public int primaryPhysician {  get; set; }
 
         public bool active { get; set; }

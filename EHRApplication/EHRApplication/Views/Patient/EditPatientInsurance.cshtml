@@ -2,7 +2,7 @@
 @inject EHRApplication.Services.IListService ListService
 @model PortalViewModel
 @{
-    ViewData["Title"] = "myEHR | Patient Insurance Form";
+    ViewData["Title"] = "myEHR | Edit Patient Insurance Form";
     <link rel="stylesheet" href="~/css/forms.css">
 
     <script src="~/js/validation.js"></script>
@@ -13,13 +13,14 @@
 <section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Create Patient Insurance</h3>
+        <h3 class="my-3">Edit Patient Insurance</h3>
     </div>
 
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="patientForm">
 
             <input value="@mhn" asp-for="@insurance.MHN" hidden />
+            <input value="@mhn" asp-for="@insurance.patientInsuranceId" hidden />
 
             <div class="form-group">
                 <label for="providerName">Provider Name:</label>
@@ -64,6 +65,7 @@
                 </select>
                 <span asp-validation-for="@insurance.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
+
 
             <div class="mt-3 d-flex justify-content-center">
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />

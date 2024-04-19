@@ -34,6 +34,7 @@
                             <th scope="col">Group Number:</th>
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +51,7 @@
                                 <td>@insurance.groupNumber</td>
                                 <td>@insurance.priority</td>
                                 <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

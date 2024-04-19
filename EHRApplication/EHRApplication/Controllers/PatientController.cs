@@ -435,6 +435,11 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("insurance.primaryPhysician", "Please select a value");
             }
 
+            // Need to make sure these don't get validated since they don't have anything to do with the form. 
+            ModelState.Remove("insurance.patients");
+            ModelState.Remove("insurance.providers");
+
+
             if (!ModelState.IsValid)
             {
                 PortalViewModel portalViewModel = new PortalViewModel();
@@ -444,7 +449,6 @@ namespace EHRApplication.Controllers
                 ViewBag.MHN = insurance.MHN;
 
                 return View(portalViewModel);
-
             }
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -452,7 +456,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Insert a new record into the LabTestProfile table
-                string sql = @"INSERT INTO [dbo].[[PatientInsurance]] 
+                string sql = @"INSERT INTO [dbo].[PatientInsurance]
                            (MHN, providerName, memberId, policyNumber, groupNumber, priority, primaryPhysician, active)
                            VALUES 
                            (@MHN, @providerName, @memberId, @policyNumber, @groupNumber, @priority, @primaryPhysician, @active)";
@@ -473,16 +477,108 @@ namespace EHRApplication.Controllers
                 connection.Close();
             }
 
-
-
-
-
-
-            return RedirectToAction();
+            return RedirectToAction("PatientInsurance", new {mhn = insurance.MHN});
         }
 
+        [HttpGet]
+        public IActionResult EditPatientInsurance(int insuranceId)
+        {
+            PatientInsurance insurance = new PatientInsurance();
 
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
 
+                // Select the record from the PatientInsurance table based on insuranceId
+                string sql = @"SELECT MHN, providerName, memberId, policyNumber, groupNumber, priority, primaryPhysician, active
+                       FROM [dbo].[PatientInsurance]
+                       WHERE patientInsuranceId = @insuranceId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@insuranceId", insuranceId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        insurance.MHN = Convert.ToInt32(reader["MHN"]);
+                        insurance.providerName = reader["providerName"].ToString();
+                        insurance.memberId = reader["memberId"].ToString();
+                        insurance.policyNumber = reader["policyNumber"].ToString();
+                        insurance.groupNumber = reader["groupNumber"].ToString();
+                        insurance.priority = reader["priority"].ToString();
+                        insurance.primaryPhysician = Convert.ToInt32(reader["primaryPhysician"]);
+                        insurance.active = Convert.ToBoolean(reader["active"]);
+                    }
+                }
+
+                connection.Close();
+            }
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientInsurance = insurance;
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(insurance.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = insurance.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientInsurance(PatientInsurance insurance)
+        {
+            if (insurance.primaryPhysician == -1)
+            {
+                ModelState.AddModelError("insurance.primaryPhysician", "Please select a value");
+            }
+
+            // Need to make sure these don't get validated since they don't have anything to do with the form. 
+            ModelState.Remove("insurance.patients");
+            ModelState.Remove("insurance.providers");
+
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel portalViewModel = new PortalViewModel();
+                portalViewModel.PatientDemographic = _listService.GetPatientByMHN(insurance.MHN);
+                portalViewModel.PatientInsurance = insurance;
+                ViewBag.Patient = portalViewModel.PatientDemographic;
+                ViewBag.MHN = insurance.MHN;
+
+                return View(portalViewModel);
+            }
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Update the existing record in the PatientInsurance table
+                string sql = @"UPDATE [dbo].[PatientInsurance] 
+                       SET providerName = @providerName, 
+                           memberId = @memberId, 
+                           policyNumber = @policyNumber, 
+                           groupNumber = @groupNumber, 
+                           priority = @priority, 
+                           primaryPhysician = @primaryPhysician, 
+                           active = @active
+                       WHERE patientInsuranceId = @insuranceId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@insuranceId", insurance.patientInsuranceId);
+                cmd.Parameters.AddWithValue("@providerName", insurance.providerName);
+                cmd.Parameters.AddWithValue("@memberId", insurance.memberId);
+                cmd.Parameters.AddWithValue("@policyNumber", insurance.policyNumber);
+                cmd.Parameters.AddWithValue("@groupNumber", insurance.groupNumber);
+                cmd.Parameters.AddWithValue("@priority", insurance.priority);
+                cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician);
+                cmd.Parameters.AddWithValue("@active", true);
+
+                cmd.ExecuteNonQuery();
+
+                connection.Close();
+            }
+
+            return RedirectToAction("PatientInsurance", new { mhn = insurance.MHN });
+        }
 
         public IActionResult PatientInsurance(int mhn)
         {
@@ -515,6 +611,7 @@ namespace EHRApplication.Controllers
                         // Populate the allergy object with data from the database.
                         insurance.active = Convert.ToBoolean(dataReader["active"]);
                         //insurance name
+                        insurance.patientInsuranceId = Convert.ToInt32(dataReader["patientInsuranceId"]);
                         insurance.providerName = Convert.ToString(dataReader["providerName"]);
                         insurance.memberId = Convert.ToString(dataReader["memberId"]);
                         insurance.policyNumber = Convert.ToString(dataReader["policyNumber"]);
