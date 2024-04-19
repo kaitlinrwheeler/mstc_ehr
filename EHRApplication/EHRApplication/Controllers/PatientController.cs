@@ -42,7 +42,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY MHN ASC";
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY Active DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -275,22 +275,6 @@ namespace EHRApplication.Controllers
             return View(portalViewModel);
         }
 
-        public IActionResult PatientVisits(int mhn)
-        {
-            PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
-
-
-            // New list to hold all the patients in the database.
-            List<Visits> patientVisits = _listService.GetPatientVisitsByMHN(mhn);
-
-            viewModel.Visits = patientVisits;
-            ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = mhn;
-
-            return View(viewModel);
-        }
-
         public IActionResult PatientAllergies(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -352,74 +336,6 @@ namespace EHRApplication.Controllers
 
             return View(viewModel);
         }
-
-        private PatientDemographic GetPatientByMHN(int mhn)
-        {
-            //Creating a new patientDemographic instance
-            PatientDemographic patientDemographic = new PatientDemographic();
-
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                connection.Open();
-
-                // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        //Assign properties for the patient demographic from the database
-                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
-                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
-                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
-                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
-                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
-                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
-                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
-                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
-                        patientDemographic.race = Convert.ToString(dataReader["race"]);
-                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
-                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
-                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
-                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
-                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
-                        //Gets the contact info for this patient using the MHN that links to the contact info table
-                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
-                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
-                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
-                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return patientDemographic;
-        }
-
-
-
-
-
-
-
-
-
-
 
         public IActionResult PatientInsurance(int mhn)
         {
@@ -521,13 +437,14 @@ namespace EHRApplication.Controllers
 
                         // Populate the vital object with data from the database.
                         vital.patientId = dataReader.GetInt32("patientID");
+                        vital.vitalsId = dataReader.GetInt32("vitalsId");
                         // Single visit where the vitals were taken.
                         vital.visits = _listService.GetVisitByVisitId(dataReader.GetInt32("visitId"));
                         vital.painLevel = dataReader.GetInt32("painLevel");
                         vital.temperature = dataReader.GetDecimal("temperature");
                         vital.bloodPressure = dataReader.GetString("bloodPressure");
                         vital.respiratoryRate = dataReader.GetInt32("respiratoryRate");
-                        vital.pulseOximetry = dataReader.GetInt32("pulseOximetry");
+                        vital.pulseOximetry = dataReader.GetDecimal("pulseOximetry");
                         vital.heightInches = dataReader.GetDecimal("heightInches");
                         vital.weightPounds = dataReader.GetDecimal("weightPounds");
                         vital.BMI = dataReader.GetDecimal("BMI");
@@ -964,7 +881,7 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // List to hold the patient's list of allergies.
             List<Alerts> alerts = new List<Alerts>();
@@ -1062,6 +979,89 @@ namespace EHRApplication.Controllers
                 }
             }
 
+        }
+
+        public IActionResult CreateVitalsForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateVitalsForm(Vitals vital)
+        {
+            if (vital.visitId == 0)
+            {
+                ModelState.AddModelError("Vital.visitId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = vital.patientId;
+
+                return View(viewModel);
+            }
+            else if (vital.patientId != 0)
+            {
+                //Calculate the BMI
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoVitals(vital);
+            }
+
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+        }
+
+        public IActionResult EditVitalsForm(int vitalsId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.Vital.patientId;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditVitalsForm(Vitals vital)
+        {
+            if (vital.visitId == 0)
+            {
+                ModelState.AddModelError("visitId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = vital.patientId;
+
+                return View(viewModel);
+            }
+            else if (vital.patientId != 0)
+            {
+                //Calculate the BMI
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+                //go to the void list service that will update the data into the database.
+                _listService.UpdateVitals(vital);
+            }
+
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
     }
 }

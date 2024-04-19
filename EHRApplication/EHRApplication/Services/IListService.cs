@@ -36,6 +36,7 @@ namespace EHRApplication.Services
         Visits GetVisitByVisitId(int visitId);
 
         Vitals GetVitalsByVisitId(int visitId);
+        Vitals GetVitalsByVitalsId(int visitId);
 
         LabResults GetLabResultsByVisitId(int visitId);
 
@@ -57,6 +58,16 @@ namespace EHRApplication.Services
         public void UpdateProblems(PatientProblems problem);
         public void InsertIntoPatientMed(PatientMedications medication);
         public void UpdatePatientMed(PatientMedications medication);
+
+        void InsertIntoVisits(Visits visit);
+
+        void UpdateVisits(Visits visit);
+
+        void InsertIntoVitals(Vitals vital);
+
+        void UpdateVitals(Vitals vital);
+
+        public decimal BMICalculator(decimal weight, decimal height);
 
         void InsertIntoMedProfile(MedicationProfile medProfile);
         void UpdateMedProfile(MedicationProfile medProfile);
