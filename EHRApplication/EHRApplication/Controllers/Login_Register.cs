@@ -102,7 +102,7 @@ namespace EHRApplication.Controllers
 
 
                     // Redirect the user to the returnUrl if it's provided
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserDashboard", "Home");
                 }
 
                 // Check if two-factor authentication is required
