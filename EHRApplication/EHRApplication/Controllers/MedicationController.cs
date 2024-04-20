@@ -230,6 +230,11 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult CreatePatientMedForm(PatientMedications medication)
         {
+            if (medication.medId == 0)
+            {
+                ModelState.AddModelError("PatientMedication.medId", "Please select a medication.");
+            }
+
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {
@@ -246,9 +251,9 @@ namespace EHRApplication.Controllers
             {
                 //go to the void list service that will input the data into the database.
                 _listService.InsertIntoPatientMed(medication);
-            }
+            }  
 
-            return RedirectToAction("PatientMedHistory", new { mhn = medication.MHN });
+            return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
         }
 
         public IActionResult EditPatientMedForm(int patientMedId)

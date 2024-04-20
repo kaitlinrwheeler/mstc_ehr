@@ -1428,7 +1428,7 @@ namespace EHRApplication.Services
                     command.CommandType = CommandType.Text;
 
                     //adding parameters
-                    command.Parameters.Add("@patientMedId", SqlDbType.VarChar).Value = medication.patientMedId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = medication.MHN;
                     command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medication.medId;
                     command.Parameters.Add("@category", SqlDbType.VarChar).Value = medication.category;
                     command.Parameters.Add("@activeStatus", SqlDbType.VarChar).Value = medication.activeStatus;

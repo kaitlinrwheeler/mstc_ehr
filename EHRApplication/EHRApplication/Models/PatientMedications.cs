@@ -21,7 +21,7 @@ namespace EHRApplication.Models
         public MedicationProfile medProfile { get; set; }
 
         [Required(ErrorMessage = "Please select a medication")]
-        [Range(0,1000, ErrorMessage = "Please select a medication.")]
+        //[Range(0,2000, ErrorMessage = "Please select a medication.")]
         public int medId { get; set; }
 
         [Required(ErrorMessage = "Please enter something for category.")]
@@ -34,9 +34,10 @@ namespace EHRApplication.Models
         [Required(ErrorMessage = "Please enter something for instructions.")]
         public string prescriptionInstructions { get; set; }
 
-        [Required(ErrorMessage = "Please enter something for dosage.")]
+        [Required(ErrorMessage = "Please enter prescribed dosage.")]
         public string dosage { get; set; }
 
+        [Required(ErrorMessage = "Please enter medication route.")]
         public string route {  get; set; }
 
         [ForeignKey("prescribedBy")]
@@ -44,13 +45,13 @@ namespace EHRApplication.Models
         public Providers providers { get; set; }
 
         [Required(ErrorMessage = "Please select a provider.")]
-        [Range(0, 1000, ErrorMessage = "Please select a provider.")]
+        //[Range(0, 1000, ErrorMessage = "Please select a provider.")]
         public int prescribedBy { get; set; }
 
-        [Required(ErrorMessage = "Please enter a date.")]
+        //[Required(ErrorMessage = "Please enter a date.")]
         public DateTime datePrescribed { get; set; }
 
-        [Required(ErrorMessage = "Please enter a date.")]
+        //[Required(ErrorMessage = "Please enter a date.")]
         public DateTime endDate { get; set; }
     }
 }
