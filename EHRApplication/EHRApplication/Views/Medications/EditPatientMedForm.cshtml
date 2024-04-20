@@ -23,34 +23,62 @@
 
             <div class="form-group">
                 <label for="medId">Medication:</label>
-                <select class="form-control" asp-for="@patientMed.medId" data-bs-theme="auto">
-                    <option value="-1"></option>
+                <select id="medId" name="medId" class="form-control" asp-for="PatientMedication.medId" data-bs-theme="auto">
+                    <option value="0">-- Select Medication --</option>
                     @foreach (var med in ListService.GetMedicationProfiles())
                     {
-                        <option value="@med.medId.ToString()">
-                            @med.medName
-                        </option>
+                        <option value="@med.medId">@med.medName</option>
                     }
                 </select>
-                <span asp-validation-for="@patientMed.medId" id="vitalError" class="validation-msg"></span>
+                <span asp-validation-for="PatientMedication.medId" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="instructions">Instructions:</label>
-                <input type="text" id="instructions" asp-for="@patientMed.prescriptionInstructions" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('instructions', 100, 'instructions')" />
-                <span asp-validation-for="@patientMed.prescriptionInstructions" id="instructionsError" class="validation-msg"></span>
+                <label for="prescriptionInstructions">Instructions:</label>
+                <input name="prescriptionInstructions" type="text" id="prescriptionInstructions" asp-for="PatientMedication.prescriptionInstructions" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('instructions', 100, 'instructions')" />
+                <span asp-validation-for="PatientMedication.prescriptionInstructions" id="instructionsError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="dosage">Dosage:</label>
-                <input type="text" id="dosage" asp-for="@patientMed.dosage" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('dosage', 'dosage')" />
-                <span asp-validation-for="@patientMed.dosage" id="ICD_10Error" class="validation-msg"></span>
+                <input name="dosage" type="text" id="dosage" asp-for="PatientMedication.dosage" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('dosage', 'dosage')" />
+                <span asp-validation-for="PatientMedication.dosage" id="dosageError" class="validation-msg"></span>
+            </div>
+
+            <!-- Route -->
+            <div class="form-group">
+                <label for="route">Route:</label>
+                <select asp-for="PatientMedication.route" id="route" name="route" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="Buccal">Buccal</option>
+                    <option value="Inhalation">Inhalation</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intravenous">Intravenous</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Ophthalmic">Ophthalmic</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Otic">Otic</option>
+                    <option value="Rectal">Rectal</option>
+                    <option value="Subcutaneous">Subcutaneous</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Topical">Topical</option>
+                    <option value="Transdermal">Transdermal</option>
+                    <option value="Vaginal">Vaginal</option>
+
+                </select>
+                <span asp-validation-for="PatientMedication.route" class="validation-msg"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <input name="category" type="text" id="category" asp-for="PatientMedication.category" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('category', 'category')" />
+                <span asp-validation-for="PatientMedication.category" id="routeError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="prescribedBy">Prescribed By:</label>
-                <select class="form-control" asp-for="@patientMed.prescribedBy" data-bs-theme="auto">
-                    <option value="-1"></option>
+                <select name="prescribedBy" class="form-control" asp-for="PatientMedication.prescribedBy" data-bs-theme="auto">
+                    <option value="0">-- Select Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -58,32 +86,32 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="@patientMed.prescribedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+                <span asp-validation-for="PatientMedication.prescribedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="datePrescribed">Start Date:</label>
-                <input asp-for="@patientMed.datePrescribed" type="date" id="date" class="form-control" onblur="validateDatePicker('startdate', 'start date')" data-bs-theme="auto" required />
-                <span asp-validation-for="@patientMed.datePrescribed" id="startdateError" class="validation-msg"></span>
+                <input name="datePrescribed" asp-for="PatientMedication.datePrescribed" type="date" id="date" class="form-control" data-bs-theme="auto" required />
+                <span asp-validation-for="PatientMedication.datePrescribed" id="startdateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="endDate">End Date:</label>
-                <input asp-for="@patientMed.endDate" type="date" id="date" class="form-control" onblur="validateDatePicker('enddate', 'end date')" data-bs-theme="auto" required />
-                <span asp-validation-for="@patientMed.endDate" id="enddateError" class="validation-msg"></span>
+                <input name="endDate" asp-for="PatientMedication.endDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
+                <span asp-validation-for="PatientMedication.endDate" id="enddateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
-                <label for="active">Active?</label>
+                <label for="activeStatus">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input type="radio" id="Yes" asp-for="@patientMed.activeStatus" value="Active" />
+                        <input name="activeStatus" type="radio" id="Yes" asp-for="PatientMedication.activeStatus" value="Active" required />
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input type="radio" id="No" asp-for="@patientMed.activeStatus" value="InActive" />
+                        <input name="activeStatus" type="radio" id="No" asp-for="PatientMedication.activeStatus" value="Inactive" />
                         <label for="No" style="font-weight: normal;">No</label><br />
                     </div>
                 </div>
-                <span asp-validation-for="@patientMed.activeStatus" id="admittedError" class="validation-msg"></span>
+                <span asp-validation-for="PatientMedication.activeStatus" class="validation-msg"></span>
             </div>
 
             <!-- Submit Button -->
