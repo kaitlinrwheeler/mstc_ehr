@@ -167,7 +167,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[MedicationProfile] ORDER BY medId ASC";
+                string sql = "SELECT * FROM [dbo].[MedicationProfile] ORDER BY medName ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
