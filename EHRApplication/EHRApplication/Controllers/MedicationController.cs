@@ -3,6 +3,8 @@ using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
 {
@@ -230,9 +232,78 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult CreatePatientMedForm(PatientMedications medication)
         {
+            if (medication.prescriptionInstructions.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.prescriptionInstructions", "Please enter prescription instructions.");
+            }
+            if (medication.dosage.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.dosage", "Please enter prescribed dosage.");
+            }
+            if (medication.route.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.route", "Please enter medication route.");
+            }
+            if (medication.category.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter something for category.");
+            }else if (Regex.IsMatch(medication.category, @"\d"))
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter only letters for category.");
+            }
             if (medication.medId == 0)
             {
                 ModelState.AddModelError("PatientMedication.medId", "Please select a medication.");
+            }
+            if (medication.prescribedBy == 0)
+            {
+                ModelState.AddModelError("PatientMedication.prescribedBy", "Please select a provider.");
+            }
+            // Validate startDate
+            if (medication.datePrescribed == null)
+            {
+                ModelState.AddModelError("PatientMedication.startDate", "Please enter start date.");
+            }
+            else
+            {
+                DateTime startDateTime = medication.datePrescribed;
+
+                // Check if startDate is not set 30 days prior to the current date
+                DateTime currentDate = DateTime.Now;
+                if ((startDateTime - currentDate).Days < -30)
+                {
+                    ModelState.AddModelError("PatientMedication.startDate", "Start date should not be set 30 days prior to the current date.");
+                }
+            }
+
+            // Validate endDate
+            if (medication.endDate == null)
+            {
+                ModelState.AddModelError("PatientMedication.endDate", "Please enter end date.");
+            }
+            else
+            {
+                DateTime endDateTime = medication.endDate;
+
+                // Check if endDate is a future date
+                DateTime currentDate = DateTime.Now;
+                if (endDateTime <= currentDate)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should be a future date.");
+                }
+
+                // Check if endDate is after startDate
+                DateTime startDateTime = medication.datePrescribed;
+                if (endDateTime <= startDateTime)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should be after start date.");
+                }
+
+                // Check if startDate and endDate are not the same date
+                if (startDateTime.Date == endDateTime.Date)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should not be the same as start date.");
+                }
             }
 
             //returns the model if null because there were errors in validating it

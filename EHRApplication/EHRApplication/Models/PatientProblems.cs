@@ -20,7 +20,6 @@ namespace EHRApplication.Models
         public Visits visits { get; set; }
 
         [Required(ErrorMessage = "Please select a visit")]
-        [Range(0, 100000, ErrorMessage = "Please select a visit.")]
         public int visitsId { get; set; }
 
         [Required(ErrorMessage = "Please select a priority")]
@@ -45,7 +44,6 @@ namespace EHRApplication.Models
         public Providers providers { get; set; }
 
         [Required(ErrorMessage = "Please select a provider")]
-        [Range(0, 100000, ErrorMessage = "Please select a visit.")]
         public int createdBy { get; set; }
 
         [Required(ErrorMessage = "Plese select active or not")]

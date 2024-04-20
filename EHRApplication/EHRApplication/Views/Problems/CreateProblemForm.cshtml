@@ -56,7 +56,7 @@
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
                 <select class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
-                    <option value="-1"></option>
+                    <option value="0"></option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -70,7 +70,7 @@
             <div class="form-group">
                 <label for="visitsId">Visit:</label>
                 <select class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
-                    <option value="-1"></option>
+                    <option value="0"></option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">
@@ -85,7 +85,7 @@
                 <label for="active">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" />
+                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" required/>
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
                         <input type="radio" id="No" asp-for="@problem.active" value="False" />
                         <label for="No" style="font-weight: normal;">No</label><br />

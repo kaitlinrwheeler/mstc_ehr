@@ -154,6 +154,14 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult CreateProblemForm(PatientProblems problem)
         {
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("visitsId", "Please select a visit.");
+            }
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("createdBy", "Please select a provider.");
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {

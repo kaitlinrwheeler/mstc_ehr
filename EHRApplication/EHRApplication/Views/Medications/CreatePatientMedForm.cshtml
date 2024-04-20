@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label for="medId">Medication:</label>
                 <select id="medId" name="medId" class="form-control" asp-for="PatientMedication.medId" data-bs-theme="auto">
-                    <option value="">-- Select Medication --</option>
+                    <option value="0">-- Select Medication --</option>
                     @foreach (var med in ListService.GetMedicationProfiles())
                     {
                         <option value="@med.medId">@med.medName</option>
@@ -44,10 +44,28 @@
                 <span asp-validation-for="PatientMedication.dosage" id="dosageError" class="validation-msg"></span>
             </div>
 
+            <!-- Route -->
             <div class="form-group">
                 <label for="route">Route:</label>
-                <input name="route" type="text" id="route" asp-for="PatientMedication.route" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('route', 'route')" />
-                <span asp-validation-for="PatientMedication.route" id="routeError" class="validation-msg"></span>
+                <select asp-for="PatientMedication.route" id="route" name="route" class="form-control" data-bs-theme="auto">
+                    <option value=""></option>
+                    <option value="Buccal">Buccal</option>
+                    <option value="Inhalation">Inhalation</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intravenous">Intravenous</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Ophthalmic">Ophthalmic</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Otic">Otic</option>
+                    <option value="Rectal">Rectal</option>
+                    <option value="Subcutaneous">Subcutaneous</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Topical">Topical</option>
+                    <option value="Transdermal">Transdermal</option>
+                    <option value="Vaginal">Vaginal</option>
+
+                </select>
+                <span asp-validation-for="PatientMedication.route" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
@@ -59,7 +77,7 @@
             <div class="form-group">
                 <label for="prescribedBy">Prescribed By:</label>
                 <select name="prescribedBy" class="form-control" asp-for="PatientMedication.prescribedBy" data-bs-theme="auto">
-                    <option value="-1"></option>
+                    <option value="0">-- Select Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -72,13 +90,13 @@
 
             <div class="form-group">
                 <label for="datePrescribed">Start Date:</label>
-                <input name="datePrescribed" asp-for="PatientMedication.datePrescribed" type="date" id="date" class="form-control" onblur="validateDatePicker('startdate', 'start date')" data-bs-theme="auto" required />
+                <input name="datePrescribed" asp-for="PatientMedication.datePrescribed" type="date" id="date" class="form-control" data-bs-theme="auto" required />
                 <span asp-validation-for="PatientMedication.datePrescribed" id="startdateError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
                 <label for="endDate">End Date:</label>
-                <input name="endDate" asp-for="PatientMedication.endDate" type="date" id="date" class="form-control" onblur="validateDatePicker('enddate', 'end date')" data-bs-theme="auto" required />
+                <input name="endDate" asp-for="PatientMedication.endDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
                 <span asp-validation-for="PatientMedication.endDate" id="enddateError" class="validation-msg"></span>
             </div>
 
@@ -86,7 +104,7 @@
                 <label for="activeStatus">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input name="activeStatus" type="radio" id="Yes" asp-for="PatientMedication.activeStatus" value="Active" />
+                        <input name="activeStatus" type="radio" id="Yes" asp-for="PatientMedication.activeStatus" value="Active" required/>
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
                         <input name="activeStatus" type="radio" id="No" asp-for="PatientMedication.activeStatus" value="Inactive" />
                         <label for="No" style="font-weight: normal;">No</label><br />
@@ -94,7 +112,6 @@
                 </div>
                 <span asp-validation-for="PatientMedication.activeStatus" class="validation-msg"></span>
             </div>
-
 
             <div class="mt-3 d-flex justify-content-center">
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" value="Submit"/>

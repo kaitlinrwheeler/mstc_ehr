@@ -86,7 +86,7 @@
                 <label for="active">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" />
+                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" required/>
                         <label for="Yes" style="font-weight: normal;">Yes</label><br />
                         <input type="radio" id="No" asp-for="@problem.active" value="False" />
                         <label for="No" style="font-weight: normal;">No</label><br />
