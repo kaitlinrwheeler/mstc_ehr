@@ -24,8 +24,6 @@ namespace EHRApplication.Models
 
         public DateTime endDate { get; set; }
 
-        public string activeStatus { get; set; }
-
         public string title { get; set; }
 
         public string diagnosis { get; set; }

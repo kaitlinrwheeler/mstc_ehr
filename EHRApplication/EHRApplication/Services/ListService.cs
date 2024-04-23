@@ -570,7 +570,6 @@ namespace EHRApplication.Services
 
                         //Setting the data that was jus pulled from the database into an instance of the care plan model.
                         carePlan.priority = Convert.ToString(dataReader["priority"]);
-                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         carePlan.title = Convert.ToString(dataReader["title"]);
                         carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
                         carePlan.startDate = Convert.ToDateTime(dataReader["startDate"]);
@@ -1174,7 +1173,6 @@ namespace EHRApplication.Services
                         carePlan.priority = Convert.ToString(dataReader["priority"]);
                         carePlan.startDate = DateTime.Parse(dataReader["startDate"].ToString());
                         carePlan.endDate = DateTime.Parse(dataReader["endDate"].ToString());
-                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         carePlan.title = Convert.ToString(dataReader["title"]);
                         carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
 

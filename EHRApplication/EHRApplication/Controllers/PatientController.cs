@@ -1063,5 +1063,236 @@ namespace EHRApplication.Controllers
 
             return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet]
+        public IActionResult CreatePatientCarePlanForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            // Needed to work with the patient banner properly.
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientCarePlanForm(Vitals vital)
+        {
+            if (vital.visitId == 0)
+            {
+                ModelState.AddModelError("Vital.visitId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = vital.patientId;
+
+                return View(viewModel);
+            }
+            else if (vital.patientId != 0)
+            {
+                //Calculate the BMI
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoVitals(vital);
+            }
+
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+        }
+
+        [HttpGet]
+
+        public IActionResult EditPatientCarePlanForm(int vitalsId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
+
+
+
+
+            // Needed to work with the patient banner properly.
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.Vital.patientId;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientCarePlanForm(Vitals vital)
+        {
+            if (vital.visitId == 0)
+            {
+                ModelState.AddModelError("visitId", "Please select a visit.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+                viewModel.Vital = vital;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = vital.patientId;
+
+                return View(viewModel);
+            }
+            else if (vital.patientId != 0)
+            {
+                //Calculate the BMI
+                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+                //go to the void list service that will update the data into the database.
+                _listService.UpdateVitals(vital);
+            }
+
+            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //[HttpGet]
+        //public IActionResult CreateNotesForm(int mhn)
+        //{
+        //    // Needed to work with the patient banner properly.
+        //    PortalViewModel viewModel = new PortalViewModel();
+        //    viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+        //    ViewBag.Patient = viewModel.PatientDemographic;
+        //    ViewBag.MHN = mhn;
+
+        //    return View(viewModel);
+        //}
+
+        //[HttpPost]
+        //public IActionResult CreateNotesForm(Vitals vital)
+        //{
+        //    if (vital.visitId == 0)
+        //    {
+        //        ModelState.AddModelError("Vital.visitId", "Please select a visit.");
+        //    }
+        //    //returns the model if null because there were errors in validating it
+        //    if (!ModelState.IsValid)
+        //    {
+        //        PortalViewModel viewModel = new PortalViewModel();
+        //        viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+        //        viewModel.Vital = vital;
+        //        ViewBag.Patient = viewModel.PatientDemographic;
+        //        ViewBag.MHN = vital.patientId;
+
+        //        return View(viewModel);
+        //    }
+        //    else if (vital.patientId != 0)
+        //    {
+        //        //Calculate the BMI
+        //        vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+        //        //go to the void list service that will input the data into the database.
+        //        _listService.InsertIntoVitals(vital);
+        //    }
+
+        //    return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+        //}
+
+        //[HttpGet]
+
+        //public IActionResult EditNotesForm(int vitalsId)
+        //{
+        //    // Needed to work with the patient banner properly.
+        //    PortalViewModel viewModel = new PortalViewModel();
+        //    viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
+        //    viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
+
+        //    ViewBag.Patient = viewModel.PatientDemographic;
+        //    ViewBag.MHN = viewModel.Vital.patientId;
+
+        //    return View(viewModel);
+        //}
+
+        //[HttpPost]
+        //public IActionResult EditNotesForm(Vitals vital)
+        //{
+        //    if (vital.visitId == 0)
+        //    {
+        //        ModelState.AddModelError("visitId", "Please select a visit.");
+        //    }
+        //    //returns the model if null because there were errors in validating it
+        //    if (!ModelState.IsValid)
+        //    {
+        //        PortalViewModel viewModel = new PortalViewModel();
+        //        viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
+        //        viewModel.Vital = vital;
+        //        ViewBag.Patient = viewModel.PatientDemographic;
+        //        ViewBag.MHN = vital.patientId;
+
+        //        return View(viewModel);
+        //    }
+        //    else if (vital.patientId != 0)
+        //    {
+        //        //Calculate the BMI
+        //        vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
+        //        //go to the void list service that will update the data into the database.
+        //        _listService.UpdateVitals(vital);
+        //    }
+
+        //    return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+        //}
+
+
+
+
+
     }
 }

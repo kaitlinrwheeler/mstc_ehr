@@ -9,8 +9,14 @@
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Notes
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Notes</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientNotesForm" asp-route-mhn="@mhn">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model != null && Model.PatientNotes != null && Model.PatientNotes.Any())
@@ -24,6 +30,7 @@
                             <th scope="col">Provider:</th>
                             <th scope="col">Category:</th>
                             <th scope="col">Note:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,6 +65,7 @@
                                         </div>
                                     }
                                 </td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

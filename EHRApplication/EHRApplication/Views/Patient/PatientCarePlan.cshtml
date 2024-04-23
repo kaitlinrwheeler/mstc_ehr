@@ -2,14 +2,21 @@
     ViewData["Title"] = "myEHR | Care Plans";
     // The list of patients being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
+    var mhn = ViewBag.MHN;
 
 }
 
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Care Plan
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Care Plans</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientCarePlanForm" asp-route-mhn="@mhn">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.CarePlans.Any())
@@ -23,6 +30,7 @@
                             <th scope="col">Diagnosis:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,12 +47,13 @@
                                     }
                                     @plan.priority
                                 </td>
-                                                            
-                                <td>@plan.activeStatus</td>
+
+                                <td>@(DateTime.Now >= plan.startDate && DateTime.Now <= plan.endDate ? "Active" : "Inactive")</td>
                                 <td>@plan.title</td>
                                 <td>@plan.diagnosis</td>
                                 <td>@plan.startDate.ToString("MM/dd/yyyy")</td>
                                 <td>@plan.endDate.ToString("MM/dd/yyyy")</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-vitalsId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
