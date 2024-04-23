@@ -17,21 +17,21 @@
             <!-- First Name -->
             <div class="form-group">
                 <label for="firstName">First Name:</label>
-                <input asp-for="firstName" type="text" id="firstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('firstName', 25, 'first name')" />
+                <input asp-for="firstName" type="text" id="firstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('firstName', 'first name')" />
                 <span asp-validation-for="firstName" id="firstNameError" class="validation-msg"></span>
             </div>
 
             <!-- Last Name -->
             <div class="form-group">
                 <label for="lastName">Last Name:</label>
-                <input asp-for="lastName" type="text" id="lastName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('lastName', 25, 'last name')" />
+                <input asp-for="lastName" type="text" id="lastName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('lastName', 'last name')" />
                 <span asp-validation-for="lastName" id="lastNameError" class="validation-msg"></span>
             </div>
 
             <!-- Specialty -->
             <div class="form-group">
                 <label for="specialty">Specialty:</label>
-                <input asp-for="specialty" type="text" id="specialty" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('specialty', 25, 'specialty')" />
+                <input asp-for="specialty" type="text" id="specialty" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('specialty', 'specialty')" />
                 <span asp-validation-for="specialty" id="specialtyError" class="validation-msg"></span>
             </div>
 
