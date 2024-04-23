@@ -37,7 +37,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientProblems] WHERE MHN = @mhn ORDER BY MHN ASC";
+                string sql = "SELECT * FROM [dbo].[PatientProblems] WHERE MHN = @mhn ORDER BY CASE WHEN active = 1 THEN 0 ELSE 1 END, MHN ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -156,11 +156,11 @@ namespace EHRApplication.Controllers
         {
             if (problem.visitsId == 0)
             {
-                ModelState.AddModelError("visitsId", "Please select a visit.");
+                ModelState.AddModelError("PatientProblemsDetails.visitsId", "Please select a visit.");
             }
             if (problem.createdBy == 0)
             {
-                ModelState.AddModelError("createdBy", "Please select a provider.");
+                ModelState.AddModelError("PatientProblemsDetails.createdBy", "Please select a provider.");
             }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -201,6 +201,14 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public IActionResult EditProblemForm(PatientProblems problem)
         {
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.visitsId", "Please select a visit.");
+            }
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.createdBy", "Please select a provider.");
+            }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
             {

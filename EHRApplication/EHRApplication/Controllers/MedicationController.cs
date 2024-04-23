@@ -270,9 +270,9 @@ namespace EHRApplication.Controllers
 
                 // Check if startDate is not set 30 days prior to the current date
                 DateTime currentDate = DateTime.Now;
-                if ((startDateTime - currentDate).Days < -30)
+                if ((startDateTime - currentDate).Days < -730)
                 {
-                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set 30 days prior to the current date.");
+                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set two years prior to the current date.");
                 }
             }
 
@@ -287,10 +287,6 @@ namespace EHRApplication.Controllers
 
                 // Check if endDate is a future date
                 DateTime currentDate = DateTime.Now;
-                if (endDateTime <= currentDate)
-                {
-                    ModelState.AddModelError("PatientMedication.endDate", "End date should be a future date.");
-                }
 
                 // Check if endDate is after startDate
                 DateTime startDateTime = medication.datePrescribed;
@@ -382,9 +378,9 @@ namespace EHRApplication.Controllers
 
                 // Check if startDate is not set 30 days prior to the current date
                 DateTime currentDate = DateTime.Now;
-                if ((startDateTime - currentDate).Days < -30)
+                if ((startDateTime - currentDate).Days < -730)
                 {
-                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set more than 30 days prior to the current date.");
+                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set more than two years prior to the current date.");
                 }
             }
 
@@ -399,10 +395,6 @@ namespace EHRApplication.Controllers
 
                 // Check if endDate is a future date
                 DateTime currentDate = DateTime.Now;
-                if (endDateTime <= currentDate)
-                {
-                    ModelState.AddModelError("PatientMedication.endDate", "End date should be a future date.");
-                }
 
                 // Check if endDate is after startDate
                 DateTime startDateTime = medication.datePrescribed;

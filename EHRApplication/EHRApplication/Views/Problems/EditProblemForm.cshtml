@@ -65,7 +65,7 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="@problem.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+                <span asp-validation-for="PatientProblemsDetails.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
@@ -79,7 +79,7 @@
                         </option>
                     }
                 </select>
-                <span asp-validation-for="@problem.visitsId" id="vitalError" class="validation-msg"></span>
+                <span asp-validation-for="PatientProblemsDetails.visitsId" id="vitalError" class="validation-msg"></span>
             </div>
 
             <div class="form-group">
@@ -110,7 +110,7 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save patient information?
+                            Are you sure you want to save patient problem information?
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -30,6 +30,7 @@ namespace EHRApplication.Models
         public string description { get; set; }
 
         [Required(ErrorMessage = "Please enter an ICD_10")]
+        [RegularExpression(@"^[a-zA-Z0-9.]+$", ErrorMessage = "Please enter only letters for priority")]
         public string ICD_10 { get; set; }
 
         [Required(ErrorMessage = "Please select an immediacy")]

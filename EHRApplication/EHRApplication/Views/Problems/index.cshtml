@@ -42,15 +42,23 @@
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->
 @*                                 <td>@problem.MHN</td>
  *@
-                                <td style='background-color: @(problem.priority == "High" ? "yellow" : "unset"); color: @(problem.priority == "High" ? "black" : "inherit")'>
-                                    @if (problem.priority == "High")
-                                    {
-                                        <span>
-                                            <i class='fa-solid fa-triangle-exclamation me-1'></i>
-                                        </span>
-                                    }
-                                    @problem.priority
-                                </td>
+
+                                @if (problem.active == true)
+                                {                                    
+                                    <td style='background-color: @(problem.priority == "High" ? "yellow" : "unset"); color: @(problem.priority == "High" ? "black" : "inherit")'>
+                                        @if (problem.priority == "High" )
+                                        {
+                                            <span>
+                                                <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                            </span>
+                                        }
+                                        @problem.priority
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>@problem.priority</td>
+                                }
 
 
                                 <td>@problem.description</td>

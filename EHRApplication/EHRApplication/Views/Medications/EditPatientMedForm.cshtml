@@ -18,7 +18,7 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="patientMedForm" enctype="multipart/form-data">
 
-            <input asp-for="@patientMed.MHN" hidden />
+            <input asp-for="PatientMedication.MHN" name="MHN" hidden />
             <input asp-for="@patientMed.patientMedId" hidden />
 
             <div class="form-group">
