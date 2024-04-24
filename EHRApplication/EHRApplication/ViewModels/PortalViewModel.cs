@@ -6,6 +6,7 @@ namespace EHRApplication.ViewModels
     {
         public PatientDemographic PatientDemographic { get; set; }
         public List<Alerts> Alerts { get; set; }
+        public Alerts Alert { get; set; }
         public List<Allergies> Allergies { get; set; }
         public List<CarePlan> CarePlans { get; set; }
         public List<LabOrders> LabOrders { get; set; }
@@ -16,6 +17,7 @@ namespace EHRApplication.ViewModels
         public MedicationProfile MedicationProfile { get; set; }
         public List<MedOrders> MedOrders { get; set; }
         public List<PatientAllergies> PatientAllergies { get; set; }
+        public PatientAllergies PatientAllergy { get; set; }
         public List<PatientContact> PatientContacts { get; set; }
         public PatientContact PatientContact { get; set; }
         public List<PatientInsurance> PatientInsurance { get; set; }

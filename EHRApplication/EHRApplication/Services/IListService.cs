@@ -64,5 +64,11 @@ namespace EHRApplication.Services
 
         void InsertIntoMedProfile(MedicationProfile medProfile);
         void UpdateMedProfile(MedicationProfile medProfile);
+
+        IEnumerable<Allergies> GetAllergies();
+
+        void InsertIntoPatientAllergies(PatientAllergies patientAllergy);
+        void InsertIntoAllergies(Allergies allergy);
+        void InsertIntoAlerts(Alerts alert);
     }
 }

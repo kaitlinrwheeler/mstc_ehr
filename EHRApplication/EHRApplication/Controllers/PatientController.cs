@@ -12,8 +12,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Controllers
@@ -288,7 +290,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY PatientAllergyId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY activeStatus DESC, onSetDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -300,28 +302,23 @@ namespace EHRApplication.Controllers
                 {
                     while (dataReader.Read())
                     {
-                        // Create a new allergy object for each record.
+                        // create a new allergy object for each record
                         PatientAllergies allergy = new PatientAllergies();
 
-                        // Populate the allergy object with data from the database.
-
+                        // populate the allergy object with data from the database
                         allergy.MHN = Convert.ToInt32(dataReader["MHN"]);
                         allergy.patientAllergyId = Convert.ToInt32(dataReader["PatientAllergyId"]);
-
-
-
                         allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
 
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        // uses allergy ID to get allergy names from the allergy table
                         allergy.allergies = _listService.GetAllergyByAllergyId(allergy.allergyId);
-
-
-
 
                         // Fetch the DateTime value from the database and convert it to DateOnly
                         DateTime onSetDateTime = dataReader.GetDateTime(dataReader.GetOrdinal("onSetDate"));
                         DateOnly onSetDate = new DateOnly(onSetDateTime.Year, onSetDateTime.Month, onSetDateTime.Day);
                         allergy.onSetDate = onSetDate;
+
+                        allergy.activeStatus = Convert.ToBoolean(dataReader["activeStatus"]);
 
                         // Add the patient to the list
                         allergies.Add(allergy);
@@ -891,7 +888,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn";
+                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn ORDER BY activeStatus DESC, startDate DESC, endDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -912,16 +909,16 @@ namespace EHRApplication.Controllers
                         alert.startDate = dataReader.GetDateTime("startDate");
 
                         alert.endDate = dataReader.GetDateTime("endDate");
-                        alert.activeStatus = dataReader.GetString("activeStatus");
+                        alert.activeStatus = dataReader.GetBoolean("activeStatus");
 
                         // If the alert should be inactive.
-                        if(alert.activeStatus == "Active" && alert.endDate < DateTime.Now)
+                        if(alert.activeStatus == true && alert.endDate < DateTime.Now)
                         {
                             // Call function that updates the alert status to be inactive.
                             if (SetAlertInactive(alert.alertId))
                             {
                                 // Set active status to inactive here since we just changed it in the database.
-                                alert.activeStatus = "Inactive";
+                                alert.activeStatus = false;
                             }
                             else
                             {
@@ -1077,35 +1074,108 @@ namespace EHRApplication.Controllers
         }
 
         // still testing below
-        //[HttpPost]
-        //public IActionResult CreateAllergyForm(Allergies allergy)
-        //{
-        //    if (allergy.allergyId == 0)
-        //    {
-        //        ModelState.AddModelError("Allergies.allergyId", "Please select an allergy record.");
-        //    }
+        [HttpPost]
+        public IActionResult CreateAllergyForm(PatientAllergies allergy)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly pastLimit = today.AddYears(-20);
 
-        //    //returns the model if null because there were errors in validating it
-        //    if (!ModelState.IsValid)
-        //    {
-        //        PortalViewModel viewModel = new PortalViewModel();
-        //        viewModel.PatientDemographic = _listService.GetPatientByMHN();
-        //        viewModel.Vital = vital;
-        //        ViewBag.Patient = viewModel.PatientDemographic;
-        //        ViewBag.MHN = vital.patientId;
+            // Validate onsetDate
+            if (allergy.onSetDate == DateOnly.MinValue)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Please enter allergy onset date.");
+            }
+            else if (allergy.onSetDate > today)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be in the future.");
+            }
+            else if (allergy.onSetDate < pastLimit)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be more than 20 years ago.");
+            }
 
-        //        return View(viewModel);
-        //    }
-        //    else if (vital.patientId != 0)
-        //    {
-        //        //Calculate the BMI
-        //        vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
-        //        //go to the void list service that will input the data into the database.
-        //        _listService.InsertIntoVitals(vital);
-        //    }
+            if (allergy.allergyId == 0)
+            {
+                ModelState.AddModelError("PatientAllergy.allergyId", "Please select an allergy.");
+            }
 
-        //    return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
-        //}
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(allergy.MHN);
+                viewModel.PatientAllergy = allergy;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = allergy.MHN;
+
+                return View(viewModel);
+            }
+            else if (allergy.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoPatientAllergies(allergy);
+            }
+
+            return RedirectToAction("PatientAllergies", new { mhn = allergy.MHN });
+        }
+
+        public IActionResult CreateAlertForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateAlertForm(Alerts alert)
+        {
+            DateTime today = DateTime.Today;
+            DateTime pastLimit = today.AddYears(-5);
+
+            // Validate onsetDate
+            if (alert.startDate == DateTime.MinValue)
+            {
+                ModelState.AddModelError("Alert.startDate", "Please enter alert start date.");
+            }
+            else if (alert.startDate > today)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be in the future.");
+            }
+            else if (alert.startDate < pastLimit)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be more than 5 years ago.");
+            }
+            else if (alert.endDate < alert.startDate)
+            {
+                ModelState.AddModelError("Alert.endDate", "End date cannot be before start date.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(alert.MHN);
+                viewModel.Alerts.Add(alert);
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = alert.MHN;
+
+                return View(viewModel);
+            }
+            else if (alert.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoAlerts(alert);
+            }
+
+            return RedirectToAction("PatientAlerts", new { mhn = alert.MHN });
+        }
 
         //public IActionResult EditAllergyForm(int vitalsId)
         //{

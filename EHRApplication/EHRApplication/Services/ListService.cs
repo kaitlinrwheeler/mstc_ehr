@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -1388,6 +1389,122 @@ namespace EHRApplication.Services
         public decimal BMICalculator(decimal weight, decimal height)
         {
             return 703 * (weight / (height * height));
+        }
+
+        public IEnumerable<Allergies> GetAllergies()
+        {
+            // New list to hold all the allergies in the database.
+            List<Allergies> allergyList = new List<Allergies>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "SELECT * FROM [dbo].[Allergies] WHERE activeStatus = 'True' ORDER BY allergyName ASC";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        // Create a new allergy object for each record.
+                        Allergies allergy = new Allergies();
+
+                        // Populate the allergy object with data from the database.
+                        allergy.allergyId = Convert.ToInt32(dataReader["allergyId"]);
+                        allergy.allergyName = Convert.ToString(dataReader["allergyName"]);
+                        allergy.allergyType = Convert.ToString(dataReader["allergyType"]);
+
+                        // Add the allergy to the list
+                        allergyList.Add(allergy);
+                    }
+                }
+
+                connection.Close();
+            }
+            return allergyList;
+        }
+
+        /// <summary>
+        /// inserting a new patient allergy into the database
+        /// </summary>
+        /// <param name="allergy"></param>
+        public void InsertIntoPatientAllergies(PatientAllergies allergy)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [PatientAllergies] (MHN, allergyId, onSetDate) " +
+                    "VALUES (@MHN, @allergyId, @onSetDate)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = allergy.MHN;
+                    command.Parameters.Add("@allergyId", SqlDbType.VarChar).Value = allergy.allergyId;
+                    //command.Parameters.Add("@date", SqlDbType.Date).Value = visit.date;
+                    command.Parameters.Add("@onSetDate", SqlDbType.Date).Value = allergy.onSetDate;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void InsertIntoAllergies(Allergies allergy)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Allergies] (allergyName, allergyType) " +
+                    "VALUES (@allergyName, @allergyType)";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@allergyName", SqlDbType.VarChar).Value = allergy.allergyName;
+                    command.Parameters.Add("@allergyType", SqlDbType.VarChar).Value = allergy.allergyType;
+
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void InsertIntoAlerts(Alerts alert)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [Alerts] (MHN, alertName, startDate, endDate, activeStatus) " +
+                    "VALUES (@MHN, @alertName, @startDate, @endDate, @activeStatus)";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.Int).Value = alert.MHN;
+                    command.Parameters.Add("@alertName", SqlDbType.VarChar).Value = alert.alertName;
+                    command.Parameters.Add("@startDate", SqlDbType.DateTime).Value = alert.startDate;
+                    command.Parameters.Add("@endDate", SqlDbType.DateTime).Value = alert.endDate;
+                    command.Parameters.Add("@activeStatus", SqlDbType.Bit).Value = alert.activeStatus;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
         }
     }
 }

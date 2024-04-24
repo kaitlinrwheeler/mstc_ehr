@@ -9,7 +9,7 @@
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Allergies</div>
             <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateAllergy" asp-route-mhn="@patient.MHN">
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateAllergyForm" asp-route-mhn="@patient.MHN">
                     <i class="fa-solid fa-plus me-2"></i>
                     <span>Add</span>
                 </a>
@@ -24,7 +24,7 @@
                             <th scope="col">Allergy Name:</th>
                             <th scope="col">Allergy Type:</th>
                             <th scope="col">Onset Date:</th>
-                            <th scope="col"></th>
+                            <th scope="col">Active:</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,9 +34,7 @@
                                 <td>@allergy.allergies.allergyName</td>
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergy"> 
-                                    @* asp-route-vitalsId="@vital.vitalsId" *@
-                                    <i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td>@(allergy.activeStatus ? "Yes" : "No")</td>
                             </tr>
                         }
                     </tbody>

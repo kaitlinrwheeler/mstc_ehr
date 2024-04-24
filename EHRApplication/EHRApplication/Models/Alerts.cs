@@ -15,7 +15,7 @@ namespace EHRApplication.Models
 
         public string alertName { get; set; }
 
-        public string activeStatus { get; set; }
+        public bool activeStatus { get; set; }
 
         public DateTime startDate { get; set; }
 
