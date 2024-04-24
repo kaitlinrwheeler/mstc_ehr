@@ -27,6 +27,7 @@
                             <!-- Commented out in case we want to view mhn later for testing purposes.-->
                             @*                             <th scope="col">MHN:</th>
                         *@
+                        <th scope="col">insuranceID</th>
                             <th scope="col">Status:</th>
                             <th scope="col">Insurance Provider:</th>
                             <th scope="col">Member ID:</th>
@@ -44,6 +45,7 @@
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->
                                 @*                                 <td>@insurance.MHN</td>
                         *@
+                        <td>@insurance.patientInsuranceId</td>
                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
                                 <td>@insurance.providerName</td>
                                 <td>@insurance.memberId</td>

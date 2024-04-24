@@ -20,7 +20,7 @@
         <form method="post" id="patientForm">
 
             <input value="@mhn" asp-for="@insurance.MHN" hidden />
-            <input value="@mhn" asp-for="@insurance.patientInsuranceId" hidden />
+            <input value="@insurance.patientInsuranceId" asp-for="@insurance.patientInsuranceId" hidden />
 
             <div class="form-group">
                 <label for="providerName">Insurance Provider:</label>

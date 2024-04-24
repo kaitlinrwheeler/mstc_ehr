@@ -485,6 +485,7 @@ namespace EHRApplication.Controllers
                 {
                     if (reader.Read())
                     {
+                        insurance.patientInsuranceId = insuranceId;
                         insurance.MHN = Convert.ToInt32(reader["MHN"]);
                         insurance.providerName = reader["providerName"].ToString();
                         insurance.memberId = reader["memberId"].ToString();
