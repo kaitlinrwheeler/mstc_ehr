@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EHRApplication.Controllers
@@ -416,13 +417,12 @@ namespace EHRApplication.Controllers
         {
             if (insurance.primaryPhysician == -1)
             {
-                ModelState.AddModelError("insurance.primaryPhysician", "Please select a value");
+                ModelState.AddModelError("insurance.primaryPhysician", "Please select a physician.");
             }
 
             // Need to make sure these don't get validated since they don't have anything to do with the form. 
             ModelState.Remove("insurance.patients");
             ModelState.Remove("insurance.providers");
-
 
             if (!ModelState.IsValid)
             {
@@ -450,7 +450,7 @@ namespace EHRApplication.Controllers
                 cmd.Parameters.AddWithValue("@providerName", insurance.providerName);
                 cmd.Parameters.AddWithValue("@memberId", insurance.memberId);
                 cmd.Parameters.AddWithValue("@policyNumber", insurance.policyNumber);
-                cmd.Parameters.AddWithValue("@groupNumber", insurance.groupNumber);
+                cmd.Parameters.AddWithValue("@groupNumber", string.IsNullOrEmpty(insurance.groupNumber) ? DBNull.Value : insurance.groupNumber);
                 cmd.Parameters.AddWithValue("@priority", insurance.priority);
                 cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician); 
                 cmd.Parameters.AddWithValue("@active", true);
@@ -513,12 +513,17 @@ namespace EHRApplication.Controllers
         {
             if (insurance.primaryPhysician == -1)
             {
-                ModelState.AddModelError("insurance.primaryPhysician", "Please select a value");
+                ModelState.AddModelError("insurance.primaryPhysician", "Please select a physician.");
             }
 
             // Need to make sure these don't get validated since they don't have anything to do with the form. 
             ModelState.Remove("insurance.patients");
             ModelState.Remove("insurance.providers");
+
+            if (insurance.primaryPhysician == -1)
+            {
+                ModelState.AddModelError("insurance.primaryPhysician", "Please select a physician.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -551,7 +556,7 @@ namespace EHRApplication.Controllers
                 cmd.Parameters.AddWithValue("@providerName", insurance.providerName);
                 cmd.Parameters.AddWithValue("@memberId", insurance.memberId);
                 cmd.Parameters.AddWithValue("@policyNumber", insurance.policyNumber);
-                cmd.Parameters.AddWithValue("@groupNumber", insurance.groupNumber);
+                cmd.Parameters.AddWithValue("@groupNumber", string.IsNullOrEmpty(insurance.groupNumber) ? DBNull.Value : insurance.groupNumber);
                 cmd.Parameters.AddWithValue("@priority", insurance.priority);
                 cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician);
                 cmd.Parameters.AddWithValue("@active", true);
