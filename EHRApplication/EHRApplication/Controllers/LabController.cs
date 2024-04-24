@@ -9,7 +9,7 @@ namespace EHRApplication.Controllers
     public class LabController : BaseController
     {
         public LabController(ILogService logService, IListService listService, IConfiguration configuration)
-            :base(logService, listService, configuration)
+            : base(logService, listService, configuration)
         {
         }
 
@@ -73,6 +73,122 @@ namespace EHRApplication.Controllers
 
             // Return the view with the list of all the patients so we can display them.
             return View(allTests);
+        }
+
+        public IActionResult PatientLabResults(int mhn)
+        {
+            //This will set the banner up and the view model so we can view everything
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            //Calls the list service to get all of the Lab Results associated to the passed in mhn number.
+            List<LabResults> patientHistory = _listService.GetPatientsLabResultsByMHN(mhn);
+
+            //This will add the patient Lab Results to the view model so it can be displayed along with the banner at the same time.
+            viewModel.LabResults = patientHistory;
+
+            //This will add all of the data to a view bag the will be grabbed else where to display data correctly.
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        public IActionResult CreateOrderForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateOrderForm(LabOrders labOrder)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(labOrder.MHN);
+            viewModel.LabOrdersDetails = labOrder;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = labOrder.MHN;
+
+            if (labOrder.orderedBy == 0)
+            {
+                ModelState.AddModelError("orderedBy", "Please select a provider.");
+            }
+            // Calculate the date one year ago from today
+            DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+            // Testing to see if the date of birth entered is before 1920 or not
+            if (labOrder.orderDate < DateOnly.FromDateTime(oneYearAgo))
+            {
+                // Adding an error to the date model to display an error.
+                ModelState.AddModelError("orderDate", "Cannot set order for over a year ago.");
+                return View(viewModel);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            else if (labOrder.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoLabOrders(labOrder);
+            }
+
+            return RedirectToAction("LabOrders", new { mhn = labOrder.MHN });
+        }
+
+        public IActionResult EditOrderForm(int orderId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.LabOrdersDetails = _listService.GetLabOrderByOrderId(orderId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.LabOrdersDetails.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.LabOrdersDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditOrderForm(LabOrders labOrder)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(labOrder.MHN);
+            viewModel.LabOrdersDetails = labOrder;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = labOrder.MHN;
+
+            if (labOrder.orderedBy == 0)
+            {
+                ModelState.AddModelError("orderedBy", "Please select a provider.");
+            }
+            // Calculate the date one year ago from today
+            DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+            // Testing to see if the date of birth entered is before 1920 or not
+            if (labOrder.orderDate < DateOnly.FromDateTime(oneYearAgo))
+            {
+                // Adding an error to the date model to display an error.
+                ModelState.AddModelError("orderDate", "Cannot set order for over a year ago.");
+                return View(viewModel);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            else if (labOrder.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateLabOrders(labOrder);
+            }
+
+            return RedirectToAction("LabOrders", new { mhn = labOrder.MHN });
         }
 
         [HttpPost]

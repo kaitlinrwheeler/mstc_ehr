@@ -16,6 +16,7 @@ namespace EHRApplication.Services
         Providers GetProvidersByProviderId(int mhn);
 
         LabTestProfile GetLabTestByTestId(int testId);
+        List<LabTestProfile> GetLabTests();
 
         PatientContact GetContactByMHN(int mhn);
 
@@ -52,12 +53,15 @@ namespace EHRApplication.Services
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
 
-        void InsertIntoVisits(Visits visit);
+        public LabOrders GetLabOrderByOrderId(int orderId);
 
+        void InsertIntoVisits(Visits visit);
         void UpdateVisits(Visits visit);
 
-        void InsertIntoVitals(Vitals vital);
+        public void UpdateLabOrders(LabOrders labOrders);
+        public void InsertIntoLabOrders(LabOrders labOrders);
 
+        void InsertIntoVitals(Vitals vital);
         void UpdateVitals(Vitals vital);
 
         public decimal BMICalculator(decimal weight, decimal height);
