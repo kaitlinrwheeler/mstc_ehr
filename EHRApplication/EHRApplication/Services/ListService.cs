@@ -1407,10 +1407,10 @@ namespace EHRApplication.Services
                     //adding parameters
                     command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = labOrders.MHN;
                     command.Parameters.Add("@testId", SqlDbType.VarChar).Value = labOrders.testId;
-                    command.Parameters.Add("@visitsId", SqlDbType.Date).Value = labOrders.visitsId;
-                    command.Parameters.Add("@completionStatus", SqlDbType.Time).Value = labOrders.completionStatus;
-                    command.Parameters.Add("@orderDate", SqlDbType.VarChar).Value = labOrders.orderDate;
-                    command.Parameters.Add("@orderTime", SqlDbType.VarChar).Value = labOrders.orderTime;
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = labOrders.visitsId;
+                    command.Parameters.Add("@completionStatus", SqlDbType.VarChar).Value = labOrders.completionStatus;
+                    command.Parameters.Add("@orderDate", SqlDbType.Date).Value = labOrders.orderDate;
+                    command.Parameters.Add("@orderTime", SqlDbType.Time).Value = labOrders.orderTime;
                     command.Parameters.Add("@orderedBy", SqlDbType.VarChar).Value = labOrders.orderedBy;
 
                     connection.Open();
@@ -1441,10 +1441,10 @@ namespace EHRApplication.Services
                     command.Parameters.Add("@orderId", SqlDbType.VarChar).Value = labOrders.orderId;
                     command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = labOrders.MHN;
                     command.Parameters.Add("@testId", SqlDbType.VarChar).Value = labOrders.testId;
-                    command.Parameters.Add("@visitsId", SqlDbType.Date).Value = labOrders.visitsId;
-                    command.Parameters.Add("@completionStatus", SqlDbType.Time).Value = labOrders.completionStatus;
-                    command.Parameters.Add("@orderDate", SqlDbType.VarChar).Value = labOrders.orderDate;
-                    command.Parameters.Add("@orderTime", SqlDbType.VarChar).Value = labOrders.orderTime;
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = labOrders.visitsId;
+                    command.Parameters.Add("@completionStatus", SqlDbType.VarChar).Value = labOrders.completionStatus;
+                    command.Parameters.Add("@orderDate", SqlDbType.Date).Value = labOrders.orderDate;
+                    command.Parameters.Add("@orderTime", SqlDbType.Time).Value = labOrders.orderTime;
                     command.Parameters.Add("@orderedBy", SqlDbType.VarChar).Value = labOrders.orderedBy;
 
                     connection.Open();

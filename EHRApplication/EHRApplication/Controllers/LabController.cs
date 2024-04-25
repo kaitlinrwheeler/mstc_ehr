@@ -117,15 +117,28 @@ namespace EHRApplication.Controllers
 
             if (labOrder.orderedBy == 0)
             {
-                ModelState.AddModelError("orderedBy", "Please select a provider.");
+                ModelState.AddModelError("LabOrdersDetails.orderedBy", "Please select a provider.");
+            }            
+            if (labOrder.testId == 0)
+            {
+                ModelState.AddModelError("LabOrdersDetails.testId", "Please select a test.");
+            }            
+            if (labOrder.visitsId == 0)
+            {
+                ModelState.AddModelError("LabOrdersDetails.visitsId", "Please select a visit.");
             }
+            if (labOrder.completionStatus == "0")
+            {
+                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the the order.");
+            }
+
             // Calculate the date one year ago from today
             DateTime oneYearAgo = DateTime.Now.AddYears(-1);
             // Testing to see if the date of birth entered is before 1920 or not
             if (labOrder.orderDate < DateOnly.FromDateTime(oneYearAgo))
             {
                 // Adding an error to the date model to display an error.
-                ModelState.AddModelError("orderDate", "Cannot set order for over a year ago.");
+                ModelState.AddModelError("LabOrdersDetails.orderDate", "Cannot set order for over a year ago.");
                 return View(viewModel);
             }
             //returns the model if null because there were errors in validating it
@@ -166,15 +179,28 @@ namespace EHRApplication.Controllers
 
             if (labOrder.orderedBy == 0)
             {
-                ModelState.AddModelError("orderedBy", "Please select a provider.");
+                ModelState.AddModelError("LabOrdersDetails.orderedBy", "Please select a provider.");
             }
+            if (labOrder.testId == 0)
+            {
+                ModelState.AddModelError("LabOrdersDetails.testId", "Please select a test.");
+            }
+            if (labOrder.visitsId == 0)
+            {
+                ModelState.AddModelError("LabOrdersDetails.visitsId", "Please select a visit.");
+            }
+            if (labOrder.completionStatus == "0")
+            {
+                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the the order.");
+            }
+
             // Calculate the date one year ago from today
             DateTime oneYearAgo = DateTime.Now.AddYears(-1);
             // Testing to see if the date of birth entered is before 1920 or not
             if (labOrder.orderDate < DateOnly.FromDateTime(oneYearAgo))
             {
                 // Adding an error to the date model to display an error.
-                ModelState.AddModelError("orderDate", "Cannot set order for over a year ago.");
+                ModelState.AddModelError("LabOrdersDetails.orderDate", "Cannot set order for over a year ago.");
                 return View(viewModel);
             }
             //returns the model if null because there were errors in validating it
