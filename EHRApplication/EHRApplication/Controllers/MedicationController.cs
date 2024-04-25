@@ -79,7 +79,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientMedications] WHERE MHN = @mhn ORDER BY CASE WHEN activeStatus = 'Active' THEN 0 ELSE 1 END, medId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientMedications] WHERE MHN = @mhn ORDER BY CASE WHEN activeStatus = 'Active' THEN 0 ELSE 1 END, datePrescribed ASC, endDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 

@@ -19,35 +19,35 @@ namespace EHRApplication.Models
         [ValidateNever]
         public Visits visits { get; set; }
 
-        [Required(ErrorMessage = "Please select a visit")]
+        [Required(ErrorMessage = "Please select a visit.")]
         public int visitsId { get; set; }
 
-        [Required(ErrorMessage = "Please select a priority")]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter only letters for priority")]
+        [Required(ErrorMessage = "Please select a priority.")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter only letters for priority.")]
         public string priority { get; set; }
 
-        [Required(ErrorMessage = "Plese enter a description")]
+        [Required(ErrorMessage = "Please enter a description.")]
         public string description { get; set; }
 
-        [Required(ErrorMessage = "Please enter an ICD_10")]
-        [RegularExpression(@"^[a-zA-Z0-9.]+$", ErrorMessage = "Please enter only letters for priority")]
+        [Required(ErrorMessage = "Please enter an ICD_10 code.")]
+        [RegularExpression(@"^[a-zA-Z0-9.]+$", ErrorMessage = "Please enter letters and numbers only for ICD_10.")]
         public string ICD_10 { get; set; }
 
-        [Required(ErrorMessage = "Please select an immediacy")]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter only letters for immediacy")]
+        [Required(ErrorMessage = "Please select an immediacy.")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Please enter only letters for immediacy.")]
         public string immediacy { get; set; }
 
-        [Required(ErrorMessage = "Please enter createdAt")]
+        [Required(ErrorMessage = "Please enter createdAt.")]
         public DateTime createdAt { get; set; }
 
         [ForeignKey("createdBy")]
         [ValidateNever]
         public Providers providers { get; set; }
 
-        [Required(ErrorMessage = "Please select a provider")]
+        [Required(ErrorMessage = "Please select a provider.")]
         public int createdBy { get; set; }
 
-        [Required(ErrorMessage = "Plese select active or not")]
+        [Required(ErrorMessage = "Plese select active or not.")]
         public bool active { get; set; }
     }
 }

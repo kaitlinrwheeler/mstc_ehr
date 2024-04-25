@@ -28,6 +28,7 @@
                             <th scope="col">Status:</th>
                             <th scope="col">Instructions:</th>
                             <th scope="col">Dosage:</th>
+                            <th scope="col">Route:</th>
                             <th scope="col">Prescribed By:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
@@ -65,6 +66,7 @@
                                     }
                                 </td>
                                 <td>@medication.dosage</td>
+                                <td>@medication.route</td>
                                 <td>@medication.providers.firstName @medication.providers.lastName</td>
                                 <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
                                 <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
