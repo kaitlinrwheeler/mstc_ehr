@@ -16,7 +16,7 @@ namespace EHRApplication.Models
 
         [MaxLength(100, ErrorMessage = "Please enter between 1 and 100 characters.")]
         [Required(ErrorMessage = "Provider name is required")]
-        [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Provider name must contain only alphabetic characters.")]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Provider name must contain only alphabetic characters.")]
         public string providerName { get; set; }
 
         [MaxLength(100, ErrorMessage = "Please enter between 1 and 100 characters.")]

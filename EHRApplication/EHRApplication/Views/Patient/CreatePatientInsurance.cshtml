@@ -40,7 +40,7 @@
             </div>
 
             <div class="form-group">
-                <label for="groupNumber">Group Number (Optional):</label>
+                <label for="groupNumber">Group Number (if applicable):</label>
                 <input asp-for="@insurance.groupNumber" type="text" id="groupNumber" class="form-control" data-bs-theme="auto" onblur="validateOptionalTextInputAlphaNumeric('groupNumber', 100, 'group number')" />
                 <span asp-validation-for="@insurance.groupNumber" id="groupNumberError" class="validation-msg"></span>
             </div>

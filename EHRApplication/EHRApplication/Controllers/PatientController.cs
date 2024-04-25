@@ -740,6 +740,42 @@ namespace EHRApplication.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult UpdateInsuranceActiveStatus(int insuranceId, bool activeStatus)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query.
+                string sql = "UPDATE [dbo].[PatientInsurance] SET active = @active WHERE patientInsuranceId = @insuranceId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@insuranceId", insuranceId);
+                cmd.Parameters.AddWithValue("@active", activeStatus);
+
+                // Execute the SQL command.
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                connection.Close();
+
+                // Check if any rows were affected.
+                if (rowsAffected > 0)
+                {
+                    // Successfully updated.
+                    return Ok("Successfully updated.");
+                }
+                else
+                {
+                    // No rows were affected, return an error message.
+                    return BadRequest("Error, please try again.");
+                }
+            }
+        }
+
+
 
         [HttpPost]
         public IActionResult DeletePatient(int mhn)

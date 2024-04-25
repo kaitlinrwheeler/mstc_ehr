@@ -27,7 +27,7 @@
                             <th scope="col">Med Name:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">Route:</th>
-                            <th scope="col">Active Status:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -43,7 +43,7 @@
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@med.medId" data-medId="@med.medId" @(med.activeStatus ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Yes" : "No")</label>
+                                        <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Active" : "Inactive")</label>
                                     </div>
                                 </td>
                                 <td>

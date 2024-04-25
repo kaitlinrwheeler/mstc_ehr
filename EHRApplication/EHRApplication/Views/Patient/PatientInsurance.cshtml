@@ -4,6 +4,7 @@
     @model EHRApplication.ViewModels.PortalViewModel
     var patient = Model.PatientDemographic;
 
+    <script src="~/js/patientInsurance.js" defer></script>
 }
 
 
@@ -24,10 +25,6 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
-                            @*                             <th scope="col">MHN:</th>
-                        *@
-                        <th scope="col">insuranceID</th>
                             <th scope="col">Status:</th>
                             <th scope="col">Insurance Provider:</th>
                             <th scope="col">Member ID:</th>
@@ -42,11 +39,24 @@
                         @foreach (var insurance in Model.PatientInsurances)
                         {
                             <tr class="hover-highlighting">
-                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
-                                @*                                 <td>@insurance.MHN</td>
-                        *@
-                        <td>@insurance.patientInsuranceId</td>
-                                <td>@(insurance.active ? "Active" : "Inactive")</td>
+
+
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@insurance.patientInsuranceId" data-insuranceId="@insurance.patientInsuranceId" @(insurance.active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@insurance.patientInsuranceId">@(insurance.active ? "Active" : "Inactive")</label>
+                                    </div>
+                                </td>
+
+
+
+                                
+                                
+@*                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
+ *@
+
+
+
                                 <td>@insurance.providerName</td>
                                 <td>@insurance.memberId</td>
                                 <td>@insurance.policyNumber</td>
