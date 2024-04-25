@@ -115,6 +115,7 @@ namespace EHRApplication.Controllers
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = labOrder.MHN;
 
+            //These test to make sure the select box has a value selected.
             if (labOrder.orderedBy == 0)
             {
                 ModelState.AddModelError("LabOrdersDetails.orderedBy", "Please select a provider.");
@@ -177,6 +178,7 @@ namespace EHRApplication.Controllers
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = labOrder.MHN;
 
+            //These test to make sure the select box has a value selected.
             if (labOrder.orderedBy == 0)
             {
                 ModelState.AddModelError("LabOrdersDetails.orderedBy", "Please select a provider.");
@@ -215,6 +217,67 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("LabOrders", new { mhn = labOrder.MHN });
+        }
+
+        public IActionResult CreateResultsForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateResultsForm(LabResults labResults)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(labResults.MHN);
+            viewModel.LabResultsDetails = labResults;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = labResults.MHN;
+
+            if (labResults.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoLabResults(labResults);
+            }
+
+            return RedirectToAction("LabOrders", new { mhn = labResults.MHN });
+        }
+
+        public IActionResult EditResultsForm(int labId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.LabResultsDetails = _listService.GetLabResultByLabId(labId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.LabResultsDetails.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.LabResultsDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditResultsForm(LabResults labResult)
+        {
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(labResult.MHN);
+            viewModel.LabResultsDetails = labResult;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = labResult.MHN;
+
+            if (labResult.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateLabResults(labResult);
+            }
+
+            return RedirectToAction("LabOrders", new { mhn = labResult.MHN });
         }
 
         [HttpPost]

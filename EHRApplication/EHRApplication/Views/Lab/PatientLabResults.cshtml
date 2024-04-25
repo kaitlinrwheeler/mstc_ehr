@@ -10,7 +10,7 @@
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Patient Lab Results</div>
             <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="CreateResultsForm" asp-route-mhn="@mhn">
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Lab" asp-action="CreateResultsForm" asp-route-mhn="@mhn">
                     <i class="fa-solid fa-plus me-2"></i>
                     <span>Add</span>
                 </a>
@@ -55,7 +55,7 @@
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
                                 <td>@results.time.ToString("HH:mm")</td>
                                 <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN">View</a></td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditResultsForm" asp-route-visitId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

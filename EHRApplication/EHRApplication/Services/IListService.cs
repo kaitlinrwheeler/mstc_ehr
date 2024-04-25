@@ -53,13 +53,17 @@ namespace EHRApplication.Services
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
 
-        public LabOrders GetLabOrderByOrderId(int orderId);
+        LabOrders GetLabOrderByOrderId(int orderId);
+        LabResults GetLabResultByLabId(int labId);
 
         void InsertIntoVisits(Visits visit);
         void UpdateVisits(Visits visit);
 
-        public void UpdateLabOrders(LabOrders labOrders);
-        public void InsertIntoLabOrders(LabOrders labOrders);
+        void UpdateLabOrders(LabOrders labOrders);
+        void InsertIntoLabOrders(LabOrders labOrders);
+
+        void InsertIntoLabResults(LabResults labResults);
+        void UpdateLabResults(LabResults labResults);
 
         void InsertIntoVitals(Vitals vital);
         void UpdateVitals(Vitals vital);
