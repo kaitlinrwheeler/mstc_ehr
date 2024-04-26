@@ -3,6 +3,7 @@ using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EHRApplication.Controllers
 {
@@ -232,21 +233,57 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateResultsForm(LabResults labResults)
+        public IActionResult CreateResultsForm(LabResults labResult)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(labResults.MHN);
-            viewModel.LabResultsDetails = labResults;
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(labResult.MHN);
+            viewModel.LabResultsDetails = labResult;
             ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = labResults.MHN;
+            ViewBag.MHN = labResult.MHN;
 
-            if (labResults.MHN != 0)
+            //These test to make sure the select box has a value selected.
+            if (labResult.orderedBy == 0)
             {
-                //go to the void list service that will input the data into the database.
-                _listService.InsertIntoLabResults(labResults);
+                ModelState.AddModelError("LabResultsDetails.orderedBy", "Please select a provider.");
+            }
+            if (labResult.testId == 0)
+            {
+                ModelState.AddModelError("LabResultsDetails.testId", "Please select a test.");
+            }
+            if (labResult.visitsId == 0)
+            {
+                ModelState.AddModelError("LabResultsDetails.visitsId", "Please select a visit.");
+            }
+            if (labResult.abnormalFlag == "0")
+            {
+                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the the flag.");
+            }
+            if (labResult.resultValue.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a result value.");
             }
 
-            return RedirectToAction("LabOrders", new { mhn = labResults.MHN });
+            // Calculate the date one year ago from today
+            DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+            // Testing to see if the date of birth entered is before 1920 or not
+            if (labResult.date < DateOnly.FromDateTime(oneYearAgo))
+            {
+                // Adding an error to the date model to display an error.
+                ModelState.AddModelError("LabResultsDetails.date", "Cannot set order for over a year ago.");
+                return View(viewModel);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            if (labResult.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoLabResults(labResult);
+            }
+
+            return RedirectToAction("PatientLabResults", new { mhn = labResult.MHN });
         }
 
         public IActionResult EditResultsForm(int labId)
@@ -271,13 +308,49 @@ namespace EHRApplication.Controllers
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = labResult.MHN;
 
+            //These test to make sure the select box has a value selected.
+            if (labResult.orderedBy == 0)
+            {
+                ModelState.AddModelError("LabResultsDetails.orderedBy", "Please select a provider.");
+            }
+            if (labResult.testId == 0)
+            {
+                ModelState.AddModelError("LabResultsDetails.testId", "Please select a test.");
+            }
+            if (labResult.visitsId == 0)
+            {
+                ModelState.AddModelError("LabResultsDetails.visitsId", "Please select a visit.");
+            }
+            if (labResult.abnormalFlag == "0")
+            {
+                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the the flag.");
+            }
+            if (labResult.resultValue.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a result value.");
+            }
+
+            // Calculate the date one year ago from today
+            DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+            // Testing to see if the date of birth entered is before 1920 or not
+            if (labResult.date < DateOnly.FromDateTime(oneYearAgo))
+            {
+                // Adding an error to the date model to display an error.
+                ModelState.AddModelError("LabResultsDetails.date", "Cannot set order for over a year ago.");
+                return View(viewModel);
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
             if (labResult.MHN != 0)
             {
                 //go to the void list service that will input the data into the database.
                 _listService.UpdateLabResults(labResult);
             }
 
-            return RedirectToAction("LabOrders", new { mhn = labResult.MHN });
+            return RedirectToAction("PatientLabResults", new { mhn = labResult.MHN });
         }
 
         [HttpPost]
