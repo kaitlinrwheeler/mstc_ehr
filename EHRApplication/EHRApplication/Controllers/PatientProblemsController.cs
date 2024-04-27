@@ -37,7 +37,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientProblems] WHERE MHN = @mhn ORDER BY MHN ASC";
+                string sql = "SELECT * FROM [dbo].[PatientProblems] WHERE MHN = @mhn ORDER BY CASE WHEN active = 1 THEN 0 ELSE 1 END, MHN ASC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -137,6 +137,99 @@ namespace EHRApplication.Controllers
             }
 
             return patientDemographic;
+        }
+
+        public IActionResult CreateProblemForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateProblemForm(PatientProblems problem)
+        {
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.visitsId", "Please select a visit.");
+            }
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.createdBy", "Please select a provider.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
+                viewModel.PatientProblemsDetails = problem;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = problem.MHN;
+
+                return View(viewModel);
+            }
+            else if (problem.MHN != 0)
+            {
+                problem.createdAt = DateTime.Now;
+
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoProblems(problem);
+            }
+
+            return RedirectToAction("index", new { mhn = problem.MHN });
+        }
+
+        public IActionResult EditProblemForm(int problemId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientProblemsDetails = _listService.GetPatientProblemsByProblemId(problemId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientProblemsDetails.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientProblemsDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditProblemForm(PatientProblems problem)
+        {
+            if (problem.visitsId == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.visitsId", "Please select a visit.");
+            }
+            if (problem.createdBy == 0)
+            {
+                ModelState.AddModelError("PatientProblemsDetails.createdBy", "Please select a provider.");
+            }
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(problem.MHN);
+                viewModel.PatientProblemsDetails = problem;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = problem.MHN;
+
+                return View(viewModel);
+            }
+            else if (problem.MHN != 0)
+            {
+                problem.createdAt = DateTime.Now;
+
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateProblems(problem);
+            }
+
+            return RedirectToAction("index", new { mhn = problem.MHN });
         }
     }
 }
