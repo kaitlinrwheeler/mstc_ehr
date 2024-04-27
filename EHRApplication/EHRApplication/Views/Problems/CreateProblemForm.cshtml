@@ -39,7 +39,7 @@
             
             <div class="form-group">
                 <label for="ICD_10">ICD-10:</label>
-                <input type="text" id="ICD_10" asp-for="@problem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'ICD_10 code')" />
+                <input type="text" id="ICD_10" asp-for="@problem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'code for the ICD_10')" />
                 <span asp-validation-for="@problem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
             </div>
 
