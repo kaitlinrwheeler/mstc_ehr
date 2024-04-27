@@ -41,19 +41,19 @@
                             <tr class="hover-highlighting">
 
 
-                                <td>
+                                @* <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@insurance.patientInsuranceId" data-insuranceId="@insurance.patientInsuranceId" @(insurance.active ? "checked" : "")>
                                         <label class="form-check-label" for="switch@insurance.patientInsuranceId">@(insurance.active ? "Active" : "Inactive")</label>
                                     </div>
-                                </td>
+                                </td> *@
 
 
 
                                 
                                 
-@*                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
- *@
+                                <td>@(insurance.active ? "Active" : "Inactive")</td>
+
 
 
 

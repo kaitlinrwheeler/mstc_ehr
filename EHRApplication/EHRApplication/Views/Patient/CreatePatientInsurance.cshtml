@@ -65,6 +65,17 @@
                 <span asp-validation-for="@insurance.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="@insurance.active">Active?</label>
+                <div class="col-sm-6 ms-4">
+                    <input name="insurance.active" type="radio" id="True" asp-for="@insurance.active" value="True" required />
+                    <label for="True" style="font-weight: normal;">Yes</label><br />
+                    <input name="insurance.active" type="radio" id="False" asp-for="@insurance.active" value="False" />
+                    <label for="False" style="font-weight: normal;">No</label><br />
+                </div>
+                <span asp-validation-for="@insurance.active" id="activeError" class="validation-msg"></span>
+            </div>
+
             <div class="mt-3 d-flex justify-content-center">
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />
             </div>

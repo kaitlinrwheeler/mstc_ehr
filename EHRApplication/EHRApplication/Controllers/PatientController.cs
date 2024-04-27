@@ -453,7 +453,7 @@ namespace EHRApplication.Controllers
                 cmd.Parameters.AddWithValue("@groupNumber", string.IsNullOrEmpty(insurance.groupNumber) ? DBNull.Value : insurance.groupNumber);
                 cmd.Parameters.AddWithValue("@priority", insurance.priority);
                 cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician); 
-                cmd.Parameters.AddWithValue("@active", true);
+                cmd.Parameters.AddWithValue("@active", insurance.active);
 
 
                 cmd.ExecuteNonQuery();
@@ -560,7 +560,7 @@ namespace EHRApplication.Controllers
                 cmd.Parameters.AddWithValue("@groupNumber", string.IsNullOrEmpty(insurance.groupNumber) ? DBNull.Value : insurance.groupNumber);
                 cmd.Parameters.AddWithValue("@priority", insurance.priority);
                 cmd.Parameters.AddWithValue("@primaryPhysician", insurance.primaryPhysician);
-                cmd.Parameters.AddWithValue("@active", true);
+                cmd.Parameters.AddWithValue("@active", insurance.active);
 
                 cmd.ExecuteNonQuery();
 
