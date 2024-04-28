@@ -418,7 +418,35 @@ function validateRequiredTextInputAlphaNumeric(inputID, characterLimit, errorMes
         } else {
             // If input is not empty, perform validation
             const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alpha numberic characters only.');
-            if (isAlphaNumeric) {
+            if (isAlphaNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+function validateOptionalTextInputAlphaNumeric(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const inputErrorSpan = document.getElementById(inputErrorSpanID);
+
+    // Function to handle input change event
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty, hide error message
+            inputErrorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alphabetic characters only.');
+            if (isAlphaNumericValid) {
                 // Validate character limit
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
             }

@@ -35,7 +35,7 @@
                             <th scope="col">Last Name:</th>
                             <th scope="col">Date of Birth:</th>
                             <th scope="col">Gender:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col"></th> <!-- Empty columns for the buttons -->
                             <!--This is coded here to only display if you are logged in as an Admin-->
                             @if (User.IsInRole("Admin"))
@@ -57,7 +57,7 @@
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Yes" : "No")</label>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Active" : "Inactive")</label>
                                     </div>
                                 </td>
 
