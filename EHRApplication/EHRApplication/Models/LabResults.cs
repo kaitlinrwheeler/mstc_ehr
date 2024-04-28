@@ -15,7 +15,7 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
-        [ForeignKey("visitId")]
+        [ForeignKey("visitsId")]
         [ValidateNever]
         public Visits visits { get; set; }
 

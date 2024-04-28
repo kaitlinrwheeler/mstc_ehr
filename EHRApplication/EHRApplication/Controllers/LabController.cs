@@ -131,7 +131,7 @@ namespace EHRApplication.Controllers
             }
             if (labOrder.completionStatus == "0")
             {
-                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the the order.");
+                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the order.");
             }
 
             // Calculate the date one year ago from today
@@ -194,7 +194,7 @@ namespace EHRApplication.Controllers
             }
             if (labOrder.completionStatus == "0")
             {
-                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the the order.");
+                ModelState.AddModelError("LabOrdersDetails.completionStatus", "Please select a status for the order.");
             }
 
             // Calculate the date one year ago from today
@@ -256,7 +256,7 @@ namespace EHRApplication.Controllers
             }
             if (labResult.abnormalFlag == "0")
             {
-                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the the flag.");
+                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the flag.");
             }
             if (labResult.resultValue.IsNullOrEmpty())
             {
@@ -323,7 +323,7 @@ namespace EHRApplication.Controllers
             }
             if (labResult.abnormalFlag == "0")
             {
-                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the the flag.");
+                ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the flag.");
             }
             if (labResult.resultValue.IsNullOrEmpty())
             {
