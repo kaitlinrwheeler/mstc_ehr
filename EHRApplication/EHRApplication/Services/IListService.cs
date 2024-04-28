@@ -70,5 +70,6 @@ namespace EHRApplication.Services
         void InsertIntoPatientAllergies(PatientAllergies patientAllergy);
         void InsertIntoAllergies(Allergies allergy);
         void InsertIntoAlerts(Alerts alert);
+        PatientAllergies GetPatientAllergyByPatientAllergyId(int patientAllergyId);
     }
 }

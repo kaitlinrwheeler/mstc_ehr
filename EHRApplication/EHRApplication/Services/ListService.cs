@@ -1472,7 +1472,6 @@ namespace EHRApplication.Services
                     command.Parameters.Add("@allergyName", SqlDbType.VarChar).Value = allergy.allergyName;
                     command.Parameters.Add("@allergyType", SqlDbType.VarChar).Value = allergy.allergyType;
 
-
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -1505,6 +1504,15 @@ namespace EHRApplication.Services
                 }
             }
             return;
+        }
+
+        public PatientAllergies GetPatientAllergyByPatientAllergyId(int patientAllergyId)
+        {
+            PatientAllergies patientAllergy = new PatientAllergies();
+
+
+
+            return patientAllergy;
         }
     }
 }

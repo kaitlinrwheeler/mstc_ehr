@@ -13,12 +13,19 @@ namespace EHRApplication.Models
 
         public int MHN { get; set; }
 
+        [Required(ErrorMessage = "Please enter alert name.")]
+        [StringLength(100, ErrorMessage = "Alert name must not exceed 100 characters.")]
+        [RegularExpression(@"^[a-zA-Z\s\/\-'']*$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string alertName { get; set; }
 
         public bool activeStatus { get; set; }
 
+        [Required(ErrorMessage = "Please enter a start date.")]
+        [DataType(DataType.Date)]
         public DateTime startDate { get; set; }
 
+        [Required(ErrorMessage = "Please enter an end date.")]
+        [DataType(DataType.Date)]
         public DateTime endDate { get; set; }
     }
 }

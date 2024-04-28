@@ -21,33 +21,33 @@
             <!-- Alert Name -->
             <div class="form-group">
                 <label for="alertName">Alert Name:</label>
-                <input asp-for="Alert.alertName" type="text" id="alertName" name="alertName" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('alertName', 100, 'name for the alert')" />
+                <input asp-for="Alert.alertName" type="text" id="alertName" name="Alert.alertName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('alertName', 'name for the alert')" />
                 <span asp-validation-for="Alert.alertName" id="alertNameError" class="validation-msg"></span>
             </div>
 
             <!-- Alert Start Date Picker -->
             <div class="form-group">
                 <label for="startDate">Start Date:</label>
-                <input name="startDate" asp-for="Alert.startDate" type="date" id="startDate" class="form-control" data-bs-theme="auto" />
+                <input name="Alert.startDate" asp-for="Alert.startDate" type="date" id="startDate" class="form-control" data-bs-theme="auto" onblur="validateDatePicker('date', 'alert start date')">
                 <span asp-validation-for="Alert.startDate" id="startDateError" class="validation-msg"></span>
             </div>
 
             <!-- Alert End Date Picker -->
             <div class="form-group">
                 <label for="endDate">End Date:</label>
-                <input name="endDate" asp-for="Alert.endDate" type="date" id="endDate" class="form-control" data-bs-theme="auto" />
+                <input name="Alert.endDate" asp-for="Alert.endDate" type="date" id="endDate" class="form-control" data-bs-theme="auto" onblur="validateDatePicker('date', 'alert end date')">
                 <span asp-validation-for="Alert.endDate" id="endDateError" class="validation-msg"></span>
             </div>
 
             <!-- Active Status -->
             <div class="form-group">
-                <label for="activeStatus">Active?</label>
+                <label asp-for="Alert.activeStatus">Active?</label>
                 <div class="col-sm-6 ms-4">
                     <div class="race-column">
-                        <input name="activeStatus" type="radio" id="Yes" asp-for="Alert.activeStatus" value="Active" />
-                        <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input name="activeStatus" type="radio" id="No" asp-for="Alert.activeStatus" value="Inactive" />
-                        <label for="No" style="font-weight: normal;">No</label><br />
+                        <input name="Alert.activeStatus" type="radio" id="True" asp-for="Alert.activeStatus" value="True" />
+                        <label for="True" style="font-weight: normal;">Yes</label><br />
+                        <input name="Alert.activeStatus" type="radio" id="False" asp-for="Alert.activeStatus" value="False" />
+                        <label for="False" style="font-weight: normal;">No</label><br />
                     </div>
                 </div>
                 <span asp-validation-for="Alert.activeStatus" class="validation-msg"></span>

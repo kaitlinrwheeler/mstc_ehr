@@ -933,7 +933,11 @@ namespace EHRApplication.Controllers
                 }
 
                 // Order the list by start date newest to oldest.
-                viewModel.Alerts = alerts.OrderByDescending(a => a.startDate).ToList();
+                viewModel.Alerts = alerts
+                    .OrderByDescending(a => a.activeStatus)
+                    .ThenByDescending(a => a.startDate)
+                    .ThenByDescending(a => a.endDate)
+                    .ToList();
 
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = mhn;
@@ -951,7 +955,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'Inactive' WHERE alertId = @id";
+                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'false' WHERE alertId = @id";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -1138,11 +1142,18 @@ namespace EHRApplication.Controllers
             DateTime today = DateTime.Today;
             DateTime pastLimit = today.AddYears(-5);
 
-            // Validate onsetDate
-            if (alert.startDate == DateTime.MinValue)
+            if (ModelState.TryGetValue("Alert.startDate", out var startDateEntry) && startDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
             {
-                ModelState.AddModelError("Alert.startDate", "Please enter alert start date.");
+                ModelState.Remove("Alert.startDate");
+                ModelState.AddModelError("Alert.startDate", "Please enter a valid start date.");
             }
+
+            if (ModelState.TryGetValue("Alert.endDate", out var endDateEntry) && endDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
+            {
+                ModelState.Remove("Alert.endDate");
+                ModelState.AddModelError("Alert.endDate", "Please enter a valid end date.");
+            }
+
             else if (alert.startDate > today)
             {
                 ModelState.AddModelError("Alert.startDate", "Start date cannot be in the future.");
@@ -1153,8 +1164,15 @@ namespace EHRApplication.Controllers
             }
             else if (alert.endDate < alert.startDate)
             {
+                ModelState.Remove("Alert.endDate");
                 ModelState.AddModelError("Alert.endDate", "End date cannot be before start date.");
             }
+            else if (alert.alertName == null)
+            {
+                ModelState.AddModelError("Alert.alertName", "Please enter alert name.");
+            }
+
+            ModelState.Remove("alert.patients");
 
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -1162,7 +1180,8 @@ namespace EHRApplication.Controllers
                 // Needed to work with the patient banner properly.
                 PortalViewModel viewModel = new PortalViewModel();
                 viewModel.PatientDemographic = _listService.GetPatientByMHN(alert.MHN);
-                viewModel.Alerts.Add(alert);
+                //viewModel.Alerts.Add(alert);
+                viewModel.Alert = alert;
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = alert.MHN;
 
@@ -1177,18 +1196,18 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientAlerts", new { mhn = alert.MHN });
         }
 
-        //public IActionResult EditAllergyForm(int vitalsId)
-        //{
-        //    // Needed to work with the patient banner properly.
-        //    //PortalViewModel viewModel = new PortalViewModel();
-        //    //viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
-        //    //viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
+        public IActionResult EditAllergyForm(int patientAllergyId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientAllergy = _listService.GetPatientAllergyByPatientAllergyId(patientAllergyId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientAllergy.MHN);
 
-        //    //ViewBag.Patient = viewModel.PatientDemographic;
-        //    //ViewBag.MHN = viewModel.Vital.patientId;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.Vital.patientId;
 
-        //    //return View(viewModel);
-        //}
+            return View(viewModel);
+        }
 
         //[HttpPost]
         //public IActionResult EditAllergyForm(Vitals vital)

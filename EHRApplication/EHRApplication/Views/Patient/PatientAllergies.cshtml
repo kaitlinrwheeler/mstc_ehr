@@ -25,6 +25,7 @@
                             <th scope="col">Allergy Type:</th>
                             <th scope="col">Onset Date:</th>
                             <th scope="col">Active:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,7 @@
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
                                 <td>@(allergy.activeStatus ? "Yes" : "No")</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
