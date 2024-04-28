@@ -10,115 +10,131 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {        
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Edit Problem</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Edit Problem</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="visitForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="visitForm" enctype="multipart/form-data">
+                <input asp-for="@problem.MHN" value="@mhn" hidden />
+                <input asp-for="@problem.patientProblemsId" hidden />
 
-            <input asp-for="@problem.MHN" value="@mhn" hidden />
-            <input asp-for="@problem.patientProblemsId" hidden />
-
-            <div class="form-group">
-                <label for="priority">Priority Level:</label>
-                <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                </select>
-                <span asp-validation-for="@problem.priority" id="priorityError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <input type="text" id="description" asp-for="@problem.description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
-                <span asp-validation-for="@problem.description" id="descriptionError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="ICD_10">ICD-10:</label>
-                <input type="text" id="ICD_10" asp-for="@problem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'code for the ICD_10')" />
-                <span asp-validation-for="@problem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="immediacy">Immediacy:</label>
-                <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
-                    <option value="Routine">Routine</option>
-                    <option value="Urgent">Urgent</option>
-                </select>
-                <span asp-validation-for="@problem.immediacy" id="immediacyError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="createdBy">Created By:</label>
-                <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
-                    <option value="0"></option>
-                    @foreach (var provider in ListService.GetProviders())
-                    {
-                        <option value="@provider.providerId.ToString()">
-                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                        </option>
-                    }
-                </select>
-                <span asp-validation-for="PatientProblemsDetails.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="visitsId">Visit:</label>
-                <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
-                    <option value="0"></option>
-                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                    {
-                        <option value="@visit.visitsId.ToString()">
-                            @visit.date @visit.time
-                        </option>
-                    }
-                </select>
-                <span asp-validation-for="PatientProblemsDetails.visitsId" id="vitalError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="active">Active?</label>
-                <div class="col-sm-6 ms-4">
-                    <div class="race-column">
-                        <input type="radio" id="Yes" asp-for="@problem.active" value="True" required/>
-                        <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input type="radio" id="No" asp-for="@problem.active" value="False" />
-                        <label for="No" style="font-weight: normal;">No</label><br />
-                    </div>
+                <div class="form-group">
+                    <label for="priority">Priority Level:</label>
+                    <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
+                        <option value=""></option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                    <span asp-validation-for="@problem.priority" id="priorityError" class="validation-msg"></span>
                 </div>
-                <span asp-validation-for="@problem.active" id="admittedError" class="validation-msg"></span>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
-                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
-            </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" asp-for="@problem.description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
+                    <span asp-validation-for="@problem.description" id="descriptionError" class="validation-msg"></span>
+                </div>
 
-            <!-- confirmation modal-->
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
-                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save patient problem information?
-                        </div>
-                        <div class="modal-footer">
-                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                <div class="form-group">
+                    <label for="ICD_10">ICD-10:</label>
+                    <input type="text" id="ICD_10" asp-for="@problem.ICD_10" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('ICD_10', 'code for the ICD_10')" />
+                    <span asp-validation-for="@problem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="immediacy">Immediacy:</label>
+                    <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
+                        <option value=""></option>
+                        <option value="Routine">Routine</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+                    <span asp-validation-for="@problem.immediacy" id="immediacyError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="createdBy">Created By:</label>
+                    <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
+                        <option value="0"></option>
+                        @foreach (var provider in ListService.GetProviders())
+                        {
+                            <option value="@provider.providerId.ToString()">
+                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="PatientProblemsDetails.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="visitsId">Visit:</label>
+                    <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
+                        <option value="0"></option>
+                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                        {
+                            <option value="@visit.visitsId.ToString()">
+                                @visit.date @visit.time
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="PatientProblemsDetails.visitsId" id="vitalError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="active">Active?</label>
+                    <div class="col-sm-6 ms-4">
+                        <div class="race-column">
+                            <input type="radio" id="Yes" asp-for="@problem.active" value="True" required/>
+                            <label for="Yes" style="font-weight: normal;">Yes</label><br />
+                            <input type="radio" id="No" asp-for="@problem.active" value="False" />
+                            <label for="No" style="font-weight: normal;">No</label><br />
                         </div>
                     </div>
+                    <span asp-validation-for="@problem.active" id="admittedError" class="validation-msg"></span>
                 </div>
-            </div>
-        </form>
-    </div>
+
+                <!-- Submit Button -->
+                <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                    <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+                </div>
+
+                <!-- confirmation modal-->
+                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                                <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to save patient problem information?
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>
