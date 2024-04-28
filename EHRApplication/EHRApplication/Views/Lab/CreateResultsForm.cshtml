@@ -34,7 +34,7 @@
 
             <div class="form-group">
                 <label for="resultValue">Result Value:</label>
-                <input name="resultValue" asp-for="LabResultsDetails.resultValue" type="text" id="resultValue" class="form-control" data-bs-theme="auto" onblur="validateRequiredNumberInput('resultValue', 10, 'result value')" />
+                <input name="resultValue" asp-for="LabResultsDetails.resultValue" type="text" id="resultValue" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('resultValue', 'result value')" />
                 <span asp-validation-for="LabResultsDetails.resultValue" id="resultValueError" class="validation-msg"></span>
             </div>
 

@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
 {
@@ -258,9 +259,9 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the flag.");
             }
-            if (labResult.resultValue.IsNullOrEmpty())
+            if (labResult.resultValue.IsNullOrEmpty() || !Regex.IsMatch(labResult.resultValue, @"^[+-]?\d*\.?\d+$"))
             {
-                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a result value.");
+                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a valid numeric result value.");
             }
 
             // Calculate the date one year ago from today
