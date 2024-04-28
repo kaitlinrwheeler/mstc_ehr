@@ -53,6 +53,13 @@ namespace EHRApplication.Services
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
 
+        PatientProblems GetPatientProblemsByProblemId(int problemId);
+        PatientMedications GetPatientsMedByPatientMedId(int patientMedId);
+        public void InsertIntoProblems(PatientProblems problem);
+        public void UpdateProblems(PatientProblems problem);
+        public void InsertIntoPatientMed(PatientMedications medication);
+        public void UpdatePatientMed(PatientMedications medication);
+
         LabOrders GetLabOrderByOrderId(int orderId);
         LabResults GetLabResultByLabId(int labId);
 
