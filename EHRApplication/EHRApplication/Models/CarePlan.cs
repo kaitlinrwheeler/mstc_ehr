@@ -40,5 +40,8 @@ namespace EHRApplication.Models
         [RegularExpression(@"^[a-zA-Z0-9\s\p{P}]+$", ErrorMessage = "Title must contain only alphanumeric and punctuation characters.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Diagnosis must be between 1 and 100 characters.")]
         public string diagnosis { get; set; }
+
+        [Required(ErrorMessage = "Active status is required.")]
+        public bool active { get; set; }
     }
 }
