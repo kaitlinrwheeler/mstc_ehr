@@ -1112,7 +1112,7 @@ namespace EHRApplication.Controllers
             viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
             viewModel.CarePlansDetails = carePlan;
             ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = carePlan.CPId;
+            ViewBag.MHN = carePlan.MHN;
 
 
             if (carePlan.visitsId == -1)
@@ -1243,33 +1243,85 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditPatientCarePlanForm(Vitals vital)
+        public IActionResult EditPatientCarePlanForm(CarePlan carePlan)
         {
-            if (vital.visitId == 0)
-            {
-                ModelState.AddModelError("visitId", "Please select a visit.");
-            }
-            //returns the model if null because there were errors in validating it
-            if (!ModelState.IsValid)
-            {
-                // Needed to work with the patient banner properly.
-                PortalViewModel viewModel = new PortalViewModel();
-                viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
-                viewModel.Vital = vital;
-                ViewBag.Patient = viewModel.PatientDemographic;
-                ViewBag.MHN = vital.patientId;
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
+            viewModel.CarePlansDetails = carePlan;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = carePlan.MHN;
 
+
+            if (carePlan.visitsId == -1)
+            {
+                ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
+            }
+
+            // Check to see if the date is more than 5 years in the past.
+            if (carePlan.startDate <= DateTime.Now.AddYears(-5))
+            {
+                ModelState.AddModelError("CarePlansDetails.startDate", "Date cannot be in the future.");
                 return View(viewModel);
             }
-            else if (vital.patientId != 0)
+
+            // Check to make sure end date is after the start date.
+            if (carePlan.endDate <= carePlan.startDate)
             {
-                //Calculate the BMI
-                vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
-                //go to the void list service that will update the data into the database.
-                _listService.UpdateVitals(vital);
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after than start date.");
+                return View(viewModel);
+            }
+            // Check to make sure the end date is not more than 2 years from today's date.
+            else if (carePlan.endDate > DateTime.Now.AddYears(2))
+            {
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date cannot be more than 2 years in the future.");
+                return View(viewModel);
             }
 
-            return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("visitsId");
+            ModelState.Remove("patients");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    // SQL query that is going to update the data in the database table.
+                    string sql = "UPDATE [CarePlan] SET priority = @priority, startDate = @startDate, endDate = @endDate, " +
+                                 "title = @title, diagnosis = @diagnosis, visitsId = @visitsId, active = @active " +
+                                 "WHERE CPId = @CPId";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        // Adding parameters
+                        command.Parameters.Add("@priority", SqlDbType.NVarChar).Value = carePlan.priority;
+                        command.Parameters.Add("@startDate", SqlDbType.DateTime2).Value = carePlan.startDate;
+                        command.Parameters.Add("@endDate", SqlDbType.DateTime2).Value = carePlan.endDate;
+                        command.Parameters.Add("@title", SqlDbType.NVarChar).Value = carePlan.title;
+                        command.Parameters.Add("@diagnosis", SqlDbType.NVarChar).Value = carePlan.diagnosis;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = carePlan.visitsId;
+                        command.Parameters.Add("@active", SqlDbType.Bit).Value = carePlan.active;
+                        command.Parameters.Add("@CPId", SqlDbType.Int).Value = carePlan.CPId;
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientCarePlan", new { mhn = carePlan.MHN });
         }
 
 

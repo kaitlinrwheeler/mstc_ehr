@@ -17,7 +17,8 @@
     <div class="card-body" data-bs-theme="auto">
         <form method="post" id="vitalForm" enctype="multipart/form-data">
 
-            <input asp-for="CarePlansDetails.MHN" value="@mhn" hidden />
+            <input name="MHN" asp-for="CarePlansDetails.MHN" hidden />
+            <input name="CPId" asp-for="CarePlansDetails.CPId" hidden />
 
             <div class="form-group">
                 <label for="temperature">Priority:</label>
