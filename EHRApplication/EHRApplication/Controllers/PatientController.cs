@@ -1115,7 +1115,7 @@ namespace EHRApplication.Controllers
             ViewBag.MHN = carePlan.CPId;
 
 
-            if (carePlan.visitsId == 0)
+            if (carePlan.visitsId == -1)
             {
                 ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
             }
@@ -1187,19 +1187,57 @@ namespace EHRApplication.Controllers
 
         [HttpGet]
 
-        public IActionResult EditPatientCarePlanForm(int vitalsId)
+        public IActionResult EditPatientCarePlanForm(int carePlanId)
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
-            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
 
+            // viewModel.CarePlansDetails = _listService.GetVitalsByVitalsId(vitalsId);
 
+            //Creating a new patientDemographic instance
+            CarePlan carePlan = new CarePlan();
 
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT MHN, priority, startDate, endDate, active, title, diagnosis, visitsId " +
+                    "FROM [dbo].[CarePlan] WHERE CPId = @CPId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@CPId", carePlanId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        carePlan.CPId = carePlanId;
+                        carePlan.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        carePlan.patients = _listService.GetPatientByMHN(carePlan.MHN);
+
+                        carePlan.priority = Convert.ToString(dataReader["priority"]);
+                        carePlan.startDate = DateTime.Parse(dataReader["startDate"].ToString());
+                        carePlan.endDate = DateTime.Parse(dataReader["endDate"].ToString());
+                        carePlan.title = Convert.ToString(dataReader["title"]);
+                        carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
+                        carePlan.active = Convert.ToBoolean(dataReader["active"]);
+
+                        carePlan.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                    }
+                }
+
+                connection.Close();
+            }
 
             // Needed to work with the patient banner properly.
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
             ViewBag.Patient = viewModel.PatientDemographic;
-            ViewBag.MHN = viewModel.Vital.patientId;
+            ViewBag.MHN = carePlan.MHN;
+
+            viewModel.CarePlansDetails = carePlan;
 
             return View(viewModel);
         }
