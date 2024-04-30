@@ -112,5 +112,25 @@ namespace EHRApplication.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public IActionResult EditAllergy(int allergyId)
+        {
+            Allergies allergy = _listService.GetAllergyById(allergyId);
+            return View(allergy);
+        }
+
+        [HttpPost]
+        public IActionResult EditAllergy(Allergies allergy)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(allergy);
+            }
+            else
+            {
+                _listService.UpdateAllergy(allergy);
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -2,12 +2,13 @@
     @model EHRApplication.ViewModels.PortalViewModel
     ViewData["Title"] = "myEHR | Patient Allergies";
     var patient = Model.PatientDemographic;
+    var mhn = ViewBag.MHN;
 }
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
-            <div class="text-center w-100">Allergies</div>
+            <div class="text-center w-100">Patient Allergies</div>
             <div>
                 <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateAllergyForm" asp-route-mhn="@patient.MHN">
                     <i class="fa-solid fa-plus me-2"></i>
@@ -36,7 +37,7 @@
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
                                 <td>@(allergy.activeStatus ? "Yes" : "No")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

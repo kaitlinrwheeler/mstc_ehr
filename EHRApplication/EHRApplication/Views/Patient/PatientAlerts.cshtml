@@ -1,74 +1,14 @@
-﻿@* @{
-    ViewData["Title"] = "myEHR | Patient Alerts";
-    @model EHRApplication.ViewModels.PortalViewModel;
-    var patient = Model.PatientDemographic;
-}
-
-
-<section class="my-5 w-75 m-auto">
-<div class="card mb-3 shadow-sm" data-bs-theme="auto">
-    <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
-        Alerts
-    </div>
-    <div class="card-body overflow-auto" data-bs-theme="auto">
-        @if (patient != null && Model.Alerts.Any())
-        {
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Active:</th>
-                        <th scope="col">Name:</th>
-                        <th scope="col">Start Date:</th>
-                        <th scope="col">End Date:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var alert in Model.Alerts)
-                    {
-                        <tr class="hover-highlighting">
-
-
-
-                            <td style='background-color: @(alert.activeStatus == "Active" ? "yellow" : "unset"); color: @(alert.activeStatus == "Active" ? "black" : "inherit")'>
-                                @if (alert.activeStatus == "Active")
-                                {
-                                    <span>
-                                        <i class='fa-solid fa-triangle-exclamation me-1'></i>
-                                    </span>
-                                }
-                                @alert.activeStatus
-                            </td>
-
-
-
-
-                            <td>@alert.alertName</td>
-                            <td>@alert.startDate.ToString("MM-dd-yyyy")</td>
-                            <td>@alert.endDate.ToString("MM-dd-yyyy")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <h1 class="text-center display-6">No alerts found for this patient.</h1>
-        }
-    </div>
-</div>
-</section>
- *@
-
-@{
+﻿@{
     @model EHRApplication.ViewModels.PortalViewModel
     ViewData["Title"] = "myEHR | Patient Alerts";
     var patient = Model.PatientDemographic;
+    var mhn = ViewBag.MHN;
 }
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
-            <div class="text-center w-100">Alerts</div>
+            <div class="text-center w-100">Patient Alerts</div>
             <div>
                 <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateAlertForm" asp-route-mhn="@patient.MHN">
                     <i class="fa-solid fa-plus me-2"></i>
@@ -82,10 +22,10 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Active:</th>
                             <th scope="col">Name:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
+                            <th scope="col">Active:</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -93,11 +33,11 @@
                     @foreach (var alert in Model.Alerts)
                     {
                         <tr class="hover-highlighting">
-                            <td>@(alert.activeStatus ? "Yes" : "No")</td>
                             <td>@alert.alertName</td>
                             <td>@alert.startDate.ToString("MM/dd/yyyy")</td>
                             <td>@alert.endDate.ToString("MM/dd/yyyy")</td>
-                            <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientAlert" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                            <td>@(alert.activeStatus ? "Yes" : "No")</td>
+                            <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAlertForm" asp-route-alertId="@alert.alertId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                         </tr>
                     }
                     </tbody>
@@ -105,7 +45,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No allergies found.</h1>
+                <h1 class="text-center display-6">No alerts found.</h1>
             }
         </div>
     </div>

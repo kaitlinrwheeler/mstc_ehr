@@ -1,11 +1,13 @@
 ﻿using EHRApplication.Models;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
+using System.Xml;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -205,7 +207,7 @@ namespace EHRApplication.Services
             //Creating a new instance of the patient contact class to store data from the database
             Providers providers = new Providers();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -236,7 +238,7 @@ namespace EHRApplication.Services
             //Creating a new instance of the patient contact class to store data from the database
             LabTestProfile labTest = new LabTestProfile();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -274,7 +276,7 @@ namespace EHRApplication.Services
             //Creating a new instance of the patient contact class to store data from the database
             PatientContact patientContact = new PatientContact();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -356,7 +358,7 @@ namespace EHRApplication.Services
             //Creating a new instance of the allergy class to store data from the database
             Allergies allergy = new Allergies();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -387,7 +389,7 @@ namespace EHRApplication.Services
             List<MedAdministrationHistory> historyList = new List<MedAdministrationHistory>();
             var patients = GetPatients();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -445,7 +447,7 @@ namespace EHRApplication.Services
             //When we move the get patient by MHN into the service use that one instead.
             var patients = GetPatients();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -551,7 +553,7 @@ namespace EHRApplication.Services
             //List that will hold all of the care plans for the patient with the passed in mhn number.
             List<CarePlan> carePlanList = new List<CarePlan>();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -596,7 +598,7 @@ namespace EHRApplication.Services
             //Creating a new instance of the patient contact class to store data from the database
             Visits visit = new Visits();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -638,7 +640,7 @@ namespace EHRApplication.Services
             //Create a new instance of the Med History class to store data from the database
             List<LabOrders> labOrdersList = new List<LabOrders>();
 
-            //Setting up the connection with the database
+            //Setting up the conn with the database
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
                 connection.Open();
@@ -1510,9 +1512,192 @@ namespace EHRApplication.Services
         {
             PatientAllergies patientAllergy = new PatientAllergies();
 
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
 
+                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE patientAllergyId = @patientAllergyId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                cmd.Parameters.AddWithValue("@patientAllergyId", patientAllergyId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        patientAllergy.MHN = Convert.ToInt32(reader["MHN"]);
+                        patientAllergy.allergyId = Convert.ToInt32(reader["allergyId"]);
+                        DateTime dateTime = DateTime.Parse(reader["onSetDate"].ToString());
+                        patientAllergy.onSetDate = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        patientAllergy.activeStatus = Convert.ToBoolean(reader["activeStatus"]);
+                    }
+                }
+
+                connection.Close();
+            }
 
             return patientAllergy;
+        }
+
+        public void UpdatePatientAllergy(PatientAllergies patientAllergy)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [PatientAllergies] " +
+                    "SET allergyId = @allergyId, activeStatus = @activeStatus, onSetDate = @onSetDate " +
+                    "WHERE patientAllergyId = @patientAllergyId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@patientAllergyId", SqlDbType.VarChar).Value = patientAllergy.patientAllergyId;
+                    command.Parameters.Add("@allergyId", SqlDbType.VarChar).Value = patientAllergy.allergyId;
+                    command.Parameters.Add("@activeStatus", SqlDbType.Bit).Value = patientAllergy.activeStatus;
+                    command.Parameters.Add("@onSetDate", SqlDbType.Date).Value = patientAllergy.onSetDate;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public Alerts GetPatientAlert(int alertId)
+        {
+            Alerts alerts = new Alerts();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                string sql = "SELECT * FROM [dbo].[Alerts] WHERE alertId = @alertId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                
+                cmd.Parameters.AddWithValue("@alertId", alertId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader()) 
+                {
+                    while (reader.Read())
+                    {
+                        alerts.MHN = Convert.ToInt32(reader["MHN"]);
+                        alerts.alertName = Convert.ToString(reader["alertName"]);
+                        alerts.startDate = DateTime.Parse(reader["startDate"].ToString());
+                        alerts.endDate = DateTime.Parse(reader["endDate"].ToString());
+                        alerts.activeStatus = Convert.ToBoolean(reader["activeStatus"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return alerts;
+        }
+
+        public void UpdatePatientAlert(Alerts alert)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [Alerts] " +
+                    "SET alertName = @alertName, activeStatus = @activeStatus, startDate = @startDate, endDate = @endDate " +
+                    "WHERE alertId = @alertId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@alertId", SqlDbType.VarChar).Value = alert.alertId;
+                    command.Parameters.Add("@alertName", SqlDbType.VarChar).Value = alert.alertName;
+                    command.Parameters.Add("@activeStatus", SqlDbType.Bit).Value = alert.activeStatus;
+                    command.Parameters.Add("@startDate", SqlDbType.Date).Value = alert.startDate;
+                    command.Parameters.Add("@endDate", SqlDbType.Date).Value = alert.endDate;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        public void UpdateHasAlerts(int mhn)
+        {
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "UPDATE [PatientDemographic] SET hasAlerts = 'true' WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+
+            return;
+        }
+
+        public Allergies GetAllergyById(int allergyId)
+        {
+            Allergies allergy = new Allergies();
+
+            using (SqlConnection conn = new SqlConnection(this._connectionString)) 
+            {
+                conn.Open();
+                string sql = "SELECT * FROM [dbo].[Allergies] WHERE allergyId = @allergyId";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@allergyId", allergyId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allergy.allergyId = Convert.ToInt32(reader["allergyId"]);
+                        allergy.allergyName = Convert.ToString(reader["allergyName"]);
+                        allergy.allergyType = Convert.ToString(reader["allergyType"]);
+                        allergy.activeStatus = Convert.ToBoolean(reader["activeStatus"]);
+                    }
+                }
+
+                conn.Close();
+            }
+
+            return allergy;
+        }
+
+        public void UpdateAllergy(Allergies allergy)
+        {
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+               string sql = "UPDATE [Allergies] " +
+                    "SET allergyName = @allergyName, allergyType = @allergyType, activeStatus = @activeStatus " +
+                    "WHERE allergyId = @allergyId";
+                
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    cmd.Parameters.Add("@allergyId", SqlDbType.Int).Value = allergy.allergyId;
+                    cmd.Parameters.Add("@allergyName", SqlDbType.VarChar).Value = allergy.allergyName;
+                    cmd.Parameters.Add("@allergyType", SqlDbType.VarChar).Value = allergy.allergyType;
+                    cmd.Parameters.Add("@activeStatus", SqlDbType.Bit).Value = allergy.activeStatus;
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+
+            return;
         }
     }
 }
