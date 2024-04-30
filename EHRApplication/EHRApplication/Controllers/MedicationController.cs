@@ -122,6 +122,62 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        public IActionResult MedicationOrders(int mhn)
+        {
+            //Creates a new instance of hte viewModel
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+
+            // New list to hold all the patients in the database.
+            List<MedOrders> medOrdersList = new List<MedOrders>();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
+                    "FROM [dbo].[MedOrders]";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        //Creating a new medorders instance
+                        MedOrders medOrders = new MedOrders();
+
+                        medOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
+                        medOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        medOrders.patients = GetPatientByMHN(medOrders.MHN);
+
+                        medOrders.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        medOrders.visits = _listService.GetVisitByVisitId(medOrders.visitId);
+
+                        medOrders.medId = Convert.ToInt32(dataReader["medId"]);
+                        medOrders.medProfile = _listService.GetMedicationProfileByMedId(medOrders.medId);
+
+                        medOrders.frequency = Convert.ToString(dataReader["frequency"]);
+                        medOrders.fulfillmentStatus = Convert.ToString(dataReader["fulfillmentStatus"]);
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        medOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
+                        medOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
+                        medOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        medOrders.providers = _listService.GetProvidersByProviderId(medOrders.orderedBy);
+
+                        medOrdersList.Add(medOrders);
+                    }
+                }
+                connection.Close();
+                viewModel.MedOrders = medOrdersList;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = mhn;
+            }
+            return View(viewModel);
+        }
+
         private PatientDemographic GetPatientByMHN(int mhn)
         {
             //Creating a new patientDemographic instance
