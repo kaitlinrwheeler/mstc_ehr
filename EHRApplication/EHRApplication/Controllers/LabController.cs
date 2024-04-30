@@ -259,9 +259,9 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("LabResultsDetails.abnormalFlag", "Please select a value for the flag.");
             }
-            if (labResult.resultValue.IsNullOrEmpty() || !Regex.IsMatch(labResult.resultValue, @"^[+-]?\d*\.?\d+$"))
+            if (labResult.resultValue.IsNullOrEmpty())
             {
-                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a valid numeric result value.");
+                ModelState.AddModelError("LabResultsDetails.resultValue", "Please enter a result value.");
             }
 
             // Calculate the date one year ago from today

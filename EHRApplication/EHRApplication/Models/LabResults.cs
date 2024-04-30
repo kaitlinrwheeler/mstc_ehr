@@ -28,7 +28,7 @@ namespace EHRApplication.Models
         public int testId { get; set; }
 
         [Required(ErrorMessage = "Please enter a result value.")]
-        [RegularExpression(@"^[+-]?\d*\.?\d+$", ErrorMessage = "Only numbers are allowed.")]
+        [RegularExpression(@"^[+-]?(?:\d*\.?\d+|[a-zA-Z]+)$", ErrorMessage = "Only numbers are allowed.")]
         public string resultValue { get; set; }
 
         public string abnormalFlag { get; set; }
