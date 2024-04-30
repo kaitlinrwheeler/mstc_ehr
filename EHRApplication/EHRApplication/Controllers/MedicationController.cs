@@ -3,6 +3,8 @@ using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
 {
@@ -77,7 +79,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientMedications] WHERE MHN = @mhn ORDER BY medId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientMedications] WHERE MHN = @mhn ORDER BY CASE WHEN activeStatus = 'Active' THEN 0 ELSE 1 END, datePrescribed ASC, endDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -92,6 +94,7 @@ namespace EHRApplication.Controllers
                         PatientMedications medication = new PatientMedications();
 
                         // Populate the medication object with data from the database.
+                        medication.patientMedId = Convert.ToInt32(dataReader["patientMedId"]);
                         medication.MHN = Convert.ToInt32(dataReader["MHN"]);
                         medication.medId = Convert.ToInt32(dataReader["medId"]);
                         medication.medProfile = _listService.GetMedicationProfileByMedId(medication.medId);
@@ -212,6 +215,220 @@ namespace EHRApplication.Controllers
             ViewBag.MHN = mhn;
 
             return View(viewModel);
+        }
+
+        public IActionResult CreatePatientMedForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientMedForm(PatientMedications medication)
+        {
+            if (medication.prescriptionInstructions.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.prescriptionInstructions", "Please enter prescription instructions.");
+            }
+            if (medication.dosage.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.dosage", "Please enter prescribed dosage.");
+            }
+            if (medication.route.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.route", "Please enter medication route.");
+            }
+            if (medication.category.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter something for category.");
+            }else if (Regex.IsMatch(medication.category, @"\d"))
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter only letters for category.");
+            }
+            if (medication.medId == 0)
+            {
+                ModelState.AddModelError("PatientMedication.medId", "Please select a medication.");
+            }
+            if (medication.prescribedBy == 0)
+            {
+                ModelState.AddModelError("PatientMedication.prescribedBy", "Please select a provider.");
+            }
+            // Validate startDate
+            if (medication.datePrescribed == null)
+            {
+                ModelState.AddModelError("PatientMedication.datePrescribed", "Please enter start date.");
+            }
+            else
+            {
+                DateTime startDateTime = medication.datePrescribed;
+
+                // Check if startDate is not set 30 days prior to the current date
+                DateTime currentDate = DateTime.Now;
+                if ((startDateTime - currentDate).Days < -730)
+                {
+                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set two years prior to the current date.");
+                }
+            }
+
+            // Validate endDate
+            if (medication.endDate == null)
+            {
+                ModelState.AddModelError("PatientMedication.endDate", "Please enter end date.");
+            }
+            else
+            {
+                DateTime endDateTime = medication.endDate;
+
+                // Check if endDate is a future date
+                DateTime currentDate = DateTime.Now;
+
+                // Check if endDate is after startDate
+                DateTime startDateTime = medication.datePrescribed;
+                if (endDateTime <= startDateTime)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should be after start date.");
+                }
+
+                // Check if startDate and endDate are not the same date
+                if (startDateTime.Date == endDateTime.Date)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should not be the same as start date.");
+                }
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medication.MHN);
+                viewModel.PatientMedication = medication;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medication.MHN;
+
+                return View(viewModel);
+            }
+            else if (medication.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoPatientMed(medication);
+            }  
+
+            return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
+        }
+
+        public IActionResult EditPatientMedForm(int patientMedId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientMedication = _listService.GetPatientsMedByPatientMedId(patientMedId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientMedication.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientMedication.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientMedForm(PatientMedications medication)
+        {
+            if (medication.prescriptionInstructions.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.prescriptionInstructions", "Please enter prescription instructions.");
+            }
+            if (medication.dosage.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.dosage", "Please enter prescribed dosage.");
+            }
+            if (medication.route.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.route", "Please enter medication route.");
+            }
+            if (medication.category.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter something for category.");
+            }
+            else if (Regex.IsMatch(medication.category, @"\d"))
+            {
+                ModelState.AddModelError("PatientMedication.category", "Please enter only letters for category.");
+            }
+            if (medication.medId == 0)
+            {
+                ModelState.AddModelError("PatientMedication.medId", "Please select a medication.");
+            }
+            if (medication.prescribedBy == 0)
+            {
+                ModelState.AddModelError("PatientMedication.prescribedBy", "Please select a provider.");
+            }
+            // Validate startDate
+            if (medication.datePrescribed == null)
+            {
+                ModelState.AddModelError("PatientMedication.datePrescribed", "Please enter start date.");
+            }
+            else
+            {
+                DateTime startDateTime = medication.datePrescribed;
+
+                // Check if startDate is not set 30 days prior to the current date
+                DateTime currentDate = DateTime.Now;
+                if ((startDateTime - currentDate).Days < -730)
+                {
+                    ModelState.AddModelError("PatientMedication.datePrescribed", "Start date should not be set more than two years prior to the current date.");
+                }
+            }
+
+            // Validate endDate
+            if (medication.endDate == null)
+            {
+                ModelState.AddModelError("PatientMedication.endDate", "Please enter end date.");
+            }
+            else
+            {
+                DateTime endDateTime = medication.endDate;
+
+                // Check if endDate is a future date
+                DateTime currentDate = DateTime.Now;
+
+                // Check if endDate is after startDate
+                DateTime startDateTime = medication.datePrescribed;
+                if (endDateTime <= startDateTime)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should be after start date.");
+                }
+
+                // Check if startDate and endDate are not the same date
+                if (startDateTime.Date == endDateTime.Date)
+                {
+                    ModelState.AddModelError("PatientMedication.endDate", "End date should not be the same as start date.");
+                }
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medication.MHN);
+                viewModel.PatientMedication = medication;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medication.MHN;
+
+                return View(viewModel);
+            }
+            else if (medication.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdatePatientMed(medication);
+            }
+
+            return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
         }
 
         [HttpPost]

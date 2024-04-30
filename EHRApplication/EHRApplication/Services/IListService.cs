@@ -52,6 +52,13 @@ namespace EHRApplication.Services
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
 
+        PatientProblems GetPatientProblemsByProblemId(int problemId);
+        PatientMedications GetPatientsMedByPatientMedId(int patientMedId);
+        public void InsertIntoProblems(PatientProblems problem);
+        public void UpdateProblems(PatientProblems problem);
+        public void InsertIntoPatientMed(PatientMedications medication);
+        public void UpdatePatientMed(PatientMedications medication);
+
         void InsertIntoVisits(Visits visit);
 
         void UpdateVisits(Visits visit);
@@ -64,6 +71,9 @@ namespace EHRApplication.Services
 
         void InsertIntoMedProfile(MedicationProfile medProfile);
         void UpdateMedProfile(MedicationProfile medProfile);
+        Providers GetProviderById(int providerId);
+        void UpdateProvider(Providers provider);
+        void AddProvider(Providers provider);
 
         IEnumerable<Allergies> GetAllergies();
 
