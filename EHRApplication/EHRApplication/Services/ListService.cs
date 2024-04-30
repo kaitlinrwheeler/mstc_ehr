@@ -1053,6 +1053,54 @@ namespace EHRApplication.Services
             return medOrders;
         }
 
+        public MedOrders GetMedOrderByOrderId(int orderId)
+        {
+            //Creating a new patientDemographic instance
+            MedOrders medOrders = new MedOrders();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
+                    "FROM [dbo].[MedOrders] WHERE orderId = @orderId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@orderId", orderId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        medOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
+                        medOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        medOrders.patients = GetPatientByMHN(medOrders.MHN);
+
+                        medOrders.visitId = Convert.ToInt32(dataReader["visitId"]);
+                        medOrders.visits = GetVisitByVisitId(medOrders.visitId);
+
+                        medOrders.medId = Convert.ToInt32(dataReader["medId"]);
+                        medOrders.medProfile = GetMedicationProfileByMedId(medOrders.medId);
+
+                        medOrders.frequency = Convert.ToString(dataReader["frequency"]);
+                        medOrders.fulfillmentStatus = Convert.ToString(dataReader["fulfillmentStatus"]);
+                        DateTime date = DateTime.Parse(dataReader["orderDate"].ToString());
+                        medOrders.orderDate = new DateOnly(date.Year, date.Month, date.Day);
+                        medOrders.orderTime = TimeOnly.Parse(dataReader["orderTime"].ToString());
+                        medOrders.orderedBy = Convert.ToInt32(dataReader["orderedBy"]);
+                        medOrders.providers = GetProvidersByProviderId(medOrders.orderedBy);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return medOrders;
+        }
+
         public PatientNotes GetPatientNotesByVisitId(int visitId)
         {
             //Creating a new patientDemographic instance
@@ -1715,6 +1763,77 @@ namespace EHRApplication.Services
                 }
             }
             return;
-        }   
+        }
+
+        /// <summary>
+        /// Inserting a new med order into the database
+        /// </summary>
+        /// <param name="medOrder"></param>
+        public void InsertIntoMedOrder(MedOrders medOrder)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [MedOrders] (MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy) " +
+                    "VALUES (@MHN, @visitId, @medId, @frequency, @fulfillmentStatus, @orderDate, @orderTime, @orderedBy)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = medOrder.MHN;
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = medOrder.visitId;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medOrder.medId;
+                    command.Parameters.Add("@frequency", SqlDbType.VarChar).Value = medOrder.frequency;
+                    command.Parameters.Add("@fulfillmentStatus", SqlDbType.VarChar).Value = medOrder.fulfillmentStatus;
+                    command.Parameters.Add("@orderDate", SqlDbType.Date).Value = medOrder.orderDate;
+                    command.Parameters.Add("@orderTime", SqlDbType.Time).Value = medOrder.orderTime;
+                    command.Parameters.Add("@orderedBy", SqlDbType.VarChar).Value = medOrder.orderedBy;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current med order that is in the database
+        /// </summary>
+        /// <param name="medOrder"></param>
+        public void UpdateMedOrder(MedOrders medOrder)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [MedOrders] " +
+                    "SET MHN = @MHN, visitId = @visitId, medId = @medId, frequency = @frequency, fulfillmentStatus = @fulfillmentStatus, orderDate = @orderDate, orderTime = @orderTime, orderedBy = @orderedBy " +
+                    "WHERE orderId = @orderId";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@orderId", SqlDbType.VarChar).Value = medOrder.orderId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = medOrder.MHN;
+                    command.Parameters.Add("@visitId", SqlDbType.VarChar).Value = medOrder.visitId;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medOrder.medId;
+                    command.Parameters.Add("@frequency", SqlDbType.VarChar).Value = medOrder.frequency;
+                    command.Parameters.Add("@fulfillmentStatus", SqlDbType.VarChar).Value = medOrder.fulfillmentStatus;
+                    command.Parameters.Add("@orderDate", SqlDbType.Date).Value = medOrder.orderDate;
+                    command.Parameters.Add("@orderTime", SqlDbType.Time).Value = medOrder.orderTime;
+                    command.Parameters.Add("@orderedBy", SqlDbType.VarChar).Value = medOrder.orderedBy;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
     }
 }

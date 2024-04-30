@@ -570,5 +570,142 @@ namespace EHRApplication.Controllers
             }
             return RedirectToAction("AllMedications");
         }
+
+        public IActionResult CreateMedicationOrder(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateMedicationOrder(MedOrders medOrder)
+        {
+            //Vailidatoin that can't be done in the model
+            if (medOrder.visitId == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.visitId", "Please select a visit.");
+            }
+            if (medOrder.fulfillmentStatus.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedOrdersDetails.fulfillmentStatus", "Please select a status.");
+            }
+            if (medOrder.medId == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.medId", "Please select a medication.");
+            }
+            if (medOrder.orderedBy == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.orderedBy", "Please select a provider.");
+            }
+            // Testing to see if the date of birth entered was a future date or not
+            if (medOrder.orderDate > DateOnly.FromDateTime(DateTime.Now))
+            {
+                // Adding an error to the DOB model to display an error.
+                ModelState.AddModelError("MedOrdersDetails.orderDate", "Date cannot be in the future.");
+            }
+            if (medOrder.frequency.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedOrdersDetails.frequency", "Please enter a value for frequency.");
+            }
+            else if (!Regex.Match(medOrder.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedOrdersDetails.frequency", "Please only enter letters.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medOrder.MHN);
+                viewModel.MedOrdersDetails = medOrder;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medOrder.MHN;
+
+                return View(viewModel);
+            }
+            else if (medOrder.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoMedOrder(medOrder);
+            }
+
+            return RedirectToAction("MedicationOrders", new { mhn = medOrder.MHN });
+        }
+
+        public IActionResult EditMedicationOrder(int orderId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.MedOrdersDetails = _listService.GetMedOrderByOrderId(orderId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.MedOrdersDetails.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.MedOrdersDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditMedicationOrder(MedOrders medOrder)
+        {
+            //Vailidatoin that can't be done in the model
+            if (medOrder.visitId == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.visitId", "Please select a visit.");
+            }
+            if (medOrder.fulfillmentStatus.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedOrdersDetails.fulfillmentStatus", "Please select a status.");
+            }
+            if (medOrder.medId == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.medId", "Please select a medication.");
+            }
+            if (medOrder.orderedBy == 0)
+            {
+                ModelState.AddModelError("MedOrdersDetails.orderedBy", "Please select a provider.");
+            }
+            // Testing to see if the date of birth entered was a future date or not
+            if (medOrder.orderDate > DateOnly.FromDateTime(DateTime.Now))
+            {
+                // Adding an error to the DOB model to display an error.
+                ModelState.AddModelError("MedOrdersDetails.orderDate", "Date cannot be in the future.");
+            }
+            if (medOrder.frequency.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedOrdersDetails.frequency", "Please enter a value for frequency.");
+            }
+            else if (!Regex.Match(medOrder.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedOrdersDetails.frequency", "Please only enter letters.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medOrder.MHN);
+                viewModel.MedOrdersDetails = medOrder;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medOrder.MHN;
+
+                return View(viewModel);
+            }
+            else if (medOrder.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateMedOrder(medOrder);
+            }
+
+            return RedirectToAction("MedicationOrders", new { mhn = medOrder.MHN });
+        }
     }
 }

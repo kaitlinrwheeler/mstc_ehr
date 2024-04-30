@@ -43,6 +43,7 @@ namespace EHRApplication.Services
         LabOrders GetLabOrdersByVisitId(int visitId);
 
         MedOrders GetMedOrdersByVisitId(int visitId);
+        MedOrders GetMedOrderByOrderId(int orderId);
 
         PatientNotes GetPatientNotesByVisitId(int visistId);
 
@@ -74,5 +75,8 @@ namespace EHRApplication.Services
         Providers GetProviderById(int providerId);
         void UpdateProvider(Providers provider);
         void AddProvider(Providers provider);
+
+        void InsertIntoMedOrder(MedOrders medOrder);
+        void UpdateMedOrder(MedOrders mrdOrder);
     }
 }
