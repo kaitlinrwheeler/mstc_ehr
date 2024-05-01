@@ -21,7 +21,7 @@ namespace EHRApplication.Services
 
         MedicationProfile GetMedicationProfileByMedId(int medId);
 
-        List<MedAdministrationHistory> GetPatientsMedHistoryByMHN(int mhn);
+        List<MedAdministrationHistory> GetMedAdministrationHistoryByMHN(int mhn);
 
         List<LabResults> GetPatientsLabResultsByMHN(int mhn);
 
@@ -52,6 +52,7 @@ namespace EHRApplication.Services
         CarePlan GetCarePlanByVisitId(int visitId);
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
+        MedAdministrationHistory GetMedAdministrationHistoryByAdminId(int adminId);
 
         PatientProblems GetPatientProblemsByProblemId(int problemId);
         PatientMedications GetPatientsMedByPatientMedId(int patientMedId);
@@ -78,5 +79,8 @@ namespace EHRApplication.Services
 
         void InsertIntoMedOrder(MedOrders medOrder);
         void UpdateMedOrder(MedOrders mrdOrder);
+
+        void InsertIntoAdministrationHistory(MedAdministrationHistory medHistory);
+        void UpdateAdministrationHistory(MedAdministrationHistory medHistory);
     }
 }

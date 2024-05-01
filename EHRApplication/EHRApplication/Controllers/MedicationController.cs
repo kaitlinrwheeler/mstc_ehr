@@ -234,20 +234,20 @@ namespace EHRApplication.Controllers
             return patientDemographic;
         }
 
-        public IActionResult PatientMedHistory(int mhn)
+        public IActionResult MedAdministrationHistory(int mhn)
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
             viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
             //Calls the list service to get all of the med history associated to the passed in mhn number.
-            List<MedAdministrationHistory> patientHistory = _listService.GetPatientsMedHistoryByMHN(mhn);
+            List<MedAdministrationHistory> patientHistory = _listService.GetMedAdministrationHistoryByMHN(mhn);
 
             //This will add the patient history to the view model so it can be displayed along with the banner at the same time.
             viewModel.MedAdministrationHistories = patientHistory;
 
             //This will add all of the data to a view bag the will be grabbed else where to display data correctly.
-            ViewBag.PatientMedHistory = viewModel.MedAdministrationHistories;
+            //ViewBag.PatientMedHistory = viewModel.MedAdministrationHistories;
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
 
@@ -706,6 +706,159 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("MedicationOrders", new { mhn = medOrder.MHN });
+        }
+
+        public IActionResult CreateMedAdministrationHistory(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateMedAdministrationHistory(MedAdministrationHistory medHistory)
+        {
+            //Vailidatoin that can't be done in the model
+            if (medHistory.visitsId == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.visitsId", "Please select a visit.");
+            }
+            if (medHistory.administeredBy == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.administeredBy", "Please select a visit.");
+            }
+            if (medHistory.medId == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.medId", "Please select a medication.");
+            }
+            if (medHistory.category.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.category", "Please select a provider.");
+            }
+            // Testing to see if the date of birth entered was a future date or not
+            if (medHistory.dateGiven > DateOnly.FromDateTime(DateTime.Now))
+            {
+                // Adding an error to the DOB model to display an error.
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.dateGiven", "Date cannot be in the future.");
+            }
+            if (medHistory.frequency.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please enter a value for frequency.");
+            }
+            else if (!Regex.Match(medHistory.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please only enter letters.");
+            }
+            if (medHistory.status.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please enter a status.");
+            }
+            else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please only enter letters.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medHistory.MHN);
+                viewModel.MedAdministrationHistoriesDetails = medHistory;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medHistory.MHN;
+
+                return View(viewModel);
+            }
+            else if (medHistory.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoAdministrationHistory(medHistory);
+            }
+
+            return RedirectToAction("MedAdministrationHistory", new { mhn = medHistory.MHN });
+        }
+
+        public IActionResult EditMedAdministrationHistory(int administrationId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.MedAdministrationHistoriesDetails = _listService.GetMedAdministrationHistoryByAdminId(administrationId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.MedAdministrationHistoriesDetails.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.MedAdministrationHistoriesDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditMedAdministrationHistory(MedAdministrationHistory medHistory)
+        {
+            //Vailidatoin that can't be done in the model
+            if (medHistory.visitsId == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.visitsId", "Please select a visit.");
+            }
+            if (medHistory.administeredBy == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.administeredBy", "Please select a visit.");
+            }
+            if (medHistory.medId == 0)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.medId", "Please select a medication.");
+            }
+            if (medHistory.category.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.category", "Please select a provider.");
+            }
+            // Testing to see if the date of birth entered was a future date or not
+            if (medHistory.dateGiven > DateOnly.FromDateTime(DateTime.Now))
+            {
+                // Adding an error to the DOB model to display an error.
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.dateGiven", "Date cannot be in the future.");
+            }
+            if (medHistory.frequency.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please enter a value for frequency.");
+            }
+            else if (!Regex.Match(medHistory.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please only enter letters.");
+            }
+            if (medHistory.status.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please enter a status.");
+            }
+            else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
+            {
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please only enter letters.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(medHistory.MHN);
+                viewModel.MedAdministrationHistoriesDetails = medHistory;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = medHistory.MHN;
+
+                return View(viewModel);
+            }
+            else if (medHistory.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdateAdministrationHistory(medHistory);
+            }
+
+            return RedirectToAction("MedADministrationHistory", new { mhn = medHistory.MHN });
         }
     }
 }

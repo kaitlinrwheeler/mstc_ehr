@@ -382,7 +382,7 @@ namespace EHRApplication.Services
             }
         }
 
-        public List<MedAdministrationHistory> GetPatientsMedHistoryByMHN(int mhn)
+        public List<MedAdministrationHistory> GetMedAdministrationHistoryByMHN(int mhn)
         {
             //Create a new instance of the Med History class to store data from the database
             List<MedAdministrationHistory> historyList = new List<MedAdministrationHistory>();
@@ -436,6 +436,58 @@ namespace EHRApplication.Services
                 connection.Close();
             }
             return historyList;
+        }
+
+        public MedAdministrationHistory GetMedAdministrationHistoryByAdminId(int administrationId)
+        {
+            //Setting the data that was just pulled from the database into an instance of the med history model.
+            MedAdministrationHistory medHistory = new MedAdministrationHistory();
+
+            //Setting up the connection with the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+                //SQL command to select the data from the table
+                string sql = "Select administrationId, MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId From [dbo].[MedAdministrationHistory] WHERE administrationId = administrationId";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                //Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@administrationId", administrationId);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+
+                        // Populate the medHistory object with data from the database.
+                        medHistory.administrationId = Convert.ToInt32(dataReader["administrationId"]);
+
+                        //Gets the MHN from the table and then uses that to grab the patient associated to the history and
+                        //Creates a object that is saved to the med history object.
+                        medHistory.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        medHistory.patients = GetPatientByMHN(medHistory.MHN);
+
+                        medHistory.category = Convert.ToString(dataReader["category"]);
+                        medHistory.medId = Convert.ToInt32(dataReader["medId"]);
+                        medHistory.medProfile = GetMedicationProfileByMedId(medHistory.medId);
+                        medHistory.status = Convert.ToString(dataReader["status"]);
+                        medHistory.frequency = Convert.ToString(dataReader["frequency"]);
+                        //This is grabbing the date from the database and converting it to date only. Somehow even though it is 
+                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
+                        DateTime dateTime = DateTime.Parse(dataReader["dateGiven"].ToString());
+                        medHistory.dateGiven = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
+                        medHistory.timeGiven = TimeOnly.Parse(dataReader["timeGiven"].ToString());
+
+                        medHistory.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                        medHistory.visits = GetVisitByVisitId(medHistory.visitsId);
+                        //Gets the provider id from the table and then uses that to grab the provider associated to it.
+                        //Creates an object that is saved to the med history object.
+                        medHistory.administeredBy = Convert.ToInt32(dataReader["administeredBy"]);
+                        medHistory.providers = GetProvidersByProviderId(medHistory.administeredBy);
+                    }
+                }
+                connection.Close();
+            }
+            return medHistory;
         }
 
         public List<LabResults> GetPatientsLabResultsByMHN(int mhn)
@@ -1827,6 +1879,79 @@ namespace EHRApplication.Services
                     command.Parameters.Add("@orderDate", SqlDbType.Date).Value = medOrder.orderDate;
                     command.Parameters.Add("@orderTime", SqlDbType.Time).Value = medOrder.orderTime;
                     command.Parameters.Add("@orderedBy", SqlDbType.VarChar).Value = medOrder.orderedBy;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Inserting a new med history into the database
+        /// </summary>
+        /// <param name="medHistory"></param>
+        public void InsertIntoAdministrationHistory(MedAdministrationHistory medHistory)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to insert the data that the user entered into the database table.
+                string sql = "INSERT INTO [MedAdministrationHistory] (MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId) " +
+                    "VALUES (@MHN, @category, @medId, @status, @frequency, @dateGiven, @timeGiven, @administeredBy, @visitsId)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    //adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = medHistory.MHN;
+                    command.Parameters.Add("@category", SqlDbType.VarChar).Value = medHistory.category;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medHistory.medId;
+                    command.Parameters.Add("@status", SqlDbType.VarChar).Value = medHistory.status;
+                    command.Parameters.Add("@frequency", SqlDbType.VarChar).Value = medHistory.frequency;
+                    command.Parameters.Add("@dateGiven", SqlDbType.Date).Value = medHistory.dateGiven;
+                    command.Parameters.Add("@timeGiven", SqlDbType.Time).Value = medHistory.timeGiven;
+                    command.Parameters.Add("@administeredBy", SqlDbType.VarChar).Value = medHistory.administeredBy;
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = medHistory.visitsId;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
+
+        /// <summary>
+        /// Updating a current med history that is in the database
+        /// </summary>
+        /// <param name="medHistory"></param>
+        public void UpdateAdministrationHistory(MedAdministrationHistory medHistory)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [MedAdministrationHistory] " +
+                    "SET MHN = @MHN, category = @category, medId = @medId, status = @status, frequency = @frequency, dateGiven = @dateGiven, timeGiven = @timeGiven, administeredBy = @administeredBy, visitsId = @visitsId " +
+                    "WHERE administrationId = @adminId";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@adminId", SqlDbType.VarChar).Value = medHistory.administrationId;
+                    command.Parameters.Add("@MHN", SqlDbType.VarChar).Value = medHistory.MHN;
+                    command.Parameters.Add("@category", SqlDbType.VarChar).Value = medHistory.category;
+                    command.Parameters.Add("@medId", SqlDbType.VarChar).Value = medHistory.medId;
+                    command.Parameters.Add("@status", SqlDbType.VarChar).Value = medHistory.status;
+                    command.Parameters.Add("@frequency", SqlDbType.VarChar).Value = medHistory.frequency;
+                    command.Parameters.Add("@dateGiven", SqlDbType.Date).Value = medHistory.dateGiven;
+                    command.Parameters.Add("@timeGiven", SqlDbType.Time).Value = medHistory.timeGiven;
+                    command.Parameters.Add("@administeredBy", SqlDbType.VarChar).Value = medHistory.administeredBy;
+                    command.Parameters.Add("@visitsId", SqlDbType.VarChar).Value = medHistory.visitsId;
 
                     connection.Open();
                     command.ExecuteNonQuery();
