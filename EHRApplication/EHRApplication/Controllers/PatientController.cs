@@ -651,6 +651,7 @@ namespace EHRApplication.Controllers
                         note.assocProvider = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));
                         note.category = Convert.ToString(dataReader["category"]);
                         note.Note = Convert.ToString(dataReader["note"]);
+                        note.patientNotesId = Convert.ToInt32(dataReader["patientNotesId"]);
 
 
                         // Add the insurance to the list
@@ -1324,27 +1325,6 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientCarePlan", new { mhn = carePlan.MHN });
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet]
         public IActionResult CreatePatientNotesForm(int mhn)
         {
@@ -1438,53 +1418,139 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientNotes", new { mhn = patientNote.MHN });
         }
 
-        //[HttpGet]
+        [HttpGet]
 
-        //public IActionResult EditNotesForm(int vitalsId)
-        //{
-        //    // Needed to work with the patient banner properly.
-        //    PortalViewModel viewModel = new PortalViewModel();
-        //    viewModel.Vital = _listService.GetVitalsByVitalsId(vitalsId);
-        //    viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Vital.patientId);
+        public IActionResult EditPatientNotesForm(int noteId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
 
-        //    ViewBag.Patient = viewModel.PatientDemographic;
-        //    ViewBag.MHN = viewModel.Vital.patientId;
-
-        //    return View(viewModel);
-        //}
-
-        //[HttpPost]
-        //public IActionResult EditNotesForm(Vitals vital)
-        //{
-        //    if (vital.visitId == 0)
-        //    {
-        //        ModelState.AddModelError("visitId", "Please select a visit.");
-        //    }
-        //    //returns the model if null because there were errors in validating it
-        //    if (!ModelState.IsValid)
-        //    {
-        //        PortalViewModel viewModel = new PortalViewModel();
-        //        viewModel.PatientDemographic = _listService.GetPatientByMHN(vital.patientId);
-        //        viewModel.Vital = vital;
-        //        ViewBag.Patient = viewModel.PatientDemographic;
-        //        ViewBag.MHN = vital.patientId;
-
-        //        return View(viewModel);
-        //    }
-        //    else if (vital.patientId != 0)
-        //    {
-        //        //Calculate the BMI
-        //        vital.BMI = _listService.BMICalculator(vital.weightPounds, vital.heightInches);
-        //        //go to the void list service that will update the data into the database.
-        //        _listService.UpdateVitals(vital);
-        //    }
-
-        //    return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
-        //}
+            PatientNotes note = new PatientNotes();
 
 
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT MHN, Note, occurredOn, createdAt, createdBy, associatedProvider, updatedAt, category, visitsId " +
+                    "FROM [dbo].[PatientNotes] WHERE patientNotesId = @notesId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@notesId", noteId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        note.patientNotesId = noteId;
+                        note.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        note.Note = Convert.ToString(dataReader["Note"]);
+
+                        note.occurredOn = DateOnly.FromDateTime(Convert.ToDateTime(dataReader["occurredOn"]));
+
+                        note.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
+                        note.createdBy = Convert.ToInt32(dataReader["createdBy"]);
+                        note.associatedProvider = Convert.ToInt32(dataReader["associatedProvider"]);
+                        note.updatedAt = DateTime.Parse(dataReader["updatedAt"].ToString());
+                        note.category = Convert.ToString(dataReader["category"]);
+                        note.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            viewModel.PatientNotesDetails = note;
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(note.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientNotesDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientNotesForm(PatientNotes patientNote)
+        {
+
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(patientNote.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            viewModel.PatientNotesDetails = patientNote;
+            ViewBag.MHN = patientNote.MHN;
 
 
+            if (patientNote.visitsId == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.visitsId", "Please select a visit.");
+            }
 
+            if (patientNote.associatedProvider == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select a assosciated provider.");
+            }
+
+            if (patientNote.occurredOn <= DateOnly.FromDateTime(DateTime.Now.AddYears(-5)))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be more than 5 years in the past");
+            }
+            else if (patientNote.occurredOn > DateOnly.FromDateTime(DateTime.Now))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
+            }
+
+
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("patients");
+            ModelState.Remove("providers");
+            ModelState.Remove("assocProvider");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    //SQL query that is going to insert the data that the user entered into the database table.
+                    string sql = "UPDATE [dbo].[PatientNotes] SET Note = @note, occurredOn = @occurredOn, createdBy = @createdBy, " +
+                                 "associatedProvider = @associatedProvider, updatedAt = @updatedAt, category = @category, visitsId = @visitsId " +
+                                 "WHERE patientNotesId = @notesId";
+
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        //adding parameters
+                        command.Parameters.Add("@notesId", SqlDbType.Int).Value = patientNote.patientNotesId;
+                        command.Parameters.Add("@note", SqlDbType.VarChar).Value = patientNote.Note;
+                        command.Parameters.Add("@occurredOn", SqlDbType.Date).Value = patientNote.occurredOn;
+                        //command.Parameters.Add("@createdAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@createdBy", SqlDbType.Int).Value = patientNote.createdBy;
+                        command.Parameters.Add("@associatedProvider", SqlDbType.Int).Value = patientNote.associatedProvider;
+                        command.Parameters.Add("@updatedAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@category", SqlDbType.VarChar).Value = patientNote.category;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = patientNote.visitsId;
+
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientNotes", new { mhn = patientNote.MHN });
+        }
     }
 }
