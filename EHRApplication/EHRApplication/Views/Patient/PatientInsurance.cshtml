@@ -4,23 +4,27 @@
     @model EHRApplication.ViewModels.PortalViewModel
     var patient = Model.PatientDemographic;
 
+    <script src="~/js/patientInsurance.js" defer></script>
 }
 
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Insurance
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Insurance</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
-            @if (patient != null && Model.PatientInsurance.Any())
+            @if (patient != null && Model.PatientInsurances.Any())
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
-                            @*                             <th scope="col">MHN:</th>
-                        *@
                             <th scope="col">Status:</th>
                             <th scope="col">Insurance Provider:</th>
                             <th scope="col">Member ID:</th>
@@ -28,22 +32,38 @@
                             <th scope="col">Group Number:</th>
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var insurance in Model.PatientInsurance)
+                        @foreach (var insurance in Model.PatientInsurances)
                         {
                             <tr class="hover-highlighting">
-                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
-                                @*                                 <td>@insurance.MHN</td>
-                        *@
+
+
+                                @* <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@insurance.patientInsuranceId" data-insuranceId="@insurance.patientInsuranceId" @(insurance.active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@insurance.patientInsuranceId">@(insurance.active ? "Active" : "Inactive")</label>
+                                    </div>
+                                </td> *@
+
+
+
+                                
+                                
                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
+
+
+
+
                                 <td>@insurance.providerName</td>
                                 <td>@insurance.memberId</td>
                                 <td>@insurance.policyNumber</td>
-                                <td>@insurance.groupNumber</td>
+                                <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
                                 <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
