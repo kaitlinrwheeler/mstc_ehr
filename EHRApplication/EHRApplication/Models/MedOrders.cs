@@ -29,7 +29,6 @@ namespace EHRApplication.Models
         public int medId { get; set; }
 
         [Required(ErrorMessage = "Please enter a frequency.")]
-        [RegularExpression(@"^[a-zA-Z\s'\/\-]+$", ErrorMessage = "Please enter alphabetic characters only.")]
         public string frequency { get; set; }
 
         public string fulfillmentStatus { get; set; }
