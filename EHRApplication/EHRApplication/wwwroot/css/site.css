@@ -7,7 +7,6 @@ body {
     background-color: #F8F8FF;
 }
 
-
 /* Top nav section */
 
 #topNav, .nav-link, .nav-link:visited, #srchBtn, #logo {
@@ -16,6 +15,7 @@ body {
 
     .nav-link:hover, #srchBtn:hover {
         transform: translateY(1px);
+        color: white;
     }
 
 
@@ -56,6 +56,32 @@ body {
 #flexSwitchCheckChecked {
     cursor: pointer;
 }
+
+/* Search Bar */
+
+#searchBar .form-inline {
+    display: flex;
+    align-items: center;
+}
+
+#searchBar .form-control, #searchBar .btn {
+    margin-right: 5px;
+}
+
+#searchBar .btn {
+    color: white;
+    background-color: var(--darker-gray);
+}
+
+#searchBar .btn:hover {
+    filter: brightness(1.5);
+}
+
+#searchBar .form-control {
+    margin-left: 10px;
+}
+
+
 /* End top nav */
 
 
@@ -113,7 +139,7 @@ html {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    margin-top: 184px;
+    margin-top: 196px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -280,6 +306,10 @@ main {
     background-color: var(--red);
 }
 
+#landingHeaderContainer {
+    background-color: transparent;
+}
+
 .card-header {
     background-color: var(--light-gray);
 }
@@ -309,11 +339,19 @@ main {
     color: orangered !important;
 }
 
+.validation-msg {
+    color: orangered !important;
+}
 
 #patient-banner-wrapper {
     position: fixed;
     top: 72px;
     width: 100%;
+}
+
+#patient-info-banner {
+    border-bottom: ridge;
+    border-width: 2px
 }
 
 .bg-red {
@@ -323,6 +361,12 @@ main {
 
 .text-sm {
     font-size: 13px;
+}
+
+.hover-highlighting:hover {
+    filter: brightness(1.2);
+    background-color: #f5f5f5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -335,7 +379,6 @@ main {
     cursor: pointer;
     height: 22px;
     font-size: 14px;
-    border-top: ridge;
     border-bottom: ridge;
     border-width: 2px
 }
@@ -344,10 +387,91 @@ main {
         filter: brightness(0.93)
     }
 
+
+.delete-button {
+    background-color: red;
+    color: white;
+}
+    
+    .delete-button:hover {
+        background-color: darkred;
+        color: white;
+    }
+
 /* End main styles */
 
+/*Start of Success banner override.*/
+.alert-success{
+    margin: auto;
+    text-align: center;
+    width: max-content;
+}
+.btn-close{
+    padding-bottom: 10px;
+}
+/*End of Success banner override.*/
 
 
+/*Start of requirement question mark popout*/
+.question-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+/*styling for the question icon*/
+.question-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*styling for the popout box*/
+.requirements-popup {
+    display: none;
+    position: absolute;
+    background-color: var(--bs-gray-100);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.question-wrapper:hover .requirements-popup {
+    display: block;
+}
+/*adjusting the views in dark mode*/
+[data-bs-theme=dark].question-icon, [data-bs-theme=dark].requirements-popup {
+    color: black;
+    background-color: var(--mid-gray);
+}
+/*End of requirment question mark popout*/
+
+/* Delete confirmation modal*/
+#deleteConfirmModal .modal-content {
+    background-color: var(--offwhite);
+}
+
+    [data-bs-theme=dark]#deleteConfirmModal .modal-content {
+        background-color: var(--dark-gray);
+    }
+
+/* Confirmation modal*/
+#confirmModal .modal-content {
+    background-color: var(--offwhite);
+}
+
+[data-bs-theme=dark]#confirmModal .modal-content {
+    background-color: var(--dark-gray);
+}
+
+/*This will make the tables span the whole length so that you don't have to scroll on it.*/
+@media only screen and (max-width: 1100px) {
+    .w-75 {
+        width: 100% !important;
+    }
+}
 
 
 /* Dark mode styles
@@ -371,7 +495,7 @@ body[data-bs-theme=dark] {
     background-color: var(--darker-gray);
 }
 
-[data-bs-theme=dark].card-body {
+[data-bs-theme=dark].card-body, [data-bs-theme=dark].card-body table tr{
     color: var(--offwhite);
     background-color: var(--dark-gray);
 }
@@ -381,9 +505,9 @@ body[data-bs-theme=dark] {
     background-color: var(--dark-blue);
 }
 
-[data-bs-theme=dark].blue-button:hover {
-    filter: brightness(1.5);
-}
+    [data-bs-theme=dark].blue-button:hover {
+        filter: brightness(1.5);
+    }
 
 section[data-bs-theme=dark] {
     border-color: var(--mid-gray);
@@ -395,13 +519,13 @@ section[data-bs-theme=dark] {
     border: none;
 }
 
-[data-bs-theme=dark]#forgotPw {
+[data-bs-theme=dark].dark-links {
     color: var(--light-gray);
 }
 
-[data-bs-theme=dark]#forgotPw:hover {
-    filter: brightness(1.5);
-}
+    [data-bs-theme=dark].dark-links:hover {
+        filter: brightness(1.5);
+    }
 
 footer[data-bs-theme=dark] {
     border-color: var(--mid-gray) !important;
@@ -409,3 +533,11 @@ footer[data-bs-theme=dark] {
 
 
 /* End dark mode styles */
+
+/* patient profile picture styling */
+#ptImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}

@@ -1,0 +1,73 @@
+﻿@inject EHRApplication.Services.IListService listService
+@model EHRApplication.Models.Providers
+@{
+    var provider = Model;
+    ViewData["Title"] = "myEHR | Edit Provider";
+    <link rel="stylesheet" href="~/css/forms.css" />
+    <script src="~/js/validation.js"></script>
+    <script src="~/confirmModal.js" defer></script>
+}
+
+@if (TempData["SuccessMessage"] != null){
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Edit Provider</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="providerForm" enctype="multipart/form-data">
+            @* <input asp-for="@provider.providerId" value="@provider.providerId" hidden /> *@
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input asp-for="firstName" value="@provider.firstName" type="text" id="firstName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('firstName', first name')"/>
+                <span asp-validation-for="firstName" id="firstNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input asp-for="lastName" type="text" id="lastName" class="form-control" value="@provider.lastName" data-bs-theme="auto" onblur="validateRequiredInput('lastName', 'last name')"/>
+                <span asp-validation-for="lastName" id="lastNameError" class="validation-msg"></span>
+            </div>
+
+            <!-- Specialty -->
+            <div class="form-group">
+                <label for="specialty">Specialty:</label>
+                <input asp-for="specialty" type="text" id="specialty" class="form-control" value="@provider.specialty" data-bs-theme="auto" onblur="validateRequiredInput('specialty', 'specialty')"/>
+                <span asp-validation-for="specialty" id="specialtyError" class="validation-msg"></span>
+            </div>
+            
+            <!-- Cancel and Submit Buttons -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" asp-controller="Providers" asp-action="AllProviders">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save provider information?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

@@ -1,44 +1,48 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model EHRApplication.ViewModels.PortalViewModel
 @{
+    var mhn = ViewBag.MHN;
 }
 
 <!-- Patient banner wrapper -->
 <div id="patient-banner-wrapper" class="sticky-top" style="">
     <!-- Patient Info Banner -->
-    <div id="patient-info-banner" class="container-fluid bg-red text-sm py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
+    <div id="patient-info-banner" class="container-fluid bg-red py-2" style="border-top:ridge; border-width: 2px" data-bs-theme="auto">
         <div class="row align-items-center">
+            @if (Model != null && Model.PatientDemographic.MHN != 0 && Model.PatientDemographic.providers != null)
+            {
+                <div class="col d-flex align-items-center">
+                    @if (string.IsNullOrEmpty(@Model.PatientDemographic.patientImage))
+                    {
+                        <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
+                    }
+                    else
+                    {
+                        <img src="~/images/@Model.PatientDemographic.patientImage" class="img-fluid rounded-circle me-3" alt="Patient Image" id="ptImage">
+                    }
 
-            <div class="col d-flex align-items-center">
-
-                <img src="~/images/blank-profile-picture.png" alt="Patient Image" class="img-fluid rounded-circle me-1" style="max-width: 60px" />
-
-                <div class="">
-                    <p class="fw-bold mb-1">John Doe</p>
-                    <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> 01-1-1990</p>
-                    <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> MHN123456</p>
+                    <div class="">
+                        <p class="fw-bold mb-1"> @Model.PatientDemographic.firstName @Model.PatientDemographic.middleName @Model.PatientDemographic.lastName @Model.PatientDemographic.suffix</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">DOB: </span> @Model.PatientDemographic.DOB.ToString("MM/dd/yyyy")</p>
+                        <p class="mb-1 text-nowrap"><span class="fw-bold">MHN: </span> @Model.PatientDemographic.MHN</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col">
-                <p class="mb-2"><span class="fw-bold">Gender: </span>Male</p>
-                <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>Male</p>
-            </div>
+                <div class="col">
+                    <p class="mb-2"><span class="fw-bold">Gender: </span>@Model.PatientDemographic.gender</p>
+                    <p class="mb-2"><span class="fw-bold">Gender Assigned at Birth: </span>@Model.PatientDemographic.genderAssignedAtBirth</p>
+                </div>
 
-            <div class="col">
-                <p class="mb-2"><span class="fw-bold">Pronouns: </span>He/Him</p>
-                <p class="mb-2"><span class="fw-bold">Primary Physician: </span>Dr. Pepper</p>
-            </div>
-
+                <div class="col">
+                    <p class="mb-2"><span class="fw-bold">Pronouns: </span>@Model.PatientDemographic.preferredPronouns</p>
+                    <p class="mb-2"><span class="fw-bold">Primary Physician: </span>@Model.PatientDemographic.providers.firstName @Model.PatientDemographic.providers.lastName</p>
+                </div>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No patient found</h1>
+            }
         </div>
     </div>
     <!-- End Patient Info Banner -->
-    <!-- Alert bar -->
-    <div class="alert-bar d-flex align-items-center justify-content-center" onclick="window.location.href='#'">
-        <i class="fa-solid fa-triangle-exclamation me-1"></i>
-        <p class="mb-0">Alerts</p>
-    </div>
-    <!-- End alert bar -->
 </div>
 <!-- /Patient banner wrapper -->

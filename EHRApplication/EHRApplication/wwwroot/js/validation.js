@@ -1,7 +1,8 @@
 ﻿// Validation functions
 
 //variable for the 'X' symbol for error messages.
-const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
+//Hopefully someone will get back to this and make the validation show on the javascript and the model too.
+//const xIcon = '<i class="fa-solid fa-circle-xmark"></i> ';
 
 // Function to check if the input value is empty
 function isEmpty(input, errorSpanID, errorMessage) {
@@ -22,10 +23,46 @@ function isEmpty(input, errorSpanID, errorMessage) {
 // Function to check if the input value contains only alphabetic characters
 function isAlphabetic(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
-    const alphabetRegex = /^[a-zA-Z]+$/;
+    const alphabetRegex = /^[a-zA-Z\s'\/\-]+$/;
     let valid = alphabetRegex.test(input.value.trim());
 
     // Display error message if input contains non-alphabetic characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
+// Checks if the input value contains only alphanumeric characters
+function isAlphaNumeric(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const alphaNumericRegex = /^[a-zA-Z0-9\s'\/\-]+$/;
+    let valid = alphaNumericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-alphanumeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
+// Function to check if the input value conatins only numeric characters
+function isANumber(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const numericRegex = /^[0-9]+(\.[0-9]+)?$/;
+    let valid = numericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-numeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
+// Function to check if the input value is a valid email address
+function isValidEmail(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const emailRegex = /^[^@\s]+@([a-zA-Z0-9]+\.)+(com|net|edu|gov|org)$/;;
+    let valid = emailRegex.test(input.value.trim());
+
+    // Display error message if input is not a valid email address
     displayError(valid, errorSpan, errorMessage);
 
     return valid;
@@ -46,7 +83,9 @@ function hasCharacterLimit(input, errorSpanID, characterLimit, errorMessage) {
 function displayError(valid, errorSpan, errorMessage) {
     if (!valid) {
         // Display error message with an icon
-        errorSpan.innerHTML = xIcon + errorMessage;
+        //Commenting this hopefully we come back and finish this icon
+        //errorSpan.innerHTML = xIcon + errorMessage;
+        errorSpan.innerHTML = errorMessage;
         errorSpan.style.display = 'inline';
     } else {
         // Hide error message
@@ -141,6 +180,273 @@ function validateRequiredTextInput(inputID, characterLimit, errorMessage) {
             // If input is not empty, perform validation
             const isAlphabeticValid = isAlphabetic(input, inputErrorSpanID, 'Please enter alphabetic characters only.');
             if (isAlphabeticValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+//Use when validating a required Number input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateRequiredNumberInput(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isNumericValid = isANumber(input, inputErrorSpanID, 'Please enter numeric characters only.');
+            if (isNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                switch (inputID) {
+                    case "Phone":
+                        if (trimedInput.length !== 10) {
+                            displayError(false, errorSpan, `Please enter exactly 10 characters for ${errorMessage}.`);
+                            return
+                        } 
+                        break;
+                    case "Zipcode":
+                        if (trimedInput.length !== 5) {
+                            displayError(false, errorSpan, `Please enter exactly 5 characters for ${errorMessage}.`);
+                        } 
+                        break;
+                }
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+} 
+
+//Use when validating an Optional number input. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateOptionalNumberInput(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty, hide error message
+            errorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation
+            const isNumericValid = isANumber(input, inputErrorSpanID, 'Please enter numeric characters only.');
+            if (isNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+                switch (inputID) {
+                    case "Phone",
+                        "ECPhone":
+                        if (trimedInput.length !== 10) {
+                            displayError(false, errorSpan, `Please enter exactly 10 characters for ${errorMessage}.`);
+                            return
+                        }
+                        break;
+                    case "Zipcode":
+                        if (trimedInput.length !== 5) {
+                            displayError(false, errorSpan, `Please enter exactly 5 characters for ${errorMessage}.`);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+} 
+
+// Call to validate an email input. Pass in InputID and error messages words to be displayed in the error message.
+function validateOptionalEmailInput(inputID, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const trimedInput = input.value.trim();
+    const errorSpan = document.getElementById(inputErrorSpanID);
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (trimedInput === '') {
+            // If input is empty, hide error message
+            errorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation                
+            const isEmailValid = isValidEmail(input, inputErrorSpanID, 'Please enter a valid email address.');
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+
+function validateRequiredInput(inputID, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+// validate image input
+function validateImage(inputID, errorSpanID) {
+    // get input and error span elements
+    const input = document.getElementById(inputID);
+    const errorSpan = document.getElementById(errorSpanID);
+
+    // get any input files
+    const file = input.files[0];
+
+    // declare permitted file extension
+    const allowedExtensions = /(\.jpg|\.png)$/i;
+
+    // set validity status
+    let valid = true;
+
+    // check for file and verify extension
+    if (file && !allowedExtensions.exec(file.name)) {
+        // if invalid, set validity to false and display error message
+        valid = false;
+        displayError(valid, errorSpan, "Invalid file type. Only image files ending in .jpg or .png are permitted.");
+    } else {
+        // clear any existing error message
+        displayError(true, errorSpan, "");
+    }
+
+    return valid;
+}
+
+// Check the initial state of the dropdown and checkbox upon page load
+window.addEventListener('DOMContentLoaded', (event) => {
+    // Check dropdown for 'Other' option
+    if (document.getElementById('Pronouns').value === 'Other') {
+        dropdownOtherOption('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun');
+    }
+    if (document.getElementById('Gender').value == 'Other') {
+        dropdownOtherOption('Gender', 'OtherGender', 'OtherGenderError', 'gender');
+    }
+
+    // Check checkbox for 'OtherRace' checked state
+    if (document.getElementById('OtherRace').checked) {
+        otherRaceInput();
+    }
+});
+
+function dropdownOtherOption(dropdownId, textFieldId, errorSpanId, inputType) {
+    var selectedValue = document.getElementById(dropdownId).value;
+    var textField = document.getElementById(textFieldId);
+    var errorSpan = document.getElementById(errorSpanId);
+
+    if (selectedValue === "Other") {
+        textField.style.display = "block";
+        textField.required = true;
+        errorSpan.style.display = "block";
+
+        //Call validateRequiredTextInput for the optional text box
+        validateRequiredTextInput(textFieldId, 25, inputType);
+    } else {
+        textField.style.display = "none";
+        textField.required = false;
+        errorSpan.style.display = "none";
+    }
+}
+
+function otherRaceInput() {
+    var otherRaceCheckbox = document.getElementById("OtherRace");
+    var otherRaceInput = document.getElementById("OtherRaceInput");
+
+    if (otherRaceCheckbox.checked) {
+        otherRaceInput.style.display = "block";
+        otherRaceInput.required = true;
+        // Bind onblur event for validation when 'Other' is selected
+        otherRaceInput.onblur = function () {
+            validateOptionalTextInput('OtherRaceInput', 25, 'other race');
+        };
+    } else {
+        otherRaceInput.style.display = "none";
+        otherRaceInput.required = false;
+        // Clear the validation error message when 'Other' is not selected
+        document.getElementById("OtherRaceInputError").style.display = "none";
+    }
+}
+
+//Use when validating a required text input when you only want alpha numeric characters. Pass in the inputID, character limit for the input, and the words you would like to be displayed in the error message in.
+function validateRequiredTextInputAlphaNumeric(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alpha numberic characters only.');
+            if (isAlphaNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+function validateOptionalTextInputAlphaNumeric(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+    const inputErrorSpan = document.getElementById(inputErrorSpanID);
+
+    // Function to handle input change event
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty, hide error message
+            inputErrorSpan.style.display = 'none';
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alphabetic characters only.');
+            if (isAlphaNumericValid) {
                 // Validate character limit
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
             }

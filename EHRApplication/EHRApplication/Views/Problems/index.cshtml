@@ -1,0 +1,82 @@
+﻿@{
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "myEHR | Patient Problems";
+    int mhn = ViewBag.MHN;
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Problems</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Problems" asp-action="CreateProblemForm" asp-route-mhn="@mhn">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model != null && Model.PatientProblems != null && Model.PatientProblems.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
+@*                             <th scope="col">MHN:</th>
+ *@                            
+                            <th scope="col">Priority:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">ICD-10:</th>
+                            <th scope="col">Immediacy:</th>
+                            <th scope="col">Created On:</th>
+                            <th scope="col">Created By:</th>
+                            <th scope="col">Active:</th>
+                            <th scope="col"></th> <!--empty column for the edit button-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var problem in Model.PatientProblems)
+                        {
+                            <tr class="hover-highlighting">
+                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
+@*                                 <td>@problem.MHN</td>
+ *@
+
+                                @if (problem.active == true)
+                                {                                    
+                                    <td style='background-color: @(problem.priority == "High" ? "yellow" : "unset"); color: @(problem.priority == "High" ? "black" : "inherit")'>
+                                        @if (problem.priority == "High" )
+                                        {
+                                            <span>
+                                                <i class='fa-solid fa-triangle-exclamation me-1'></i>
+                                            </span>
+                                        }
+                                        @problem.priority
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>@problem.priority</td>
+                                }
+
+
+                                <td>@problem.description</td>
+                                <td>@problem.ICD_10</td>
+                                <td>@problem.immediacy</td>
+                                <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
+                                <td>@problem.providers.firstName @problem.providers.lastName</td>
+                                <td>@(problem.active ? "Yes" : "No")</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No problems found.</h1>
+            }
+        </div>
+    </div>
+</section>

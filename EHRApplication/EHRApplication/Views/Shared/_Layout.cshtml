@@ -1,92 +1,229 @@
-﻿<!DOCTYPE html>
+﻿@using System.Diagnostics
+@{
+    <link rel="icon" type="image/x-icon" href="~/Media/myehr-icon.png">
+
+    // Gets the controller for the page that is being displayed
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    // Gets the action for the page that is being displayed
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
+
+    // sets the MHN
+    var mhn = ViewBag.MHN as int?;
+
+    var patient = ViewBag.Patient as PatientDemographic;
+
+    bool showPatientBanner = false;
+    bool showAlertBar = false;
+
+    // Check to see if we even have a patient to show a banner for.
+    if(patient != null)
+    {
+        // Make sure their mhn is set.
+        if (patient.MHN != 0)
+        {
+            // Show the alerts bar.
+            showPatientBanner = true;
+
+            // Check to see if patient has any alerts.
+            if (patient.HasAlerts)
+            {
+                // Patient has no alerts so hide alert part of banner and adjust side nav.
+                showAlertBar = true;
+            }
+        }
+    }
+
+    // Controllers with views we want to hide things on.
+    string[] controllers = new string[] { "Login_Register", "Resources", "LabTestProfile" };
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EHRApplication</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EHRApplication.styles.css" asp-append-version="true" />
 </head>
 <body data-bs-theme="auto">
 
-    <partial name="_topNav"/>
+    <partial name="_topNav" model="@new { Controller = controllerName, Action = actionName }"/>
 
-    <partial name="_patientInfoBanner" />
+    <!-- This will hide the patient banner and shift the side nav up to adjust if true. -->
+    @if (controllers.Contains(controllerName)
+    || controllerName == "Patient" && actionName == "Index"
+    || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
+    || controllerName == "Medications" && actionName == "AllMedications"
+    || controllerName == "Medications" && actionName == "CreateMedication"
+    || controllerName == "Medications" && actionName == "EditMedication"
+    || controllerName == "Providers" && actionName == "AllProviders"
+    || controllerName == "Providers" && actionName == "CreateProvider"
+    || controllerName == "Providers" && actionName == "EditProvider")
+    {
+        <style>
+            #sidebar-wrapper {
+                margin-top: 72px;
+            }
+            main {
+                margin-top: -50px !important;
+            }
+        </style>
+    }
+    else
+    {
+        <div id="patient-info-banner">
+            @{
+                //Show the correct banner based on if there is a patient selected, and if they have any alerts.
+                if (showPatientBanner == true)
+                {
+                    if (showAlertBar == true)
+                    {
+                        // Load patient banner with alerts.
+                        await Html.RenderPartialAsync("_patientInfoBannerWithAlerts");
+
+                        <style>
+                            #sidebar-wrapper {
+                                margin-top: 216px;
+                            }
+
+                            main {
+                                margin-top: 90px;
+                            }
+                        </style>
+                    }
+                    else
+                    {
+                        // Load patient banner without alerts.
+                        await Html.RenderPartialAsync("_patientInfoBanner");
+
+                        <style>
+                            #sidebar-wrapper {
+                                margin-top: 193px;
+                            }
+                            main {
+                                margin-top: 70px;
+                            }
+                        </style>
+
+                    }
+                }
+            }
+        </div>
+    }
+
+    <!-- This will hide the side nav if true. -->
+    @if (controllers.Contains(controllerName)
+    || controllerName == "Patient" && actionName == "Index"
+    || controllerName == "Patient" && actionName == "AllPatients"
+    || controllerName == "Patient" && actionName == "Search"
+    || controllerName == "Medications" && actionName == "AllMedications"
+    || controllerName == "Medications" && actionName == "CreateMedication"
+    || controllerName == "Medications" && actionName == "EditMedication"
+    || controllerName == "Providers" && actionName == "AllProviders"
+    || controllerName == "Providers" && actionName == "CreateProvider"
+    || controllerName == "Providers" && actionName == "EditProvider"
+    || controllerName == "Home" && actionName == "UserDashboard"
+    || controllerName == "LabTestProfile" && actionName == "AllLabTests")
+    {
+        <style>
+            #sidebar-wrapper {
+                display: none;
+            }
+
+            #wrapper {
+                padding-left: 0;
+            }
+        </style>
+    }
 
 
     <!-- Side nav has to be here instead of a partial view because it has to wrap the body content.-->
-        <div id="wrapper">
-            <!-- Sidebar -->
+    <div id="wrapper">
+        <!-- Sidebar -->
         <div id="sidebar-wrapper" class="sticky-top overflow-hidden">
-                <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-                    <li>
-                       <a href="#" class="navbar-toggle collapsed ps-3" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars fa-lg"></i></a>
-                    </li>
+            <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+                <li>
+                    <a href="#" class="navbar-toggle collapsed ps-3 fa-lg  py-1" data-toggle="collapse" id="menu-toggle"><i class="fa-solid fa-bars fa-lg"></i></a>
+                </li>
 
-                    <li class="active">
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-table-columns fa-stack-1x"></i></span>Overview</a>
-                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-stethoscope fa-stack-1x"></i></span>Diagnoses</a>
+                <li class="active">
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-table-columns fa-stack-1x"></i></span>Overview</a>
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
-                        </ul>
-                    </li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientOverview" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Information</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-stethoscope fa-stack-1x"></i></span>Diagnoses</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a asp-area="" asp-controller="Problems" asp-action="Index" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Problems</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientAllergies" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Allergies</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-microscope fa-stack-1x"></i></span>Labs</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a asp-area="" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Results</a></li>
+                        <li><a asp-area="" asp-controller="Lab" asp-action="LabOrders" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Orders</a></li>
+                    </ul>
+                </li>
 
                     <li class="active">
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-truck-medical fa-stack-1x"></i></span>Visits</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
-                        </ul>
-                    </li>
-
+                            <li><a asp-area="" asp-controller="Visits" asp-action="PatientVisits" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Visits</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientVitals" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Vitals</a></li>
+                    </ul>
+                </li>
                     <li>
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-file-medical fa-stack-1x "></i></span>Care Plans</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientCarePlan" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Care Plan</a></li>
                         </ul>
                     </li>
 
-                    <li class="active">
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-notes-medical fa-stack-1x"></i></span>Notes</a>
-                        <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
-                        </ul>
-                    </li>
+                <li>
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Medications</a></li>
+                       <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedHistory" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Medication History</a></li>
+                    </ul>
+                </li>
+
+                <li class="active">
+                    <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-notes-medical fa-stack-1x"></i></span>Notes</a>
+                    <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientNotes" asp-route-mhn="@mhn"></i><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Notes</a></li>
+                    </ul>
+                </li>
 
                     <li>
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-file-invoice-dollar fa-stack-1x "></i></span>Insurance</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>link2</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientInsurance" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Insurance</a></li>
                         </ul>
                     </li>
 
-                </ul>
-            </div>
-            <!-- /#sidebar-wrapper -->
-
-                    <main role="main" class="pb-3" style="z-index:1;">
-
-                        <!-- Page Content -->
-                        @RenderBody()
-
-                        <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
-                        <partial name="_footer" />               
-                    </main>
-            <!-- /#page-content-wrapper -->
+            </ul>
         </div>
-        <!-- /#wrapper -->
+        <!-- /#sidebar-wrapper -->
+
+        <main role="main" class="pb-3" style="z-index:1;">
+
+            <!-- Page Content -->
+            @RenderBody()
+
+            <!-- The footer might need to be put on every page if there are issues with the side nav moving over part of it.-->
+            <partial name="_footer" />
+        </main>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
 
 
 

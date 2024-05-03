@@ -1,0 +1,199 @@
+﻿@* @model PatientDemographic *@
+@model EHRApplication.ViewModels.PortalViewModel
+
+@{
+    ViewData["Title"] = "myEHR | Patient Details";
+    <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
+
+    var patient = Model.PatientDemographic;
+}
+
+
+
+<div class="container mt-5" data-bs-theme="auto">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+
+                <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+                    <div class="text-center w-100">Demographic Info</div>
+                    <div>
+                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN">
+                            <i class="fa-solid fa-pen me-2"></i>
+                            <span>Edit</span>
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="card-body" data-bs-theme="auto">
+                    @if (patient != null && patient.MHN != 0)
+                    {
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Patient ID:</th>
+                                    <td>@patient.MHN</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">First Name:</th>
+                                    <td>@patient.firstName</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Middle Name:</th>
+                                    <td>@patient.middleName</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Last Name:</th>
+                                    <td>@patient.lastName</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Suffix:</th>
+                                    <td>@patient.suffix</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Preferred Pronouns:</th>
+                                    <td>@patient.preferredPronouns</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Date of Birth:</th>
+                                    <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Gender:</th>
+                                    <td>@patient.gender</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Preferred Language:</th>
+                                    <td>@patient.preferredLanguage</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Ethnicity:</th>
+                                    <td>@patient.ethnicity</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Race:</th>
+                                    <td>@patient.race</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Religion:</th>
+                                    <td>@patient.religion</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Primary Physician:</th>
+                                    <td>@patient.providers.firstName @patient.providers.lastName, @patient.providers.specialty</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Legal Guardian1:</th>
+                                    <td>@patient.legalGuardian1</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Legal Guardian2:</th>
+                                    <td>@patient.legalGuardian2</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Previous Name:</th>
+                                    <td>@patient.previousName</td>
+                                </tr>
+                                <tr class="hover-highlighting">
+                                    <th scope="row">Gender Assigned At Birth:</th>
+                                    <td>@patient.genderAssignedAtBirth</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <h1 class="text-center display-6">No patient found</h1>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                @if (patient != null && patient.MHN != 0)
+                {
+                    <div class="col-md-12 mb-3">
+                        <div class="card card-cover">
+                        @if (string.IsNullOrEmpty(patient.patientImage))
+                        {
+                                <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
+                        }
+                        else
+                        {
+                                <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image">
+                        }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    //Do nothing
+                }
+                <div class="col-md-12">
+                    <div class="card">
+
+                        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+                            <div class="text-center w-100">Contact Info</div>
+                            <div>
+                                @if(patient.ContactId.address != null)
+                                {
+                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
+                                        <i class="fa-solid fa-pen me-2"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
+                                        <i class="fa-solid fa-plus me-2"></i>
+                                        <span>Add</span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+
+                        <div class="card-body" data-bs-theme="auto">
+                            @if (patient.ContactId.address != null)
+                            {
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Address:</th>
+                                            <td>@patient.ContactId.address</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">City:</th>
+                                            <td>@patient.ContactId.city</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">State:</th>
+                                            <td>@patient.ContactId.state</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Zip Code:</th>
+                                            <td>@patient.ContactId.zipcode</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Phone Number:</th>
+                                            <td>@patient.ContactId.phone</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Email:</th>
+                                            <td>@patient.ContactId.email</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <h1 class="text-center display-6">No contact info found</h1>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

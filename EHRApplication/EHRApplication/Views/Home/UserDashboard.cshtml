@@ -1,0 +1,50 @@
+﻿@{
+    <link rel="icon" type="image/x-icon" href="~/Media/myehr-icon.png">
+
+    ViewData["Title"] = "myEHR | User Dashboard";
+    <link rel="stylesheet" href="~/css/userDashboard.css" asp-append-version="true" />
+}
+
+<div class="container">
+    <h2>Welcome, User!</h2>
+    <!--Start of first row-->
+    <div class="card-row">
+        <a class="card-box navigation-1" asp-area ="" asp-controller="Medications" asp-action="AllMedications">
+                <h3 class="card-title">All Medications</h3>
+                <ul class="card-list">
+@*                     <li>#New Medications</li>
+ *@                </ul>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="Patient" asp-action="AllPatients">
+            <h3 class="card-title">All Patients</h3>
+            <ul class="card-list">
+@*                 <li>#New Patients</li>
+ *@            </ul>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="Providers" asp-action="AllProviders">
+            <h3 class="card-title">All Providers</h3>
+            <ul class="card-list">
+@*                 <li>#New Providers</li>
+ *@            </ul>
+        </a>
+    </div>
+    <!--Start of second row-->
+    <div class="card-row">
+        <a class="card-box navigation-1" asp-area="" asp-controller="Resources" asp-action="Index">
+            <h3 class="card-title">Resources</h3>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="LabTestProfile" asp-action="AllLabTests">
+            <h3 class="card-title">All Lab Tests</h3>
+            <ul class="card-list">
+@*                 <li>#New Lab Tests</li>
+ *@            </ul>
+        </a>
+
+        <a class="card-box navigation-1" asp-area="" asp-controller="#" asp-action="#">
+            <h3 class="card-title">Account Info</h3>
+        </a>
+    </div>
+</div>

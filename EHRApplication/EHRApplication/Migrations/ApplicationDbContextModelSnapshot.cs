@@ -108,9 +108,14 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("visitsId")
+                        .HasColumnType("int");
+
                     b.HasKey("CPId");
 
                     b.HasIndex("MHN");
+
+                    b.HasIndex("visitsId");
 
                     b.ToTable("CarePlan");
                 });
@@ -189,9 +194,6 @@ namespace EHRApplication.Migrations
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");
 
-                    b.Property<int>("visitId")
-                        .HasColumnType("int");
-
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
 
@@ -203,7 +205,7 @@ namespace EHRApplication.Migrations
 
                     b.HasIndex("testId");
 
-                    b.HasIndex("visitId");
+                    b.HasIndex("visitsId");
 
                     b.ToTable("LabResults");
                 });
@@ -216,29 +218,65 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("testId"));
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<string>("category")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("referenceRange")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("testName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("units")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("testId");
 
                     b.ToTable("LabTestProfile");
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.Log", b =>
+                {
+                    b.Property<int>("LogID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LogID"));
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateAndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LogID");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.MedAdministrationHistory", b =>
@@ -276,6 +314,9 @@ namespace EHRApplication.Migrations
                     b.Property<TimeOnly>("timeGiven")
                         .HasColumnType("time");
 
+                    b.Property<int>("visitsId")
+                        .HasColumnType("int");
+
                     b.HasKey("administrationId");
 
                     b.HasIndex("MHN");
@@ -283,6 +324,8 @@ namespace EHRApplication.Migrations
                     b.HasIndex("administeredBy");
 
                     b.HasIndex("medId");
+
+                    b.HasIndex("visitsId");
 
                     b.ToTable("MedAdministrationHistory");
                 });
@@ -342,9 +385,13 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("medId"));
 
+                    b.Property<bool>("activeStatus")
+                        .HasColumnType("bit");
+
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("medName")
                         .IsRequired()
@@ -394,19 +441,16 @@ namespace EHRApplication.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("patientContactId"));
 
                     b.Property<string>("ECFirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ECLastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ECPhone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("ECRelationship")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MHN")
@@ -421,23 +465,25 @@ namespace EHRApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("state")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("zipcode")
+                    b.Property<int?>("zipcode")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("patientContactId");
 
-                    b.HasIndex("MHN");
+                    b.HasIndex("MHN")
+                        .IsUnique();
 
                     b.ToTable("PatientContact");
                 });
@@ -450,8 +496,14 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MHN"));
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<DateOnly>("DOB")
                         .HasColumnType("date");
+
+                    b.Property<bool>("HasAlerts")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ethnicity")
                         .IsRequired()
@@ -459,43 +511,53 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("genderAssignedAtBirth")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("lastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("legalGuardian1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("legalGuardian2")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("middleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("patientImage")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("preferredLanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("preferredPronouns")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("previousName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
@@ -505,12 +567,12 @@ namespace EHRApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("religion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("suffix")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.HasKey("MHN");
 
@@ -972,27 +1034,31 @@ namespace EHRApplication.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("groupNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("memberId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("policyNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("providerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("patientInsuranceId");
 
@@ -1072,6 +1138,9 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("assocProviderproviderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("associatedProvider")
                         .HasColumnType("int");
 
@@ -1091,11 +1160,18 @@ namespace EHRApplication.Migrations
                     b.Property<DateTime>("updatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("visitsId")
+                        .HasColumnType("int");
+
                     b.HasKey("patientNotesId");
 
                     b.HasIndex("MHN");
 
+                    b.HasIndex("assocProviderproviderId");
+
                     b.HasIndex("createdBy");
+
+                    b.HasIndex("visitsId");
 
                     b.ToTable("PatientNotes");
                 });
@@ -1136,11 +1212,16 @@ namespace EHRApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("visitsId")
+                        .HasColumnType("int");
+
                     b.HasKey("patientProblemsId");
 
                     b.HasIndex("MHN");
 
                     b.HasIndex("createdBy");
+
+                    b.HasIndex("visitsId");
 
                     b.ToTable("PatientProblems");
                 });
@@ -1152,6 +1233,9 @@ namespace EHRApplication.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("providerId"));
+
+                    b.Property<bool>("active")
+                        .HasColumnType("bit");
 
                     b.Property<string>("firstName")
                         .IsRequired()
@@ -1189,12 +1273,10 @@ namespace EHRApplication.Migrations
 
                     b.Property<string>("notes")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<int>("providerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("providersId")
                         .HasColumnType("int");
 
                     b.Property<TimeOnly>("time")
@@ -1204,7 +1286,7 @@ namespace EHRApplication.Migrations
 
                     b.HasIndex("MHN");
 
-                    b.HasIndex("providersId");
+                    b.HasIndex("providerId");
 
                     b.ToTable("Visits");
                 });
@@ -1220,22 +1302,27 @@ namespace EHRApplication.Migrations
                     b.Property<decimal>("BMI")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("bloodPressure")
-                        .HasColumnType("int");
+                    b.Property<string>("bloodPressure")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<decimal>("heightInches")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("intakeMilliLiters")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("intakeMilliLiters")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("outputMilliLiters")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("outputMilliLiters")
+                        .HasColumnType("int");
 
                     b.Property<int>("painLevel")
                         .HasColumnType("int");
 
                     b.Property<int>("patientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("pulse")
                         .HasColumnType("int");
 
                     b.Property<decimal>("pulseOximetry")
@@ -1326,6 +1413,11 @@ namespace EHRApplication.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -1377,6 +1469,10 @@ namespace EHRApplication.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -1407,10 +1503,12 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -1447,10 +1545,12 @@ namespace EHRApplication.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -1458,6 +1558,21 @@ namespace EHRApplication.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lastname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.Alerts", b =>
@@ -1479,7 +1594,15 @@ namespace EHRApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Visits", "visits")
+                        .WithMany()
+                        .HasForeignKey("visitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("patients");
+
+                    b.Navigation("visits");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.LabOrders", b =>
@@ -1539,7 +1662,7 @@ namespace EHRApplication.Migrations
 
                     b.HasOne("EHRApplication.Models.Visits", "visits")
                         .WithMany()
-                        .HasForeignKey("visitId")
+                        .HasForeignKey("visitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1572,11 +1695,19 @@ namespace EHRApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Visits", "visits")
+                        .WithMany()
+                        .HasForeignKey("visitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("medProfile");
 
                     b.Navigation("patients");
 
                     b.Navigation("providers");
+
+                    b.Navigation("visits");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.MedOrders", b =>
@@ -1636,8 +1767,8 @@ namespace EHRApplication.Migrations
             modelBuilder.Entity("EHRApplication.Models.PatientContact", b =>
                 {
                     b.HasOne("EHRApplication.Models.PatientDemographic", "patients")
-                        .WithMany()
-                        .HasForeignKey("MHN")
+                        .WithOne("ContactId")
+                        .HasForeignKey("EHRApplication.Models.PatientContact", "MHN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1880,15 +2011,31 @@ namespace EHRApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Providers", "assocProvider")
+                        .WithMany()
+                        .HasForeignKey("assocProviderproviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EHRApplication.Models.Providers", "providers")
                         .WithMany()
                         .HasForeignKey("createdBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Visits", "visits")
+                        .WithMany()
+                        .HasForeignKey("visitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("assocProvider");
+
                     b.Navigation("patients");
 
                     b.Navigation("providers");
+
+                    b.Navigation("visits");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.PatientProblems", b =>
@@ -1905,9 +2052,17 @@ namespace EHRApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EHRApplication.Models.Visits", "visits")
+                        .WithMany()
+                        .HasForeignKey("visitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("patients");
 
                     b.Navigation("providers");
+
+                    b.Navigation("visits");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.Visits", b =>
@@ -1920,7 +2075,7 @@ namespace EHRApplication.Migrations
 
                     b.HasOne("EHRApplication.Models.Providers", "providers")
                         .WithMany()
-                        .HasForeignKey("providersId")
+                        .HasForeignKey("providerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1996,6 +2151,12 @@ namespace EHRApplication.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EHRApplication.Models.PatientDemographic", b =>
+                {
+                    b.Navigation("ContactId")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

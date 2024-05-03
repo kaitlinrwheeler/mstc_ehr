@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Patient Search";
+            // The list of patient search results.
+    @model List<PatientDemographic>
+
+    <script src="~/js/allPatients.js" defer></script>
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Search Results</div>
+        </div>
+        <div class="card-body" data-bs-theme="auto">
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">MHN:</th>
+                            <th scope="col">First Name:</th>
+                            <th scope="col">Middle Name:</th>
+                            <th scope="col">Last Name:</th>
+                            <th scope="col">Suffix:</th>
+                            <th scope="col">Date of Birth:</th>
+                            <th scope="col">Gender:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model)
+                        {
+                            <tr class="hover-highlighting" id="patient-@patient.MHN">
+                                <td>@patient.MHN</td>
+                                <td>@patient.firstName</td>
+                                <td>@patient.middleName</td>
+                                <td>@patient.lastName</td>
+                                <td>@patient.suffix</td>
+                                <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
+                                <td>@patient.gender</td>
+
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No patients found.</h1>
+                <p class="text-center">Please enter another patient name or MHN and try again.</p>
+            }
+        </div>
+    </div>
+</section>
+
+

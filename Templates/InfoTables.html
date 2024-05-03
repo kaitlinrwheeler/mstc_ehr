@@ -1,0 +1,52 @@
+@*
+    Example of a table within a card style element for displaying data. In this case there is a button that can be used for something.
+*@
+@{
+    // The list of patients being pulled in.
+    @model List<PatientDemographic>
+
+    }
+
+
+    <section class="my-5 w-75 m-auto">
+        <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+            <div class="h4 card-header text-center" data-bs-theme="auto">
+                All Patients
+            </div>
+            <div class="card-body overflow-auto" data-bs-theme="auto">
+                @if (Model.Any())
+                {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">MHN:</th>
+                            <th scope="col">First Name:</th>
+                            <th scope="col">Last Name:</th>
+                            <th scope="col">Date of Birth:</th>
+                            <th scope="col">Gender:</th>
+                            <th scope="col"></th> <!-- Empty column for the button -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model)
+                        {
+                        <tr class="hover-highlighting">
+                            <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                            <td>@patient.MHN</td>
+                            <td>@patient.firstName</td>
+                            <td>@patient.lastName</td>
+                            <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
+                            <td>@patient.gender</td>
+                            <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN">View</a></td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                }
+                else
+                {
+                <h1 class="text-center display-6">No patients found.</h1>
+                }
+            </div>
+        </div>
+    </section>

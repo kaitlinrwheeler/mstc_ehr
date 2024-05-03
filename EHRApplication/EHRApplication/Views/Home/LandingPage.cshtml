@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "myEHR | Home";
+    Layout = "_Landing";
+}
+
+<body id="landingBody" class="d-flex flex-column min-vh-100 w-100 justify-content-between text-center">
+    <div id="landingContent" class="container mt-5">
+        <div class="container pt-5 mt-5 text-start">
+            <h1 class="text-white pt-5" style="font-size:4.5em;">Hands-On Learning: <br />your gateway to medical <br />record mastery.</h1>
+            <p class="text-white fs-2 pt-2">Realistic EHR scenarios for practical experience.</p>
+            <a id="sign-up-btn" asp-controller="Login_Register" asp-action="Register" class="btn text-light fw-bold fs-5 px-5 py-2 mt-5" style="border-radius: 7px; background-color: #82142D;">
+                Sign Up
+            </a>
+        </div>
+    </div>
+</body>

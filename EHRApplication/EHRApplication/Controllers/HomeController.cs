@@ -1,22 +1,40 @@
 using EHRApplication.Models;
+using EHRApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace EHRApplication.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogService _logService;
+        private readonly string _connectionString;
+        private readonly IListService _listService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogService logService, IListService listService, IConfiguration configuration)
+            : base(logService, listService, configuration)
         {
-            _logger = logger;
+            _logService = logService;
+            this._connectionString = base._connectionString;
+            _listService = listService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                // Example: Log success message if no exception is thrown
+                //_logService.WriteToDatabase("Success", "Home page loaded correctly.", "HomeController.cs");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Example: Log error message if an exception occurs
+                //_logService.WriteToDatabase("Error", "An error occurred while loading the home page.", ex.Message);
+                return View("Error"); // Can display an error view if we make one.
+            }
         }
+
 
         public IActionResult Privacy()
         {
@@ -39,7 +57,12 @@ namespace EHRApplication.Controllers
             return View();
         }
 
-        public IActionResult ForgotPassword()
+        public IActionResult LandingPage()
+        {
+            return View();
+        }
+
+        public IActionResult UserDashboard()
         {
             return View();
         }

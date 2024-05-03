@@ -1,0 +1,72 @@
+﻿@{
+    // The list of Notes being pulled in.
+    @model EHRApplication.ViewModels.PortalViewModel
+    var mhn = ViewBag.MHN;
+
+    <link rel="stylesheet" href="~/css/notes.css" asp-append-version="true" />
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Notes
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model != null && Model.PatientNotes != null && Model.PatientNotes.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Occurred On:</th>
+                            <th scope="col">Created At:</th>
+                            <th scope="col">Created By:</th>
+                            <th scope="col">Provider:</th>
+                            <th scope="col">Category:</th>
+                            <th scope="col">Note:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var note in Model.PatientNotes)
+                        {
+                            var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
+
+                            <tr class="hover-highlighting">
+                                <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
+                                <td>@note.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
+                                <td>@note.providers.firstName @note.providers.lastName</td>
+                                <td>@note.assocProvider.firstName @note.assocProvider.lastName</td>
+                                <td>@note.category</td>
+                                 <td>
+                                    @*This will only display the first 20 characters in the saved data in the model*@
+                                    @if(note.Note.Length <= 15)
+                                    {
+                                        @note.Note
+                                    }
+                                    else
+                                    {
+                                        @note.Note.Substring(0, 15)
+                                        <div class="question-wrapper" onmouseover="showRequirements(@popupId)" onmouseout="hideRequirements(@popupId)">
+                                            <div data-bs-theme="auto">
+                                                ...
+                                            </div>
+                                            <div class="requirements-popup" data-bs-theme="auto" id="@popupId">
+                                                <ul>
+                                                    @note.Note
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No notes found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,85 @@
+﻿@{
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "myEHR | Patient Medications";
+    <link rel="stylesheet" href="~/css/patientMedication.css" asp-append-version="true" />
+    int mhn = ViewBag.MHN;
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Medications</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreatePatientMedForm" asp-route-mhn="@mhn">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model != null && Model.PatientMedications != null && Model.PatientMedications.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Medication:</th>@* 
+                            <th scope="col">Category:</th> *@
+                            <th scope="col">Status:</th>
+                            <th scope="col">Instructions:</th>
+                            <th scope="col">Dosage:</th>
+                            <th scope="col">Route:</th>
+                            <th scope="col">Prescribed By:</th>
+                            <th scope="col">Start Date:</th>
+                            <th scope="col">End Date:</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var medication in Model.PatientMedications)
+                        {
+                            var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
+
+                            <tr class="hover-highlighting">
+                                <td>@medication.medProfile.medName</td>@* 
+                                <td>@medication.category</td> *@
+                                <td>@medication.activeStatus</td>
+                                <td>
+                                    @if(medication.prescriptionInstructions.Length <= 15)
+                                    {
+                                        @medication.prescriptionInstructions
+                                    }
+                                    else
+                                    {
+                                        @*This will only display the first 20 characters in the saved data in the model*@
+                                        @medication.prescriptionInstructions.Substring(0,15)
+                                        <div class="question-wrapper" id="questionWrapper" onmouseover="showRequirements(@popupId)" onmouseout="hideRequirements(@popupId)">
+                                            <div class="" data-bs-theme="auto" id="questionIcon">
+                                                ...
+                                            </div>
+                                            <div class="requirements-popup" data-bs-theme="auto" id="@popupId">
+                                                <ul>
+                                                    @medication.prescriptionInstructions
+                                                </ul>
+                                            </div>
+                                        </div>                                        
+                                    }
+                                </td>
+                                <td>@medication.dosage</td>
+                                <td>@medication.route</td>
+                                <td>@medication.providers.firstName @medication.providers.lastName</td>
+                                <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
+                                <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No medications found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>

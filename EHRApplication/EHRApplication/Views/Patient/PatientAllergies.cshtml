@@ -1,0 +1,40 @@
+﻿@{
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "myEHR | Patient Allergies";
+}
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header text-center" data-bs-theme="auto">
+            Patient Allergies
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model != null && Model.PatientAllergies != null && Model.PatientAllergies.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Allergy Name:</th>
+                            <th scope="col">Allergy Type:</th>
+                            <th scope="col">Onset Date:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var allergy in Model.PatientAllergies)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@allergy.allergies.allergyName</td>
+                                <td>@allergy.allergies.allergyType</td>
+                                <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No allergies found.</h1>
+            }
+        </div>
+    </div>
+</section>

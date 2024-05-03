@@ -15,6 +15,11 @@ namespace EHRApplication.Models
 
         public string Note {  get; set; }
 
+        [ForeignKey("visitsId")]
+        public Visits visits { get; set; }
+
+        public int visitsId { get; set; }
+
         public DateOnly occurredOn { get; set; }
 
         public DateTime createdAt { get; set; }
@@ -26,6 +31,8 @@ namespace EHRApplication.Models
 
         [ForeignKey("associatedProvider")]
         public int associatedProvider {  get; set; }
+
+        public Providers assocProvider {  get; set; }
 
         public DateTime updatedAt { get; set; }
 
