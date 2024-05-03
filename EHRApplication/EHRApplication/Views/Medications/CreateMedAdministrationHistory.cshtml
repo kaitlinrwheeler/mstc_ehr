@@ -2,7 +2,7 @@
 
 @model EHRApplication.ViewModels.PortalViewModel;
 @{
-    ViewData["Title"] = "myEHR | Add Med Admin History";
+    ViewData["Title"] = "myEHR | Add Medication Admin History";
     <link rel="stylesheet" href="~/css/forms.css">
     var mhn = ViewBag.MHN;
     <script src="~/js/validation.js"></script>
@@ -11,7 +11,7 @@
 <section class="my-5 w-75" data-bs-theme="auto">
 
     <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Add New Med Administration History</h3>
+        <h3 class="my-3">Add New Medication Administration History</h3>
     </div>
 
     <div class="card-body" data-bs-theme="auto">
@@ -81,8 +81,14 @@
             <!--Status-->
             <div class="form-group">
                 <label for="status">Status:</label>
-                <input name="status" type="text" id="status" asp-for="MedAdministrationHistoriesDetails.status" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('status', 100, 'status')" />
-                <span asp-validation-for="MedAdministrationHistoriesDetails.status" id="frequencyError" class="validation-msg"></span>
+                <select name="status" asp-for="MedAdministrationHistoriesDetails.status" id="status" class="form-control" data-bs-theme="auto">
+                    <option value="">-- Select Status --</option>
+                    <option value="Administered">Administered</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Pending">Pending</option>
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.status" class="validation-msg"></span>
             </div>
 
             <!--Provider-->

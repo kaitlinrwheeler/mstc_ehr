@@ -41,7 +41,7 @@
                                 <td>@medOrder.frequency</td>
                                 <td>@medOrder.fulfillmentStatus</td>
                                 <td>@medOrder.orderDate.ToString("MM-dd-yyyy")</td>
-                                <td>@medOrder.orderTime.ToString("HH:mm:ss")</td>
+                                <td>@medOrder.orderTime.ToString("HH:mm")</td>
                                 <td>@medOrder.providers.firstName @medOrder.providers.lastName</td>
                                 
                                 <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>

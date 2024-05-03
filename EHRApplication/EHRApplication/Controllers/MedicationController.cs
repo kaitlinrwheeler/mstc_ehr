@@ -137,7 +137,7 @@ namespace EHRApplication.Controllers
 
                 // Sql query to get the patient with the passed in mhn.
                 string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
-                    "FROM [dbo].[MedOrders]";
+                    "FROM [dbo].[MedOrders] ORDER BY orderDate DESC, orderTime DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -750,13 +750,9 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please enter a value for frequency.");
             }
-            else if (!Regex.Match(medHistory.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please only enter letters.");
-            }
             if (medHistory.status.IsNullOrEmpty())
             {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please enter a status.");
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please select a status.");
             }
             else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
             {
@@ -827,13 +823,9 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please enter a value for frequency.");
             }
-            else if (!Regex.Match(medHistory.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.frequency", "Please only enter letters.");
-            }
             if (medHistory.status.IsNullOrEmpty())
             {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please enter a status.");
+                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please select a status.");
             }
             else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
             {
