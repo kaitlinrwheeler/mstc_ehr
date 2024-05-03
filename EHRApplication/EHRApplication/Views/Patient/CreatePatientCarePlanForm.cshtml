@@ -19,8 +19,15 @@
             <input asp-for="CarePlansDetails.MHN" value="@mhn" hidden />
 
             <div class="form-group">
-                <label for="temperature">Priority:</label>
-                <input type="text" id="priority" name="priority" asp-for="CarePlansDetails.priority" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInput('priority', 100, 'priority')" required />
+                <label for="temperature">Priority Level:</label>
+
+                <select id="priority" name="priority" asp-for="CarePlansDetails.priority" class="form-control" data-bs-theme="auto">
+                    <option value="">--Select--</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                
                 <span asp-validation-for="CarePlansDetails.priority" id="priorityError" class="validation-msg"></span>
             </div>
 

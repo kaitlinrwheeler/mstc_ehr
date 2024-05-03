@@ -14,6 +14,7 @@ using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -1391,6 +1392,11 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
             }
 
+            if (carePlan.priority != "Low" || carePlan.priority != "Medium" || carePlan.priority != "High")
+            {
+                ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level.");
+            }
+
             // Check to see if the date is more than 5 years in the past.
             if (carePlan.startDate <= DateTime.Now.AddYears(-5))
             {
@@ -1401,7 +1407,7 @@ namespace EHRApplication.Controllers
             // Check to make sure end date is after the start date.
             if (carePlan.endDate <= carePlan.startDate)
             {
-                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after than start date.");
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after the start date.");
                 return View(viewModel);
             }
             // Check to make sure the end date is not more than 2 years from today's date.
@@ -1529,6 +1535,11 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
             }
 
+            if (carePlan.priority != "Low" || carePlan.priority != "Medium" || carePlan.priority != "High")
+            {
+                ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level.");
+            }
+
             // Check to see if the date is more than 5 years in the past.
             if (carePlan.startDate <= DateTime.Now.AddYears(-5))
             {
@@ -1539,7 +1550,7 @@ namespace EHRApplication.Controllers
             // Check to make sure end date is after the start date.
             if (carePlan.endDate <= carePlan.startDate)
             {
-                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after than start date.");
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after the start date.");
                 return View(viewModel);
             }
             // Check to make sure the end date is not more than 2 years from today's date.
@@ -1627,7 +1638,12 @@ namespace EHRApplication.Controllers
 
             if (patientNote.associatedProvider == -1) 
             {
-                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select a assosciated provider.");
+                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select an associated provider.");
+            }
+
+            if (patientNote.createdBy == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.createdBy", "Please select who is creating the note.");
             }
 
             if (patientNote.occurredOn <= DateOnly.FromDateTime(DateTime.Now.AddYears(-5)))
@@ -1637,6 +1653,11 @@ namespace EHRApplication.Controllers
             else if (patientNote.occurredOn > DateOnly.FromDateTime(DateTime.Now))
             {
                 ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
+            }
+
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z]+$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters.");
             }
 
 
@@ -1760,7 +1781,12 @@ namespace EHRApplication.Controllers
 
             if (patientNote.associatedProvider == -1)
             {
-                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select a assosciated provider.");
+                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select an associated provider.");
+            }
+
+            if (patientNote.createdBy == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.createdBy", "Please select who is creating the note.");
             }
 
             if (patientNote.occurredOn <= DateOnly.FromDateTime(DateTime.Now.AddYears(-5)))
@@ -1772,6 +1798,10 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
             }
 
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z]+$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters.");
+            }
 
             // Don't need to check for these since they aren't on the form.
             ModelState.Remove("visits");

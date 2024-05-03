@@ -75,9 +75,9 @@
 
             <div class="form-group mb-3">
                 <label for="note">Note:</label>
-                <textarea name="Note" asp-for="PatientNotesDetails.Note" type="text" id="description" class="form-control" maxlength="100" data-bs-theme="auto" oninput="updateCharacterCount('description', 'descriptionCounter')" onblur="validateRequiredTextInputAlphaNumeric('note', 100, 'note')"></textarea>
+                <textarea name="Note" asp-for="PatientNotesDetails.Note" type="text" id="description" class="form-control" maxlength="100" data-bs-theme="auto" oninput="updateCharacterCount('description', 'descriptionCounter')" onblur="validateRequiredTextInputAlphaNumeric('description', 100, 'note')"></textarea>
                 <span id="descriptionCounter" class="character-counter">0/100</span>
-                <span asp-validation-for="PatientNotesDetails.Note" id="noteError" class="validation-msg"></span>
+                <span asp-validation-for="PatientNotesDetails.Note" id="descriptionError" class="validation-msg"></span>
             </div>
 
             <div class="mt-3 d-flex justify-content-center">

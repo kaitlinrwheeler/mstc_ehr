@@ -31,12 +31,10 @@ namespace EHRApplication.Models
 
         [ForeignKey("createdBy")]
         [Required(ErrorMessage = "Person who created the note is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Person who created the note is required.")]
         public int createdBy { get; set; }
 
         [ForeignKey("associatedProvider")]
         [Required(ErrorMessage = "Assosciated provider is required.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Associated provider is required.")]
         public int associatedProvider {  get; set; }
 
         public Providers assocProvider {  get; set; }
@@ -45,6 +43,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Category is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Note must be between 1 and 100 characters.")]
+        [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Category must contain only letters only.")]
         public string category { get; set; }
     }
 }
