@@ -613,10 +613,6 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("MedOrdersDetails.frequency", "Please enter a value for frequency.");
             }
-            else if (!Regex.Match(medOrder.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedOrdersDetails.frequency", "Please only enter letters.");
-            }
 
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -681,10 +677,6 @@ namespace EHRApplication.Controllers
             if (medOrder.frequency.IsNullOrEmpty())
             {
                 ModelState.AddModelError("MedOrdersDetails.frequency", "Please enter a value for frequency.");
-            }
-            else if (!Regex.Match(medOrder.frequency, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedOrdersDetails.frequency", "Please only enter letters.");
             }
 
             //returns the model if null because there were errors in validating it
@@ -754,10 +746,6 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please select a status.");
             }
-            else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please only enter letters.");
-            }
 
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -826,10 +814,6 @@ namespace EHRApplication.Controllers
             if (medHistory.status.IsNullOrEmpty())
             {
                 ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please select a status.");
-            }
-            else if (!Regex.Match(medHistory.status, @"^[a-zA-Z\s'\/\-]+$").Success)
-            {
-                ModelState.AddModelError("MedAdministrationHistoriesDetails.status", "Please only enter letters.");
             }
 
             //returns the model if null because there were errors in validating it

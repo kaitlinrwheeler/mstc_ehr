@@ -51,7 +51,7 @@
             <!--Frequency-->
             <div class="form-group">
                 <label for="frequency">Frequency:</label>
-                <input name="frequency" type="text" id="frequency" asp-for="MedOrdersDetails.frequency" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('frequency', 100, 'frequency')" />
+                <input name="frequency" type="text" id="frequency" asp-for="MedOrdersDetails.frequency" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('frequency', 'frequency')" />
                 <span asp-validation-for="MedOrdersDetails.frequency" id="frequencyError" class="validation-msg"></span>
             </div>
 
