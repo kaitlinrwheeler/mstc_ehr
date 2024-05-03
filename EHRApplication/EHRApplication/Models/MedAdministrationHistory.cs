@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EHRApplication.Models
@@ -9,11 +10,13 @@ namespace EHRApplication.Models
         public int administrationId { get; set; }
 
         [ForeignKey("MHN")]
+        [ValidateNever]
         public PatientDemographic patients { get; set; }
 
         public int MHN { get; set; }
 
         [ForeignKey("visitsId")]
+        [ValidateNever]
         public Visits visits { get; set; }
 
         public int visitsId { get; set; }
@@ -21,6 +24,7 @@ namespace EHRApplication.Models
         public string category { get; set; }
 
         [ForeignKey("medId")]
+        [ValidateNever]
         public MedicationProfile medProfile { get; set; }
 
         public int medId { get; set; }
@@ -34,6 +38,7 @@ namespace EHRApplication.Models
         public TimeOnly timeGiven { get; set; }
 
         [ForeignKey("administeredBy")]
+        [ValidateNever]
         public Providers providers { get; set; }
 
         public int administeredBy { get; set; }
