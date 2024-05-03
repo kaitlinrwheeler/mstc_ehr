@@ -1333,5 +1333,49 @@ namespace EHRApplication.Controllers
 
             return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfilePicture(IFormFile file, int mhn)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json(new { success = false, message = "No file uploaded." });
+            }
+
+            if (file.Length > 4 * 1024 * 1024) // File size check
+            {
+                return Json(new { success = false, message = "File size must be less than 4MB." });
+            }
+
+            var allowedFileTypes = new[] { ".jpg", ".png" };
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!allowedFileTypes.Contains(extension))
+            {
+                return Json(new { success = false, message = "Invalid file type. Only .jpg or .png allowed." });
+            }
+
+            var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + extension;
+            var filePath = Path.Combine(uploadDirectory, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Update patient record with new file path
+            PatientDemographic patient = _listService.GetPatientByMHN(mhn);
+            patient.patientImage = fileName;
+            _listService.UpdatePatientImage(patient);
+
+            return Json(new { success = true, message = "File uploaded successfully", filePath = $"/images/{fileName}" });
+        }
+
+
     }
 }

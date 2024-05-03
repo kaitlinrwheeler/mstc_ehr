@@ -74,5 +74,6 @@ namespace EHRApplication.Services
         Providers GetProviderById(int providerId);
         void UpdateProvider(Providers provider);
         void AddProvider(Providers provider);
+        void UpdatePatientImage(PatientDemographic patient);
     }
 }
