@@ -19,41 +19,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const mhn = this.getAttribute('data-mhn');
            
-            validateFile(file, errorContainer, errorMessage);
+            var valid = validateFile(file, errorContainer, errorMessage);
 
-            // set file and mhn for controller action
-            var formData = new FormData();
-            formData.append("file", file);
-            formData.append("mhn", mhn);
+            if (valid) {
+                // set file and mhn for controller action
+                var formData = new FormData();
+                formData.append("file", file);
+                formData.append("mhn", mhn);
 
-            fetch('/Patient/EditProfilePicture', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
+                fetch('/Patient/EditProfilePicture', {
+                    method: 'POST',
+                    body: formData
                 })
-                .then(data => {
-                    console.log('Success:', data);
-                    if (data.success) {
-                        // update patient image file path
-                        document.querySelector('.card-img-top').src = data.filePath;
-                        window.location.reload();
-                    } else {
-                        displayErrorMessage(errorContainer, errorMessage, data.message);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    displayErrorMessage(errorContainer, errorMessage, 'Failed to upload image: ' + error.message);
-                })
-                .finally(() => {
-                    // clear input value for next submission
-                    resetInput(fileInput);
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        if (data.success) {
+                            // update patient image file path
+                            document.querySelector('.card-img-top').src = data.filePath;
+                            window.location.reload();
+                        } else {
+                            displayErrorMessage(errorContainer, errorMessage, data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        displayErrorMessage(errorContainer, errorMessage, 'Failed to upload image: ' + error.message);
+                    })
+                    .finally(() => {
+                        // clear input value for next submission
+                        resetInput(fileInput);
+                    });
+            }
+            
         };
 
     });
@@ -61,18 +64,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // validate file type and size
 function validateFile(file, errorContainer, errorMessage) {
+    var valid = true;
     // check for file existence
     if (!file) {
         displayErrorMessage(errorContainer, errorMessage, 'Please select a file to upload.');
         resetInput(fileInput);
-        return;
+        valid = false;
     }
 
     // check file size
     if (file.size > 4 * 1024 * 1024) {
         displayErrorMessage(errorContainer, errorMessage, 'File size must be less than 4MB.');
         resetInput(fileInput);
-        return;
+        valid = false;
     }
 
     // check file extension for type
@@ -82,8 +86,10 @@ function validateFile(file, errorContainer, errorMessage) {
     if (!allowedFileTypes.includes(extension)) {
         displayErrorMessage(errorContainer, errorMessage, 'Image file must be of type .jpg or .png.');
         resetInput(fileInput);
-        return;
+        valid = false;
     }
+
+    return valid;
 };
 
 // populate and display error message
