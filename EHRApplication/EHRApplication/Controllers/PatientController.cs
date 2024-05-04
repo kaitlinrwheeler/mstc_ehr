@@ -1392,10 +1392,14 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
             }
 
-            if (carePlan.priority != "Low" || carePlan.priority != "Medium" || carePlan.priority != "High")
+            bool isPriorityValid = false;
+
+            if (carePlan.priority == "Low" || carePlan.priority == "Medium" || carePlan.priority == "High")
             {
-                ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level.");
+                isPriorityValid = true;
             }
+
+            if (!isPriorityValid) { ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level."); }
 
             // Check to see if the date is more than 5 years in the past.
             if (carePlan.startDate <= DateTime.Now.AddYears(-5))
@@ -1535,10 +1539,14 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
             }
 
-            if (carePlan.priority != "Low" || carePlan.priority != "Medium" || carePlan.priority != "High")
+            bool isPriorityValid = false;
+
+            if (carePlan.priority == "Low" || carePlan.priority == "Medium" || carePlan.priority == "High")
             {
-                ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level.");
+                isPriorityValid = true;
             }
+
+            if (!isPriorityValid) { ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level."); }
 
             // Check to see if the date is more than 5 years in the past.
             if (carePlan.startDate <= DateTime.Now.AddYears(-5))
