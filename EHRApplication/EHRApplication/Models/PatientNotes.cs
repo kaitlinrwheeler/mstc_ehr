@@ -15,7 +15,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Note is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Note must be between 1 and 100 characters.")]
-        public string Note {  get; set; }
+        public string Note { get; set; }
 
         [ForeignKey("visitsId")]
         public Visits visits { get; set; }
@@ -43,7 +43,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Category is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Note must be between 1 and 100 characters.")]
-        [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Category must contain only letters only.")]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Category must contain only letters and spaces.")]
         public string category { get; set; }
     }
 }

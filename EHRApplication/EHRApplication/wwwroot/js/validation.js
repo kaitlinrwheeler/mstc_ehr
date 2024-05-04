@@ -417,7 +417,7 @@ function validateRequiredTextInputAlphaNumeric(inputID, characterLimit, errorMes
             const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
         } else {
             // If input is not empty, perform validation
-            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alpha numberic characters only.');
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alphanumeric and punctuation characters only.');
             if (isAlphaNumericValid) {
                 // Validate character limit
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);

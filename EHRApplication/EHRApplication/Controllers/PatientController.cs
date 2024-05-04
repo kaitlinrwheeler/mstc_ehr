@@ -1663,9 +1663,14 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
             }
 
-            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z]+$"))
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
             {
-                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters.");
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters and spaces.");
+            }
+
+            if (patientNote.Note == null)
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "test");
             }
 
 
@@ -1806,9 +1811,14 @@ namespace EHRApplication.Controllers
                 ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
             }
 
-            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z]+$"))
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
             {
-                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters.");
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters and spaces.");
+            }
+
+            if (patientNote.Note == null)
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must not be empty.");
             }
 
             // Don't need to check for these since they aren't on the form.
