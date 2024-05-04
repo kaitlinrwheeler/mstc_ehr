@@ -5,10 +5,14 @@ using System.Text;
 using EHRApplication.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using EHRApplication.Services;
-using System.Configuration;
-using MimeKit;
-using MailKit.Net.Smtp;
-using MailKit;
+using Newtonsoft.Json.Linq;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
+using Microsoft.Identity.Client;
+using NuGet.ContentModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EHRApplication.Controllers
 {
@@ -23,6 +27,10 @@ namespace EHRApplication.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IListService _listService;
         private readonly ILogService _logService;
+        //This is the api codes in order to route to the right smtp server to sent an email.
+        string apiKeyPublic = "f941d69677063a2c84aa98320d3482b4";
+        string apiKeyPrivate = "92182efc52937c819c7bb68782b9b1e1";
+
         public LoginAccount Input { get; set; }
 
         // Constructor to initialize required services
@@ -284,33 +292,44 @@ namespace EHRApplication.Controllers
         }
 
         public IActionResult ForgotPassword()
-        {
+        {            
             return View();
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword(RegisterAccount account)
+        public async Task<IActionResult> ForgotPassword(RegisterAccount account)
         {
-            var email = new MimeMessage();
-
-            email.From.Add(new MailboxAddress("EHR Admin", "halatjosh3@gmail.com"));
-            email.To.Add(new MailboxAddress("EHR User", account.Email));
-
-            email.Subject = "Testing out email sending";
-            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            if (!account.Email.IsNullOrEmpty())
             {
-                Text = "<b>Hello from inside of the EHR Application</b>"
-            };
+                //This will be the verification code sent to the email.
+                Random ranVariable = new Random();
+                int verificationCode = ranVariable.Next(10000, 99999);
 
-            using (var smtp = new SmtpClient())
-            {
-            vf: Gxwz: j: ZgsQ9
+                MailjetClient client = new MailjetClient(apiKeyPublic, apiKeyPrivate);
 
-                smtp.Send(email);
-                smtp.Disconnect(true);
+                //Creating a new request to send the email.
+                MailjetRequest request = new MailjetRequest
+                {
+                    Resource = Send.Resource,
+                };
+
+                //This is the email itself
+                var email = new TransactionalEmailBuilder()
+                    .WithFrom(new SendContact("spamemailforyaboy89328@gmail.com"))
+                    .WithSubject("Verification Code")
+                    .WithHtmlPart("<h1>Your verification code is: "+ verificationCode +". This code will expire in 4 minutes.</h1>")
+                    .WithTo(new SendContact(account.Email))
+                    .Build();
+
+                //Invoke API and send email
+                var response = await client.SendTransactionalEmailAsync(email);
+
+                //Checking the response
+                Assert.AreEqual(1, response.Messages.Length);
             }
+            else { return View(account); }
 
-            return View();
+            return RedirectToAction("UserDashboard", "Home");
         }
     }
 }
