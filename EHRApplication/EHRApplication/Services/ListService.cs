@@ -2231,7 +2231,6 @@ namespace EHRApplication.Services
             }
             return;
         }
-        }
 
         public void UpdatePatientImage(PatientDemographic patient)
         {
@@ -2259,4 +2258,5 @@ namespace EHRApplication.Services
             return;
         }
     }
+        
 }
