@@ -2231,5 +2231,32 @@ namespace EHRApplication.Services
             }
             return;
         }
+
+        public void UpdatePatientImage(PatientDemographic patient)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //SQL query that is going to update the medication with new data entered by the user.
+                string sql = "UPDATE [PatientDemographic] " +
+                    "SET patientImage = @patientImage " +
+                    "WHERE MHN = @MHN";
+
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+
+                    // Adding parameters
+                    command.Parameters.Add("@MHN", SqlDbType.Int).Value = patient.MHN;
+                    command.Parameters.Add("@patientImage", SqlDbType.VarChar).Value = patient.patientImage;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return;
+        }
     }
+        
 }

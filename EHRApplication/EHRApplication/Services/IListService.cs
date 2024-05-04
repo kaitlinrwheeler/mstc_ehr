@@ -90,5 +90,6 @@ namespace EHRApplication.Services
 
         void InsertIntoAdministrationHistory(MedAdministrationHistory medHistory);
         void UpdateAdministrationHistory(MedAdministrationHistory medHistory);
+        void UpdatePatientImage(PatientDemographic patient);
     }
 }
