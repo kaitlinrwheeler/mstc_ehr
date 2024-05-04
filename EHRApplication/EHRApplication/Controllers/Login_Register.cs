@@ -6,6 +6,9 @@ using EHRApplication.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using EHRApplication.Services;
 using System.Configuration;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit;
 
 namespace EHRApplication.Controllers
 {
@@ -282,6 +285,31 @@ namespace EHRApplication.Controllers
 
         public IActionResult ForgotPassword()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(RegisterAccount account)
+        {
+            var email = new MimeMessage();
+
+            email.From.Add(new MailboxAddress("EHR Admin", "halatjosh3@gmail.com"));
+            email.To.Add(new MailboxAddress("EHR User", account.Email));
+
+            email.Subject = "Testing out email sending";
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = "<b>Hello from inside of the EHR Application</b>"
+            };
+
+            using (var smtp = new SmtpClient())
+            {
+            vf: Gxwz: j: ZgsQ9
+
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+
             return View();
         }
     }
