@@ -104,5 +104,6 @@ namespace EHRApplication.Services
         void UpdateHasAlerts(int mhn);
         Allergies GetAllergyById(int allergyId);
         void UpdateAllergy(Allergies allergy);
+        void UpdatePatientImage(PatientDemographic patient);
     }
 }
