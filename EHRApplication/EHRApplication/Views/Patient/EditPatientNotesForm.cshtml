@@ -20,6 +20,13 @@
 
             <input name="MHN" asp-for="PatientNotesDetails.MHN" value="@mhn" hidden />
             <input name="patientNotesId" asp-for="PatientNotesDetails.patientNotesId" hidden />
+            <input name="createdAt" asp-for="PatientNotesDetails.createdAt" hidden />
+
+            <div class="mb-3 d-flex flex-row justify-content-between">
+                <h5>Originally Created At: </h5>
+                <span> @Model.PatientNotesDetails.createdAt.ToString("yyyy-MM-dd HH:mm")</span>
+            </div>
+
 
             <div class="form-group">
                 <label for="occurredOn">Occurred On:</label>

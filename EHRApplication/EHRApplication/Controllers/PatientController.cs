@@ -1806,9 +1806,10 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be more than 5 years in the past");
             }
-            else if (patientNote.occurredOn > DateOnly.FromDateTime(DateTime.Now))
+            // Makes sure the occurred on date doesn't get changed to after the date it was created.
+            else if (patientNote.occurredOn > new DateOnly(patientNote.createdAt.Year, patientNote.createdAt.Month, patientNote.createdAt.Day))
             {
-                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future from the date it was created.");
             }
 
             if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
