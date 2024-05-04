@@ -90,6 +90,20 @@ namespace EHRApplication.Services
 
         void InsertIntoAdministrationHistory(MedAdministrationHistory medHistory);
         void UpdateAdministrationHistory(MedAdministrationHistory medHistory);
+
+        IEnumerable<Allergies> GetAllergies();
+
+        void InsertIntoPatientAllergies(PatientAllergies patientAllergy);
+        void InsertIntoAllergies(Allergies allergy);
+        void InsertIntoAlerts(Alerts alert);
+        PatientAllergies GetPatientAllergyByPatientAllergyId(int patientAllergyId);
+        void UpdatePatientAllergy(PatientAllergies allergy);
+        Alerts GetPatientAlert(int alertId);
+
+        void UpdatePatientAlert(Alerts alert);
+        void UpdateHasAlerts(int mhn);
+        Allergies GetAllergyById(int allergyId);
+        void UpdateAllergy(Allergies allergy);
         void UpdatePatientImage(PatientDemographic patient);
     }
 }
