@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label asp-for="@patient.firstName">First Name:</label>
                 <input asp-for="@patient.firstName" type="text" id="FirstName" class="form-control" value="@patient.firstName" data-bs-theme="auto" onblur="validateRequiredTextInput('FirstName', 25, 'first name')" />
-                <span asp-validation-for="@patient." id="FirstNameError" class="validation-msg"></span>
+                <span asp-validation-for="@patient.firstName" id="FirstNameError" class="validation-msg"></span>
             </div>
 
             <!-- Middle Name -->
