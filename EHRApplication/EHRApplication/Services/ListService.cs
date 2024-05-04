@@ -2539,8 +2539,7 @@ namespace EHRApplication.Services
                     connection.Close();
                 }
             }
-            return;
-        }
+            return;        
         }
     }
 }
