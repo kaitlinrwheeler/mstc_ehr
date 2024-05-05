@@ -56,7 +56,7 @@
                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
                             
                                 <td>
-                                <div class="btn-group" role="group">
+                                    <div class="btn-group" role="group">
                                         <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
                                             <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                             <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
