@@ -15,6 +15,7 @@ namespace EHRApplication.Models
 
         [Required(ErrorMessage = "Note is required.")]
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Note must be between 1 and 100 characters.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s.,'""!?()\-]*$", ErrorMessage = "Note must contain only alphanumeric characters.")]
         public string Note { get; set; }
 
         [ForeignKey("visitsId")]
@@ -34,7 +35,7 @@ namespace EHRApplication.Models
         public int createdBy { get; set; }
 
         [ForeignKey("associatedProvider")]
-        [Required(ErrorMessage = "Assosciated provider is required.")]
+        [Required(ErrorMessage = "Associated provider is required.")]
         public int associatedProvider {  get; set; }
 
         public Providers assocProvider {  get; set; }

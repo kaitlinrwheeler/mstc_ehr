@@ -623,14 +623,48 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientCarePlan(int mhn)
         {
-            //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
             viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
-            //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
 
-            //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
+            // Check if end date has passed for each care plan
+            foreach (var carePlan in carePlans)
+            {
+                if (carePlan.endDate < DateTime.Today)
+                {
+                    carePlan.active = false;
+                    // Update the database with modified care plan data
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(this._connectionString))
+                        {
+                            // SQL query that is going to update the data in the database table.
+                            string sql = "UPDATE [CarePlan] active = @active " +
+                                         "WHERE CPId = @CPId";
+
+                            using (SqlCommand command = new SqlCommand(sql, connection))
+                            {
+                                command.CommandType = CommandType.Text;
+
+                                // Adding parameters
+                                command.Parameters.Add("@active", SqlDbType.Bit).Value = carePlan.active;
+                                command.Parameters.Add("@CPId", SqlDbType.Int).Value = carePlan.CPId;
+
+                                connection.Open();
+                                command.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle the exception as required
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+
             viewModel.CarePlans = carePlans;
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
@@ -1336,32 +1370,6 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet]
         public IActionResult CreatePatientCarePlanForm(int mhn)
         {
@@ -1421,6 +1429,24 @@ namespace EHRApplication.Controllers
                 return View(viewModel);
             }
 
+            if (carePlan.title == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.title, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must only contain letters, numbers, and punctuation.");
+            }
+
+            if (carePlan.diagnosis == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.diagnosis, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must only contain letters, numbers, and punctuation.");
+            }
+
             // Don't need to check for these since they aren't on the form.
             ModelState.Remove("visits");
             ModelState.Remove("visitsId");
@@ -1472,8 +1498,6 @@ namespace EHRApplication.Controllers
         {
             // Needed to work with the patient banner properly.
             PortalViewModel viewModel = new PortalViewModel();
-
-            // viewModel.CarePlansDetails = _listService.GetVitalsByVitalsId(vitalsId);
 
             //Creating a new patientDemographic instance
             CarePlan carePlan = new CarePlan();
@@ -1566,6 +1590,24 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("CarePlansDetails.endDate", "End date cannot be more than 2 years in the future.");
                 return View(viewModel);
+            }
+
+            if (carePlan.title == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.title, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must only contain letters, numbers, and punctuation.");
+            }
+
+            if (carePlan.diagnosis == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.diagnosis, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must only contain letters, numbers, and punctuation.");
             }
 
             // Don't need to check for these since they aren't on the form.
@@ -1670,7 +1712,11 @@ namespace EHRApplication.Controllers
 
             if (patientNote.Note == null)
             {
-                ModelState.AddModelError("PatientNotesDetails.Note", "test");
+                ModelState.AddModelError("PatientNotesDetails.Note", "Please enter a note.");
+            }
+            else if (!Regex.IsMatch(patientNote.Note, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must only contain letters, numbers, and punctuation.");
             }
 
 
@@ -1809,7 +1855,7 @@ namespace EHRApplication.Controllers
             // Makes sure the occurred on date doesn't get changed to after the date it was created.
             else if (patientNote.occurredOn > new DateOnly(patientNote.createdAt.Year, patientNote.createdAt.Month, patientNote.createdAt.Day))
             {
-                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future from the date it was created.");
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The occurrence date cannot be after the note creation date.");
             }
 
             if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
@@ -1820,6 +1866,10 @@ namespace EHRApplication.Controllers
             if (patientNote.Note == null)
             {
                 ModelState.AddModelError("PatientNotesDetails.Note", "Note must not be empty.");
+            }
+            else if (!Regex.IsMatch(patientNote.Note, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must only contain letters, numbers, and punctuation.");
             }
 
             // Don't need to check for these since they aren't on the form.

@@ -48,7 +48,7 @@
                                     @plan.priority
                                 </td>
 
-                                <td>@(DateTime.Now >= plan.startDate && DateTime.Now <= plan.endDate ? "Active" : "Inactive")</td>
+                                <td>@(plan.active ? "Active" : "Inactive")</td>
                                 <td>@plan.title</td>
                                 <td>@plan.diagnosis</td>
                                 <td>@plan.startDate.ToString("MM/dd/yyyy")</td>
