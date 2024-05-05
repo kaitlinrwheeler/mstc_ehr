@@ -124,7 +124,7 @@ namespace EHRApplication.Controllers
 
         public IActionResult MedicationOrders(int mhn)
         {
-            //Creates a new instance of hte viewModel
+            //Creates a new instance of the viewModel
             PortalViewModel viewModel = new PortalViewModel();
             viewModel.PatientDemographic = GetPatientByMHN(mhn);
 
@@ -136,11 +136,10 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT orderId, MHN, visitId, medId, frequency, fulfillmentStatus, orderDate, orderTime, orderedBy " +
-                    "FROM [dbo].[MedOrders] ORDER BY orderDate DESC, orderTime DESC";
+                string sql = "SELECT * FROM [dbo].[MedOrders] WHERE MHN = @mhn ORDER BY orderDate DESC, orderTime DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
-
+                cmd.Parameters.AddWithValue("@mhn", mhn);
 
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
