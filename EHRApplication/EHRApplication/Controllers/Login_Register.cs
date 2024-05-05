@@ -13,6 +13,9 @@ using Microsoft.Identity.Client;
 using NuGet.ContentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace EHRApplication.Controllers
 {
@@ -317,7 +320,7 @@ namespace EHRApplication.Controllers
                 var email = new TransactionalEmailBuilder()
                     .WithFrom(new SendContact("spamemailforyaboy89328@gmail.com"))
                     .WithSubject("Verification Code")
-                    .WithHtmlPart("<h1>Your verification code is: "+ verificationCode +". This code will expire in 4 minutes.</h1>")
+                    .WithHtmlPart("<h1>Your verification code is: "+ verificationCode +". This code will expire in 10 minutes.</h1>")
                     .WithTo(new SendContact(account.Email))
                     .Build();
 
@@ -326,10 +329,126 @@ namespace EHRApplication.Controllers
 
                 //Checking the response
                 Assert.AreEqual(1, response.Messages.Length);
+
+
+                //Sending the verification code to the database to be grabbed when the user tries to login.
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    //SQL query that is going to insert the data that the verification code into the table.
+                    string sql = "INSERT INTO [Verifications] (VerificationCode) " +
+                        "VALUES (@VerificationCode)";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        //adding parameters
+                        command.Parameters.Add("@VerificationCode", SqlDbType.Int).Value = verificationCode;
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
             }
             else { return View(account); }
 
+            return RedirectToAction("PasswordVerification", new {email = account.Email});
+        }
+
+        [HttpGet]
+        public IActionResult PasswordVerification(string email)
+        {
+            //Setting the objects email field to the email that the user has entered into the previous page.
+            Verification account = new Verification();
+            account.Email = email;
+
+            //Displays the verificationPage
+            return View(account);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordVerification(Verification verifiedInfo)
+        {
+            //This will try and find the user in the database using the email.
+            var user = await _userManager.FindByEmailAsync(verifiedInfo.Email);
+            if(user == null)
+            {
+                //Don't update the password for anyones because user does not exist.
+                return RedirectToAction("ForgotPassword");
+            }
+
+            //This will try to reset the password for the user.
+            var result = await _userManager.ResetPasswordAsync(user, verifiedInfo.VerificationCode.ToString(), verifiedInfo.Password);
+            if(result.Succeeded)
+            {
+                return RedirectToAction("Lgoin");
+            }
+
+            //Insert new data into the users table
+
+
             return RedirectToAction("UserDashboard", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult CheckNumber(int userNumber)
+        {
+            return Ok();
+            /*using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                //Local variable
+                int localVerificationCode;
+                DateTime localDateTime;
+
+                //Selecting the verification code from the  database.
+                string sql = "SELECT VerificationCode, DateTime FROM Verifications.";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                
+                //Grabbing the data from the table
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    localVerificationCode = Convert.ToInt32(dataReader["VerificationCode"]);
+                    localDateTime = Convert.ToDateTime(dataReader["DateTime"]);
+                }
+                connection.Close();
+                DateTime currentTime = DateTime.Now;
+
+                //Testing to see if the number entered by the user is the same as the one in the database.
+                //Also making sure that the code has not expired yet.
+                if (userNumber == localVerificationCode && (currentTime - localDateTime).Seconds / 60 <= 10)
+                {
+                    // Sql query.
+                    sql = "DELETE FROM [dbo].[Verifications] WHERE VerificationCode = @VerificationCode";
+
+                    cmd = new SqlCommand(sql, connection);
+
+                    // Replace placeholder with parameter to avoid SQL injection.
+                    cmd.Parameters.AddWithValue("@VerificationCode", localVerificationCode);
+
+                    connection.Open();
+                    // Execute the SQL command.
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    connection.Close();
+
+                    // Check if any rows were affected.
+                    if (rowsAffected > 0)
+                    {
+                        // Successfully updated.
+                        return Ok("Verified.");
+                    }
+                    else
+                    {
+                        // No rows were affected, return an error message.
+                        return BadRequest("Error, please try again.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Verification code is invalid");
+                }
+            }*/
         }
     }
 }
