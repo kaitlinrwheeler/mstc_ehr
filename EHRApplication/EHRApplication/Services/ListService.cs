@@ -648,7 +648,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 //SQL command to select the data from the database
-                string sql = "Select * From [dbo].[CarePlan] WHERE MHN = @mhn ORDER BY CASE WHEN activeStatus = 'active' THEN 1 ELSE 2 END, startDate DESC";
+                string sql = "SELECT * FROM [dbo].[CarePlan] WHERE MHN = @mhn ORDER BY CASE WHEN active = 1 THEN 0 ELSE 1 END, startDate DESC, endDate DESC;";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 //Replace placeholder with paramater to avoid sql injection.
@@ -661,12 +661,13 @@ namespace EHRApplication.Services
                         CarePlan carePlan = new CarePlan();
 
                         //Setting the data that was jus pulled from the database into an instance of the care plan model.
+                        carePlan.CPId = Convert.ToInt32(dataReader["CPId"]);
                         carePlan.priority = Convert.ToString(dataReader["priority"]);
-                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         carePlan.title = Convert.ToString(dataReader["title"]);
                         carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
                         carePlan.startDate = Convert.ToDateTime(dataReader["startDate"]);
                         carePlan.endDate = Convert.ToDateTime(dataReader["endDate"]);
+                        carePlan.active = Convert.ToBoolean(dataReader["active"]);
 
                         //After setting the data pulled from the database now adding it to the list that will be returned.
                         carePlanList.Add(carePlan);
@@ -1295,7 +1296,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT CPId, MHN, priority, startDate, endDate, activeStatus, title, diagnosis " +
+                string sql = "SELECT CPId, MHN, priority, startDate, endDate, active, title, diagnosis " +
                     "FROM [dbo].[CarePlan] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -1314,10 +1315,9 @@ namespace EHRApplication.Services
                         carePlan.priority = Convert.ToString(dataReader["priority"]);
                         carePlan.startDate = DateTime.Parse(dataReader["startDate"].ToString());
                         carePlan.endDate = DateTime.Parse(dataReader["endDate"].ToString());
-                        carePlan.activeStatus = Convert.ToString(dataReader["activeStatus"]);
                         carePlan.title = Convert.ToString(dataReader["title"]);
                         carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
-
+                        carePlan.active = Convert.ToBoolean(dataReader["active"]);
                         carePlan.visitsId = Convert.ToInt32(dataReader["visitsId"]);
                         //carePlan.visits = GetVisitByVisitId(carePlan.visitsId);
                     }
