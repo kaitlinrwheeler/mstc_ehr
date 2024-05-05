@@ -1,13 +1,22 @@
 ﻿@{
     ViewData["Title"] = "myEHR | Medication History";
     @model EHRApplication.ViewModels.PortalViewModel
-
+    int mhn = ViewBag.MHN;
 }
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Med History
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Medication Administration History</div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedAdministrationHistory" asp-route-mhn="@mhn">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.MedAdministrationHistories.Any())
@@ -22,6 +31,10 @@
                             <th scope="col">Status:</th>
                             <th scope="col">Frequency:</th>
                             <th scope="col">Administered By:</th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +48,10 @@
                                 <td>@meds.status</td>
                                 <td>@meds.frequency</td>
                                 <td>@meds.providers.firstName @meds.providers.lastName</td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                }
                             </tr>
                         }
                     </tbody>

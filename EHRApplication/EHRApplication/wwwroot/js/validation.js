@@ -44,6 +44,32 @@ function isAlphaNumeric(input, errorSpanID, errorMessage) {
     return valid;
 }
 
+// Checks if the input value contains only alphanumeric characters
+function isAlphaNumericWithPunctuation(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const alphaNumericRegex = /^[a-zA-Z0-9\s.,'"!?()\-]*$/;
+
+    let valid = alphaNumericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-alphanumeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
+// Checks if the input value contains only alphanumeric characters
+function isAlphaNumericForTitles(input, errorSpanID, errorMessage) {
+    const errorSpan = document.getElementById(errorSpanID);
+    const alphaNumericRegex = /^[a-zA-Z0-9\s/\-]+$/;
+
+    let valid = alphaNumericRegex.test(input.value.trim());
+
+    // Display error message if input contains non-alphanumeric characters
+    displayError(valid, errorSpan, errorMessage);
+
+    return valid;
+}
+
 // Function to check if the input value conatins only numeric characters
 function isANumber(input, errorSpanID, errorMessage) {
     const errorSpan = document.getElementById(errorSpanID);
@@ -417,7 +443,59 @@ function validateRequiredTextInputAlphaNumeric(inputID, characterLimit, errorMes
             const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
         } else {
             // If input is not empty, perform validation
-            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alpha numberic characters only.');
+            const isAlphaNumericValid = isAlphaNumeric(input, inputErrorSpanID, 'Please enter alphanumeric and punctuation characters only.');
+            if (isAlphaNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+function validateRequiredTextInputAlphaNumericPunctuation(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumericWithPunctuation(input, inputErrorSpanID, 'Please enter alphanumeric and punctuation characters only.');
+            if (isAlphaNumericValid) {
+                // Validate character limit
+                hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);
+            }
+        }
+    }
+
+    // Attach input change event listener
+    input.addEventListener('input', handleInputChange);
+
+    // Call handleInputChange initially to perform initial validation
+    handleInputChange();
+}
+
+function validateRequiredTextInputForTitles(inputID, characterLimit, errorMessage) {
+    const input = document.getElementById(inputID);
+    const inputErrorSpanID = inputID + 'Error';
+
+    function handleInputChange() {
+        // Check if input value is empty
+        if (input.value.trim() === '') {
+            // If input is empty call isempty function
+            const isEmptyValid = isEmpty(input, inputErrorSpanID, `Please enter a ${errorMessage}.`);
+        } else {
+            // If input is not empty, perform validation
+            const isAlphaNumericValid = isAlphaNumericForTitles(input, inputErrorSpanID, 'Please enter alphanumeric and punctuation characters only.');
             if (isAlphaNumericValid) {
                 // Validate character limit
                 hasCharacterLimit(input, inputErrorSpanID, characterLimit, `Please enter a ${errorMessage} under ${characterLimit} characters.`);

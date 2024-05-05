@@ -1,0 +1,67 @@
+﻿@{
+    @model EHRApplication.ViewModels.PortalViewModel
+    ViewData["Title"] = "myEHR | Medication Orders";
+    int mhn = ViewBag.MHN;
+}
+
+
+<section class="my-5 w-75 m-auto">
+    <div class="card mb-3 shadow-sm" data-bs-theme="auto">
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Medication Orders</div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedicationOrder" asp-route-mhn="@mhn">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
+        </div>
+        <div class="card-body overflow-auto" data-bs-theme="auto">
+            @if (Model != null && Model.MedOrders != null && Model.MedOrders.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order Id:</th>
+                            <th scope="col">Med Name:</th>
+                            <th scope="col">Frequency:</th>
+                            <th scope="col">Status:</th>
+                            <th scope="col">Date:</th>
+                            <th scope="col">Time:</th>
+                            <th scope="col">Provider:</th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col"></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var medOrder in Model.MedOrders)
+                        {
+                            <tr class="hover-highlighting">
+                                <td>@medOrder.orderId</td>
+                                <td>@medOrder.medProfile.medName</td>
+                                <td>@medOrder.frequency</td>
+                                <td>@medOrder.fulfillmentStatus</td>
+                                <td>@medOrder.orderDate.ToString("MM-dd-yyyy")</td>
+                                <td>@medOrder.orderTime.ToString("HH:mm")</td>
+                                <td>@medOrder.providers.firstName @medOrder.providers.lastName</td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="text-center display-6">No medication orders found for this patient.</h1>
+            }
+        </div>
+    </div>
+</section>

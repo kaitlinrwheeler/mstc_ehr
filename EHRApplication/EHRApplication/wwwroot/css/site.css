@@ -400,8 +400,8 @@ main {
 
 /* End main styles */
 
-/*Start of Success banner override.*/
-.alert-success{
+/*Start of Success/Fail banner override.*/
+.alert-success, .alert-danger{
     margin: auto;
     text-align: center;
     width: max-content;
@@ -409,7 +409,7 @@ main {
 .btn-close{
     padding-bottom: 10px;
 }
-/*End of Success banner override.*/
+/*End of Success/Fail banner override.*/
 
 
 /*Start of requirement question mark popout*/

@@ -33,9 +33,8 @@ namespace EHRApplication.Migrations
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
-                    b.Property<string>("activeStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("activeStatus")
+                        .HasColumnType("bit");
 
                     b.Property<string>("alertName")
                         .IsRequired()
@@ -62,13 +61,18 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("allergyId"));
 
+                    b.Property<bool>("activeStatus")
+                        .HasColumnType("bit");
+
                     b.Property<string>("allergyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("allergyType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("allergyId");
 
@@ -86,27 +90,29 @@ namespace EHRApplication.Migrations
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
-                    b.Property<string>("activeStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("active")
+                        .HasColumnType("bit");
 
                     b.Property<string>("diagnosis")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("startDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
@@ -194,9 +200,6 @@ namespace EHRApplication.Migrations
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");
 
-                    b.Property<int>("visitId")
-                        .HasColumnType("int");
-
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
 
@@ -208,7 +211,7 @@ namespace EHRApplication.Migrations
 
                     b.HasIndex("testId");
 
-                    b.HasIndex("visitId");
+                    b.HasIndex("visitsId");
 
                     b.ToTable("LabResults");
                 });
@@ -419,6 +422,9 @@ namespace EHRApplication.Migrations
 
                     b.Property<int>("MHN")
                         .HasColumnType("int");
+
+                    b.Property<bool>("activeStatus")
+                        .HasColumnType("bit");
 
                     b.Property<int>("allergyId")
                         .HasColumnType("int");
@@ -1665,7 +1671,7 @@ namespace EHRApplication.Migrations
 
                     b.HasOne("EHRApplication.Models.Visits", "visits")
                         .WithMany()
-                        .HasForeignKey("visitId")
+                        .HasForeignKey("visitsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

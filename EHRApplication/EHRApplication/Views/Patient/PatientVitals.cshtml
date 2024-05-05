@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "myEHR | Vitals Record";
+    ViewData["Title"] = "myEHR | Vitals Records";
     // The list of Visits being pulled in.
 //@model List<Vitals>
 
@@ -41,7 +41,10 @@
                             <th scope="col">BMI:</th>
                             <th scope="col">Intake:</th>
                             <th scope="col">Output:</th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -58,11 +61,10 @@
                                 <td>@vital.heightInches.ToString("F1") in</td>
                                 <td>@vital.weightPounds.ToString("F1") lb</td>
                                 <td>@vital.BMI.ToString("F2")</td>
-                                <td>@vital.intakeMilliLiters ml</td>
-                                <td>@vital.outputMilliLiters ml</td>
-                                <!--This is coded here to only display if you are logged in as an Admin-->
-                                @if (User.IsInRole("Admin"))
-                                {                                    
+                                <td>@vital.intakeMilliLiters mL</td>
+                                <td>@vital.outputMilliLiters mL</td>
+                                @if(User.IsInRole("Admin"))
+                                {
                                     <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                                 }
                             </tr>

@@ -1,0 +1,127 @@
+﻿@inject EHRApplication.Services.IListService ListService
+    @model EHRApplication.ViewModels.PortalViewModel;
+@{
+    ViewData["Title"] = "myEHR | Edit Care Plan";
+    <link rel="stylesheet" href="~/css/forms.css">
+    var mhn = ViewBag.MHN;
+    <script src="~/js/validation.js"></script>
+    <script src="~/js/confirmModal.js"></script>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Edit Care Plan</h3>
+        </div>
+
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="vitalForm" enctype="multipart/form-data">
+
+                <input name="MHN" asp-for="CarePlansDetails.MHN" hidden />
+                <input name="CPId" asp-for="CarePlansDetails.CPId" hidden />
+
+                <div class="form-group">
+                    <label for="priority">Priority Level:</label>
+
+                    <select id="priority" name="priority" asp-for="CarePlansDetails.priority" class="form-control" data-bs-theme="auto">
+                        <option value="">--Select--</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+
+                    <span asp-validation-for="CarePlansDetails.priority" id="priorityError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" asp-for="CarePlansDetails.startDate" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="CarePlansDetails.startDate" id="startDateError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" asp-for="CarePlansDetails.endDate" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="CarePlansDetails.endDate" id="endDateError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" asp-for="CarePlansDetails.title" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInputForTitles('title', 100, 'title')" required />
+                    <span asp-validation-for="CarePlansDetails.title" id="titleError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="diagnosis">Diagnosis:</label>
+                    <input type="text" id="diagnosis" name="diagnosis" asp-for="CarePlansDetails.diagnosis" class="form-control" data-bs-theme="auto" maxlength="100" onblur="validateRequiredTextInputForTitles('diagnosis', 100, 'diagnosis')" required />
+                    <span asp-validation-for="CarePlansDetails.diagnosis" id="diagnosisError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="visitId">Visit:</label>
+                    <select id="visitId" class="form-control" name="visitsId" asp-for="CarePlansDetails.visitsId" data-bs-theme="auto">
+                        <option value="-1">--Select--</option>
+                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                        {
+                            <option value="@visit.visitsId.ToString()">
+                                @visit.date @visit.time
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="CarePlansDetails.visitsId" id="visitsIdError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CarePlansDetails.active">Active?</label>
+                    <div class="col-sm-6 ms-4">
+                        <input name="active" type="radio" id="True" asp-for="CarePlansDetails.active" value="True" required />
+                        <label for="True" style="font-weight: normal;">Yes</label><br />
+                        <input name="active" type="radio" id="False" asp-for="CarePlansDetails.active" value="False" />
+                        <label for="False" style="font-weight: normal;">No</label><br />
+                    </div>
+                    <span asp-validation-for="CarePlansDetails.active" id="activeError" class="validation-msg"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientCarePlan" asp-route-mhn="@mhn">Cancel</a>
+                    <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+                </div>
+
+                <!-- confirmation modal-->
+                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                                <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to save the care plan information?
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
+</section>

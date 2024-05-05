@@ -62,7 +62,11 @@
     || controllerName == "Medications" && actionName == "EditMedication"
     || controllerName == "Providers" && actionName == "AllProviders"
     || controllerName == "Providers" && actionName == "CreateProvider"
-    || controllerName == "Providers" && actionName == "EditProvider")
+    || controllerName == "Providers" && actionName == "EditProvider"
+    || controllerName == "Providers" && actionName == "AllProviders"
+    || controllerName == "Allergy" && actionName == "Index"
+    || controllerName == "Allergy" && actionName == "CreateAllergy"
+    || controllerName == "Allergy" && actionName == "EditAllergy")
     {
         <style>
             #sidebar-wrapper {
@@ -127,7 +131,10 @@
     || controllerName == "Providers" && actionName == "CreateProvider"
     || controllerName == "Providers" && actionName == "EditProvider"
     || controllerName == "Home" && actionName == "UserDashboard"
-    || controllerName == "LabTestProfile" && actionName == "AllLabTests")
+    || controllerName == "LabTestProfile" && actionName == "AllLabTests"
+    || controllerName == "Allergy" && actionName == "Index"
+    || controllerName == "Allergy" && actionName == "CreateAllergy"
+    || controllerName == "Allergy" && actionName == "EditAllergy")
     {
         <style>
             #sidebar-wrapper {
@@ -161,6 +168,7 @@
                     <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-stethoscope fa-stack-1x"></i></span>Diagnoses</a>
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
                         <li><a asp-area="" asp-controller="Problems" asp-action="Index" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Problems</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientAlerts" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Alerts</a></li>
                         <li><a asp-area="" asp-controller="Patient" asp-action="PatientAllergies" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Allergies</a></li>
                     </ul>
                 </li>
@@ -168,7 +176,7 @@
                 <li>
                     <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-microscope fa-stack-1x"></i></span>Labs</a>
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a asp-area="" asp-controller="Medications" asp-action="PatientLabResults" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Results</a></li>
+                        <li><a asp-area="" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Results</a></li>
                         <li><a asp-area="" asp-controller="Lab" asp-action="LabOrders" asp-route-mhn="@mhn"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Lab Orders</a></li>
                     </ul>
                 </li>
@@ -183,7 +191,7 @@
                     <li>
                         <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-file-medical fa-stack-1x "></i></span>Care Plans</a>
                         <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
-                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientCarePlan" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Care Plan</a></li>
+                        <li><a asp-area="" asp-controller="Patient" asp-action="PatientCarePlan" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Care Plans</a></li>
                         </ul>
                     </li>
 
@@ -191,7 +199,8 @@
                     <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa-solid fa-prescription fa-stack-1x "></i></span>Medications</a>
                     <ul class="nav-pills nav-stacked sub-links" style="list-style-type:none;">
                         <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedications" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Patient Medications</a></li>
-                       <li><a asp-area="" asp-controller="Medications" asp-action="PatientMedHistory" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Medication History</a></li>
+                        <li><a asp-area="" asp-controller="Medications" asp-action="MedAdministrationHistory" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Medication History</a></li>
+                       <li><a asp-area="" asp-controller="Medications" asp-action="MedicationOrders" asp-route-mhn="@mhn" class="Med-Link"><span class="fa-stack fa-lg pull-left"><i class="fa fa-flag fa-stack-1x"></i></span>Medication Orders</a></li>
                     </ul>
                 </li>
 

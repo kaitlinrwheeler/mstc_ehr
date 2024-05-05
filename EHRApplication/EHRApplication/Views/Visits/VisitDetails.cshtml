@@ -305,7 +305,7 @@
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Status:</th>
-                                            <td>@carePlan.activeStatus</td>
+                                            <td>@(DateTime.Now >= carePlan.startDate && DateTime.Now <= carePlan.endDate ? "Active" : "Inactive")</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Title:</th>

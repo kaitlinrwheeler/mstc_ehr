@@ -1,0 +1,79 @@
+﻿@inject EHRApplication.Services.IListService ListService
+@model EHRApplication.ViewModels.PortalViewModel;
+@{
+    ViewData["Title"] = "myEHR | Add Patient Alert";
+    <link rel="stylesheet" href="~/css/forms.css">
+    var mhn = ViewBag.MHN;
+    <script src="~/js/validation.js"></script>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Add Alert</h3>
+        </div>
+
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="ptAlertForm" enctype="multipart/form-data">
+
+                <input asp-for="Alert.MHN" value="@mhn" hidden />
+
+                <!-- Alert Name -->
+                <div class="form-group">
+                    <label for="alertName">Alert Name:</label>
+                    <input asp-for="Alert.alertName" type="text" id="alertName" name="Alert.alertName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('alertName', 'name for the alert')" />
+                    <span asp-validation-for="Alert.alertName" id="alertNameError" class="validation-msg"></span>
+                </div>
+
+                <!-- Alert Start Date Picker -->
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input name="Alert.startDate" asp-for="Alert.startDate" type="date" id="startDate" class="form-control" data-bs-theme="auto" onblur="validateDatePicker('date', 'alert start date')">
+                    <span asp-validation-for="Alert.startDate" id="startDateError" class="validation-msg"></span>
+                </div>
+
+                <!-- Alert End Date Picker -->
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input name="Alert.endDate" asp-for="Alert.endDate" type="date" id="endDate" class="form-control" data-bs-theme="auto" onblur="validateDatePicker('date', 'alert end date')">
+                    <span asp-validation-for="Alert.endDate" id="endDateError" class="validation-msg"></span>
+                </div>
+
+                <!-- Active Status -->
+                <div class="form-group">
+                    <label asp-for="Alert.activeStatus">Active?</label>
+                    <div class="col-sm-6 ms-4">
+                        <div class="race-column">
+                            <input name="Alert.activeStatus" type="radio" id="True" asp-for="Alert.activeStatus" value="True" required/>
+                            <label for="True" style="font-weight: normal;">Yes</label><br />
+                            <input name="Alert.activeStatus" type="radio" id="False" asp-for="Alert.activeStatus" value="False" />
+                            <label for="False" style="font-weight: normal;">No</label><br />
+                        </div>
+                    </div>
+                    <span asp-validation-for="Alert.activeStatus" class="validation-msg"></span>
+                </div>
+
+                <!-- Submit/Cancel Buttons -->
+                <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                    <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
+</section>
