@@ -42,8 +42,8 @@
                                 <td>@labOrders.completionStatus</td>
                                 <td>@labOrders.providers.firstName @labOrders.providers.lastName</td>
                                 <!--The following will be the button that links to the single visits view once that page is complete.-->
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@labOrders.visitsId" asp-route-mhn="@labOrders.MHN">View</a></td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditOrderForm" asp-route-orderId="@labOrders.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@labOrders.visitsId" asp-route-mhn="@labOrders.MHN"><i class="fa-solid fa-pen me-2"></i>View</a></td>
+                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Lab" asp-action="EditOrderForm" asp-route-orderId="@labOrders.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

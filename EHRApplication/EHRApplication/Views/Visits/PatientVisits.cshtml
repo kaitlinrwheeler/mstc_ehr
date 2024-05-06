@@ -42,8 +42,8 @@
                                 <td>@visits.providers.providerId, @visits.providers.firstName @visits.providers.lastName</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@mhn">View</a></td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="EditVisitForm" asp-route-visitId="@visits.visitsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@mhn"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="EditVisitForm" asp-route-visitId="@visits.visitsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
