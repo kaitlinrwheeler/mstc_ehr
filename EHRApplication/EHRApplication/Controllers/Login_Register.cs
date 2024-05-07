@@ -33,8 +33,7 @@ namespace EHRApplication.Controllers
         private readonly IListService _listService;
         private readonly ILogService _logService;
         //This is the api codes in order to route to the right smtp server to sent an email.
-        string apiKeyPublic = "e2bad631962e1d34ccb7b20477aea993";
-        string apiKeyPrivate = "932f4e6121947373b152b70e0912d0eb";
+        MailJetKeys keys = new MailJetKeys();
 
         public LoginAccount Input { get; set; }
 
@@ -342,7 +341,7 @@ namespace EHRApplication.Controllers
                 var verificationToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                 //Creating a mail client connection to the SMTP server.
-                MailjetClient client = new MailjetClient(apiKeyPublic, apiKeyPrivate);
+                MailjetClient client = new MailjetClient(keys.apiKeyPublic, keys.apiKeyPrivate);
 
                 //Creating a new request to send the email.
                 MailjetRequest request = new MailjetRequest

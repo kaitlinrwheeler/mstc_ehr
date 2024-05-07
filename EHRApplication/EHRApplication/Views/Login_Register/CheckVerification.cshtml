@@ -17,8 +17,8 @@
                         <form method="post">
                             <input asp-for="Email" hidden />
 
-                            <div>
-                                <input asp-for="VerificationCode" class="form-control" id="verifyInput" data-bs-theme="auto" />
+                            <div class="form-group mb-3">
+                                <input type="text" asp-for="VerificationCode" class="form-control" id="verifyInput" data-bs-theme="auto" />
                                 <span asp-validation-for="VerificationCode" class="validation-msg" id="invalidCodeMsg"></span>
                             </div>
                             <div class="mb-3 text-center">
