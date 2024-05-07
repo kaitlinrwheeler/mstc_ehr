@@ -33,8 +33,8 @@ namespace EHRApplication.Controllers
         private readonly IListService _listService;
         private readonly ILogService _logService;
         //This is the api codes in order to route to the right smtp server to sent an email.
-        string apiKeyPublic = "f941d69677063a2c84aa98320d3482b4";
-        string apiKeyPrivate = "92182efc52937c819c7bb68782b9b1e1";
+        string apiKeyPublic = "e2bad631962e1d34ccb7b20477aea993";
+        string apiKeyPrivate = "932f4e6121947373b152b70e0912d0eb";
 
         public LoginAccount Input { get; set; }
 
@@ -118,7 +118,7 @@ namespace EHRApplication.Controllers
 
 
                     // Redirect the user to the returnUrl if it's provided
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserDashboard", "Home");
                 }
 
                 // Check if two-factor authentication is required
@@ -297,19 +297,41 @@ namespace EHRApplication.Controllers
             return specialCharacters.Contains(c);
         }
 
+        /// <summary>
+        /// This page will show the page to enter an email to send a code.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ForgotPassword()
         {            
             return View();
         }
 
+        /// <summary>
+        /// This will check and make sure that there is an email linked to the one entered and send a verification code to the email.
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(RegisterAccount account)
         {
+            //Making sure the user entered in an email.
             if (!account.Email.IsNullOrEmpty())
             {
+                //Testing to make sure that the email has "@mstc.edu" in it.
+                if (!System.Text.RegularExpressions.Regex.IsMatch(account.Email, @"^[^\s]+@mstc\.edu$"))
+                {
+                    //sets the error message for the email
+                    ModelState.AddModelError("Email", "Email must end with @mstc.edu.");
+                    return View(account);
+                }
+
+                //This will try to get a user using the email entered.
                 var user = await _userManager.FindByEmailAsync(account.Email);
+
+                //This will make sure the email entered is connected to a user.
                 if (user == null)
                 {
+                    //Creating an error for the email as it was not linked to a user.
                     ModelState.AddModelError("Email", "No account linked to that email.");
                     return View();
                 }
@@ -319,7 +341,7 @@ namespace EHRApplication.Controllers
                 int verificationCode = ranVariable.Next(10000, 99999);
                 var verificationToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-
+                //Creating a mail client connection to the SMTP server.
                 MailjetClient client = new MailjetClient(apiKeyPublic, apiKeyPrivate);
 
                 //Creating a new request to send the email.
@@ -330,7 +352,7 @@ namespace EHRApplication.Controllers
 
                 //This is the email itself
                 var email = new TransactionalEmailBuilder()
-                    .WithFrom(new SendContact("spamemailforyaboy89328@gmail.com"))
+                    .WithFrom(new SendContact("MyEHR12@gmail.com"))
                     .WithSubject("Verification Code")
                     .WithHtmlPart("<h1>Your verification code is: "+ verificationCode +". This code will expire in 10 minutes.</h1>")
                     .WithTo(new SendContact(account.Email))
@@ -373,12 +395,25 @@ namespace EHRApplication.Controllers
             }
             else { return View(account); }
 
+            //Going to the page that will enter the verification code in.
             return RedirectToAction("CheckVerification", new {email = account.Email});
         }
 
+        /// <summary>
+        /// This is the page where you will enter in a new password.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult PasswordVerification(string email, int code)
         {
+            //This will take the user back to the page to send the verification code because they didn't get here with they way that they should have.
+            if(email.IsNullOrEmpty() || code == 0)
+            {
+                return RedirectToAction("ForgotPassword");
+            }
+
             //Setting the objects email field to the email that the user has entered into the previous page.
             Verification account = new Verification();
             account.Email = email;
@@ -387,7 +422,12 @@ namespace EHRApplication.Controllers
             //Displays the verificationPage
             return View(account);
         }
-
+        
+        /// <summary>
+        /// This will chagne the password.
+        /// </summary>
+        /// <param name="verifiedInfo"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> PasswordVerification(Verification verifiedInfo)
         {
@@ -398,6 +438,7 @@ namespace EHRApplication.Controllers
                 //Don't update the password for anyones because user does not exist.
                 return RedirectToAction("ForgotPassword");
             }
+
             //This tests to make sure that the password and confirm password are not null.
             if (verifiedInfo.Password.IsNullOrEmpty())
             {
@@ -419,6 +460,7 @@ namespace EHRApplication.Controllers
                     ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
                     return View(verifiedInfo);
                 }
+                //Tests and makes sure the password and confirmpassword are the same.
                 if (verifiedInfo.ConfirmPassword != verifiedInfo.Password)
                 {
                     //sets the error message for confirmpassword
@@ -435,6 +477,7 @@ namespace EHRApplication.Controllers
 
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
+                //This will select the token that will be used to change the users password.
                 string sql = "SELECT VerificationToken FROM Verifications WHERE VerificationCode = @Code";
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -445,6 +488,7 @@ namespace EHRApplication.Controllers
                 verifiedInfo.VerificationToken = verifiedToken;
                 connection.Close();
 
+                //Making sure that I have grabbed the token before deleting the record from the database.
                 if (!verifiedInfo.VerificationToken.IsNullOrEmpty())
                 {
                     // Sql query.
@@ -466,12 +510,14 @@ namespace EHRApplication.Controllers
                 return RedirectToAction("Login");
             }
 
-            //Insert new data into the users table
-
-
-            return RedirectToAction("UserDashboard", "Home");
+            return RedirectToAction("Forgotpassword");
         }
 
+        /// <summary>
+        /// This view will allow for the code to be entered.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public IActionResult CheckVerification(string email)
         {
             //Setting the objects email field to the email that the user has entered into the previous page.
@@ -481,13 +527,22 @@ namespace EHRApplication.Controllers
             //Displays the verificationPage
             return View(account);
         }
+
+        /// <summary>
+        /// This will check the code and make sure it is in the database and valid.
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult CheckVerification(Verification account)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
             {
+                //Creating variables.
                 List<Verification> verifiedInfoList = new List<Verification>();
                 bool goodRequest = false;
+                DateTime currentTime = DateTime.Now;
+
                 //Selecting the verification code from the  database.
                 string sql = "SELECT VerificationCode, DateTime FROM Verifications";
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -505,100 +560,20 @@ namespace EHRApplication.Controllers
                     }
                 }
                 connection.Close();
-                DateTime currentTime = DateTime.Now;
 
+                //Running through all of the verification codes in the database and seeing if any of them match the code that the user entered.
                 foreach (Verification v in verifiedInfoList)
                 {
+                    //If true will move on and allow the user to enter in a new password.
                     if(account.VerificationCode == v.VerificationCode)
                     {
                         return RedirectToAction("PasswordVerification", new {email = account.Email, code = account.VerificationCode});
                     }
                 }
-                if (goodRequest == false)
-                {
-                    ModelState.AddModelError("VerificationCode", "That code is invalid, has expired or has already been used.");
-                    return View(account);
-                }
-                else
-                {
-                    return RedirectToAction("Login");
-                }
+                //Will show error on the page.
+                ModelState.AddModelError("VerificationCode", "That code is invalid, has expired or has already been used.");
+                return View(account);
             }
         }
-
-        /*[HttpPost]
-        public IActionResult CheckNumber(int userNumber)
-        {
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                List<Verification> verifiedInfoList = new List<Verification>();
-                bool goodRequest = false;
-                //Selecting the verification code from the  database.
-                string sql = "SELECT VerificationCode, DateTime FROM Verifications";
-                SqlCommand cmd = new SqlCommand(sql, connection);
-                connection.Open();
-                //Grabbing the data from the table
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        Verification verification = new Verification();
-
-                        verification.VerificationCode = Convert.ToInt32(dataReader["VerificationCode"]);
-                        verification.DateTime = Convert.ToDateTime(dataReader["DateTime"]);
-                        verifiedInfoList.Add(verification);
-                    }
-                }
-                connection.Close();
-                DateTime currentTime = DateTime.Now;
-
-                foreach(Verification v in verifiedInfoList)
-                {
-                    //Testing to see if the number entered by the user is the same as the one in the database.
-                    //Also making sure that the code has not expired yet.
-                    if (userNumber != null && userNumber == v.VerificationCode && (currentTime - v.DateTime).Seconds / 60 <= 10)
-                    {
-                        return Ok("Verified.");
-
-                        *//*This code was supposed to update the code so that it would not be used twice but I need the code for grabbing the token from the table.
-                         // Sql query.
-                        sql = "UPDATE Verifications SET VerificationCode = null WHERE VerificationCode = @VerificationCode";
-
-                        cmd = new SqlCommand(sql, connection);
-
-                        // Replace placeholder with parameter to avoid SQL injection.
-                        cmd.Parameters.AddWithValue("@VerificationCode", v.VerificationCode);
-
-                        connection.Open();
-                        // Execute the SQL command.
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        connection.Close();
-
-                        // Check if any rows were affected.
-                        if (rowsAffected > 0)
-                        {
-                            // Successfully updated.
-                            goodRequest = true;
-                        }
-                        else
-                        {
-                            // No rows were affected, return an error message.
-                            return BadRequest("Error, please try again.");
-                        }*//*
-                    }
-                }
-                if(goodRequest == false)
-                {
-                    return BadRequest("Verification code is invalid");
-                }
-                else
-                {
-                    //This should never get hit just here because visual studio didn't like it.
-                    //The code should be returned elsewhere if it is good and if its bad it will return above.
-                    return Empty;
-                }
-            }
-        }*/
     }
 }
