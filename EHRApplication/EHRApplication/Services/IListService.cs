@@ -22,7 +22,7 @@ namespace EHRApplication.Services
 
         MedicationProfile GetMedicationProfileByMedId(int medId);
 
-        List<MedAdministrationHistory> GetPatientsMedHistoryByMHN(int mhn);
+        List<MedAdministrationHistory> GetMedAdministrationHistoryByMHN(int mhn);
 
         List<LabResults> GetPatientsLabResultsByMHN(int mhn);
 
@@ -44,6 +44,7 @@ namespace EHRApplication.Services
         LabOrders GetLabOrdersByVisitId(int visitId);
 
         MedOrders GetMedOrdersByVisitId(int visitId);
+        MedOrders GetMedOrderByOrderId(int orderId);
 
         PatientNotes GetPatientNotesByVisitId(int visistId);
 
@@ -52,6 +53,7 @@ namespace EHRApplication.Services
         CarePlan GetCarePlanByVisitId(int visitId);
 
         MedAdministrationHistory GetMedHistoryByVisitId(int visitId);
+        MedAdministrationHistory GetMedAdministrationHistoryByAdminId(int adminId);
 
         PatientProblems GetPatientProblemsByProblemId(int problemId);
         PatientMedications GetPatientsMedByPatientMedId(int patientMedId);
@@ -82,5 +84,26 @@ namespace EHRApplication.Services
         Providers GetProviderById(int providerId);
         void UpdateProvider(Providers provider);
         void AddProvider(Providers provider);
+
+        void InsertIntoMedOrder(MedOrders medOrder);
+        void UpdateMedOrder(MedOrders mrdOrder);
+
+        void InsertIntoAdministrationHistory(MedAdministrationHistory medHistory);
+        void UpdateAdministrationHistory(MedAdministrationHistory medHistory);
+
+        IEnumerable<Allergies> GetAllergies();
+
+        void InsertIntoPatientAllergies(PatientAllergies patientAllergy);
+        void InsertIntoAllergies(Allergies allergy);
+        void InsertIntoAlerts(Alerts alert);
+        PatientAllergies GetPatientAllergyByPatientAllergyId(int patientAllergyId);
+        void UpdatePatientAllergy(PatientAllergies allergy);
+        Alerts GetPatientAlert(int alertId);
+
+        void UpdatePatientAlert(Alerts alert);
+        void UpdateHasAlerts(int mhn);
+        Allergies GetAllergyById(int allergyId);
+        void UpdateAllergy(Allergies allergy);
+        void UpdatePatientImage(PatientDemographic patient);
     }
 }

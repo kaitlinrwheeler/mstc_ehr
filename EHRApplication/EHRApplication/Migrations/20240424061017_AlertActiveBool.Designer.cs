@@ -4,6 +4,7 @@ using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240424061017_AlertActiveBool")]
+    partial class AlertActiveBool
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,29 +93,27 @@ namespace EHRApplication.Migrations
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
-                    b.Property<bool>("active")
-                        .HasColumnType("bit");
+                    b.Property<string>("activeStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("diagnosis")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("startDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("title")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
@@ -200,6 +201,9 @@ namespace EHRApplication.Migrations
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");
 
+                    b.Property<int>("visitId")
+                        .HasColumnType("int");
+
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
 
@@ -211,7 +215,7 @@ namespace EHRApplication.Migrations
 
                     b.HasIndex("testId");
 
-                    b.HasIndex("visitsId");
+                    b.HasIndex("visitId");
 
                     b.ToTable("LabResults");
                 });
@@ -1043,31 +1047,27 @@ namespace EHRApplication.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("groupNumber")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("memberId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("policyNumber")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("primaryPhysician")
                         .HasColumnType("int");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("providerName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("patientInsuranceId");
 
@@ -1243,9 +1243,6 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("providerId"));
 
-                    b.Property<bool>("active")
-                        .HasColumnType("bit");
-
                     b.Property<string>("firstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1261,29 +1258,6 @@ namespace EHRApplication.Migrations
                     b.HasKey("providerId");
 
                     b.ToTable("Providers");
-                });
-
-            modelBuilder.Entity("EHRApplication.Models.Verification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("VerificationCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VerificationToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Verifications");
                 });
 
             modelBuilder.Entity("EHRApplication.Models.Visits", b =>
@@ -1694,7 +1668,7 @@ namespace EHRApplication.Migrations
 
                     b.HasOne("EHRApplication.Models.Visits", "visits")
                         .WithMany()
-                        .HasForeignKey("visitsId")
+                        .HasForeignKey("visitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

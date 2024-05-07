@@ -1,0 +1,150 @@
+﻿@inject EHRApplication.Services.IListService ListService
+
+@model EHRApplication.ViewModels.PortalViewModel;
+@{
+    ViewData["Title"] = "myEHR | Update medication Admin History";
+    <link rel="stylesheet" href="~/css/forms.css">
+    var mhn = ViewBag.MHN;
+    <script src="~/js/validation.js"></script>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Update Medication Administration History</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="patientMedForm" enctype="multipart/form-data">
+
+            <input name="MHN" asp-for="MedAdministrationHistoriesDetails.MHN" hidden />
+            <input name="administrationId" asp-for="MedAdministrationHistoriesDetails.administrationId" hidden />
+
+            <!--Medication profile-->
+            <div class="form-group">
+                <label for="medId">Medication:</label>
+                <select id="medId" name="medId" class="form-control" asp-for="MedAdministrationHistoriesDetails.medId" data-bs-theme="auto">
+                    <option value="0">-- Select Medication --</option>
+                    @foreach (var med in ListService.GetMedicationProfiles())
+                    {
+                        <option value="@med.medId">@med.medName</option>
+                    }
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.medId" class="validation-msg"></span>
+            </div>
+
+            <!--Visit-->
+            <div class="form-group">
+                <label for="visitsId">Visit:</label>
+                <select id="visitId" name="visitsId" class="form-control" asp-for="MedAdministrationHistoriesDetails.visitsId" data-bs-theme="auto">
+                    <option value="0">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.visitsId" class="validation-msg"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label for="route">Category:</label>
+                <select name="category" asp-for="MedAdministrationHistoriesDetails.category" id="route" class="form-control" data-bs-theme="auto">
+                    <option value="">-- Select Category --</option>
+                    <option value="Buccal">Buccal</option>
+                    <option value="Inhalation">Inhalation</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intravenous">Intravenous</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Ophthalmic">Ophthalmic</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Otic">Otic</option>
+                    <option value="Rectal">Rectal</option>
+                    <option value="Subcutaneous">Subcutaneous</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Topical">Topical</option>
+                    <option value="Transdermal">Transdermal</option>
+                    <option value="Vaginal">Vaginal</option>
+
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.category" class="validation-msg"></span>
+            </div>
+
+            <!--Frequency-->
+            <div class="form-group">
+                <label for="frequency">Frequency:</label>
+                <input name="frequency" type="text" id="frequency" asp-for="MedAdministrationHistoriesDetails.frequency" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('frequency', 'frequency')" />
+                <span asp-validation-for="MedAdministrationHistoriesDetails.frequency" id="frequencyError" class="validation-msg"></span>
+            </div>
+
+            <!--Status-->
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select name="status" asp-for="MedAdministrationHistoriesDetails.status" id="status" class="form-control" data-bs-theme="auto">
+                    <option value="">-- Select Status --</option>
+                    <option value="Administered">Administered</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Pending">Pending</option>
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.status" class="validation-msg"></span>
+            </div>
+
+            <!--Provider-->
+            <div class="form-group">
+                <label for="administeredBy">Administered By:</label>
+                <select name="administeredBy" class="form-control" asp-for="MedAdministrationHistoriesDetails.administeredBy" data-bs-theme="auto">
+                    <option value="0">-- Select Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="MedAdministrationHistoriesDetails.administeredBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
+
+            <!--Date-->
+            <div class="form-group">
+                <label for="dateGiven">Date:</label>
+                <input name="dateGiven" asp-for="MedAdministrationHistoriesDetails.dateGiven" type="date" id="date" class="form-control" onblur="validateDatePicker('date', 'date')" data-bs-theme="auto" required />
+                <span asp-validation-for="MedAdministrationHistoriesDetails.dateGiven" id="dateError" class="validation-msg"></span>
+            </div>
+
+            <!--Time-->
+            <div class="form-group">
+                <label for="timeGiven">Time:</label>
+                <input name="timeGiven" asp-for="MedAdministrationHistoriesDetails.timeGiven" type="time" id="time" class="form-control" data-bs-theme="auto" required />
+                <span asp-validation-for="MedAdministrationHistoriesDetails.timeGiven" id="timeError" class="validation-msg"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+            </div>
+
+            <!-- confirmation modal-->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save med administration history?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

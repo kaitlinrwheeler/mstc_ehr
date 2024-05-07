@@ -1,12 +1,20 @@
 ﻿@{
     @model EHRApplication.ViewModels.PortalViewModel
     ViewData["Title"] = "myEHR | Patient Allergies";
+    var patient = Model.PatientDemographic;
+    var mhn = ViewBag.MHN;
 }
 
 <section class="my-5 w-75 m-auto">
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
-        <div class="h4 card-header text-center" data-bs-theme="auto">
-            Patient Allergies
+        <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
+            <div class="text-center w-100">Patient Allergies</div>
+            <div>
+                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateAllergyForm" asp-route-mhn="@patient.MHN">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    <span>Add</span>
+                </a>
+            </div>
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model != null && Model.PatientAllergies != null && Model.PatientAllergies.Any())
@@ -17,6 +25,8 @@
                             <th scope="col">Allergy Name:</th>
                             <th scope="col">Allergy Type:</th>
                             <th scope="col">Onset Date:</th>
+                            <th scope="col">Active:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,6 +36,8 @@
                                 <td>@allergy.allergies.allergyName</td>
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
+                                <td>@(allergy.activeStatus ? "Yes" : "No")</td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
