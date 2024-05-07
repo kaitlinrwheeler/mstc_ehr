@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "myEHR | Patient insurance";
+    ViewData["Title"] = "myEHR | Patient Insurance";
     // The list of patients being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var patient = Model.PatientDemographic;
@@ -33,37 +33,32 @@
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var insurance in Model.PatientInsurances)
                         {
-                            <tr class="hover-highlighting">
-
-
-                                @* <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@insurance.patientInsuranceId" data-insuranceId="@insurance.patientInsuranceId" @(insurance.active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@insurance.patientInsuranceId">@(insurance.active ? "Active" : "Inactive")</label>
-                                    </div>
-                                </td> *@
-
-
-
-                                
+                            <tr id="row-@insurance.patientInsuranceId" class="hover-highlighting">
                                 
                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
-
-
-
-
                                 <td>@insurance.providerName</td>
                                 <td>@insurance.memberId</td>
                                 <td>@insurance.policyNumber</td>
                                 <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
                                 <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+
+                                <td>
+                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                </td>
+
+                                <td>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
+
                             </tr>
                         }
                     </tbody>
@@ -76,3 +71,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the insurance, "<span id="insuranceNamePlaceholder"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
