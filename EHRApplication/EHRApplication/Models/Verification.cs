@@ -15,6 +15,9 @@ namespace EHRApplication.Models
         [ValidateNever]
         public DateTime DateTime { get; set; }
 
+        [ValidateNever]
+        public string VerificationToken { get; set; }
+
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

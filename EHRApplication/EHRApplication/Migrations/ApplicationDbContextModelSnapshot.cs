@@ -1265,8 +1265,12 @@ namespace EHRApplication.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VerificationCode")
+                    b.Property<int?>("VerificationCode")
                         .HasColumnType("int");
+
+                    b.Property<string>("VerificationToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -11,12 +11,18 @@
             if (response.ok) {
                 // Show or hide fields
                 $("#passwordFields").show();
+                $("#passHeader").show();
                 $("#verifySubmit").hide();
                 $("#verifyInput").hide();
+                $("#codeHeader").hide();
+                $("#invalidCodeMsg").hide();
             } else {
                 $("#passwordFields").hide();
+                $("#passHeader").hide();
                 $("#verifySubmit").show();
                 $("#verifyInput").show();
+                $("#codeHeader").show();
+                $("#invalidCodeMsg").show();
             }
         })
         .catch(error => {

@@ -16,6 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace EHRApplication.Controllers
 {
@@ -204,6 +206,7 @@ namespace EHRApplication.Controllers
                 await _userStore.SetUserNameAsync(user, account.Email, CancellationToken.None);
                 user.Firstname = account.Firstname;
                 user.Lastname = account.Lastname;
+                user.Email = account.Email;
 
                 //Links user instance to the user info
                 var result = await _userManager.CreateAsync(user, account.Password);
@@ -304,9 +307,18 @@ namespace EHRApplication.Controllers
         {
             if (!account.Email.IsNullOrEmpty())
             {
+                var user = await _userManager.FindByEmailAsync(account.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("Email", "No account linked to that email.");
+                    return View();
+                }
+
                 //This will be the verification code sent to the email.
                 Random ranVariable = new Random();
                 int verificationCode = ranVariable.Next(10000, 99999);
+                var verificationToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
 
                 MailjetClient client = new MailjetClient(apiKeyPublic, apiKeyPrivate);
 
@@ -334,34 +346,43 @@ namespace EHRApplication.Controllers
                 //Sending the verification code to the database to be grabbed when the user tries to login.
                 using (SqlConnection connection = new SqlConnection(this._connectionString))
                 {
-                    //SQL query that is going to insert the data that the verification code into the table.
-                    string sql = "INSERT INTO [Verifications] (VerificationCode) " +
-                        "VALUES (@VerificationCode)";
+                    //This will go and delete all the verification codes from the table that are expired.
+                    string sql = "DELETE FROM Verifications WHERE DateTime < DATEADD(minute, -10, GETDATE());";
+                    SqlCommand cmd = new SqlCommand(sql, connection);
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
 
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    //SQL query that is going to insert the data that the verification code into the table.
+                    sql = "INSERT INTO [Verifications] (VerificationCode, VerificationToken) " +
+                        "VALUES (@VerificationCode, @VerificationToken)";
+
+                    using (cmd = new SqlCommand(sql, connection))
                     {
-                        command.CommandType = CommandType.Text;
+                        cmd.CommandType = CommandType.Text;
 
                         //adding parameters
-                        command.Parameters.Add("@VerificationCode", SqlDbType.Int).Value = verificationCode;
+                        cmd.Parameters.Add("@VerificationCode", SqlDbType.Int).Value = verificationCode;
+                        cmd.Parameters.Add("@VerificationToken", SqlDbType.VarChar).Value = verificationToken;
 
                         connection.Open();
-                        command.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
                         connection.Close();
                     }
                 }
             }
             else { return View(account); }
 
-            return RedirectToAction("PasswordVerification", new {email = account.Email});
+            return RedirectToAction("CheckVerification", new {email = account.Email});
         }
 
         [HttpGet]
-        public IActionResult PasswordVerification(string email)
+        public IActionResult PasswordVerification(string email, int code)
         {
             //Setting the objects email field to the email that the user has entered into the previous page.
             Verification account = new Verification();
             account.Email = email;
+            account.VerificationCode = code;
 
             //Displays the verificationPage
             return View(account);
@@ -377,12 +398,72 @@ namespace EHRApplication.Controllers
                 //Don't update the password for anyones because user does not exist.
                 return RedirectToAction("ForgotPassword");
             }
+            //This tests to make sure that the password and confirm password are not null.
+            if (verifiedInfo.Password.IsNullOrEmpty())
+            {
+                ModelState.AddModelError("Password", "Password is required.");
+                if (verifiedInfo.ConfirmPassword.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError("Confirmpassword", "Confirmation password is required.");
+                }
+                return View(verifiedInfo);
+            }
+
+            //Testing to make sure that the password is greater than 8
+            if (verifiedInfo.Password.Length >= 8)
+            {
+                //Tests and makes sure that the password has at least one upper, lower, number and special character
+                if (!verifiedInfo.Password.Any(char.IsUpper) || !verifiedInfo.Password.Any(char.IsLower) || !verifiedInfo.Password.Any(char.IsDigit) || !verifiedInfo.Password.Any(IsSpecialCharacter))
+                {
+                    //sets the error message for password
+                    ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+                    return View(verifiedInfo);
+                }
+                if (verifiedInfo.ConfirmPassword != verifiedInfo.Password)
+                {
+                    //sets the error message for confirmpassword
+                    ModelState.AddModelError("ConfirmPassword", "The password and confirmation password do not match.");
+                    return View(verifiedInfo);
+                }
+            }
+            else
+            {
+                //sets the error message for password
+                ModelState.AddModelError("Password", "Password must have more than 8 character");
+                return View(verifiedInfo);
+            }
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "SELECT VerificationToken FROM Verifications WHERE VerificationCode = @Code";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with parameter to avoid SQL injection.
+                cmd.Parameters.AddWithValue("@Code", verifiedInfo.VerificationCode);
+                connection.Open();
+                string verifiedToken = cmd.ExecuteScalar() as string;
+                verifiedInfo.VerificationToken = verifiedToken;
+                connection.Close();
+
+                if (!verifiedInfo.VerificationToken.IsNullOrEmpty())
+                {
+                    // Sql query.
+                    sql = "DELETE FROM [dbo].[Verifications] WHERE VerificationCode = VerificationCode";
+
+                    cmd = new SqlCommand(sql, connection);
+                    cmd.Parameters.AddWithValue("@VerificationCode", verifiedInfo.VerificationCode);
+                    connection.Open();
+                    // Execute the SQL command.
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
 
             //This will try to reset the password for the user.
-            var result = await _userManager.ResetPasswordAsync(user, verifiedInfo.VerificationCode.ToString(), verifiedInfo.Password);
+            var result = await _userManager.ResetPasswordAsync(user, verifiedInfo.VerificationToken, verifiedInfo.Password);
             if(result.Succeeded)
             {
-                return RedirectToAction("Lgoin");
+                return RedirectToAction("Login");
             }
 
             //Insert new data into the users table
@@ -391,64 +472,133 @@ namespace EHRApplication.Controllers
             return RedirectToAction("UserDashboard", "Home");
         }
 
-        [HttpPost]
-        public IActionResult CheckNumber(int userNumber)
+        public IActionResult CheckVerification(string email)
         {
-            return Ok();
-            /*using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                //Local variable
-                int localVerificationCode;
-                DateTime localDateTime;
+            //Setting the objects email field to the email that the user has entered into the previous page.
+            Verification account = new Verification();
+            account.Email = email;
 
+            //Displays the verificationPage
+            return View(account);
+        }
+        [HttpPost]
+        public IActionResult CheckVerification(Verification account)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                List<Verification> verifiedInfoList = new List<Verification>();
+                bool goodRequest = false;
                 //Selecting the verification code from the  database.
-                string sql = "SELECT VerificationCode, DateTime FROM Verifications.";
+                string sql = "SELECT VerificationCode, DateTime FROM Verifications";
                 SqlCommand cmd = new SqlCommand(sql, connection);
-                
+                connection.Open();
                 //Grabbing the data from the table
                 using (SqlDataReader dataReader = cmd.ExecuteReader())
                 {
-                    localVerificationCode = Convert.ToInt32(dataReader["VerificationCode"]);
-                    localDateTime = Convert.ToDateTime(dataReader["DateTime"]);
+                    while (dataReader.Read())
+                    {
+                        Verification verification = new Verification();
+
+                        verification.VerificationCode = Convert.ToInt32(dataReader["VerificationCode"]);
+                        verification.DateTime = Convert.ToDateTime(dataReader["DateTime"]);
+                        verifiedInfoList.Add(verification);
+                    }
                 }
                 connection.Close();
                 DateTime currentTime = DateTime.Now;
 
-                //Testing to see if the number entered by the user is the same as the one in the database.
-                //Also making sure that the code has not expired yet.
-                if (userNumber == localVerificationCode && (currentTime - localDateTime).Seconds / 60 <= 10)
+                foreach (Verification v in verifiedInfoList)
                 {
-                    // Sql query.
-                    sql = "DELETE FROM [dbo].[Verifications] WHERE VerificationCode = @VerificationCode";
-
-                    cmd = new SqlCommand(sql, connection);
-
-                    // Replace placeholder with parameter to avoid SQL injection.
-                    cmd.Parameters.AddWithValue("@VerificationCode", localVerificationCode);
-
-                    connection.Open();
-                    // Execute the SQL command.
-                    int rowsAffected = cmd.ExecuteNonQuery();
-
-                    connection.Close();
-
-                    // Check if any rows were affected.
-                    if (rowsAffected > 0)
+                    if(account.VerificationCode == v.VerificationCode)
                     {
-                        // Successfully updated.
-                        return Ok("Verified.");
+                        return RedirectToAction("PasswordVerification", new {email = account.Email, code = account.VerificationCode});
                     }
-                    else
-                    {
-                        // No rows were affected, return an error message.
-                        return BadRequest("Error, please try again.");
-                    }
+                }
+                if (goodRequest == false)
+                {
+                    ModelState.AddModelError("VerificationCode", "That code is invalid, has expired or has already been used.");
+                    return View(account);
                 }
                 else
                 {
+                    return RedirectToAction("Login");
+                }
+            }
+        }
+
+        /*[HttpPost]
+        public IActionResult CheckNumber(int userNumber)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                List<Verification> verifiedInfoList = new List<Verification>();
+                bool goodRequest = false;
+                //Selecting the verification code from the  database.
+                string sql = "SELECT VerificationCode, DateTime FROM Verifications";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                connection.Open();
+                //Grabbing the data from the table
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Verification verification = new Verification();
+
+                        verification.VerificationCode = Convert.ToInt32(dataReader["VerificationCode"]);
+                        verification.DateTime = Convert.ToDateTime(dataReader["DateTime"]);
+                        verifiedInfoList.Add(verification);
+                    }
+                }
+                connection.Close();
+                DateTime currentTime = DateTime.Now;
+
+                foreach(Verification v in verifiedInfoList)
+                {
+                    //Testing to see if the number entered by the user is the same as the one in the database.
+                    //Also making sure that the code has not expired yet.
+                    if (userNumber != null && userNumber == v.VerificationCode && (currentTime - v.DateTime).Seconds / 60 <= 10)
+                    {
+                        return Ok("Verified.");
+
+                        *//*This code was supposed to update the code so that it would not be used twice but I need the code for grabbing the token from the table.
+                         // Sql query.
+                        sql = "UPDATE Verifications SET VerificationCode = null WHERE VerificationCode = @VerificationCode";
+
+                        cmd = new SqlCommand(sql, connection);
+
+                        // Replace placeholder with parameter to avoid SQL injection.
+                        cmd.Parameters.AddWithValue("@VerificationCode", v.VerificationCode);
+
+                        connection.Open();
+                        // Execute the SQL command.
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        connection.Close();
+
+                        // Check if any rows were affected.
+                        if (rowsAffected > 0)
+                        {
+                            // Successfully updated.
+                            goodRequest = true;
+                        }
+                        else
+                        {
+                            // No rows were affected, return an error message.
+                            return BadRequest("Error, please try again.");
+                        }*//*
+                    }
+                }
+                if(goodRequest == false)
+                {
                     return BadRequest("Verification code is invalid");
                 }
-            }*/
-        }
+                else
+                {
+                    //This should never get hit just here because visual studio didn't like it.
+                    //The code should be returned elsewhere if it is good and if its bad it will return above.
+                    return Empty;
+                }
+            }
+        }*/
     }
 }

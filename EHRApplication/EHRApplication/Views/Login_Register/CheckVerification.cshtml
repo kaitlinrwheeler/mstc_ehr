@@ -1,0 +1,33 @@
+﻿@model Verification
+@{
+    ViewData["Title"] = "myEHR | Verification";
+
+}
+
+
+<div class="container my-5 overflow-hidden">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+            <div class="card mx-auto shadow-sm" data-bs-theme="auto">
+                <div class="h5 card-header text-center" id="codeHeader" data-bs-theme="auto">Verification Code</div>
+                <div class="card-body" data-bs-theme="auto">
+
+                    <div>
+                        <!-- Password change -->
+                        <form method="post">
+                            <input asp-for="Email" hidden />
+
+                            <div>
+                                <input asp-for="VerificationCode" class="form-control" id="verifyInput" data-bs-theme="auto" />
+                                <span asp-validation-for="VerificationCode" class="validation-msg" id="invalidCodeMsg"></span>
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn blue-button" data-bs-theme="auto">Check</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

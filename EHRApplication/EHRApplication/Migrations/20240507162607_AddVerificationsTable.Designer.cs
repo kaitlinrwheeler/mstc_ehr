@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240504234709_AddVerificationTable")]
-    partial class AddVerificationTable
+    [Migration("20240507162607_AddVerificationsTable")]
+    partial class AddVerificationsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1268,8 +1268,12 @@ namespace EHRApplication.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VerificationCode")
+                    b.Property<int?>("VerificationCode")
                         .HasColumnType("int");
+
+                    b.Property<string>("VerificationToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
