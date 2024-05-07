@@ -54,8 +54,8 @@
                                 <td>@results.providers.firstName @results.providers.lastName</td>
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
                                 <td>@results.time.ToString("HH:mm")</td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN"><i class="fa-solid fa-pen me-2"></i>View</a></td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

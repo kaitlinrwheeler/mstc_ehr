@@ -67,7 +67,7 @@
                                 <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
                                 <td>@problem.providers.firstName @problem.providers.lastName</td>
                                 <td>@(problem.active ? "Yes" : "No")</td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

@@ -53,7 +53,7 @@
                                 <td>@plan.diagnosis</td>
                                 <td>@plan.startDate.ToString("MM/dd/yyyy")</td>
                                 <td>@plan.endDate.ToString("MM/dd/yyyy")</td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

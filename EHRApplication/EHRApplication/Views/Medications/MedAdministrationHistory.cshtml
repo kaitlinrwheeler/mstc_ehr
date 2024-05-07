@@ -42,7 +42,7 @@
                                 <td>@meds.status</td>
                                 <td>@meds.frequency</td>
                                 <td>@meds.providers.firstName @meds.providers.lastName</td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

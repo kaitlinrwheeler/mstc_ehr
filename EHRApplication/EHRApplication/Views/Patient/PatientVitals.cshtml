@@ -56,7 +56,7 @@
                                 <td>@vital.BMI.ToString("F2")</td>
                                 <td>@vital.intakeMilliLiters mL</td>
                                 <td>@vital.outputMilliLiters mL</td>
-                                <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
