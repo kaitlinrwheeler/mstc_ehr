@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "myEHR | Lab Tests";
 @model List<LabTestProfile>
+    bool activeLabTests = false;
 
 }
 
@@ -30,10 +31,10 @@
                             <th scope="col">Units</th>
                             <th scope="col">Reference Range</th>
                             <th scope="col">Category</th>
-                            <th scope="col">Active</th>
                             <!--This is coded here to only display if you are logged in as an Admin-->
                             @if (User.IsInRole("Admin"))
                             {
+                                <th scope="col">Active</th>
                                 <th scope="col"></th> <!-- Empty columns for the button -->
                             }
                         </tr>
@@ -41,29 +42,45 @@
                     <tbody>
                         @foreach (var labTest in Model)
                         {
-                            <tr class="hover-highlighting">
-                                <td>@labTest.testName</td>
-                                <td>@labTest.description</td>
-                                <td>@labTest.units</td>
-                                <td>@labTest.referenceRange</td>
-                                <td>@labTest.category</td>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            if (User.IsInRole("Admin"))
+                            {
+                                <tr class="hover-highlighting">
+                                    <td>@labTest.testName</td>
+                                    <td>@labTest.description</td>
+                                    <td>@labTest.units</td>
+                                    <td>@labTest.referenceRange</td>
+                                    <td>@labTest.category</td>
 
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
-                                    </div>
-                                </td>
-                                <!--This is coded here to only display if you are logged in as an Admin-->
-                                @if (User.IsInRole("Admin"))
-                                {
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
+                                            <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
+                                        </div>
+                                    </td>
+
                                     <td><a type="button" class="btn blue-button text-nowrap" asp-controller="LabTestProfile" asp-action="EditLabTest" asp-route-testId="@labTest.testId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
-                                }
 
-                            </tr>
+                                </tr>
+                            }
+                            else if (labTest.Active == true)
+                            {
+                                activeLabTests = true;
+                                <tr class="hover-highlighting">
+                                    <td>@labTest.testName</td>
+                                    <td>@labTest.description</td>
+                                    <td>@labTest.units</td>
+                                    <td>@labTest.referenceRange</td>
+                                    <td>@labTest.category</td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
+                @if (activeLabTests == false && !User.IsInRole("Admin"))
+                {
+                    <h1 class="text-center display-6">No active lab tests found.</h1>
+                }
             }
             else
             {

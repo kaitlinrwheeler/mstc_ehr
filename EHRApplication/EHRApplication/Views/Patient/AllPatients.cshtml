@@ -5,7 +5,7 @@
     @model List<PatientDemographic>
 
     <script src="~/js/allPatients.js" defer></script>
-
+    bool activePatients = false;
 }
 
 
@@ -35,40 +35,39 @@
                             <th scope="col">Last Name:</th>
                             <th scope="col">Date of Birth:</th>
                             <th scope="col">Gender:</th>
-                            <th scope="col">Status:</th>
-                            <th scope="col"></th> <!-- Empty columns for the buttons -->
                             <!--This is coded here to only display if you are logged in as an Admin-->
                             @if (User.IsInRole("Admin"))
                             {
+                                <th scope="col">Status:</th>
                                 <th scope="col"></th>
                             }
+                            <th scope="col"></th> <!-- Empty columns for the buttons -->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var patient in Model)
                         {
-                            <tr class="hover-highlighting" id="patient-@patient.MHN"> <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                <td>@patient.MHN</td>
-                                <td>@patient.firstName</td>
-                                <td>@patient.lastName</td>
-                                <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
-                                <td>@patient.gender</td>
+                            if (User.IsInRole("Admin"))
+                            {
+                                <tr class="hover-highlighting" id="patient-@patient.MHN">
+                                    <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@patient.MHN</td>
+                                    <td>@patient.firstName</td>
+                                    <td>@patient.lastName</td>
+                                    <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
+                                    <td>@patient.gender</td>
 
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Active" : "Inactive")</label>
-                                    </div>
-                                </td>
-
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
-                                
-                                <!--This is coded here to only display if you are logged in as an Admin-->
-                                @if (User.IsInRole("Admin"))
-                                {                                    
-                            
                                     <td>
-                                    <div class="btn-group" role="group">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-mhn="@patient.MHN" @(patient.Active ? "checked" : "")>
+                                            <label class="form-check-label" for="switch@patient.MHN">@(patient.Active ? "Active" : "Inactive")</label>
+                                        </div>
+                                    </td>
+
+                                    <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+
+                                    <td>
+                                        <div class="btn-group" role="group">
                                             <form method="post" asp-controller="Patient" asp-action="DeletePatient" asp-route-mhn="@patient.MHN" id="deleteForm-@patient.MHN">
                                                 <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                                 <button type="submit" class="btn delete-button" data-mhn="@patient.MHN">
@@ -77,11 +76,28 @@
                                             </form>
                                         </div>
                                     </td>
-                                }
-                            </tr>
+                                </tr>
+                            }
+                            else if(patient.Active == true)
+                            {
+                                activePatients = true;
+                                <tr class="hover-highlighting" id="patient-@patient.MHN"> <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@patient.MHN</td>
+                                    <td>@patient.firstName</td>
+                                    <td>@patient.lastName</td>
+                                    <td>@patient.DOB.ToString("MM-dd-yyyy")</td>
+                                    <td>@patient.gender</td>
+
+                                    <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="PatientOverView" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                                </tr>                                
+                            }
                         }
                     </tbody>
                 </table>
+                @if (activePatients == false && !User.IsInRole("Admin"))
+                {
+                    <h1 class="text-center display-6">No active patients found.</h1>
+                }
             }
             else
             {

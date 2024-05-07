@@ -2,6 +2,7 @@
     ViewData["Title"] = "myEHR | All Allergies";
     @model List<Allergies>
     <script src="~/js/allAllergies.js" defer></script>
+    bool activeAllergies = false;
 }
 
 <section class="my-5 w-75 m-auto">
@@ -28,9 +29,9 @@
                             <th scope="col">Allergy Id:</th>
                             <th scope="col">Allergy Name:</th>
                             <th scope="col">Allergy Type:</th>
-                            <th scope="col">Active Status:</th>
                             @if (User.IsInRole("Admin"))
                             {
+                                <th scope="col">Active Status:</th>
                                 <th scope="col"></th>
                             }
                         </tr>
@@ -38,29 +39,43 @@
                     <tbody>
                         @foreach (var allergy in Model)
                         {
-                            <tr class="hover-highlighting"><!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                <td>@allergy.allergyId</td>
-                                <td>@allergy.allergyName</td>
-                                <td>@allergy.allergyType</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@allergy.allergyId" data-allergyId="@allergy.allergyId" @(allergy.activeStatus ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@allergy.allergyId">@(allergy.activeStatus ? "Yes" : "No")</label>
-                                    </div>
-                                </td>
-                                @if (User.IsInRole("Admin"))
-                                {
+                            if (User.IsInRole("Admin"))
+                            {
+                                <tr class="hover-highlighting">
+                                    <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@allergy.allergyId</td>
+                                    <td>@allergy.allergyName</td>
+                                    <td>@allergy.allergyType</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@allergy.allergyId" data-allergyId="@allergy.allergyId" @(allergy.activeStatus ? "checked" : "")>
+                                            <label class="form-check-label" for="switch@allergy.allergyId">@(allergy.activeStatus ? "Yes" : "No")</label>
+                                        </div>
+                                    </td>
                                     <td>
                                         <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
                                         <form method="post">
                                             <a type="button" class="btn blue-button" asp-controller="Allergy" asp-action="EditAllergy" asp-route-allergyId="@allergy.allergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                         </form>
                                     </td>
-                                }
-                            </tr>
+                                </tr>
+                            }
+                            else if (allergy.activeStatus == true)
+                            {
+                                activeAllergies = true;
+                                <tr class="hover-highlighting"><!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@allergy.allergyId</td>
+                                    <td>@allergy.allergyName</td>
+                                    <td>@allergy.allergyType</td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
+                @if (activeAllergies == false && !User.IsInRole("Admin"))
+                {
+                    <h1 class="text-center display-6">No active allergies found.</h1>
+                }
             }
             else
             {
