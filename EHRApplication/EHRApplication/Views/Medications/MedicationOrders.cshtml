@@ -43,7 +43,7 @@
                                 <td>@medOrder.orderDate.ToString("MM-dd-yyyy")</td>
                                 <td>@medOrder.orderTime.ToString("HH:mm")</td>
                                 <td>@medOrder.providers.firstName @medOrder.providers.lastName</td>
-
+                                
                                 <td><a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }

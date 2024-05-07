@@ -12,8 +12,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -290,7 +292,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY PatientAllergyId ASC";
+                string sql = "SELECT * FROM [dbo].[PatientAllergies] WHERE MHN = @mhn ORDER BY activeStatus DESC, onSetDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -302,28 +304,23 @@ namespace EHRApplication.Controllers
                 {
                     while (dataReader.Read())
                     {
-                        // Create a new allergy object for each record.
+                        // create a new allergy object for each record
                         PatientAllergies allergy = new PatientAllergies();
 
-                        // Populate the allergy object with data from the database.
-
+                        // populate the allergy object with data from the database
                         allergy.MHN = Convert.ToInt32(dataReader["MHN"]);
                         allergy.patientAllergyId = Convert.ToInt32(dataReader["PatientAllergyId"]);
-
-
-
                         allergy.allergyId = Convert.ToInt32(dataReader["AllergyId"]);
 
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
+                        // uses allergy ID to get allergy names from the allergy table
                         allergy.allergies = _listService.GetAllergyByAllergyId(allergy.allergyId);
-
-
-
 
                         // Fetch the DateTime value from the database and convert it to DateOnly
                         DateTime onSetDateTime = dataReader.GetDateTime(dataReader.GetOrdinal("onSetDate"));
                         DateOnly onSetDate = new DateOnly(onSetDateTime.Year, onSetDateTime.Month, onSetDateTime.Day);
                         allergy.onSetDate = onSetDate;
+
+                        allergy.activeStatus = Convert.ToBoolean(dataReader["activeStatus"]);
 
                         // Add the patient to the list
                         allergies.Add(allergy);
@@ -626,14 +623,48 @@ namespace EHRApplication.Controllers
 
         public IActionResult PatientCarePlan(int mhn)
         {
-            //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
             viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
-            //This will grab a list of the care plans from the list services for the patient.
             List<CarePlan> carePlans = _listService.GetCarePlanByMHN(mhn);
 
-            //This will add all of the data to a view bag that will be grabbed else where to display data correctly.
+            // Check if end date has passed for each care plan
+            foreach (var carePlan in carePlans)
+            {
+                if (carePlan.endDate < DateTime.Today)
+                {
+                    carePlan.active = false;
+                    // Update the database with modified care plan data
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(this._connectionString))
+                        {
+                            // SQL query that is going to update the data in the database table.
+                            string sql = "UPDATE [CarePlan] active = @active " +
+                                         "WHERE CPId = @CPId";
+
+                            using (SqlCommand command = new SqlCommand(sql, connection))
+                            {
+                                command.CommandType = CommandType.Text;
+
+                                // Adding parameters
+                                command.Parameters.Add("@active", SqlDbType.Bit).Value = carePlan.active;
+                                command.Parameters.Add("@CPId", SqlDbType.Int).Value = carePlan.CPId;
+
+                                connection.Open();
+                                command.ExecuteNonQuery();
+                                connection.Close();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle the exception as required
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+
             viewModel.CarePlans = carePlans;
             ViewBag.Patient = viewModel.PatientDemographic;
             ViewBag.MHN = mhn;
@@ -912,15 +943,16 @@ namespace EHRApplication.Controllers
                         // Create a new allergy object for each record.
                         PatientNotes note = new PatientNotes();
 
-                        // Populate the note object with data from the database.
+                        // Populate the patientNote object with data from the database.
                         //TODO: make this get the right date only data type.
-                        //note.occurredOn = Convert.ToString(dataReader["occurredOn"]);
+                        //patientNote.occurredOn = Convert.ToString(dataReader["occurredOn"]);
                         note.occurredOn = DateOnly.FromDateTime(dataReader.GetDateTime(dataReader.GetOrdinal("occurredOn")));
                         note.createdAt = Convert.ToDateTime(dataReader["createdAt"]);
                         note.providers = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["createdBy"]));
                         note.assocProvider = _listService.GetProvidersByProviderId(Convert.ToInt32(dataReader["associatedProvider"]));
                         note.category = Convert.ToString(dataReader["category"]);
                         note.Note = Convert.ToString(dataReader["note"]);
+                        note.patientNotesId = Convert.ToInt32(dataReader["patientNotesId"]);
 
 
                         // Add the insurance to the list
@@ -1161,7 +1193,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn";
+                string sql = "SELECT * FROM [dbo].[Alerts] WHERE MHN = @mhn ORDER BY activeStatus DESC, startDate DESC, endDate DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -1182,16 +1214,16 @@ namespace EHRApplication.Controllers
                         alert.startDate = dataReader.GetDateTime("startDate");
 
                         alert.endDate = dataReader.GetDateTime("endDate");
-                        alert.activeStatus = dataReader.GetString("activeStatus");
+                        alert.activeStatus = dataReader.GetBoolean("activeStatus");
 
                         // If the alert should be inactive.
-                        if(alert.activeStatus == "Active" && alert.endDate < DateTime.Now)
+                        if(alert.activeStatus == true && alert.endDate < DateTime.Now)
                         {
                             // Call function that updates the alert status to be inactive.
                             if (SetAlertInactive(alert.alertId))
                             {
                                 // Set active status to inactive here since we just changed it in the database.
-                                alert.activeStatus = "Inactive";
+                                alert.activeStatus = false;
                             }
                             else
                             {
@@ -1206,7 +1238,11 @@ namespace EHRApplication.Controllers
                 }
 
                 // Order the list by start date newest to oldest.
-                viewModel.Alerts = alerts.OrderByDescending(a => a.startDate).ToList();
+                viewModel.Alerts = alerts
+                    .OrderByDescending(a => a.activeStatus)
+                    .ThenByDescending(a => a.startDate)
+                    .ThenByDescending(a => a.endDate)
+                    .ToList();
 
                 ViewBag.Patient = viewModel.PatientDemographic;
                 ViewBag.MHN = mhn;
@@ -1224,7 +1260,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'Inactive' WHERE alertId = @id";
+                string sql = "UPDATE [dbo].[Alerts] SET activeStatus = 'false' WHERE alertId = @id";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -1310,7 +1346,7 @@ namespace EHRApplication.Controllers
         {
             if (vital.visitId == 0)
             {
-                ModelState.AddModelError("visitId", "Please select a visit.");
+                ModelState.AddModelError("visitId", "Please select a vital record.");
             }
             //returns the model if null because there were errors in validating it
             if (!ModelState.IsValid)
@@ -1333,5 +1369,866 @@ namespace EHRApplication.Controllers
 
             return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
+
+        [HttpGet]
+        public IActionResult CreatePatientCarePlanForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            // Needed to work with the patient banner properly.
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientCarePlanForm(CarePlan carePlan)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
+            viewModel.CarePlansDetails = carePlan;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = carePlan.MHN;
+
+
+            if (carePlan.visitsId == -1)
+            {
+                ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
+            }
+
+            bool isPriorityValid = false;
+
+            if (carePlan.priority == "Low" || carePlan.priority == "Medium" || carePlan.priority == "High")
+            {
+                isPriorityValid = true;
+            }
+
+            if (!isPriorityValid) { ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level."); }
+
+            // Check to see if the date is more than 5 years in the past.
+            if (carePlan.startDate <= DateTime.Now.AddYears(-5))
+            {
+                ModelState.AddModelError("CarePlansDetails.startDate", "Date cannot be in the future.");
+                return View(viewModel);
+            }
+
+            // Check to make sure end date is after the start date.
+            if (carePlan.endDate <= carePlan.startDate)
+            {
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after the start date.");
+                return View(viewModel);
+            }
+            // Check to make sure the end date is not more than 2 years from today's date.
+            else if (carePlan.endDate > DateTime.Now.AddYears(2))
+            {
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date cannot be more than 2 years in the future.");
+                return View(viewModel);
+            }
+
+            if (carePlan.title == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.title, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must only contain letters, numbers, and punctuation.");
+            }
+
+            if (carePlan.diagnosis == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.diagnosis, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must only contain letters, numbers, and punctuation.");
+            }
+
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("visitsId");
+            ModelState.Remove("patients");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    //SQL query that is going to insert the data that the user entered into the database table.
+                    string sql = "INSERT INTO [CarePlan] (MHN, priority, startDate, endDate, title, diagnosis, visitsId, active) " +
+                        "VALUES (@mhn, @priority, @startDate, @endDate, @title, @diagnosis, @visitsId, @active)";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        //adding parameters
+                        command.Parameters.Add("@mhn", SqlDbType.Int).Value = carePlan.MHN;
+                        command.Parameters.Add("@priority", SqlDbType.NVarChar).Value = carePlan.priority;
+                        command.Parameters.Add("@startDate", SqlDbType.DateTime2).Value = carePlan.startDate;
+                        command.Parameters.Add("@endDate", SqlDbType.DateTime2).Value = carePlan.endDate;
+                        command.Parameters.Add("@title", SqlDbType.NVarChar).Value = carePlan.title;
+                        command.Parameters.Add("@diagnosis", SqlDbType.NVarChar).Value = carePlan.diagnosis;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = carePlan.visitsId;
+                        command.Parameters.Add("@active", SqlDbType.Bit).Value = carePlan.active;
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientCarePlan", new { mhn = carePlan.MHN });
+        }
+
+        [HttpGet]
+
+        public IActionResult EditPatientCarePlanForm(int carePlanId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+
+            //Creating a new patientDemographic instance
+            CarePlan carePlan = new CarePlan();
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT MHN, priority, startDate, endDate, active, title, diagnosis, visitsId " +
+                    "FROM [dbo].[CarePlan] WHERE CPId = @CPId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@CPId", carePlanId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        carePlan.CPId = carePlanId;
+                        carePlan.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        carePlan.patients = _listService.GetPatientByMHN(carePlan.MHN);
+
+                        carePlan.priority = Convert.ToString(dataReader["priority"]);
+                        carePlan.startDate = DateTime.Parse(dataReader["startDate"].ToString());
+                        carePlan.endDate = DateTime.Parse(dataReader["endDate"].ToString());
+                        carePlan.title = Convert.ToString(dataReader["title"]);
+                        carePlan.diagnosis = Convert.ToString(dataReader["diagnosis"]);
+                        carePlan.active = Convert.ToBoolean(dataReader["active"]);
+
+                        carePlan.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            // Needed to work with the patient banner properly.
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = carePlan.MHN;
+
+            viewModel.CarePlansDetails = carePlan;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientCarePlanForm(CarePlan carePlan)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(carePlan.MHN);
+            viewModel.CarePlansDetails = carePlan;
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = carePlan.MHN;
+
+
+            if (carePlan.visitsId == -1)
+            {
+                ModelState.AddModelError("CarePlansDetails.visitsId", "Please select a visit.");
+            }
+
+            bool isPriorityValid = false;
+
+            if (carePlan.priority == "Low" || carePlan.priority == "Medium" || carePlan.priority == "High")
+            {
+                isPriorityValid = true;
+            }
+
+            if (!isPriorityValid) { ModelState.AddModelError("CarePlansDetails.priority", "Please select a priority level."); }
+
+            // Check to see if the date is more than 5 years in the past.
+            if (carePlan.startDate <= DateTime.Now.AddYears(-5))
+            {
+                ModelState.AddModelError("CarePlansDetails.startDate", "Date cannot be in the future.");
+                return View(viewModel);
+            }
+
+            // Check to make sure end date is after the start date.
+            if (carePlan.endDate <= carePlan.startDate)
+            {
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date must be after the start date.");
+                return View(viewModel);
+            }
+            // Check to make sure the end date is not more than 2 years from today's date.
+            else if (carePlan.endDate > DateTime.Now.AddYears(2))
+            {
+                ModelState.AddModelError("CarePlansDetails.endDate", "End date cannot be more than 2 years in the future.");
+                return View(viewModel);
+            }
+
+            if (carePlan.title == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.title, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Title", "Title must only contain letters, numbers, and punctuation.");
+            }
+
+            if (carePlan.diagnosis == null)
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must not be empty.");
+            }
+            else if (!Regex.IsMatch(carePlan.diagnosis, @"^[a-zA-Z0-9\s/\-]+$"))
+            {
+                ModelState.AddModelError("CarePlansDetails.Diagnosis", "Diagnosis must only contain letters, numbers, and punctuation.");
+            }
+
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("visitsId");
+            ModelState.Remove("patients");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    // SQL query that is going to update the data in the database table.
+                    string sql = "UPDATE [CarePlan] SET priority = @priority, startDate = @startDate, endDate = @endDate, " +
+                                 "title = @title, diagnosis = @diagnosis, visitsId = @visitsId, active = @active " +
+                                 "WHERE CPId = @CPId";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        // Adding parameters
+                        command.Parameters.Add("@priority", SqlDbType.NVarChar).Value = carePlan.priority;
+                        command.Parameters.Add("@startDate", SqlDbType.DateTime2).Value = carePlan.startDate;
+                        command.Parameters.Add("@endDate", SqlDbType.DateTime2).Value = carePlan.endDate;
+                        command.Parameters.Add("@title", SqlDbType.NVarChar).Value = carePlan.title;
+                        command.Parameters.Add("@diagnosis", SqlDbType.NVarChar).Value = carePlan.diagnosis;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = carePlan.visitsId;
+                        command.Parameters.Add("@active", SqlDbType.Bit).Value = carePlan.active;
+                        command.Parameters.Add("@CPId", SqlDbType.Int).Value = carePlan.CPId;
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientCarePlan", new { mhn = carePlan.MHN });
+        }
+
+        [HttpGet]
+        public IActionResult CreatePatientNotesForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreatePatientNotesForm(PatientNotes patientNote)
+        {
+
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(patientNote.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            viewModel.PatientNotesDetails = patientNote;
+            ViewBag.MHN = patientNote.MHN;
+
+
+            if (patientNote.visitsId == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.visitsId", "Please select a visit.");
+            }
+
+            if (patientNote.associatedProvider == -1) 
+            {
+                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select an associated provider.");
+            }
+
+            if (patientNote.createdBy == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.createdBy", "Please select who is creating the note.");
+            }
+
+            if (patientNote.occurredOn <= DateOnly.FromDateTime(DateTime.Now.AddYears(-5)))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be more than 5 years in the past");
+            }
+            else if (patientNote.occurredOn > DateOnly.FromDateTime(DateTime.Now))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be in the future");
+            }
+
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters and spaces.");
+            }
+
+            if (patientNote.Note == null)
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Please enter a note.");
+            }
+            else if (!Regex.IsMatch(patientNote.Note, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must only contain letters, numbers, and punctuation.");
+            }
+
+
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("patients");
+            ModelState.Remove("providers");
+            ModelState.Remove("assocProvider");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    //SQL query that is going to insert the data that the user entered into the database table.
+                    string sql = "INSERT INTO [PatientNotes] (MHN, note, occurredOn, createdAt, createdBy, associatedProvider, updatedAt, category, visitsId) " +
+                        "VALUES (@mhn, @note, @occurredOn, @createdAt, @createdBy, @associatedProvider, @updatedAt, @category, @visitsId)";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        //adding parameters
+                        command.Parameters.Add("@mhn", SqlDbType.Int).Value = patientNote.MHN;
+                        command.Parameters.Add("@note", SqlDbType.VarChar).Value = patientNote.Note;
+                        command.Parameters.Add("@occurredOn", SqlDbType.Date).Value = patientNote.occurredOn;
+                        command.Parameters.Add("@createdAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@createdBy", SqlDbType.Int).Value = patientNote.createdBy;
+                        command.Parameters.Add("@associatedProvider", SqlDbType.Int).Value = patientNote.associatedProvider;
+                        command.Parameters.Add("@updatedAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@category", SqlDbType.VarChar).Value = patientNote.category;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = patientNote.visitsId;
+
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientNotes", new { mhn = patientNote.MHN });
+        }
+
+        [HttpGet]
+
+        public IActionResult EditPatientNotesForm(int noteId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+
+            PatientNotes note = new PatientNotes();
+
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Sql query to get the patient with the passed in mhn.
+                string sql = "SELECT MHN, Note, occurredOn, createdAt, createdBy, associatedProvider, updatedAt, category, visitsId " +
+                    "FROM [dbo].[PatientNotes] WHERE patientNotesId = @notesId";
+
+                SqlCommand cmd = new SqlCommand(sql, connection);
+
+                // Replace placeholder with paramater to avoid sql injection.
+                cmd.Parameters.AddWithValue("@notesId", noteId);
+
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        note.patientNotesId = noteId;
+                        note.MHN = Convert.ToInt32(dataReader["MHN"]);
+                        note.Note = Convert.ToString(dataReader["Note"]);
+
+                        note.occurredOn = DateOnly.FromDateTime(Convert.ToDateTime(dataReader["occurredOn"]));
+
+                        note.createdAt = DateTime.Parse(dataReader["createdAt"].ToString());
+                        note.createdBy = Convert.ToInt32(dataReader["createdBy"]);
+                        note.associatedProvider = Convert.ToInt32(dataReader["associatedProvider"]);
+                        note.updatedAt = DateTime.Parse(dataReader["updatedAt"].ToString());
+                        note.category = Convert.ToString(dataReader["category"]);
+                        note.visitsId = Convert.ToInt32(dataReader["visitsId"]);
+                    }
+                }
+
+                connection.Close();
+            }
+
+            viewModel.PatientNotesDetails = note;
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(note.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientNotesDetails.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditPatientNotesForm(PatientNotes patientNote)
+        {
+
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(patientNote.MHN);
+            ViewBag.Patient = viewModel.PatientDemographic;
+            viewModel.PatientNotesDetails = patientNote;
+            ViewBag.MHN = patientNote.MHN;
+
+
+            if (patientNote.visitsId == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.visitsId", "Please select a visit.");
+            }
+
+            if (patientNote.associatedProvider == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.associatedProvider", "Please select an associated provider.");
+            }
+
+            if (patientNote.createdBy == -1)
+            {
+                ModelState.AddModelError("PatientNotesDetails.createdBy", "Please select who is creating the note.");
+            }
+
+            if (patientNote.occurredOn <= DateOnly.FromDateTime(DateTime.Now.AddYears(-5)))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The date cannot be more than 5 years in the past");
+            }
+            // Makes sure the occurred on date doesn't get changed to after the date it was created.
+            else if (patientNote.occurredOn > new DateOnly(patientNote.createdAt.Year, patientNote.createdAt.Month, patientNote.createdAt.Day))
+            {
+                ModelState.AddModelError("PatientNotesDetails.occurredOn", "The occurrence date cannot be after the note creation date.");
+            }
+
+            if (!Regex.IsMatch(patientNote.category, @"^[a-zA-Z\s]+$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.category", "Category must only contain letters and spaces.");
+            }
+
+            if (patientNote.Note == null)
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must not be empty.");
+            }
+            else if (!Regex.IsMatch(patientNote.Note, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("PatientNotesDetails.Note", "Note must only contain letters, numbers, and punctuation.");
+            }
+
+            // Don't need to check for these since they aren't on the form.
+            ModelState.Remove("visits");
+            ModelState.Remove("patients");
+            ModelState.Remove("providers");
+            ModelState.Remove("assocProvider");
+
+            // Returns the model if there are validation errors.
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(this._connectionString))
+                {
+                    //SQL query that is going to insert the data that the user entered into the database table.
+                    string sql = "UPDATE [dbo].[PatientNotes] SET Note = @note, occurredOn = @occurredOn, createdBy = @createdBy, " +
+                                 "associatedProvider = @associatedProvider, updatedAt = @updatedAt, category = @category, visitsId = @visitsId " +
+                                 "WHERE patientNotesId = @notesId";
+
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+
+                        //adding parameters
+                        command.Parameters.Add("@notesId", SqlDbType.Int).Value = patientNote.patientNotesId;
+                        command.Parameters.Add("@note", SqlDbType.VarChar).Value = patientNote.Note;
+                        command.Parameters.Add("@occurredOn", SqlDbType.Date).Value = patientNote.occurredOn;
+                        //command.Parameters.Add("@createdAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@createdBy", SqlDbType.Int).Value = patientNote.createdBy;
+                        command.Parameters.Add("@associatedProvider", SqlDbType.Int).Value = patientNote.associatedProvider;
+                        command.Parameters.Add("@updatedAt", SqlDbType.DateTime2).Value = DateTime.Now;
+                        command.Parameters.Add("@category", SqlDbType.VarChar).Value = patientNote.category;
+                        command.Parameters.Add("@visitsId", SqlDbType.Int).Value = patientNote.visitsId;
+
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+            }
+            // Should also send an error message to user later or take to "oh no" page.
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+            return RedirectToAction("PatientNotes", new { mhn = patientNote.MHN });
+        }
+
+        public IActionResult CreateAllergyForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        // still testing below
+        [HttpPost]
+        public IActionResult CreateAllergyForm(PatientAllergies allergy)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly pastLimit = today.AddYears(-20);
+
+            // Validate onsetDate
+            if (allergy.onSetDate == DateOnly.MinValue)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Please enter allergy onset date.");
+            }
+            else if (allergy.onSetDate > today)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be in the future.");
+            }
+            else if (allergy.onSetDate < pastLimit)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be more than 20 years ago.");
+            }
+
+            if (allergy.allergyId == 0)
+            {
+                ModelState.AddModelError("PatientAllergy.allergyId", "Please select an allergy.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(allergy.MHN);
+                viewModel.PatientAllergy = allergy;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = allergy.MHN;
+
+                return View(viewModel);
+            }
+            else if (allergy.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoPatientAllergies(allergy);
+            }
+
+            return RedirectToAction("PatientAllergies", new { mhn = allergy.MHN });
+        }
+
+        public IActionResult CreateAlertForm(int mhn)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = mhn;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult CreateAlertForm(Alerts alert)
+        {
+            DateTime today = DateTime.Today;
+            DateTime pastLimit = today.AddYears(-5);
+
+            if (ModelState.TryGetValue("Alert.startDate", out var startDateEntry) && startDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
+            {
+                ModelState.Remove("Alert.startDate");
+                ModelState.AddModelError("Alert.startDate", "Please enter a valid start date.");
+            }
+
+            if (ModelState.TryGetValue("Alert.endDate", out var endDateEntry) && endDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
+            {
+                ModelState.Remove("Alert.endDate");
+                ModelState.AddModelError("Alert.endDate", "Please enter a valid end date.");
+            }
+
+            else if (alert.startDate > today)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be in the future.");
+            }
+            else if (alert.startDate < pastLimit)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be more than 5 years ago.");
+            }
+            else if (alert.endDate < alert.startDate)
+            {
+                ModelState.Remove("Alert.endDate");
+                ModelState.AddModelError("Alert.endDate", "End date cannot be before start date.");
+            }
+            else if (alert.alertName == null)
+            {
+                ModelState.AddModelError("Alert.alertName", "Please enter alert name.");
+            }
+
+            ModelState.Remove("alert.patients");
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(alert.MHN);
+                //viewModel.Alerts.Add(alert);
+                viewModel.Alert = alert;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = alert.MHN;
+
+                return View(viewModel);
+            }
+            else if (alert.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.InsertIntoAlerts(alert);
+                _listService.UpdateHasAlerts(alert.MHN);
+            }
+
+            return RedirectToAction("PatientAlerts", new { mhn = alert.MHN });
+        }
+
+        public IActionResult EditAllergyForm(int patientAllergyId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.PatientAllergy = _listService.GetPatientAllergyByPatientAllergyId(patientAllergyId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.PatientAllergy.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.PatientAllergy.MHN;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditAllergyForm(PatientAllergies allergy)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly pastLimit = today.AddYears(-20);
+
+            // validate onset date
+            if (allergy.onSetDate == DateOnly.MinValue)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Please enter allergy onset date.");
+            }
+            else if (allergy.onSetDate > today)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be in the future.");
+            }
+            else if (allergy.onSetDate < pastLimit)
+            {
+                ModelState.AddModelError("PatientAllergy.onSetDate", "Onset date cannot be more than 20 years ago.");
+            }
+        
+            if (allergy.allergyId <= 0)
+            {
+                ModelState.AddModelError("PatientAllergy.allergyId", "Please select an allergy.");
+            }
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(allergy.MHN);
+                viewModel.PatientAllergy = allergy;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = allergy.MHN;
+
+                return View("EditAllergyForm", viewModel);
+            }
+            else if (allergy.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdatePatientAllergy(allergy);
+            }
+
+            return RedirectToAction("PatientAllergies", new { mhn = allergy.MHN });
+        }
+
+        public IActionResult EditAlertForm(int alertId)
+        {
+            // Needed to work with the patient banner properly.
+            PortalViewModel viewModel = new PortalViewModel();
+            viewModel.Alert = _listService.GetPatientAlert(alertId);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(viewModel.Alert.MHN);
+
+            ViewBag.Patient = viewModel.PatientDemographic;
+            ViewBag.MHN = viewModel.Alert.MHN;
+            ViewBag.AlertId = alertId;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditAlertForm(Alerts alert)
+        {
+            DateTime today = DateTime.Today;
+            DateTime pastLimit = today.AddYears(-5);
+
+            if (ModelState.TryGetValue("Alert.startDate", out var startDateEntry) && startDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
+            {
+                ModelState.Remove("Alert.startDate");
+                ModelState.AddModelError("Alert.startDate", "Please enter a valid start date.");
+            }
+
+            if (ModelState.TryGetValue("Alert.endDate", out var endDateEntry) && endDateEntry.Errors.Any(e => e.ErrorMessage == "The value '' is invalid."))
+            {
+                ModelState.Remove("Alert.endDate");
+                ModelState.AddModelError("Alert.endDate", "Please enter a valid end date.");
+            }
+            else if (alert.startDate > today)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be in the future.");
+            }
+            else if (alert.startDate < pastLimit)
+            {
+                ModelState.AddModelError("Alert.startDate", "Start date cannot be more than 5 years ago.");
+            }
+            else if (alert.endDate < alert.startDate)
+            {
+                ModelState.Remove("Alert.endDate");
+                ModelState.AddModelError("Alert.endDate", "End date cannot be before start date.");
+            }
+            else if (alert.alertName == null)
+            {
+                ModelState.AddModelError("Alert.alertName", "Please enter alert name.");
+            }
+
+            ModelState.Remove("alert.patients");
+
+            //returns the model if null because there were errors in validating it
+            if (!ModelState.IsValid)
+            {
+                // Needed to work with the patient banner properly.
+                PortalViewModel viewModel = new PortalViewModel();
+                viewModel.PatientDemographic = _listService.GetPatientByMHN(alert.MHN);
+                viewModel.Alert = alert;
+                ViewBag.Patient = viewModel.PatientDemographic;
+                ViewBag.MHN = alert.MHN;
+
+                return View(viewModel);
+            }
+            else if (alert.MHN != 0)
+            {
+                //go to the void list service that will input the data into the database.
+                _listService.UpdatePatientAlert(alert);
+            }
+            
+
+            return RedirectToAction("PatientAlerts", new { mhn = alert.MHN });         
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfilePicture(IFormFile file, int mhn)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json(new { success = false, message = "No file uploaded." });
+            }
+
+            if (file.Length > 4 * 1024 * 1024) // File size check
+            {
+                return Json(new { success = false, message = "File size must be less than 4MB." });
+            }
+
+            var allowedFileTypes = new[] { ".jpg", ".png" };
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!allowedFileTypes.Contains(extension))
+            {
+                return Json(new { success = false, message = "Invalid file type. Only .jpg or .png allowed." });
+            }
+
+            var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory);
+            }
+
+            var fileName = Guid.NewGuid().ToString() + extension;
+            var filePath = Path.Combine(uploadDirectory, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Update patient record with new file path
+            PatientDemographic patient = _listService.GetPatientByMHN(mhn);
+            patient.patientImage = fileName;
+            _listService.UpdatePatientImage(patient);
+
+            return Json(new { success = true, message = "File uploaded successfully", filePath = $"/images/{fileName}" });
+        }
+
+
     }
 }

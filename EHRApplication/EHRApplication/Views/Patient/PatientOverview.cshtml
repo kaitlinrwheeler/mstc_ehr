@@ -4,12 +4,16 @@
 @{
     ViewData["Title"] = "myEHR | Patient Details";
     <link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/profilepic.css" asp-append-version="true" />
+    <script src="~/js/profilepic.js" type="text/javascript" defer></script>
     var patient = Model.PatientDemographic;
     <script src="~/js/patientOverview.js" defer></script>
 }
 
-
+<div id="errorContainer" style="display: none;" class="alert alert-danger">
+    <span id="errorMessage"></span>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
 
 <div class="container mt-5" data-bs-theme="auto">
     <div class="row">
@@ -115,15 +119,19 @@
                 @if (patient != null && patient.MHN != 0)
                 {
                     <div class="col-md-12 mb-3">
-                        <div class="card card-cover">
-                        @if (string.IsNullOrEmpty(patient.patientImage))
-                        {
-                                <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="card-img-top" alt="Patient Image">
-                        }
-                        else
-                        {
-                                <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image">
-                        }
+                        <div class="card card-cover image-wrapper">
+                            @if (string.IsNullOrEmpty(patient.patientImage))
+                            {
+                                    <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;">
+                            }
+                            else
+                            {
+                                    <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;">
+                            }
+                            <div class="overlay">
+                                <i class="fas fa-camera me-2"></i>Change Photo
+                                <input type="file" id="fileInput" style="display:none;" data-mhn="@patient.MHN" />
+                            </div>
                         </div>
                     </div>
                 }

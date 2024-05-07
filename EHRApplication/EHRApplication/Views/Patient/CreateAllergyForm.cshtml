@@ -1,0 +1,48 @@
+﻿@inject EHRApplication.Services.IListService ListService
+@model EHRApplication.ViewModels.PortalViewModel;
+@{
+    ViewData["Title"] = "myEHR | Add Patient Allergy";
+    <link rel="stylesheet" href="~/css/forms.css">
+    var mhn = ViewBag.MHN;
+    <script src="~/js/validation.js"></script>
+}
+
+<section class="my-5 w-75" data-bs-theme="auto">
+
+    <div class="card-header" data-bs-theme="auto">
+        <h3 class="my-3">Add Allergy</h3>
+    </div>
+
+    <div class="card-body" data-bs-theme="auto">
+        <form method="post" id="ptAllergyForm" enctype="multipart/form-data">
+
+            <input asp-for="PatientAllergy.MHN" value="@mhn" hidden />
+            
+            <!-- Allergy Dropdown -->
+            <div class="form-group">
+                <label for="allergyId">Allergy:</label>
+                <select id="allergyId" name="allergyId" class="form-control" asp-for="PatientAllergy.allergyId" data-bs-theme="auto">
+                    <option value="0">-- Select Allergy --</option>
+                    @foreach (var allergy in ListService.GetAllergies())
+                    {
+                        <option value="@allergy.allergyId">@allergy.allergyName</option>
+                    }
+                </select>
+                <span asp-validation-for="PatientAllergy.allergyId" class="validation-msg"></span>
+            </div>
+
+            <!-- Allergy Onset Date Picker -->
+            <div class="form-group">
+                <label for="onSetDate">Onset Date:</label>
+                <input name="onSetDate" asp-for="PatientAllergy.onSetDate" type="date" id="onSetDate" class="form-control" data-bs-theme="auto" />
+                <span asp-validation-for="PatientAllergy.onSetDate" id="onSetDateError" class="validation-msg"></span>
+            </div>
+
+            <!-- Submit/Cancel Buttons -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+            </div>
+        </form>
+    </div>
+</section>
