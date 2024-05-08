@@ -10,7 +10,7 @@
     <_SelectedScaffolderCategoryPath>root/Identity</_SelectedScaffolderCategoryPath>
     <WebStackScaffolding_ViewDialogWidth>800</WebStackScaffolding_ViewDialogWidth>
     <WebStackScaffolding_ControllerDialogWidth>650</WebStackScaffolding_ControllerDialogWidth>
-    <NameOfLastUsedPublishProfile>MSTCmyEHR - Zip Deploy</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\Kaitlin\Documents\FinalSpring\Capstone\mstc_ehr\mstc_ehr\EHRApplication\EHRApplication\Properties\PublishProfiles\MSTCmyEHR - Zip Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
