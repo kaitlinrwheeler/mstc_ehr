@@ -3,6 +3,7 @@
     ViewData["Title"] = "myEHR | Patient Medications";
     <link rel="stylesheet" href="~/css/patientMedication.css" asp-append-version="true" />
     int mhn = ViewBag.MHN;
+    <script src="~/js/patientMedications.js" defer></script>
 }
 
 
@@ -33,6 +34,7 @@
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,7 +42,7 @@
                         {
                             var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
 
-                            <tr class="hover-highlighting">
+                            <tr id="row-@medication.patientMedId" class="hover-highlighting">
                                 <td>@medication.medProfile.medName</td>@* 
                                 <td>@medication.category</td> *@
                                 <td>@medication.activeStatus</td>
@@ -70,7 +72,16 @@
                                 <td>@medication.providers.firstName @medication.providers.lastName</td>
                                 <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
                                 <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+
+
+                                <td>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@medication.medProfile.medName" data-patientMedId="@medication.patientMedId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
+
+
                             </tr>
                         }
                     </tbody>
@@ -83,3 +94,24 @@
         </div>
     </div>
 </section>
+
+
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the patient medication <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
