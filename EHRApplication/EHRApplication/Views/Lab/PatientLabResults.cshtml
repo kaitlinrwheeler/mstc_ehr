@@ -22,10 +22,10 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th scope="col">Abnormal Flag:</th>
                             <th scope="col">Test Name:</th>
                             <th scope="col">Result:</th>
                             <th scope="col">Units:</th>
-                            <th scope="col">Abnormal Flag:</th>
                             <th scope="col">Ordered By:</th>
                             <th scope="col">Date Ordered:</th>
                             <th scope="col">Time Ordered:</th>
@@ -37,9 +37,6 @@
                         @foreach (var results in Model.LabResults)
                         {
                             <tr class="hover-highlighting">
-                                <td>@results.labTests.testName</td>
-                                <td>@results.resultValue</td>
-                                <td>@results.labTests.units</td>
                                 @* shows a yellow background if the priority for that plan is high otherwise it will be a gray background. *@
                                 <td style='background-color: @(results.abnormalFlag == "High" ? "yellow" : "unset"); color: @(results.abnormalFlag == "High" ? "black" : "inherit")'>
                                     @if (results.abnormalFlag == "High")
@@ -50,12 +47,15 @@
                                     }
                                     @results.abnormalFlag
                                 </td>
+                                <td>@results.labTests.testName</td>
+                                <td>@results.resultValue</td>
+                                <td>@results.labTests.units</td>
 
                                 <td>@results.providers.firstName @results.providers.lastName</td>
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
                                 <td>@results.time.ToString("HH:mm")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN">View</a></td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>
