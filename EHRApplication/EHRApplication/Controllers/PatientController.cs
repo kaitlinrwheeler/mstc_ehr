@@ -46,7 +46,7 @@ namespace EHRApplication.Controllers
                 connection.Open();
 
                 // Sql query.
-                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY Active DESC";
+                string sql = "SELECT MHN, firstName, lastName, DOB, gender, Active FROM [dbo].[PatientDemographic] ORDER BY Active DESC, MHN DESC";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
@@ -212,9 +212,29 @@ namespace EHRApplication.Controllers
                     connection.Close();
                     TempData["SuccessMessage"] = "You have successfully created a patient!";
                 }
+
+                //This will go and get the most recent entry into the database which will be the one that we just entered.
+                sql = "SELECT MHN FROM [PatientDemographic] WHERE firstName = @firstName AND lastName = @lastName AND DOB = @DOB AND gender = @gender";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    //Setting parameters for parameterized queries.
+                    command.Parameters.Add("@firstName", SqlDbType.VarChar).Value = patient.firstName;
+                    command.Parameters.Add("@lastName", SqlDbType.VarChar).Value = patient.lastName;
+                    command.Parameters.Add("@DOB", SqlDbType.Date).Value = patient.DOB;
+                    command.Parameters.Add("@gender", SqlDbType.VarChar).Value = patient.gender;
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            patient.MHN = Convert.ToInt32(reader["MHN"]);
+                        }
+                    }
+                    connection.Close();
+                }
             }
             ModelState.Clear();
-            return View();
+            return RedirectToAction("PatientOverview", new {mhn = patient.MHN});
         }
 
 
