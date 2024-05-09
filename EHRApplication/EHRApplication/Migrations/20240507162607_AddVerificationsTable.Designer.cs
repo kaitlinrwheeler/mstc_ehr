@@ -4,6 +4,7 @@ using EHRApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240507162607_AddVerificationsTable")]
+    partial class AddVerificationsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +36,9 @@ namespace EHRApplication.Migrations
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
-                    b.Property<bool>("activeStatus")
-                        .HasColumnType("bit");
+                    b.Property<string>("activeStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("alertName")
                         .IsRequired()
@@ -61,18 +65,13 @@ namespace EHRApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("allergyId"));
 
-                    b.Property<bool>("activeStatus")
-                        .HasColumnType("bit");
-
                     b.Property<string>("allergyName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("allergyType")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("allergyId");
 
@@ -90,29 +89,27 @@ namespace EHRApplication.Migrations
                     b.Property<int>("MHN")
                         .HasColumnType("int");
 
-                    b.Property<bool>("active")
-                        .HasColumnType("bit");
+                    b.Property<string>("activeStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("diagnosis")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("priority")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("startDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("title")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("visitsId")
                         .HasColumnType("int");
@@ -422,9 +419,6 @@ namespace EHRApplication.Migrations
 
                     b.Property<int>("MHN")
                         .HasColumnType("int");
-
-                    b.Property<bool>("activeStatus")
-                        .HasColumnType("bit");
 
                     b.Property<int>("allergyId")
                         .HasColumnType("int");
