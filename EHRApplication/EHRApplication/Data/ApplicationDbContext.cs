@@ -70,5 +70,7 @@ namespace EHRApplication.Data
         public DbSet<Vitals> Vitals { get; set; }
 
         public DbSet<Log> Logs { get; set; }
+
+        public DbSet<Verification> Verifications { get; set; }
     }
 }
