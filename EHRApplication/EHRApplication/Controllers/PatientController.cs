@@ -2264,11 +2264,40 @@ namespace EHRApplication.Controllers
             }
         }
 
-        //[HttpPost]
-        //public IActionResult DeletePatientNote(int noteId)
-        //{
+        [HttpPost]
+        public IActionResult DeletePatientNote(int noteId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientNotes] WHERE patientNotesId = @noteId";
 
-        //}
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@noteId", SqlDbType.Int).Value = noteId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(noteId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
+        }
 
     }
 }
