@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Configuration;
+using System.Data;
 using System.Diagnostics;
 using System.Net;
 
@@ -231,5 +232,42 @@ namespace EHRApplication.Controllers
 
             return RedirectToAction("index", new { mhn = problem.MHN });
         }
+
+        [HttpPost]
+        [Route("Problems/DeletePatientProblem")]
+        public IActionResult DeletePatientProblem(int problemId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientProblems] WHERE patientProblemsId = @problemId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@problemId", SqlDbType.Int).Value = problemId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(problemId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
+        }
+
     }
 }
