@@ -2567,6 +2567,69 @@ namespace EHRApplication.Services
             }
             return;
         }
+
+        // retreive patient MHN from alert record
+        public int GetPatientFromAlert(int alertId)
+        {
+            int mhn;
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "SELECT MHN FROM [Alerts] WHERE alertId = @alertId";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@alertId", alertId);
+
+                    conn.Open();
+                    mhn = Convert.ToInt32(cmd.ExecuteScalar());
+                    conn.Close();
+                }
+            }
+
+            return mhn;
+        }
+
+        // check if patient has alerts
+        public bool CheckPatientAlerts(int mhn)
+        {
+            bool hasAlerts;
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM [Alerts] WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    conn.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    hasAlerts = count > 0;
+                    conn.Close();
+                }
+            }
+
+            return hasAlerts;
+        }
+
+        // set hasAlerts to false if patient has no alerts
+        public void DeleteHasAlerts(int mhn)
+        {
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "UPDATE [PatientDemographic] SET hasAlerts = 'false' WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+
+            return;
+        }
     }
         
 }

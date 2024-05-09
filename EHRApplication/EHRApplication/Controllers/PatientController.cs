@@ -267,7 +267,7 @@ namespace EHRApplication.Controllers
                         portalViewModel.PatientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
                         portalViewModel.PatientDemographic.ContactId = _listService.GetContactByMHN(portalViewModel.PatientDemographic.MHN);
                         portalViewModel.PatientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
-                        portalViewModel.PatientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
+                        portalViewModel.PatientDemographic.HasAlerts = _listService.CheckPatientAlerts(portalViewModel.PatientDemographic.MHN);
                     }
                 }
 
@@ -2229,6 +2229,84 @@ namespace EHRApplication.Controllers
             return Json(new { success = true, message = "File uploaded successfully", filePath = $"/images/{fileName}" });
         }
 
+        // delete patient allergy record
+        [HttpPost]
+        public IActionResult DeletePatientAllergy(int patientAllergyId)
+        {
 
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientAllergies] WHERE patientAllergyId = @patientAllergyId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@patientAllergyId", SqlDbType.Int).Value = patientAllergyId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(patientAllergyId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted allergy.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete allergy");
+                    }
+                }
+            }
+        }
+
+        // delete patient alert record, change hasAlerts status if there are no alerts left for that patient
+        [HttpPost]
+        public IActionResult DeleteAlert(int alertId)
+        {
+            int mhn = _listService.GetPatientFromAlert(alertId);
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [Alerts] WHERE alertId = @alertId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@alertId", SqlDbType.Int).Value = alertId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(alertId + " not found.");
+                        }
+                        else
+                        {   
+                            bool hasAlerts = _listService.CheckPatientAlerts(mhn);
+                            if (!hasAlerts)
+                            {
+                                _listService.DeleteHasAlerts(mhn);
+                            }
+                            return Ok("Successfully deleted alert.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete alert");
+                    }
+                }
+            }
+        }
     }
 }
