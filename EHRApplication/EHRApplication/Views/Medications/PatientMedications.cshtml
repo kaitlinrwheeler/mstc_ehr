@@ -70,7 +70,7 @@
                                 <td>@medication.providers.firstName @medication.providers.lastName</td>
                                 <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
                                 <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

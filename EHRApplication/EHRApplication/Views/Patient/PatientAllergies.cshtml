@@ -37,7 +37,7 @@
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
                                 <td>@(allergy.activeStatus ? "Yes" : "No")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
                     </tbody>

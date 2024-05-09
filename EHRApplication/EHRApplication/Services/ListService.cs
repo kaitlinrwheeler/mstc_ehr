@@ -1250,7 +1250,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy active, visitsId " +
+                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy, active, visitsId " +
                     "FROM [dbo].[PatientProblems] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -1296,7 +1296,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT CPId, MHN, priority, startDate, endDate, active, title, diagnosis " +
+                string sql = "SELECT CPId, visitsId, MHN, priority, startDate, endDate, active, title, diagnosis " +
                     "FROM [dbo].[CarePlan] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);

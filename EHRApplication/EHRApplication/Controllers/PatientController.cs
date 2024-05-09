@@ -3,6 +3,7 @@ using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -2304,6 +2305,43 @@ namespace EHRApplication.Controllers
                         if (rowsAffected <= 0)
                         {
                             throw new Exception(noteId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult DeletePatientInsurance(int insuranceId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientInsurance] WHERE patientInsuranceId = @insuranceId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@insuranceId", SqlDbType.Int).Value = insuranceId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception( insuranceId + " not found.");
                         }
                         else
                         {
