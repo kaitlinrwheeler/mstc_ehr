@@ -1,9 +1,11 @@
 ﻿@{
+    ViewData["Title"] = "myEHR | Patient Notes";
     // The list of Notes being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
 
     <link rel="stylesheet" href="~/css/notes.css" asp-append-version="true" />
+    <script src="~/js/notes.js" defer></script>
 }
 
 
@@ -38,7 +40,7 @@
                         {
                             var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
 
-                            <tr class="hover-highlighting">
+                            <tr id="row-@note.patientNotesId" class="hover-highlighting">
                                 <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
                                 <td>@note.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
                                 <td>@note.providers.firstName @note.providers.lastName</td>
@@ -66,6 +68,14 @@
                                     }
                                 </td>
                                 <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+
+                                <td>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@note.assocProvider.firstName @note.assocProvider.lastName on @note.createdAt.ToString("MM-dd-yyyy HH:mm")" data-noteId="@note.patientNotesId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
+
+                            
                             </tr>
                         }
                     </tbody>
@@ -78,3 +88,23 @@
         </div>
     </div>
 </section>
+
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the care plan created by <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
