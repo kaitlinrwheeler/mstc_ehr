@@ -51,8 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     confirmDeleteBtn.addEventListener('click', function () {
-        const formId = `deleteForm-${insuranceId}`;
-
         fetch(`/Patient/DeletePatientInsurance?insuranceId=${insuranceId}`, {
             method: 'POST',
         })
