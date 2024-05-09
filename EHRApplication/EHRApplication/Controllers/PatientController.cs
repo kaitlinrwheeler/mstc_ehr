@@ -2284,9 +2284,7 @@ namespace EHRApplication.Controllers
                     }
                 }
             }
-        }
-
-        
+        }        
 
         [HttpPost]
         public IActionResult DeletePatientCarePlan(int carePlanId)

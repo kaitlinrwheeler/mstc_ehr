@@ -35,7 +35,7 @@
                     <tbody>
                     @foreach (var alert in Model.Alerts)
                     {
-                        <tr class="hover-highlighting">
+                        <tr id="row-@alert.alertId" class="hover-highlighting">
                             <td>@alert.alertName</td>
                             <td>@alert.startDate.ToString("MM/dd/yyyy")</td>
                             <td>@alert.endDate.ToString("MM/dd/yyyy")</td>

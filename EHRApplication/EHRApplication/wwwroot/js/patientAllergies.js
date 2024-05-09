@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .finally(() => {
                 modal.hide();
-                window.location.reload();
             });
     });
 });

@@ -35,7 +35,7 @@
                     <tbody>
                         @foreach (var allergy in Model.PatientAllergies)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@allergy.patientAllergyId" class="hover-highlighting">
                                 <td>@allergy.allergies.allergyName</td>
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
