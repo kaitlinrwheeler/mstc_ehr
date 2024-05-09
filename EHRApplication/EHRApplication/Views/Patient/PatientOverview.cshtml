@@ -146,10 +146,39 @@
                             <div>
                                 @if(patient.ContactId.address != null)
                                 {
-                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
-                                        <i class="fa-solid fa-pen me-2"></i>
-                                        <span>Edit</span>
-                                    </a>
+                                    <form class="btn-group mb-0 " role="group" method="post" asp-controller="Contact" asp-action="DeletePatientContact" asp-route-mhn="@patient.MHN" asp-route-contactId="@patient.ContactId.patientContactId" id="deleteForm-@patient.MHN">
+                                        <a type="button" class="btn blue-button rounded me-2 d-inline-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        
+                                        <button type="button" class="btn delete-button rounded d-inline-flex align-items-center"  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" value="Delete">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+
+
+
+                                        <!-- Delete confirmation modal-->
+                                        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="h6">Are you sure you want to delete contact info?</p>
+                                                     </div >
+                                                    <div class="modal-footer">
+                                                        <button id = "cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type = "submit" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                    </form>
                                 }
                                 else
                                 {
@@ -205,3 +234,4 @@
         </div>
     </div>
 </div>
+
