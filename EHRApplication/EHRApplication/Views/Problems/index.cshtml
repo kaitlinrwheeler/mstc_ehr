@@ -73,7 +73,7 @@
 
 
                                 <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@problem.providers.firstName @problem.providers.lastName on @problem.createdAt.ToString("MM/dd/yyyy")" data-patientProblemId="@problem.patientProblemsId">
+                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@problem.description" data-patientProblemId="@problem.patientProblemsId">
                                         <i class="fa-solid fa-trash me-2"></i>Delete
                                     </button>
                                 </td>
@@ -102,7 +102,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete the problem created by <span id="messagePlaceholder"></span>?
+                Are you sure you want to delete the problem <span id="messagePlaceholder"></span>?
             </div>
             <div class="modal-footer">
                 <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
