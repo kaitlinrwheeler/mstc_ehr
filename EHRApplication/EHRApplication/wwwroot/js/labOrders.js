@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function (event) {
             event.preventDefault(); // Prevent the default form submission
             orderId = this.getAttribute('data-orderId');
-            message = this.getAttribute('data-message'); // Get the name
+            testDate = this.getAttribute('data-test-date');
+            testName = this.getAttribute('data-test-name');
+            message = testName + ' ordered on ' + testDate;
             document.getElementById('messagePlaceholder').textContent = message; // Update the name placeholder
             modal.show();
         });
