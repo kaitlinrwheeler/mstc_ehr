@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => {
                     if (response.ok) {
                         // If the server returns a success status, update the <span> text based on the new active status
-                        statusLabel.textContent = isActive ? "Yes" : "No";
+                        statusLabel.textContent = isActive ? "Active" : "Inactive";
                         // Do not revert the switch's state here; let it reflect the user's action
                     }
                     else {

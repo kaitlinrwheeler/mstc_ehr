@@ -26,7 +26,7 @@
                             <th scope="col">First Name:</th>
                             <th scope="col">Last Name:</th>
                             <th scope="col">Specialty:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col"></th> <!-- Empty column for the buttons -->
                         </tr>
                     </thead>
@@ -43,7 +43,7 @@
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@provider.providerId" data-providerId="@provider.providerId" @(provider.active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@provider.providerId">@(provider.active ? "Yes" : "No")</label>
+                                        <label class="form-check-label" for="switch@provider.providerId">@(provider.active ? "Active" : "Inactive")</label>
                                     </div>
                                 </td>
 

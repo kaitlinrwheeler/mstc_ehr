@@ -21,13 +21,13 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Test Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Units</th>
-                            <th scope="col">Reference Range</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Active</th>
-                            <th scope="col"></th> <!-- Empty columns for the button -->
+                            <th scope="col">Test Name:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">Units:</th>
+                            <th scope="col">Reference Range:</th>
+                            <th scope="col">Category:</th>
+                            <th scope="col">Status:</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,7 +43,7 @@
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Active" : "Inactive")</label>
                                     </div>
                                 </td>
 
