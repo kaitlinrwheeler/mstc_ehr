@@ -2435,5 +2435,41 @@ namespace EHRApplication.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Patient/DeleteVitals")]
+        public IActionResult DeleteVitals(int vitalsId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [Vitals] WHERE vitalsId = @vitalsId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@vitalsId", SqlDbType.Int).Value = vitalsId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(vitalsId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
+        }
     }
 }
