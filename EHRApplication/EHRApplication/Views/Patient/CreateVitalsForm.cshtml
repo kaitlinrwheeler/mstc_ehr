@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="visitId">Visit:</label>
                 <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
-                    <option value="-1"></option>
+                    <option value="-1">-- Select Visit --</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">

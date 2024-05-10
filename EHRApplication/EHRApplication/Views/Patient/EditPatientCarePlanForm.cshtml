@@ -24,7 +24,7 @@
                 <label for="priority">Priority Level:</label>
 
                 <select id="priority" name="priority" asp-for="CarePlansDetails.priority" class="form-control" data-bs-theme="auto">
-                    <option value="">--Select--</option>
+                    <option value="">-- Select Priority Level --</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label for="visitId">Visit:</label>
                 <select id="visitId" class="form-control" name="visitsId" asp-for="CarePlansDetails.visitsId" data-bs-theme="auto">
-                    <option value="-1">--Select--</option>
+                    <option value="-1">-- Select Visit --</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">

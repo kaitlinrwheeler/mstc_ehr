@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="testId">Test Name:</label>
                 <select id="testId" name="testId" class="form-control" asp-for="LabResultsDetails.testId" data-bs-theme="auto" onblur="validateRequiredInput('testId', 'test name')">
-                    <option value="0"></option>
+                    <option value="0">-- Select Lab Test --</option>
                     @foreach (var labTests in ListService.GetLabTests())
                     {
                         <option value="@labTests.testId">
@@ -42,7 +42,7 @@
             <div class="form-group">
                 <label for="abnormalFlag">Abnormal Flag:</label>
                 <select class="form-control" name="abnormalFlag" asp-for="LabResultsDetails.abnormalFlag" data-bs-theme="auto">
-                    <option value="0"></option>
+                    <option value="0">-- Select Result Flag --</option>
                     <option value="Low">Low</option>
                     <option value="Normal">Normal</option>
                     <option value="High">High</option>
@@ -53,7 +53,7 @@
             <div class="form-group">
                 <label for="visitsId">Visit:</label>
                 <select class="form-control" name="visitsId" asp-for="LabResultsDetails.visitsId" data-bs-theme="auto">
-                    <option value="0"></option>
+                    <option value="0">-- Select Visit --</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId">
@@ -79,7 +79,7 @@
             <div class="form-group">
                 <label for="orderedBy">Provider:</label>
                 <select id="orderedBy" class="form-control" name="orderedBy" asp-for="LabResultsDetails.orderedBy" data-bs-theme="auto" onblur="validateRequiredInput('orderedBy', 'provider')">
-                    <option value="0"></option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId">

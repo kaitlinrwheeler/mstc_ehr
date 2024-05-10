@@ -71,7 +71,7 @@
             <div class="form-group">
                 <label for="orderedBy">Prescribed By:</label>
                 <select name="orderedBy" class="form-control" asp-for="MedOrdersDetails.orderedBy" data-bs-theme="auto">
-                    <option value="0">-- Select Provider --</option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">

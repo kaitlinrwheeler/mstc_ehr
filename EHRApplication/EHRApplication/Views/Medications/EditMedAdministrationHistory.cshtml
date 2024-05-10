@@ -96,7 +96,7 @@
             <div class="form-group">
                 <label for="administeredBy">Administered By:</label>
                 <select name="administeredBy" class="form-control" asp-for="MedAdministrationHistoriesDetails.administeredBy" data-bs-theme="auto">
-                    <option value="0">-- Select Provider --</option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">

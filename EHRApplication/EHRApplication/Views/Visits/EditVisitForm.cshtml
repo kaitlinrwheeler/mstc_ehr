@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label for="providerId">Provider:</label>
                 <select id="providerId" class="form-control" asp-for="Visit.providerId" data-bs-theme="auto" onblur="validateRequiredInput('PrimaryPhysician', 'provider')">
-                    <option value="0"></option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
