@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function (event) {
             event.preventDefault(); // Prevent the default form submission
             visitId = this.getAttribute('data-patientVisitId');
-            message = this.getAttribute('data-message'); // Get the name
+            const visitDate = this.getAttribute('data-visit-date');
+            const providerName = this.getAttribute('data-provider-name');
+            message = visitDate + ' with ' + providerName; // Get the name
             document.getElementById('messagePlaceholder').textContent = message; // Update the name placeholder
             modal.show();
         });

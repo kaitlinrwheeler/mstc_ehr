@@ -48,7 +48,7 @@
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="EditVisitForm" asp-route-visitId="@visits.visitsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
                                 <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@visits.notes" data-patientVisitId="@visits.visitsId">
+                                    <button type="submit" class="btn delete-button text-nowrap" data-visit-date="@visits.date" data-provider-name="@visits.providers.firstName @visits.providers.lastName" data-patientVisitId="@visits.visitsId">
                                         <i class="fa-solid fa-trash me-2"></i>Delete
                                     </button>
                                 </td>
@@ -75,7 +75,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete the problem <span id="messagePlaceholder"></span>?
+                Are you sure you want to delete the visit on <span id="messagePlaceholder"></span>? All events associated with the visit will be deleted as well.
             </div>
             <div class="modal-footer">
                 <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
