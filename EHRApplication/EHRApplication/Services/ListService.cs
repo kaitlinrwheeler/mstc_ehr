@@ -927,10 +927,10 @@ namespace EHRApplication.Services
                         vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
                         vitals.patients = GetPatientByMHN(vitals.patientId);
                         vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
-                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.temperature = Convert.ToDecimal (dataReader["temperature"]);
                         vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
                         vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
-                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+                        vitals.pulseOximetry = Convert.ToDecimal(dataReader["pulseOximetry"]);
 
                         vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
                         vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
