@@ -34,11 +34,11 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
-                <input type="submit" class="btn blue-button" value="Submit" />
+                <a type="button" class="btn btn-secondary me-2" asp-controller="Allergy" asp-action="Index">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 
-            <!-- confirmation modal-->
+            <!-- Confirmation Modal -->
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -47,7 +47,7 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save the allergy information?
+                            Are you sure you want to save allergy information?
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
