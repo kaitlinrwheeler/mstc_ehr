@@ -41,7 +41,7 @@
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId">
-                            @provider.firstName @provider.lastName
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
                         </option>
                     }
                 </select>
@@ -55,7 +55,7 @@
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId">
-                            @provider.firstName @provider.lastName
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
                         </option>
                     }
                 </select>

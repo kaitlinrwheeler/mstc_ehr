@@ -44,8 +44,8 @@
                             <tr id="row-@note.patientNotesId" class="hover-highlighting">
                                 <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
                                 <td>@note.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
-                                <td>@note.providers.firstName @note.providers.lastName</td>
-                                <td>@note.assocProvider.firstName @note.assocProvider.lastName</td>
+                                <td>@note.providers.firstName @note.providers.lastName, @note.providers.providerId</td>
+                                <td>@note.assocProvider.firstName @note.assocProvider.lastName, @note.assocProvider.providerId</td>
                                 <td>@note.category</td>
                                  <td>
                                     @*This will only display the first 20 characters in the saved data in the model*@

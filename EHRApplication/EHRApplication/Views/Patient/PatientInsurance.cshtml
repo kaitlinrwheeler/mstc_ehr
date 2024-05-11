@@ -47,7 +47,7 @@
                                 <td>@insurance.policyNumber</td>
                                 <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
-                                <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
+                                <td>@insurance.providers.firstName @insurance.providers.lastName, @insurance.providers.providerId</td>
 
                                 <td>
                                     <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>

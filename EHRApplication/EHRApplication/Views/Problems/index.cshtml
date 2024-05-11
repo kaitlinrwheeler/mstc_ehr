@@ -22,9 +22,6 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
-@*                             <th scope="col">MHN:</th>
- *@                            
                             <th scope="col">Priority:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">ICD-10:</th>
@@ -39,10 +36,6 @@
                         @foreach (var problem in Model.PatientProblems)
                         {
                             <tr class="hover-highlighting">
-                                <!-- Commented out in case we want to view mhn later for testing purposes.-->
-@*                                 <td>@problem.MHN</td>
- *@
-
                                 @if (problem.active == true)
                                 {                                    
                                     <td style='background-color: @(problem.priority == "High" ? "yellow" : "unset"); color: @(problem.priority == "High" ? "black" : "inherit")'>
@@ -65,7 +58,7 @@
                                 <td>@problem.ICD_10</td>
                                 <td>@problem.immediacy</td>
                                 <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
-                                <td>@problem.providers.firstName @problem.providers.lastName</td>
+                                <td>@problem.providers.firstName @problem.providers.lastName, @problem.providers.providerId</td>
                                 <td>@(problem.active ? "Active" : "Inactive")</td>
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
