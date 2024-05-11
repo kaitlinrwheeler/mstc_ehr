@@ -2,6 +2,7 @@
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 
 namespace EHRApplication.Controllers
@@ -168,6 +169,77 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteVisit(int visitId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                connection.Open();
+
+                // Begin a transaction
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // SQL query to delete the visit and related records
+                    string deleteVisitSql = "DELETE FROM [dbo].[Visits] WHERE visitsId = @visitId";
+
+                    // All records related to the visit in some way or another that also must be deleted before we can.
+                    string deleteRelatedRecordsSql = @"
+                        DELETE FROM [dbo].[LabResults] WHERE visitsId = @visitId;
+                        DELETE FROM [dbo].[Vitals] WHERE visitId = @visitId;
+                        DELETE FROM [dbo].[LabOrders] WHERE visitsId = @visitId;
+                        DELETE FROM [dbo].[MedOrders] WHERE visitId = @visitId;
+                        DELETE FROM [dbo].[PatientNotes] WHERE visitsId = @visitId;
+                        DELETE FROM [dbo].[PatientProblems] WHERE visitsId = @visitId;
+                        DELETE FROM [dbo].[CarePlan] WHERE visitsId = @visitId;
+                        DELETE FROM [dbo].[MedAdministrationHistory] WHERE visitsId = @visitId;
+                    ";
+
+
+                    // First, delete related records
+                    using (SqlCommand cmd = new SqlCommand(deleteRelatedRecordsSql, connection, transaction))
+                    {
+                        // Set parameters if needed
+                        cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                        int relatedRowsAffected = cmd.ExecuteNonQuery();
+                    }
+
+                    // Now, that everything related to the patient is deleted, delete the patient.
+                    using (SqlCommand cmd = new SqlCommand(deleteVisitSql, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@visitId", visitId);
+
+                        int patientRowsAffected = cmd.ExecuteNonQuery();
+
+                        // Check if the patient was deleted
+                        if (patientRowsAffected <= 0)
+                        {
+                            throw new Exception("Visit with visitId " + visitId + " not found.");
+                        }
+                    }
+
+                    // If everything went well, commit the transaction
+                    transaction.Commit();
+
+                    return Ok("Successfully deleted.");
+                }
+                catch (Exception ex)
+                {
+                    // Something went wrong, rollback the transaction
+                    transaction.Rollback();
+
+                    // Log the exception if needed
+                    Console.WriteLine("Error: " + ex.Message);
+
+                    // Return an error response
+                    return BadRequest("Failed to delete visit.");
+                }
+            }
         }
     }
 }

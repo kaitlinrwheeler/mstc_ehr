@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
@@ -779,6 +780,42 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("MedADministrationHistory", new { mhn = medHistory.MHN });
+        }
+
+        [HttpPost]
+        [Route("Medication/DeletePatientMedication")]
+        public IActionResult DeletePatientMedication(int patientMedId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientMedications] WHERE patientMedId = @patientMedId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@patientMedId", SqlDbType.Int).Value = patientMedId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(patientMedId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
         }
     }
 }

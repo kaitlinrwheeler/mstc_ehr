@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
@@ -385,6 +386,80 @@ namespace EHRApplication.Controllers
                 {
                     // No rows were affected, return an error message.
                     return BadRequest("Error, please try again.");
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Lab/DeleteLabOrder")]
+        public IActionResult DeleteLabOrder(int orderId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [LabOrders] WHERE orderId = @orderId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(orderId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Lab/DeleteLabResults")]
+        public IActionResult DeleteLabResults(int resultId)
+        {
+
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [LabResults] WHERE labId = @labId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@labId", SqlDbType.Int).Value = resultId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(resultId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted insurance.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete insurance");
+                    }
                 }
             }
         }

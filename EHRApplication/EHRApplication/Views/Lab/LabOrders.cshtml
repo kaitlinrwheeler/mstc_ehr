@@ -1,8 +1,10 @@
 ﻿@{
+    ViewData["Title"] = "myEHR | Patient Problems";
     // The list of Visits being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
     <link rel="stylesheet" href="~/css/.css" asp-append-version="true" />
+    <script src="~/js/labOrders.js" defer></script>
 }
 
 
@@ -30,12 +32,13 @@
                             <th scope="col">Ordered By:</th>
                             <th scope="col"></th> <!-- Empty column for the button -->
                             <th scope="col"></th> <!-- Empty column for the button -->
+                            <th scope="col"></th> <!-- Empty column for the button -->
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var labOrders in Model.LabOrders)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@labOrders.orderId" class="hover-highlighting">
                                 <td>@labOrders.orderDate.ToString("MM-dd-yyyy")</td>
                                 <td>@labOrders.orderTime.ToString("HH:mm")</td>
                                 <td>@labOrders.labTests.testName</td>
@@ -43,6 +46,14 @@
                                 <td>@labOrders.providers.firstName @labOrders.providers.lastName, @labOrders.providers.providerId</td>
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@labOrders.visitsId" asp-route-mhn="@labOrders.MHN"><i class="fa-solid fa-pen me-2"></i>View</a></td>
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditOrderForm" asp-route-orderId="@labOrders.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+
+                                <td>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-test-name="@labOrders.labTests.testName" data-test-date="@labOrders.orderDate" data-orderId="@labOrders.orderId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
+
+                            
                             </tr>
                         }
                     </tbody>
@@ -55,3 +66,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the lab order for <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
