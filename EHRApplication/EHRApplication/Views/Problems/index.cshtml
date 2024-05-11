@@ -2,6 +2,7 @@
     @model EHRApplication.ViewModels.PortalViewModel
     ViewData["Title"] = "myEHR | Patient Problems";
     int mhn = ViewBag.MHN;
+    <script src="~/js/patientProblems.js" defer></script>
 }
 
 
@@ -36,12 +37,13 @@
                             <th scope="col">Created By:</th>
                             <th scope="col">Active:</th>
                             <th scope="col"></th> <!--empty column for the edit button-->
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var problem in Model.PatientProblems)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@problem.patientProblemsId" class="hover-highlighting">
                                 <!-- Commented out in case we want to view mhn later for testing purposes.-->
 @*                                 <td>@problem.MHN</td>
  *@
@@ -72,7 +74,12 @@
                                 <td>@(problem.active ? "Yes" : "No")</td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td><a type="button" class="btn blue-button" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-message="@problem.description" data-patientProblemId="@problem.patientProblemsId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
                                 }
                             </tr>
                         }
@@ -86,3 +93,23 @@
         </div>
     </div>
 </section>
+
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the problem <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

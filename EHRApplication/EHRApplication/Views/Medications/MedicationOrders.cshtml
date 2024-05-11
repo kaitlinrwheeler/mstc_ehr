@@ -51,7 +51,7 @@
                                 <td>@medOrder.providers.firstName @medOrder.providers.lastName</td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                                 }
                             </tr>
                         }

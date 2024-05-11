@@ -4,6 +4,7 @@
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
 
+    <script src="~/js/CarePlan.js" defer></script>
 }
 
 
@@ -36,13 +37,14 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                             }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var plan in Model.CarePlans)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@plan.CPId" class="hover-highlighting">
                                 @* shows a yellow background if the priority for that plan is high otherwise it will be a gray background. *@
                                 <td style='background-color: @(plan.priority == "High" ? "yellow" : "unset"); color: @(plan.priority == "High" ? "black" : "inherit")'>
                                     @if (plan.priority == "High")
@@ -61,7 +63,12 @@
                                 <td>@plan.endDate.ToString("MM/dd/yyyy")</td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td>
+                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                       <button type="submit" class="btn delete-button text-nowrap" data-title="@plan.title" data-carePlanId="@plan.CPId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
                                 }
                             </tr>
                         }
@@ -75,3 +82,24 @@
         </div>
     </div>
 </section>
+
+
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the care plan "<span id="carePlanTitlePlaceholder"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

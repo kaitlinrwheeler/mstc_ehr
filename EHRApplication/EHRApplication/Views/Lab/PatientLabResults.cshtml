@@ -1,7 +1,9 @@
 ﻿@{
+    ViewData["Title"] = "myEHR | Patient Lab Results";
     // The list of patients being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var mhn = ViewBag.MHN;
+    <script src="~/js/labResults.js" defer></script>
 }
 
 
@@ -25,10 +27,10 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th scope="col">Abnormal Flag:</th>
                             <th scope="col">Test Name:</th>
                             <th scope="col">Result:</th>
                             <th scope="col">Units:</th>
-                            <th scope="col">Abnormal Flag:</th>
                             <th scope="col">Ordered By:</th>
                             <th scope="col">Date Ordered:</th>
                             <th scope="col">Time Ordered:</th>
@@ -36,16 +38,14 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <th scope="col"></th> <!-- Empty column for the button -->
+                                <th scope="col"></th> <!-- Empty column for the button -->
                             }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var results in Model.LabResults)
                         {
-                            <tr class="hover-highlighting">
-                                <td>@results.labTests.testName</td>
-                                <td>@results.resultValue</td>
-                                <td>@results.labTests.units</td>
+                            <tr id="row-@results.labId" class="hover-highlighting">
                                 @* shows a yellow background if the priority for that plan is high otherwise it will be a gray background. *@
                                 <td style='background-color: @(results.abnormalFlag == "High" ? "yellow" : "unset"); color: @(results.abnormalFlag == "High" ? "black" : "inherit")'>
                                     @if (results.abnormalFlag == "High")
@@ -56,6 +56,9 @@
                                     }
                                     @results.abnormalFlag
                                 </td>
+                                <td>@results.labTests.testName</td>
+                                <td>@results.resultValue</td>
+                                <td>@results.labTests.units</td>
 
                                 <td>@results.providers.firstName @results.providers.lastName</td>
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
@@ -63,7 +66,13 @@
                                 <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN">View</a></td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td><a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td>
+                                        <a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        
+                                        <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-name="@results.labTests.testName" data-labId="@results.labId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
                                 }
                             </tr>
                         }
@@ -77,3 +86,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the lab result for <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

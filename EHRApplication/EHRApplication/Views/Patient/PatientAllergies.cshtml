@@ -3,6 +3,8 @@
     ViewData["Title"] = "myEHR | Patient Allergies";
     var patient = Model.PatientDemographic;
     var mhn = ViewBag.MHN;
+
+    <script src="~/js/patientAllergies.js" defer></script>
 }
 
 <section class="my-5 w-75 m-auto">
@@ -32,20 +34,26 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                             }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var allergy in Model.PatientAllergies)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@allergy.patientAllergyId" class="hover-highlighting">
                                 <td>@allergy.allergies.allergyName</td>
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
                                 <td>@(allergy.activeStatus ? "Yes" : "No")</td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td>
+                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAllergyForm" asp-route-patientAllergyId="@allergy.patientAllergyId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                       <button type="submit" class="btn delete-button text-nowrap" data-name="@allergy.allergies.allergyName" data-patientAllergyId="@allergy.patientAllergyId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
                                 }
                             </tr>
                         }
@@ -59,3 +67,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the allergy "<span id="allergyNamePlaceholder"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

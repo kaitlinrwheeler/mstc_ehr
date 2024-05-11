@@ -145,18 +145,6 @@
                                 <table class="table table-striped">
                                     <tbody>
                                         <tr class="hover-highlighting">
-                                            <th scope="row">Test:</th>
-                                            <td>@labResults.labTests.testName</td>
-                                        </tr>
-                                        <tr class="hover-highlighting">
-                                            <th scope="row">Result:</th>
-                                            <td>@labResults.resultValue</td>
-                                        </tr>
-                                        <tr class="hover-highlighting">
-                                            <th scope="row">Units:</th>
-                                            <td>@labResults.labTests.units</td>
-                                        </tr>
-                                        <tr class="hover-highlighting">
                                             <th scope="row">Abnormal Flag:</th>
                                             <td style='background-color: @(labResults.abnormalFlag == "High" ? "yellow" : "unset"); color: @(labResults.abnormalFlag == "High" ? "black" : "inherit")'>
                                                 @if (labResults.abnormalFlag == "High")
@@ -167,6 +155,18 @@
                                                 }
                                                 @labResults.abnormalFlag
                                             </td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Test:</th>
+                                            <td>@labResults.labTests.testName</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Result:</th>
+                                            <td>@labResults.resultValue</td>
+                                        </tr>
+                                        <tr class="hover-highlighting">
+                                            <th scope="row">Units:</th>
+                                            <td>@labResults.labTests.units</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="row">Ordered By:</th>
@@ -403,7 +403,7 @@
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="col">Pulse Oximetry:</th>
-                                            <td>@vitals.pulseOximetry%</td>
+                                            <td>@vitals.pulseOximetry.ToString("F1")%</td>
                                         </tr>
                                         <tr class="hover-highlighting">
                                             <th scope="col">Blood Pressure:</th>
