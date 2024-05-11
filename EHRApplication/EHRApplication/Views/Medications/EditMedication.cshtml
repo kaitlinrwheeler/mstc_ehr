@@ -26,7 +26,7 @@
             <!-- Description -->
             <div class="form-group">
                 <label for="description">Description:</label>
-                <input asp-for="description" value="@Model.description" type="text" id="description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInput('description', 100, 'description')" />
+                <input asp-for="description" value="@Model.description" type="text" id="description" class="form-control" data-bs-theme="auto" onblur="validateRequiredTextInputAlphaNumericPunctuation('description', 100, 'description')" />
                 <span asp-validation-for="description" id="descriptionError" class="validation-msg"></span>
             </div>
 

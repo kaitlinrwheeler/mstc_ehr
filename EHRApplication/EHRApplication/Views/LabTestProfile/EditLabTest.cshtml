@@ -24,7 +24,7 @@
 
             <div class="form-group mb-3">
                 <label for="description">Description:</label>
-                <textarea asp-for="description" type="text" id="description" name="description" class="form-control" maxlength="100" data-bs-theme="auto" oninput="updateCharacterCount('description', 'descriptionCounter')" onblur="validateRequiredTextInputAlphaNumeric('description', 100, 'description')"></textarea>
+                <textarea asp-for="description" type="text" id="description" name="description" class="form-control" maxlength="100" data-bs-theme="auto" oninput="updateCharacterCount('description', 'descriptionCounter')" onblur="validateRequiredTextInputAlphaNumericPunctuation('description', 100, 'description')"></textarea>
                 <span id="descriptionCounter" class="character-counter">0/100</span>
                 <span asp-validation-for="description" id="descriptionError" class="validation-msg"></span>
             </div>
