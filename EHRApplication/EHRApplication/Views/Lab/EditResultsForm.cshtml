@@ -92,7 +92,7 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn">Cancel</a>
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 
