@@ -36,8 +36,11 @@
                             <th scope="col">Created On:</th>
                             <th scope="col">Created By:</th>
                             <th scope="col">Active:</th>
-                            <th scope="col"></th> <!--empty column for the edit button-->
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th> <!--empty column for the edit button-->
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>

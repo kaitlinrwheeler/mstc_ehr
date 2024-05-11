@@ -64,8 +64,8 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>
-                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                       <button type="submit" class="btn delete-button text-nowrap" data-title="@plan.title" data-carePlanId="@plan.CPId">
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientCarePlanForm" asp-route-carePlanId="@plan.CPId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-title="@plan.title" data-carePlanId="@plan.CPId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>
                                     </td>

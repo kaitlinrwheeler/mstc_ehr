@@ -77,8 +77,8 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>
-                                        <a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                       <button type="submit" class="btn delete-button text-nowrap" data-message="@note.assocProvider.firstName @note.assocProvider.lastName on @note.createdAt.ToString("MM-dd-yyyy HH:mm")" data-noteId="@note.patientNotesId">
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-message="@note.assocProvider.firstName @note.assocProvider.lastName on @note.createdAt.ToString("MM-dd-yyyy HH:mm")" data-noteId="@note.patientNotesId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>
                                     </td>

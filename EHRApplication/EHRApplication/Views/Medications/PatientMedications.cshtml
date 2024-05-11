@@ -36,8 +36,11 @@
                             <th scope="col">Prescribed By:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -78,7 +81,7 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>
-                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                         <button type="submit" class="btn delete-button text-nowrap" data-message="@medication.medProfile.medName" data-patientMedId="@medication.patientMedId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>

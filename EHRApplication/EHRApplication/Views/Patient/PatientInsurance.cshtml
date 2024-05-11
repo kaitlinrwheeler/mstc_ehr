@@ -35,8 +35,11 @@
                             <th scope="col">Group Number:</th>
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -55,7 +58,7 @@
                                 {                                    
                                     <td>
                                         <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                       <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
+                                        <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>
                                     </td>
