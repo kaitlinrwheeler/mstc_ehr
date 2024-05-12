@@ -814,13 +814,85 @@ namespace EHRApplication.Controllers
                         }
                         else
                         {
-                            return Ok("Successfully deleted insurance.");
+                            return Ok("Successfully deleted medication.");
                         }
                     }
                     catch (Exception ex)
                     {
                         Console.Write(ex.ToString());
-                        return BadRequest("Failed to delete insurance");
+                        return BadRequest("Failed to delete medication.");
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Medication/DeleteMedAdminHistory")]
+        public IActionResult DeleteMedAdminHistory(int administrationId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [MedAdministrationHistory] WHERE administrationId = @administrationId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@administrationId", SqlDbType.Int).Value = administrationId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(administrationId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted administration history.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete administration history.");
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Medication/DeleteMedOrder")]
+        public IActionResult DeleteMedOrder(int orderId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [MedOrders] WHERE orderId = @orderId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(orderId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted medication order.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete medication order.");
                     }
                 }
             }

@@ -2,6 +2,7 @@
     ViewData["Title"] = "myEHR | Medication History";
     @model EHRApplication.ViewModels.PortalViewModel
     int mhn = ViewBag.MHN;
+    <script src="~/js/deleteMedAdmin.js" defer></script>
 }
 
 <section class="my-5 w-75 m-auto">
@@ -29,12 +30,13 @@
                             <th scope="col">Frequency:</th>
                             <th scope="col">Administered By:</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var meds in Model.MedAdministrationHistories)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@meds.administrationId" class="hover-highlighting">
                                 <td>@meds.medProfile.medName</td>
                                 <td>@meds.dateGiven.ToString("MM-dd-yyyy")</td>
                                 <td>@meds.timeGiven.ToString("HH:mm")</td>
@@ -42,7 +44,12 @@
                                 <td>@meds.status</td>
                                 <td>@meds.frequency</td>
                                 <td>@meds.providers.firstName @meds.providers.lastName, @meds.providers.providerId</td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td>
+                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-med-name="@meds.medProfile.medName" data-admin-date="@meds.dateGiven" data-admin-time="@meds.timeGiven" data-admin-id="@meds.administrationId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -55,3 +62,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the medication administration record for <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
