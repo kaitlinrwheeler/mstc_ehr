@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
             orderId = this.getAttribute('data-orderId');
             testDate = this.getAttribute('data-test-date');
             testName = this.getAttribute('data-test-name');
-            message = testName + ' ordered on ' + testDate;
+            testTime = this.getAttribute('data-test-time');
+            message = testName + ' ordered on ' + testDate + ' at ' + testTime;
             document.getElementById('messagePlaceholder').textContent = message; // Update the name placeholder
             modal.show();
         });

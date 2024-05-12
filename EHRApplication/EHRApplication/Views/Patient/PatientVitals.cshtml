@@ -61,7 +61,7 @@
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
                                 <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-message="@vital.visits.date" data-patientVitalId="@vital.vitalsId">
+                                    <button type="submit" class="btn delete-button text-nowrap" data-vital-date="@vital.visits.date" data-vital-time="@vital.visits.time" data-patientVitalId="@vital.vitalsId">
                                         <i class="fa-solid fa-trash me-2"></i>Delete
                                     </button>
                                 </td>
