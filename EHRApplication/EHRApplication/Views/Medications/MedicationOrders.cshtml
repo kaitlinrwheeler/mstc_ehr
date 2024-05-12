@@ -2,6 +2,7 @@
     @model EHRApplication.ViewModels.PortalViewModel
     ViewData["Title"] = "myEHR | Medication Orders";
     int mhn = ViewBag.MHN;
+    <script src="~/js/deleteMedOrder.js" defer></script>
 }
 
 
@@ -35,7 +36,7 @@
                     <tbody>
                         @foreach (var medOrder in Model.MedOrders)
                         {
-                            <tr class="hover-highlighting">
+                            <tr id="row-@medOrder.orderId" class="hover-highlighting">
                                 <td>@medOrder.orderId</td>
                                 <td>@medOrder.medProfile.medName</td>
                                 <td>@medOrder.frequency</td>
@@ -44,7 +45,12 @@
                                 <td>@medOrder.orderTime.ToString("HH:mm")</td>
                                 <td>@medOrder.providers.firstName @medOrder.providers.lastName, @medOrder.providers.providerId</td>
                                 
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td>
+                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedicationOrder" asp-route-orderId="@medOrder.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                    <button type="submit" class="btn delete-button text-nowrap" data-med-name="@medOrder.medProfile.medName" data-order-date="@medOrder.orderDate" data-order-id="@medOrder.orderId">
+                                        <i class="fa-solid fa-trash me-2"></i>Delete
+                                    </button>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -57,3 +63,22 @@
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the medication order for <span id="messagePlaceholder"></span>?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
