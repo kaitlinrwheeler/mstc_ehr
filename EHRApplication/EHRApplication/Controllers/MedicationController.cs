@@ -479,6 +479,10 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("route", "Please select a route.");
             }
+            if (!Regex.IsMatch(medProfile.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("MedicationProfile.description", "Description must only contain letters and spaces.");
+            }
             if (!ModelState.IsValid)
             {
                 return View(medProfile);
@@ -505,7 +509,11 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("route", "Please select a route.");
             }
-            if(!ModelState.IsValid)
+            if (!Regex.IsMatch(medProfile.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("MedicationProfile.description", "Description must only contain letters and spaces.");
+            }
+            if (!ModelState.IsValid)
             {
                 return View(medProfile);
             }
