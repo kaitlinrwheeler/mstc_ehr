@@ -30,7 +30,7 @@
                             <th scope="col">Allergy Name:</th>
                             <th scope="col">Allergy Type:</th>
                             <th scope="col">Onset Date:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             @if (User.IsInRole("Admin"))
                             {
                                 <th scope="col"></th>
@@ -45,7 +45,7 @@
                                 <td>@allergy.allergies.allergyName</td>
                                 <td>@allergy.allergies.allergyType</td>
                                 <td>@allergy.onSetDate.ToString("MM/dd/yyyy")</td>
-                                <td>@(allergy.activeStatus ? "Yes" : "No")</td>
+                                <td>@(allergy.activeStatus ? "Active" : "Inactive")</td>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>

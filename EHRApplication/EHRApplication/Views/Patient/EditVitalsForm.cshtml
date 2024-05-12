@@ -23,17 +23,17 @@
                 <input asp-for="Vital.patientId" value="@mhn" hidden />
                 <input asp-for="Vital.vitalsId" hidden />
 
-                <div class="form-group">
-                    <label for="visitId">Visit:</label>
-                    <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
-                        <option value="-1"></option>
-                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                        {
-                            <option value="@visit.visitsId.ToString()">
-                                @visit.date @visit.time
-                            </option>
-                        }
-                    </select>
+            <div class="form-group">
+                <label for="visitId">Visit:</label>
+                <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
+                    <option value="-1">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId.ToString()">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
                 <span asp-validation-for="Vital.visitId" id="vitalError" class="validation-msg"></span>
             </div>
 
@@ -107,7 +107,7 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientVitals" asp-route-mhn="@mhn">Cancel</a>
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 
@@ -120,7 +120,7 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save the vital information?
+                            Are you sure you want to save this vital record?
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

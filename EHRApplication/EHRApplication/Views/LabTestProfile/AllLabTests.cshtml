@@ -26,15 +26,15 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Test Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Units</th>
-                            <th scope="col">Reference Range</th>
-                            <th scope="col">Category</th>
+                            <th scope="col">Test Name:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">Units:</th>
+                            <th scope="col">Reference Range:</th>
+                            <th scope="col">Category:</th>
                             <!--This is coded here to only display if you are logged in as an Admin-->
                             @if (User.IsInRole("Admin"))
                             {
-                                <th scope="col">Active</th>
+                                <th scope="col">Status:</th>
                                 <th scope="col"></th> <!-- Empty columns for the button -->
                             }
                         </tr>
@@ -52,12 +52,12 @@
                                     <td>@labTest.referenceRange</td>
                                     <td>@labTest.category</td>
 
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
-                                            <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
-                                        </div>
-                                    </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Active" : "Inactive")</label>
+                                    </div>
+                                </td>
 
                                     <td><a type="button" class="btn blue-button text-nowrap" asp-controller="LabTestProfile" asp-action="EditLabTest" asp-route-testId="@labTest.testId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 

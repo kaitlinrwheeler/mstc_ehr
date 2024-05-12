@@ -53,19 +53,19 @@
                     <span asp-validation-for="@insurance.priority" id="priorityError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="@insurance.primaryPhysician">Primary Physician:</label>
-                    <select id="primaryPhysician" class="form-control" asp-for="@insurance.primaryPhysician" data-bs-theme="auto" required>
-                        <option value="-1">--Select--</option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId.ToString()">
-                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="@insurance.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="@insurance.primaryPhysician">Primary Physician:</label>
+                <select id="primaryPhysician" class="form-control" asp-for="@insurance.primaryPhysician" data-bs-theme="auto" required>
+                    <option value="-1">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="@insurance.primaryPhysician" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
                         
                 <div class="form-group">
                     <label asp-for="@insurance.active">Active?</label>
@@ -93,7 +93,7 @@
                                 <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Are you sure you want to save the insurance information?
+                                Are you sure you want to save patient insurance information?
                             </div>
                             <div class="modal-footer">
                                 <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

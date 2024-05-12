@@ -28,13 +28,13 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Med Id:</th>
-                            <th scope="col">Med Name:</th>
+                            @* <th scope="col">Med Id:</th> *@
+                            <th scope="col">Medication:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">Route:</th>
                             @if (User.IsInRole("Admin"))
                             {                                
-                                <th scope="col">Active:</th>
+                                <th scope="col">Status:</th>
                                 <th scope="col"></th>
                             }
                         </tr>
@@ -47,7 +47,7 @@
                             {
                                 <tr class="hover-highlighting">
                                     <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                    <td>@med.medId</td>
+                                    @*<td>@med.medId</td>*@
                                     <td>@med.medName</td>
                                     <td>@med.description</td>
                                     <td>@med.route</td>

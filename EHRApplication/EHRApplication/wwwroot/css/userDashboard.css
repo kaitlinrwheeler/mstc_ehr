@@ -58,3 +58,15 @@ h2 {
 .navigation-1:hover{
     color: white;
 }
+
+.card-box {
+    box-shadow: 0 4px 8px 0 rgb(100, 10, 10);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.3);
+    filter: brightness(1.05);
+}
+

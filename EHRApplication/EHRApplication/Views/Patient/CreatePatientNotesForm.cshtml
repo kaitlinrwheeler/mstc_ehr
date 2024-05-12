@@ -26,33 +26,33 @@
                     <span asp-validation-for="PatientNotesDetails.occurredOn" id="occurredOnError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="createdBy">Created By:</label>
-                    <select id="createdBy" class="form-control" name="createdBy" asp-for="PatientNotesDetails.createdBy" data-bs-theme="auto">
-                        <option value="-1">--Select--</option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId">
-                                @provider.firstName @provider.lastName
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="PatientNotesDetails.createdBy" id="createdByError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="createdBy">Created By:</label>
+                <select id="createdBy" class="form-control" name="createdBy" asp-for="PatientNotesDetails.createdBy" data-bs-theme="auto">
+                    <option value="-1">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PatientNotesDetails.createdBy" id="createdByError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="associatedProvider">Associated Provider:</label>
-                    <select id="createdBy" class="form-control" name="associatedProvider" asp-for="PatientNotesDetails.associatedProvider" data-bs-theme="auto">
-                        <option value="-1">--Select--</option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId">
-                                @provider.firstName @provider.lastName
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="PatientNotesDetails.associatedProvider" id="associatedProviderError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="associatedProvider">Associated Provider:</label>
+                <select id="createdBy" class="form-control" name="associatedProvider" asp-for="PatientNotesDetails.associatedProvider" data-bs-theme="auto">
+                    <option value="-1">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PatientNotesDetails.associatedProvider" id="associatedProviderError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="category">Category:</label>
@@ -60,19 +60,19 @@
                     <span asp-validation-for="PatientNotesDetails.category" id="categoryError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="visitsId">Visit:</label>
-                    <select id="visitsId" class="form-control" name="visitsId" asp-for="PatientNotesDetails.visitsId" data-bs-theme="auto">
-                        <option value="-1">--Select--</option>
-                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                        {
-                            <option value="@visit.visitsId.ToString()">
-                                @visit.date @visit.time
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="PatientNotesDetails.visitsId" id="visitsIdError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="visitsId">Visit:</label>
+                <select id="visitsId" class="form-control" name="visitsId" asp-for="PatientNotesDetails.visitsId" data-bs-theme="auto">
+                    <option value="-1">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId.ToString()">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PatientNotesDetails.visitsId" id="visitsIdError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group mb-3">
                     <label for="note">Note:</label>

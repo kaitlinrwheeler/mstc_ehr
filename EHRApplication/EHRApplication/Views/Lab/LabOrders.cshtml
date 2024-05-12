@@ -49,13 +49,13 @@
                                 <td>@labOrders.orderTime.ToString("HH:mm")</td>
                                 <td>@labOrders.labTests.testName</td>
                                 <td>@labOrders.completionStatus</td>
-                                <td>@labOrders.providers.firstName @labOrders.providers.lastName</td>
+                                <td>@labOrders.providers.firstName @labOrders.providers.lastName, @labOrders.providers.providerId</td>
                                 <!--The following will be the button that links to the single visits view once that page is complete.-->
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@labOrders.visitsId" asp-route-mhn="@labOrders.MHN">View</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@labOrders.visitsId" asp-route-mhn="@labOrders.MHN"><i class="fa-solid fa-pen me-2"></i>View</a></td>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>
-                                        <a type="button" class="btn blue-button" asp-controller="Lab" asp-action="EditOrderForm" asp-route-orderId="@labOrders.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditOrderForm" asp-route-orderId="@labOrders.orderId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                         <button type="submit" class="btn delete-button text-nowrap" data-test-name="@labOrders.labTests.testName" data-test-date="@labOrders.orderDate" data-orderId="@labOrders.orderId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>
@@ -68,7 +68,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No Lab orders found.</h1>
+                <h1 class="text-center display-6">No lab orders found.</h1>
             }
         </div>
     </div>

@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "myEHR | Patient Contact Form";
     <link rel="stylesheet" href="~/css/forms.css">
-
     <script src="~/js/validation.js"></script>
 
     var contact = Model.PatientContact;
@@ -138,6 +137,7 @@
                 </div>
 
                 <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientOverview" asp-route-mhn="@mhn">Cancel</a>
                     <input type="submit" class="btn blue-button" data-bs-theme="auto" />
                 </div>
             </form>

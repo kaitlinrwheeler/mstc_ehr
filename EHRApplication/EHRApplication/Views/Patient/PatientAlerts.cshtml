@@ -30,7 +30,7 @@
                             <th scope="col">Name:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             @if (User.IsInRole("Admin"))
                             {                                
                                 <th scope="col"></th>
@@ -45,7 +45,7 @@
                             <td>@alert.alertName</td>
                             <td>@alert.startDate.ToString("MM/dd/yyyy")</td>
                             <td>@alert.endDate.ToString("MM/dd/yyyy")</td>
-                            <td>@(alert.activeStatus ? "Yes" : "No")</td>
+                            <td>@(alert.activeStatus ? "Active" : "Inactive")</td>
                             @if (User.IsInRole("Admin"))
                             {
                                 <td>

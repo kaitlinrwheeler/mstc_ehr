@@ -19,19 +19,19 @@
 
                 <input asp-for="LabResultsDetails.MHN" hidden />
 
-                <div class="form-group">
-                    <label for="testId">Test Name:</label>
-                    <select id="testId" name="testId" class="form-control" asp-for="LabResultsDetails.testId" data-bs-theme="auto" onblur="validateRequiredInput('testId', 'test name')">
-                        <option value="0"></option>
-                        @foreach (var labTests in ListService.GetLabTests())
-                        {
-                            <option value="@labTests.testId">
-                                @labTests.testName
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabResultsDetails.testId" id="testIdError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="testId">Test Name:</label>
+                <select id="testId" name="testId" class="form-control" asp-for="LabResultsDetails.testId" data-bs-theme="auto" onblur="validateRequiredInput('testId', 'test name')">
+                    <option value="0">-- Select Lab Test --</option>
+                    @foreach (var labTests in ListService.GetLabTests())
+                    {
+                        <option value="@labTests.testId">
+                            @labTests.testName
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabResultsDetails.testId" id="testIdError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="resultValue">Result Value:</label>
@@ -39,30 +39,30 @@
                     <span asp-validation-for="LabResultsDetails.resultValue" id="resultValueError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="abnormalFlag">Abnormal Flag:</label>
-                    <select class="form-control" name="abnormalFlag" asp-for="LabResultsDetails.abnormalFlag" data-bs-theme="auto">
-                        <option value="0"></option>
-                        <option value="Low">Low</option>
-                        <option value="Normal">Normal</option>
-                        <option value="High">High</option>
-                    </select>
-                    <span asp-validation-for="LabResultsDetails.abnormalFlag" id="abnormalFlagError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="abnormalFlag">Abnormal Flag:</label>
+                <select class="form-control" name="abnormalFlag" asp-for="LabResultsDetails.abnormalFlag" data-bs-theme="auto">
+                    <option value="0">-- Select Result Flag --</option>
+                    <option value="Low">Low</option>
+                    <option value="Normal">Normal</option>
+                    <option value="High">High</option>
+                </select>
+                <span asp-validation-for="LabResultsDetails.abnormalFlag" id="abnormalFlagError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="visitsId">Visit:</label>
-                    <select class="form-control" name="visitsId" asp-for="LabResultsDetails.visitsId" data-bs-theme="auto">
-                        <option value="0"></option>
-                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                        {
-                            <option value="@visit.visitsId">
-                                @visit.date @visit.time
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabResultsDetails.visitsId" id="visitError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="visitsId">Visit:</label>
+                <select class="form-control" name="visitsId" asp-for="LabResultsDetails.visitsId" data-bs-theme="auto">
+                    <option value="0">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabResultsDetails.visitsId" id="visitError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="date">Date of Order:</label>
@@ -76,22 +76,22 @@
                     <span asp-validation-for="LabResultsDetails.time" id="timeError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="orderedBy">Provider:</label>
-                    <select id="orderedBy" class="form-control" name="orderedBy" asp-for="LabResultsDetails.orderedBy" data-bs-theme="auto" onblur="validateRequiredInput('orderedBy', 'provider')">
-                        <option value="0"></option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId">
-                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabResultsDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="orderedBy">Provider:</label>
+                <select id="orderedBy" class="form-control" name="orderedBy" asp-for="LabResultsDetails.orderedBy" data-bs-theme="auto" onblur="validateRequiredInput('orderedBy', 'provider')">
+                    <option value="0">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabResultsDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
 
                 <div class="mt-3 d-flex justify-content-center">
-                    <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn">Cancel</a>
                     <input type="submit" class="btn blue-button" data-bs-theme="auto" />
                 </div>
             </form>

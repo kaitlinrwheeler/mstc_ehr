@@ -22,16 +22,16 @@
                 <input asp-for="@problem.MHN" value="@mhn" hidden />
                 <input asp-for="@problem.patientProblemsId" hidden />
 
-                <div class="form-group">
-                    <label for="priority">Priority Level:</label>
-                    <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
-                        <option value=""></option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                    </select>
-                    <span asp-validation-for="@problem.priority" id="priorityError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="priority">Priority Level:</label>
+                <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
+                    <option value="">-- Select Priority Level --</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                <span asp-validation-for="@problem.priority" id="priorityError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="description">Description:</label>
@@ -45,43 +45,43 @@
                     <span asp-validation-for="@problem.ICD_10" id="ICD_10Error" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="immediacy">Immediacy:</label>
-                    <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
-                        <option value=""></option>
-                        <option value="Routine">Routine</option>
-                        <option value="Urgent">Urgent</option>
-                    </select>
-                    <span asp-validation-for="@problem.immediacy" id="immediacyError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="immediacy">Immediacy:</label>
+                <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
+                    <option value="">-- Select Immediacy --</option>
+                    <option value="Routine">Routine</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+                <span asp-validation-for="@problem.immediacy" id="immediacyError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="createdBy">Created By:</label>
-                    <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
-                        <option value="0"></option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId.ToString()">
-                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="PatientProblemsDetails.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="createdBy">Created By:</label>
+                <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
+                    <option value="0">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PatientProblemsDetails.createdBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="visitsId">Visit:</label>
-                    <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
-                        <option value="0"></option>
-                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                        {
-                            <option value="@visit.visitsId.ToString()">
-                                @visit.date @visit.time
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="PatientProblemsDetails.visitsId" id="vitalError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="visitsId">Visit:</label>
+                <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
+                    <option value="0">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId.ToString()">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PatientProblemsDetails.visitsId" id="vitalError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="active">Active?</label>
@@ -96,11 +96,11 @@
                     <span asp-validation-for="@problem.active" id="admittedError" class="validation-msg"></span>
                 </div>
 
-                <!-- Submit Button -->
-                <div class="mt-3 d-flex justify-content-center">
-                    <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
-                    <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
-                </div>
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Problems" asp-action="Index" asp-route-mhn="@mhn">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+            </div>
 
                 <!-- confirmation modal-->
                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">

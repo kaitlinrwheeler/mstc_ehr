@@ -20,44 +20,44 @@
                 <input name="MHN" asp-for="LabOrdersDetails.MHN" hidden />
                 <input asp-for="LabOrdersDetails.orderId" hidden />
 
-                <div class="form-group">
-                    <label for="testId">Test Name:</label>
-                    <select id="testId" name="testId" class="form-control" asp-for="LabOrdersDetails.testId" data-bs-theme="auto" onblur="validateRequiredInput('testId', 'test name')">
-                        <option value="0"></option>
-                        @foreach (var labTests in ListService.GetLabTests())
-                        {
-                            <option value="@labTests.testId">
-                                @labTests.testName
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabOrdersDetails.testId" id="testIdError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="testId">Test Name:</label>
+                <select id="testId" name="testId" class="form-control" asp-for="LabOrdersDetails.testId" data-bs-theme="auto" onblur="validateRequiredInput('testId', 'test name')">
+                    <option value="0">-- Select Lab Test --</option>
+                    @foreach (var labTests in ListService.GetLabTests())
+                    {
+                        <option value="@labTests.testId">
+                            @labTests.testName
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabOrdersDetails.testId" id="testIdError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="completionStatus">Status:</label>
-                    <select class="form-control" name="completionStatus" asp-for="LabOrdersDetails.completionStatus" data-bs-theme="auto">
-                        <option value="0"></option>
-                        <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-                    <span asp-validation-for="LabOrdersDetails.completionStatus" id="statusError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="completionStatus">Status:</label>
+                <select class="form-control" name="completionStatus" asp-for="LabOrdersDetails.completionStatus" data-bs-theme="auto">
+                    <option value="0">-- Select Status --</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                <span asp-validation-for="LabOrdersDetails.completionStatus" id="statusError" class="validation-msg"></span>
+            </div>
 
-                <div class="form-group">
-                    <label for="visitsId">Visit:</label>
-                    <select class="form-control" name="visitsId" asp-for="LabOrdersDetails.visitsId" data-bs-theme="auto">
-                        <option value="0"></option>
-                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                        {
-                            <option value="@visit.visitsId">
-                                @visit.date @visit.time
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabOrdersDetails.visitsId" id="visitError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="visitsId">Visit:</label>
+                <select class="form-control" name="visitsId" asp-for="LabOrdersDetails.visitsId" data-bs-theme="auto">
+                    <option value="0">-- Select Visit --</option>
+                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                    {
+                        <option value="@visit.visitsId">
+                            @visit.date @visit.time
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabOrdersDetails.visitsId" id="visitError" class="validation-msg"></span>
+            </div>
 
                 <div class="form-group">
                     <label for="orderDate">Date of Order:</label>
@@ -71,44 +71,45 @@
                     <span asp-validation-for="LabOrdersDetails.orderTime" id="timeError" class="validation-msg"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="orderedBy">Provider:</label>
-                    <select id="orderedBy" class="form-control" name="orderedBy" asp-for="LabOrdersDetails.orderedBy" data-bs-theme="auto" onblur="validateRequiredInput('orderedBy', 'provider')">
-                        <option value="0"></option>
-                        @foreach (var provider in ListService.GetProviders())
-                        {
-                            <option value="@provider.providerId.ToString()">
-                                @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
-                            </option>
-                        }
-                    </select>
-                    <span asp-validation-for="LabOrdersDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
-                </div>
+            <div class="form-group">
+                <label for="orderedBy">Provider:</label>
+                <select id="orderedBy" class="form-control" name="orderedBy" asp-for="LabOrdersDetails.orderedBy" data-bs-theme="auto" onblur="validateRequiredInput('orderedBy', 'provider')">
+                    <option value="0">-- Select A Provider --</option>
+                    @foreach (var provider in ListService.GetProviders())
+                    {
+                        <option value="@provider.providerId.ToString()">
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="LabOrdersDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
+            </div>
 
-                <!-- Submit Button -->
-                <div class="mt-3 d-flex justify-content-center">
-                    <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
-                    <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
-                </div>
+            <!-- Submit Button -->
+            <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Lab" asp-action="LabOrders" asp-route-mhn="@mhn">Cancel</a>
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+            </div>
 
-                <!-- confirmation modal-->
-                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
-                                <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to save the lab order information?
-                            </div>
-                            <div class="modal-footer">
-                                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+
+             <!-- confirmation modal-->
+             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                             Are you sure you want to save this lab order information?
+                         </div>
+                         <div class="modal-footer">
+                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                             <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                         </div>
+                     </div>
+                 </div>
             </form>
         </div>
     }
