@@ -51,10 +51,13 @@
                                 <td>@meds.providers.firstName @meds.providers.lastName, @meds.providers.providerId</td>
                                 @if (User.IsInRole("Admin"))
                                 {
-                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-med-name="@meds.medProfile.medName" data-admin-date="@meds.dateGiven" data-admin-time="@meds.timeGiven" data-admin-id="@meds.administrationId">
-                                        <i class="fa-solid fa-trash me-2"></i>Delete
-                                    </button>                                }
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-med-name="@meds.medProfile.medName" data-admin-date="@meds.dateGiven" data-admin-time="@meds.timeGiven" data-admin-id="@meds.administrationId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>                                
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
