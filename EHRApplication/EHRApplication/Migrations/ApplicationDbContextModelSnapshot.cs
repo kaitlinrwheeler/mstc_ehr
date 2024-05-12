@@ -1263,6 +1263,29 @@ namespace EHRApplication.Migrations
                     b.ToTable("Providers");
                 });
 
+            modelBuilder.Entity("EHRApplication.Models.Verification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VerificationCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VerificationToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Verifications");
+                });
+
             modelBuilder.Entity("EHRApplication.Models.Visits", b =>
                 {
                     b.Property<int>("visitsId")

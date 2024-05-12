@@ -8,34 +8,50 @@
 
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Create Allergy</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Create Allergy</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="allergyForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="allergyForm" enctype="multipart/form-data">
+                <!-- Allergy Name -->
+                <div class="form-group">
+                    <label for="allergyName">Allergy Name:</label>
+                    <input asp-for="allergyName" type="text" id="allergyName" name="allergyName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('allergyName', 'name for the allergy')" />
+                    <span asp-validation-for="allergyName" id="allergyNameError" class="validation-msg"></span>
+                </div>
 
-            <!-- Allergy Name -->
-            <div class="form-group">
-                <label for="allergyName">Allergy Name:</label>
-                <input asp-for="allergyName" type="text" id="allergyName" name="allergyName" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('allergyName', 'name for the allergy')" />
-                <span asp-validation-for="allergyName" id="allergyNameError" class="validation-msg"></span>
-            </div>
-
-            <!-- Allergy Type -->
-            <div class="form-group">
-                <label for="allergyType">Allergy Type:</label>
-                <input asp-for="allergyType" type="text" id="allergyType" name="allergyType" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('allergyType', 'type or category')" />
-                <span asp-validation-for="allergyType" id="allergyTypeError" class="validation-msg"></span>
-            </div>
+                <!-- Allergy Type -->
+                <div class="form-group">
+                    <label for="allergyType">Allergy Type:</label>
+                    <input asp-for="allergyType" type="text" id="allergyType" name="allergyType" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('allergyType', 'type or category')" />
+                    <span asp-validation-for="allergyType" id="allergyTypeError" class="validation-msg"></span>
+                </div>
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                <a type="button" class="btn btn-secondary me-2" asp-controller="Allergy" asp-action="Index">Cancel</a>
                 <input type="submit" class="btn blue-button" value="Submit" />
             </div>
 
-        </form>
+            </form>
+        </div>
+    }
+    else
+    {
+    //This makes the page redirect to the previous page.
+    <script>
+        window.history.back();
+    </script>
+
+    //This is a fail safe if the javascript is turned off it will still show an error.
+    <div class="card-body" data-bs-theme="auto">
+        Admin permission required.<br />
+        <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+        <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
     </div>
+    }
 </section>

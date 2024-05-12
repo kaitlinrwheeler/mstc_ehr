@@ -927,10 +927,10 @@ namespace EHRApplication.Services
                         vitals.patientId = Convert.ToInt32(dataReader["patientId"]);
                         vitals.patients = GetPatientByMHN(vitals.patientId);
                         vitals.painLevel = Convert.ToInt32(dataReader["painLevel"]);
-                        vitals.temperature = Convert.ToInt32(dataReader["temperature"]);
+                        vitals.temperature = Convert.ToDecimal (dataReader["temperature"]);
                         vitals.bloodPressure = Convert.ToString(dataReader["bloodPressure"]);
                         vitals.respiratoryRate = Convert.ToInt32(dataReader["respiratoryRate"]);
-                        vitals.pulseOximetry = Convert.ToInt32(dataReader["pulseOximetry"]);
+                        vitals.pulseOximetry = Convert.ToDecimal(dataReader["pulseOximetry"]);
 
                         vitals.heightInches = Convert.ToInt32(dataReader["heightInches"]);
                         vitals.weightPounds = Convert.ToInt32(dataReader["weightPounds"]);
@@ -1250,7 +1250,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy active, visitsId " +
+                string sql = "SELECT patientProblemsId, MHN, priority, description, ICD_10, immediacy, createdAt, createdBy, active, visitsId " +
                     "FROM [dbo].[PatientProblems] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -1296,7 +1296,7 @@ namespace EHRApplication.Services
                 connection.Open();
 
                 // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT CPId, MHN, priority, startDate, endDate, active, title, diagnosis " +
+                string sql = "SELECT CPId, visitsId, MHN, priority, startDate, endDate, active, title, diagnosis " +
                     "FROM [dbo].[CarePlan] WHERE visitsId = @visitId";
 
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -2565,6 +2565,69 @@ namespace EHRApplication.Services
                     connection.Close();
                 }
             }
+            return;
+        }
+
+        // retreive patient MHN from alert record
+        public int GetPatientFromAlert(int alertId)
+        {
+            int mhn;
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "SELECT MHN FROM [Alerts] WHERE alertId = @alertId";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@alertId", alertId);
+
+                    conn.Open();
+                    mhn = Convert.ToInt32(cmd.ExecuteScalar());
+                    conn.Close();
+                }
+            }
+
+            return mhn;
+        }
+
+        // check if patient has alerts
+        public bool CheckPatientAlerts(int mhn)
+        {
+            bool hasAlerts;
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM [Alerts] WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    conn.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    hasAlerts = count > 0;
+                    conn.Close();
+                }
+            }
+
+            return hasAlerts;
+        }
+
+        // set hasAlerts to false if patient has no alerts
+        public void DeleteHasAlerts(int mhn)
+        {
+            using (SqlConnection conn = new SqlConnection(this._connectionString))
+            {
+                string sql = "UPDATE [PatientDemographic] SET hasAlerts = 'false' WHERE MHN = @mhn";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@mhn", mhn);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+
             return;
         }
     }

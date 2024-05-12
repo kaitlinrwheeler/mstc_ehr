@@ -4,6 +4,7 @@ using EHRApplication.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace EHRApplication.Controllers
@@ -69,7 +70,7 @@ namespace EHRApplication.Controllers
         public IActionResult PatientMedications(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // New list to hold all the patients in the database.
             List<PatientMedications> patientMeds = new List<PatientMedications>();
@@ -126,7 +127,7 @@ namespace EHRApplication.Controllers
         {
             //Creates a new instance of the viewModel
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             // New list to hold all the patients in the database.
             List<MedOrders> medOrdersList = new List<MedOrders>();
@@ -150,7 +151,7 @@ namespace EHRApplication.Controllers
 
                         medOrders.orderId = Convert.ToInt32(dataReader["orderId"]);
                         medOrders.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        medOrders.patients = GetPatientByMHN(medOrders.MHN);
+                        medOrders.patients = _listService.GetPatientByMHN(medOrders.MHN);
 
                         medOrders.visitId = Convert.ToInt32(dataReader["visitId"]);
                         medOrders.visits = _listService.GetVisitByVisitId(medOrders.visitId);
@@ -176,68 +177,13 @@ namespace EHRApplication.Controllers
             }
             return View(viewModel);
         }
-
-        private PatientDemographic GetPatientByMHN(int mhn)
-        {
-            //Creating a new patientDemographic instance
-            PatientDemographic patientDemographic = new PatientDemographic();
-
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                connection.Open();
-
-                // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        //Assign properties for the patient demographic from the database
-                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
-                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
-                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
-                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
-                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
-                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
-                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
-                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
-                        patientDemographic.race = Convert.ToString(dataReader["race"]);
-                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
-                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
-                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
-                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
-                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
-                        //Gets the contact info for this patient using the MHN that links to the contact info table
-                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
-                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return patientDemographic;
-        }
+               
 
         public IActionResult MedAdministrationHistory(int mhn)
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //Calls the list service to get all of the med history associated to the passed in mhn number.
             List<MedAdministrationHistory> patientHistory = _listService.GetMedAdministrationHistoryByMHN(mhn);
@@ -257,7 +203,7 @@ namespace EHRApplication.Controllers
         {
             //This will set the banner up and the view model so we can view everything
             PortalViewModel viewModel = new PortalViewModel();
-            viewModel.PatientDemographic = GetPatientByMHN(mhn);
+            viewModel.PatientDemographic = _listService.GetPatientByMHN(mhn);
 
             //Calls the list service to get all of the Lab Results associated to the passed in mhn number.
             List<LabResults> patientHistory = _listService.GetPatientsLabResultsByMHN(mhn);
@@ -533,6 +479,10 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("route", "Please select a route.");
             }
+            if (!Regex.IsMatch(medProfile.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("MedicationProfile.description", "Description must only contain letters and spaces.");
+            }
             if (!ModelState.IsValid)
             {
                 return View(medProfile);
@@ -559,7 +509,11 @@ namespace EHRApplication.Controllers
             {
                 ModelState.AddModelError("route", "Please select a route.");
             }
-            if(!ModelState.IsValid)
+            if (!Regex.IsMatch(medProfile.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("MedicationProfile.description", "Description must only contain letters and spaces.");
+            }
+            if (!ModelState.IsValid)
             {
                 return View(medProfile);
             }
@@ -834,6 +788,114 @@ namespace EHRApplication.Controllers
             }
 
             return RedirectToAction("MedADministrationHistory", new { mhn = medHistory.MHN });
+        }
+
+        [HttpPost]
+        [Route("Medication/DeletePatientMedication")]
+        public IActionResult DeletePatientMedication(int patientMedId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientMedications] WHERE patientMedId = @patientMedId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@patientMedId", SqlDbType.Int).Value = patientMedId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(patientMedId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted medication.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete medication.");
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Medication/DeleteMedAdminHistory")]
+        public IActionResult DeleteMedAdminHistory(int administrationId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [MedAdministrationHistory] WHERE administrationId = @administrationId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@administrationId", SqlDbType.Int).Value = administrationId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(administrationId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted administration history.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete administration history.");
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("Medication/DeleteMedOrder")]
+        public IActionResult DeleteMedOrder(int orderId)
+        {
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [MedOrders] WHERE orderId = @orderId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
+
+                    try
+                    {
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        connection.Close();
+
+                        if (rowsAffected <= 0)
+                        {
+                            throw new Exception(orderId + " not found.");
+                        }
+                        else
+                        {
+                            return Ok("Successfully deleted medication order.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                        return BadRequest("Failed to delete medication order.");
+                    }
+                }
+            }
         }
     }
 }

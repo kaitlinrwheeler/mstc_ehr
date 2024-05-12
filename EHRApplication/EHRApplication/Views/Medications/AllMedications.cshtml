@@ -2,6 +2,7 @@
     ViewData["Title"] = "myEHR | All Medications";
     @model List<MedicationProfile>
     <script src="~/js/allMedications.js" defer></script>
+    bool activeMeds = false;
 }
 
 
@@ -11,12 +12,16 @@
             <div class="text-center w-100" data-bs-theme="auto">
                 All Medications
             </div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedication">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            <!--This is coded here to only display if you are logged in as an Admin-->
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedication">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body" data-bs-theme="auto">
             @if (Model.Any()){
@@ -24,38 +29,61 @@
                     <thead>
                         <tr>
                             <th scope="col">Med Id:</th>
-                            <th scope="col">Med Name:</th>
+                            <th scope="col">Medication:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">Route:</th>
-                            <th scope="col">Active:</th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col">Status:</th>
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var med in Model)
                         {
-                            <tr class="hover-highlighting"><!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
-                                <td>@med.medId</td>
-                                <td>@med.medName</td>
-                                <td>@med.description</td>
-                                <td>@med.route</td>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            if (User.IsInRole("Admin"))
+                            {
+                                <tr class="hover-highlighting">
+                                    <!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@med.medId</td>
+                                    <td>@med.medName</td>
+                                    <td>@med.description</td>
+                                    <td>@med.route</td>
 
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@med.medId" data-medId="@med.medId" @(med.activeStatus ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Active" : "Inactive")</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
-                                    <form method="post">
-                                        <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedication" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                    </form>
-                                </td>
-                            </tr>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@med.medId" data-medId="@med.medId" @(med.activeStatus ? "checked" : "")>
+                                            <label class="form-check-label" for="switch@med.medId">@(med.activeStatus ? "Active" : "Inactive")</label>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!--I am unsure why there has to be a form on the page in order to make the form-switch to work oh maybe because its is form switch?? ask jordan i just reused his code.-->
+                                        <form method="post">
+                                            <a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditMedication" asp-route-medId="@med.medId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                            else if(med.activeStatus == true)
+                            {
+                                activeMeds = true;
+                                <tr class="hover-highlighting"><!-- Class needed for highlighting rows for ease of use. Defined in site.css -->
+                                    <td>@med.medId</td>
+                                    <td>@med.medName</td>
+                                    <td>@med.description</td>
+                                    <td>@med.route</td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
+                @if (activeMeds == false && !User.IsInRole("Admin"))
+                {
+                    <h1 class="text-center display-6">No active medications found.</h1>
+                }
             }else{
                 <h1 class="text-center display-6">No medications found.</h1>
             }

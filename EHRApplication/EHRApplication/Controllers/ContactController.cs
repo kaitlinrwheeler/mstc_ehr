@@ -158,5 +158,34 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientOverview", "Patient", new { mhn = contact.MHN } );
         }
 
+
+        [HttpPost]
+        public IActionResult DeletePatientContact(int mhn, int contactId)
+        {
+            // Delete the patient contact record from the database
+            using (SqlConnection connection = new SqlConnection(this._connectionString))
+            {
+                string sql = "DELETE FROM [PatientContact] WHERE patientContactId = @contactId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@contactId", SqlDbType.Int).Value = contactId;
+
+                    connection.Open();
+                    
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex) { Console.Write(ex.ToString()); }
+
+                    connection.Close();
+                }
+            }
+
+            // Redirect to a relevant page after deletion
+            return RedirectToAction("PatientOverview", "Patient", new { mhn = mhn });
+        }
+
     }
 }

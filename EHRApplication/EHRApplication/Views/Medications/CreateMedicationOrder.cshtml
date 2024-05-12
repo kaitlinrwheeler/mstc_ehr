@@ -9,68 +9,69 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Add New Medication Order</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Add New Medication Order</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="patientMedForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="patientMedForm" enctype="multipart/form-data">
+                <input asp-for="MedOrdersDetails.MHN" value="@mhn" hidden />
 
-            <input asp-for="MedOrdersDetails.MHN" value="@mhn" hidden />
+                <!--Medication profile-->
+                <div class="form-group">
+                    <label for="medId">Medication:</label>
+                    <select id="medId" name="medId" class="form-control" asp-for="MedOrdersDetails.medId" data-bs-theme="auto">
+                        <option value="0">-- Select Medication --</option>
+                        @foreach (var med in ListService.GetMedicationProfiles())
+                        {
+                            <option value="@med.medId">@med.medName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="MedOrdersDetails.medId" class="validation-msg"></span>
+                </div>
 
-            <!--Medication profile-->
-            <div class="form-group">
-                <label for="medId">Medication:</label>
-                <select id="medId" name="medId" class="form-control" asp-for="MedOrdersDetails.medId" data-bs-theme="auto">
-                    <option value="0">-- Select Medication --</option>
-                    @foreach (var med in ListService.GetMedicationProfiles())
-                    {
-                        <option value="@med.medId">@med.medName</option>
-                    }
-                </select>
-                <span asp-validation-for="MedOrdersDetails.medId" class="validation-msg"></span>
-            </div>
+                <!--Visit-->
+                <div class="form-group">
+                    <label for="visitId">Visit:</label>
+                    <select id="visitId" name="visitId" class="form-control" asp-for="MedOrdersDetails.visitId" data-bs-theme="auto">
+                        <option value="0">-- Select Visit --</option>
+                        @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
+                        {
+                            <option value="@visit.visitsId">
+                                @visit.date @visit.time
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="MedOrdersDetails.visitId" class="validation-msg"></span>
+                </div>
 
-            <!--Visit-->
-            <div class="form-group">
-                <label for="visitId">Visit:</label>
-                <select id="visitId" name="visitId" class="form-control" asp-for="MedOrdersDetails.visitId" data-bs-theme="auto">
-                    <option value="0">-- Select Visit --</option>
-                    @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
-                    {
-                        <option value="@visit.visitsId">
-                            @visit.date @visit.time
-                        </option>
-                    }
-                </select>
-                <span asp-validation-for="MedOrdersDetails.visitId" class="validation-msg"></span>
-            </div>
-
-            <!--Frequency-->
-            <div class="form-group">
-                <label for="frequency">Frequency:</label>
-                <input name="frequency" type="text" id="frequency" asp-for="MedOrdersDetails.frequency" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('frequency', 'frequency')" />
-                <span asp-validation-for="MedOrdersDetails.frequency" id="frequencyError" class="validation-msg"></span>
-            </div>
+                <!--Frequency-->
+                <div class="form-group">
+                    <label for="frequency">Frequency:</label>
+                    <input name="frequency" type="text" id="frequency" asp-for="MedOrdersDetails.frequency" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('frequency', 'frequency')" />
+                    <span asp-validation-for="MedOrdersDetails.frequency" id="frequencyError" class="validation-msg"></span>
+                </div>
 
 
-            <!-- status -->
-            <div class="form-group">
-                <label for="fulfillmentStatus">Status:</label>
-                <select name ="fulfillmentStatus" type="text" id="status" asp-for="MedOrdersDetails.fulfillmentStatus" class="form-control" data-bs-theme="auto">
-                    <option value="">-- Select Status --</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Filled">Filled</option>
-                </select>
-                <span asp-validation-for="MedOrdersDetails.fulfillmentStatus" class="validation-msg"></span>
-            </div>
+                <!-- status -->
+                <div class="form-group">
+                    <label for="fulfillmentStatus">Status:</label>
+                    <select name ="fulfillmentStatus" type="text" id="status" asp-for="MedOrdersDetails.fulfillmentStatus" class="form-control" data-bs-theme="auto">
+                        <option value="">-- Select Status --</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Filled">Filled</option>
+                    </select>
+                    <span asp-validation-for="MedOrdersDetails.fulfillmentStatus" class="validation-msg"></span>
+                </div>
 
             <!--Provider-->
             <div class="form-group">
                 <label for="orderedBy">Prescribed By:</label>
                 <select name="orderedBy" class="form-control" asp-for="MedOrdersDetails.orderedBy" data-bs-theme="auto">
-                    <option value="0">-- Select Provider --</option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -81,24 +82,39 @@
                 <span asp-validation-for="MedOrdersDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
-            <!--Date-->
-            <div class="form-group">
-                <label for="orderDate">Date of Order:</label>
-                <input name="orderDate" asp-for="MedOrdersDetails.orderDate" type="date" id="date" class="form-control" onblur="validateDatePicker('date', 'date of visit')" data-bs-theme="auto" required />
-                <span asp-validation-for="MedOrdersDetails.orderDate" id="dateError" class="validation-msg"></span>
-            </div>
+                <!--Date-->
+                <div class="form-group">
+                    <label for="orderDate">Date of Order:</label>
+                    <input name="orderDate" asp-for="MedOrdersDetails.orderDate" type="date" id="date" class="form-control" onblur="validateDatePicker('date', 'date of visit')" data-bs-theme="auto" required />
+                    <span asp-validation-for="MedOrdersDetails.orderDate" id="dateError" class="validation-msg"></span>
+                </div>
 
-            <!--Time-->
-            <div class="form-group">
-                <label for="orderTime">Time of Order:</label>
-                <input name="orderTime" asp-for="MedOrdersDetails.orderTime" type="time" id="time" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="MedOrdersDetails.orderTime" id="timeError" class="validation-msg"></span>
-            </div>
+                <!--Time-->
+                <div class="form-group">
+                    <label for="orderTime">Time of Order:</label>
+                    <input name="orderTime" asp-for="MedOrdersDetails.orderTime" type="time" id="time" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="MedOrdersDetails.orderTime" id="timeError" class="validation-msg"></span>
+                </div>
 
-            <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
-                <input type="submit" class="btn blue-button" data-bs-theme="auto" value="Submit" />
-            </div>
-        </form>
-    </div>
+                 <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Medications" asp-action="MedicationOrders" asp-route-mhn="@mhn">Cancel</a>
+                    <input type="submit" class="btn blue-button" data-bs-theme="auto" value="Submit" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>

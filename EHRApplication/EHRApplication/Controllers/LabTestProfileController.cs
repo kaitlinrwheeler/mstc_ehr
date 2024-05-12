@@ -1,7 +1,9 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace EHRApplication.Controllers
@@ -74,6 +76,11 @@ namespace EHRApplication.Controllers
         {
             // We want to default to active when created.
             labTest.Active = true;
+
+            if (!Regex.IsMatch(labTest.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("LabTestProfile.description", "Description must only contain letters and spaces.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -150,6 +157,10 @@ namespace EHRApplication.Controllers
             // We want to default to active when edited.
             labTest.Active = true;
 
+            if (!Regex.IsMatch(labTest.description, @"^[a-zA-Z0-9\s.,'""!?()\-]*$"))
+            {
+                ModelState.AddModelError("LabTestProfile.description", "Description must only contain letters and spaces.");
+            }
             if (ModelState.IsValid)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))

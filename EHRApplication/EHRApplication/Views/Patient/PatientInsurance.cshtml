@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "myEHR | Patient insurance";
+    ViewData["Title"] = "myEHR | Patient Insurance";
     // The list of patients being pulled in.
     @model EHRApplication.ViewModels.PortalViewModel
     var patient = Model.PatientDemographic;
@@ -12,12 +12,15 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Patient Insurance</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {                
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (patient != null && Model.PatientInsurances.Any())
@@ -32,38 +35,33 @@
                             <th scope="col">Group Number:</th>
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var insurance in Model.PatientInsurances)
                         {
-                            <tr class="hover-highlighting">
-
-
-                                @* <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@insurance.patientInsuranceId" data-insuranceId="@insurance.patientInsuranceId" @(insurance.active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@insurance.patientInsuranceId">@(insurance.active ? "Active" : "Inactive")</label>
-                                    </div>
-                                </td> *@
-
-
-
-                                
+                            <tr id="row-@insurance.patientInsuranceId" class="hover-highlighting">
                                 
                                 <td>@(insurance.active ? "Active" : "Inactive")</td>
-
-
-
-
                                 <td>@insurance.providerName</td>
                                 <td>@insurance.memberId</td>
                                 <td>@insurance.policyNumber</td>
                                 <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
-                                <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td>@insurance.providers.firstName @insurance.providers.lastName, @insurance.providers.providerId</td>
+                                @if (User.IsInRole("Admin"))
+                                {                                    
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -71,8 +69,27 @@
             }
             else
             {
-                <h1 class="text-center display-6">No insurance found.</h1>
+                <h1 class="text-center display-6">No insurance policies found.</h1>
             }
         </div>
     </div>
 </section>
+
+<!-- Delete confirmation modal-->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the insurance policy with "<span id="insuranceNamePlaceholder"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

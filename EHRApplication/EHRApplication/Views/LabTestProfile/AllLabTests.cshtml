@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "myEHR | Lab Tests";
-    @model List<LabTestProfile>
+@model List<LabTestProfile>
+    bool activeLabTests = false;
 
 }
 
@@ -8,12 +9,16 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">All Lab Tests</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="LabTestProfile" asp-action="CreateLabTest">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            <!--This is coded here to only display if you are logged in as an Admin-->
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="LabTestProfile" asp-action="CreateLabTest">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.Any())
@@ -21,39 +26,61 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Test Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Units</th>
-                            <th scope="col">Reference Range</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Active</th>
-                            <th scope="col"></th> <!-- Empty columns for the button -->
+                            <th scope="col">Test Name:</th>
+                            <th scope="col">Description:</th>
+                            <th scope="col">Units:</th>
+                            <th scope="col">Reference Range:</th>
+                            <th scope="col">Category:</th>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col">Status:</th>
+                                <th scope="col"></th> <!-- Empty columns for the button -->
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var labTest in Model)
                         {
-                            <tr class="hover-highlighting">
-                                <td>@labTest.testName</td>
-                                <td>@labTest.description</td>
-                                <td>@labTest.units</td>
-                                <td>@labTest.referenceRange</td>
-                                <td>@labTest.category</td>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            if (User.IsInRole("Admin"))
+                            {
+                                <tr class="hover-highlighting">
+                                    <td>@labTest.testName</td>
+                                    <td>@labTest.description</td>
+                                    <td>@labTest.units</td>
+                                    <td>@labTest.referenceRange</td>
+                                    <td>@labTest.category</td>
 
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input active-status-checkbox" type="checkbox" id="switch@patient.MHN" data-testId="@labTest.testId" @(labTest.Active ? "checked" : "")>
-                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Yes" : "No")</label>
+                                        <label class="form-check-label" for="switch@patient.MHN">@(labTest.Active ? "Active" : "Inactive")</label>
                                     </div>
                                 </td>
 
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="LabTestProfile" asp-action="EditLabTest" asp-route-testId="@labTest.testId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                    <td><a type="button" class="btn blue-button text-nowrap" asp-controller="LabTestProfile" asp-action="EditLabTest" asp-route-testId="@labTest.testId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
-
-                            </tr>
+                                </tr>
+                            }
+                            else if (labTest.Active == true)
+                            {
+                                activeLabTests = true;
+                                <tr class="hover-highlighting">
+                                    <td>@labTest.testName</td>
+                                    <td>@labTest.description</td>
+                                    <td>@labTest.units</td>
+                                    <td>@labTest.referenceRange</td>
+                                    <td>@labTest.category</td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
+                @if (activeLabTests == false && !User.IsInRole("Admin"))
+                {
+                    <h1 class="text-center display-6">No active lab tests found.</h1>
+                }
             }
             else
             {

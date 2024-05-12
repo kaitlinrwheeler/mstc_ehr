@@ -21,12 +21,16 @@
 
                 <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                     <div class="text-center w-100">Demographic Info</div>
-                    <div>
-                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN">
-                            <i class="fa-solid fa-pen me-2"></i>
-                            <span>Edit</span>
-                        </a>
-                    </div>
+                    <!--This is coded here to only display if you are logged in as an Admin-->
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div>
+                            <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="EditPatientForm" asp-route-mhn="@patient.MHN">
+                                <i class="fa-solid fa-pen me-2"></i>
+                                <span>Edit</span>
+                            </a>
+                        </div>
+                    }
                 </div>
 
 
@@ -108,7 +112,7 @@
                     }
                     else
                     {
-                        <h1 class="text-center display-6">No patient found</h1>
+                        <h1 class="text-center display-6">No patient found.</h1>
                     }
                 </div>
             </div>
@@ -121,16 +125,20 @@
                         <div class="card card-cover image-wrapper">
                             @if (string.IsNullOrEmpty(patient.patientImage))
                             {
-                                    <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;">
+                                    <img src="~/images/defaultProfilePicture/blank-profile-picture.png" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();" >
                             }
                             else
                             {
-                                    <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;">
+                                    <img src="~/images/@patient.patientImage" class="card-img-top" alt="Patient Image" onclick="document.getElementById('fileInput').click();">
                             }
-                            <div class="overlay">
-                                <i class="fas fa-camera me-2"></i>Change Photo
-                                <input type="file" id="fileInput" style="display:none;" data-mhn="@patient.MHN" />
-                            </div>
+                            <!--Not allowing the user to edit the image-->
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <div class="overlay">
+                                    <i class="fas fa-camera me-2"></i>Change Photo
+                                    <input type="file" id="fileInput" style="display:none;" data-mhn="@patient.MHN" />
+                                </div>
+                            }
                         </div>
                     </div>
                 }
@@ -143,22 +151,55 @@
 
                         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
                             <div class="text-center w-100">Contact Info</div>
-                            <div>
-                                @if(patient.ContactId.address != null)
-                                {
-                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN">
-                                        <i class="fa-solid fa-pen me-2"></i>
-                                        <span>Edit</span>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
-                                        <i class="fa-solid fa-plus me-2"></i>
-                                        <span>Add</span>
-                                    </a>
-                                }
-                            </div>
+                            <!--This is coded here to only display if you are logged in as an Admin-->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    @if (patient.ContactId.address != null)
+                                    {
+                                         <form class="btn-group mb-0 " role="group" method="post" asp-controller="Contact" asp-action="DeletePatientContact" asp-route-mhn="@patient.MHN" asp-route-contactId="@patient.ContactId.patientContactId" id="deleteForm-@patient.MHN">
+                                             <a type="button" class="btn blue-button rounded me-2 d-inline-flex align-items-center" asp-controller="Contact" asp-action="EditContact" asp-route-mhn="@patient.MHN"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+     
+                                             <button type="button" class="btn delete-button rounded d-inline-flex align-items-center"  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" value="Delete">
+                                                 <i class="fa-solid fa-trash me-2"></i>Delete
+                                             </button>
+
+
+
+                                             <!-- Delete confirmation modal-->
+                                             <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                                                 <div class="modal-dialog">
+                                                     <div class="modal-content">
+                                                         <div class="modal-header">
+                                                             <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                         </div>
+                                                         <div class="modal-body">
+                                                             <p class="h6">Are you sure you want to delete contact info?</p>
+                                                          </div >
+                                                         <div class="modal-footer">
+                                                             <button id = "cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                             <button type = "submit" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+
+
+
+
+                                         </form>
+                                    }
+                                    else
+                                    {
+                                        <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Contact" asp-action="Index" asp-route-mhn="@patient.MHN">
+                                            <i class="fa-solid fa-plus me-2"></i>
+                                            <span>Add</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
                         </div>
 
 
@@ -196,7 +237,7 @@
                             }
                             else
                             {
-                                <h1 class="text-center display-6">No contact info found</h1>
+                                <h1 class="text-center display-6">No contact information found.</h1>
                             }
                         </div>
                     </div>
@@ -205,3 +246,4 @@
         </div>
     </div>
 </div>
+

@@ -8,41 +8,57 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Add Allergy</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Add Allergy</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="ptAllergyForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="ptAllergyForm" enctype="multipart/form-data">
-
-            <input asp-for="PatientAllergy.MHN" value="@mhn" hidden />
+                <input asp-for="PatientAllergy.MHN" value="@mhn" hidden />
             
-            <!-- Allergy Dropdown -->
-            <div class="form-group">
-                <label for="allergyId">Allergy:</label>
-                <select id="allergyId" name="allergyId" class="form-control" asp-for="PatientAllergy.allergyId" data-bs-theme="auto">
-                    <option value="0">-- Select Allergy --</option>
-                    @foreach (var allergy in ListService.GetAllergies())
-                    {
-                        <option value="@allergy.allergyId">@allergy.allergyName</option>
-                    }
-                </select>
-                <span asp-validation-for="PatientAllergy.allergyId" class="validation-msg"></span>
-            </div>
+                <!-- Allergy Dropdown -->
+                <div class="form-group">
+                    <label for="allergyId">Allergy:</label>
+                    <select id="allergyId" name="allergyId" class="form-control" asp-for="PatientAllergy.allergyId" data-bs-theme="auto">
+                        <option value="0">-- Select Allergy --</option>
+                        @foreach (var allergy in ListService.GetAllergies())
+                        {
+                            <option value="@allergy.allergyId">@allergy.allergyName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PatientAllergy.allergyId" class="validation-msg"></span>
+                </div>
 
-            <!-- Allergy Onset Date Picker -->
-            <div class="form-group">
-                <label for="onSetDate">Onset Date:</label>
-                <input name="onSetDate" asp-for="PatientAllergy.onSetDate" type="date" id="onSetDate" class="form-control" data-bs-theme="auto" />
-                <span asp-validation-for="PatientAllergy.onSetDate" id="onSetDateError" class="validation-msg"></span>
-            </div>
+                <!-- Allergy Onset Date Picker -->
+                <div class="form-group">
+                    <label for="onSetDate">Onset Date:</label>
+                    <input name="onSetDate" asp-for="PatientAllergy.onSetDate" type="date" id="onSetDate" class="form-control" data-bs-theme="auto" />
+                    <span asp-validation-for="PatientAllergy.onSetDate" id="onSetDateError" class="validation-msg"></span>
+                </div>
 
-            <!-- Submit/Cancel Buttons -->
-            <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
-                <input type="submit" class="btn blue-button" data-bs-theme="auto" />
-            </div>
-        </form>
-    </div>
+                <!-- Submit/Cancel Buttons -->
+                <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientAllergies" asp-route-mhn="@mhn">Cancel</a>
+                    <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>
