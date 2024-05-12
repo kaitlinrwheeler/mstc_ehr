@@ -44,8 +44,8 @@
                             <tr id="row-@note.patientNotesId" class="hover-highlighting">
                                 <td>@note.occurredOn.ToString("MM-dd-yyyy")</td>
                                 <td>@note.createdAt.ToString("MM-dd-yyyy HH:mm")</td>
-                                <td>@note.providers.firstName @note.providers.lastName</td>
-                                <td>@note.assocProvider.firstName @note.assocProvider.lastName</td>
+                                <td>@note.providers.firstName @note.providers.lastName, @note.providers.providerId</td>
+                                <td>@note.assocProvider.firstName @note.assocProvider.lastName, @note.assocProvider.providerId</td>
                                 <td>@note.category</td>
                                  <td>
                                     @*This will only display the first 20 characters in the saved data in the model*@
@@ -68,7 +68,7 @@
                                         </div>
                                     }
                                 </td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditPatientNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientNotesForm" asp-route-noteId="@note.patientNotesId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
                                 <td>
                                     <button type="submit" class="btn delete-button text-nowrap" data-message="@note.assocProvider.firstName @note.assocProvider.lastName on @note.createdAt.ToString("MM-dd-yyyy HH:mm")" data-noteId="@note.patientNotesId">
@@ -84,7 +84,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No notes found for this patient.</h1>
+                <h1 class="text-center display-6">No notes found.</h1>
             }
         </div>
     </div>

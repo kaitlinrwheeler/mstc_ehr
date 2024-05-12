@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="visitId">Visit:</label>
                 <select id="visitId" class="form-control" asp-for="Vital.visitId" data-bs-theme="auto">
-                    <option value="-1"></option>
+                    <option value="-1">-- Select Visit --</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">
@@ -102,6 +102,7 @@
             </div>
 
             <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientVitals" asp-route-mhn="@mhn">Cancel</a>
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />
             </div>
         </form>

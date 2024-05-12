@@ -3,9 +3,9 @@
 @{
     ViewData["Title"] = "myEHR | Edit Lab Test";
     <link rel="stylesheet" href="~/css/forms.css">
-
     <script src="~/js/validation.js"></script>
     <script src="~/js/CharacterCounter.js"></script>
+    <script src="~/js/confirmModal.js" defer></script>
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -47,9 +47,29 @@
                 <span asp-validation-for="category" id="categoryError" class="validation-msg"></span>
             </div>
 
+            <!-- Submit/Cancel Buttons -->
             <div class="mt-3 d-flex justify-content-center">
                 <a type="button" class="btn btn-secondary me-2" asp-controller="LabTestProfile" asp-action="AllLabTests">Cancel</a>
-                <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+                <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
+            </div>
+
+            <!-- Confirmation Modal -->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save lab test information?
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

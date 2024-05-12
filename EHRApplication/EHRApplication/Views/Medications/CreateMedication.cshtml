@@ -34,7 +34,7 @@
             <div class="form-group">
             <label for="route">Route:</label>
                 <select asp-for="route" id="route" name="route" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select Route --</option>
                     <option value="Buccal">Buccal</option>
                     <option value="Inhalation">Inhalation</option>
                     <option value="Intramuscular">Intramuscular</option>
@@ -56,6 +56,7 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" asp-controller="Medications" asp-action="AllMedications">Cancel</a>
                 <input type="submit" class="btn blue-button" value="Submit" />
             </div>
 

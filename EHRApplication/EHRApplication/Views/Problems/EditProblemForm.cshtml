@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label for="priority">Priority Level:</label>
                 <select asp-for="@problem.priority" value="" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select Priority Level --</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label for="immediacy">Immediacy:</label>
                 <select asp-for="@problem.immediacy" value="" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select Immediacy --</option>
                     <option value="Routine">Routine</option>
                     <option value="Urgent">Urgent</option>
                 </select>
@@ -57,7 +57,7 @@
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
                 <select id="createdBy" class="form-control" asp-for="@problem.createdBy" data-bs-theme="auto">
-                    <option value="0"></option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -71,7 +71,7 @@
             <div class="form-group">
                 <label for="visitsId">Visit:</label>
                 <select id="visitsId" class="form-control" asp-for="@problem.visitsId" data-bs-theme="auto">
-                    <option value="0"></option>
+                    <option value="0">-- Select Visit --</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">
@@ -97,7 +97,7 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Problems" asp-action="Index" asp-route-mhn="@mhn">Cancel</a>
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 

@@ -7,6 +7,7 @@
 
     <script src="~/js/validation.js"></script>
     <script src="~/js/confirmModal.js" defer></script>
+    int mhn = ViewBag.MHN;
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
@@ -148,10 +149,10 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save patient information?
+                            Are you sure you want to save this contact information?
                         </div>
                         <div class="modal-footer">
-                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Patient" asp-action="PatientOverview" asp-route-mhn="@mhn">Cancel</a>
                             <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
                         </div>
                     </div>

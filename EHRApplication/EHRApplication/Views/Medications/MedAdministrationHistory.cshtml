@@ -15,13 +15,13 @@
                 </a>
             </div>
         </div>
-        <div class="card-body" data-bs-theme="auto">
+        <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.MedAdministrationHistories.Any())
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Med Name:</th>
+                            <th scope="col">Medication:</th>
                             <th scope="col">Date Given:</th>
                             <th scope="col">Time Given:</th>
                             <th scope="col">Category:</th>
@@ -41,7 +41,7 @@
                                 <td>@meds.category</td>
                                 <td>@meds.status</td>
                                 <td>@meds.frequency</td>
-                                <td>@meds.providers.firstName @meds.providers.lastName</td>
+                                <td>@meds.providers.firstName @meds.providers.lastName, @meds.providers.providerId</td>
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             </tr>
                         }
@@ -50,7 +50,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No med history found.</h1>
+                <h1 class="text-center display-6">No medication administration history found.</h1>
             }
         </div>
     </div>

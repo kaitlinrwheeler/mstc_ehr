@@ -21,7 +21,7 @@
             <div class="form-group">
                 <label for="providerId">Provider:</label>
                 <select id="providerId" class="form-control" asp-for="Visit.providerId" data-bs-theme="auto" onblur="validateRequiredInput('PrimaryPhysician', 'provider')">
-                    <option value="0"></option>
+                    <option value="0">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -64,6 +64,7 @@
             </div>
 
             <div class="mt-3 d-flex justify-content-center">
+                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Visits" asp-action="PatientVisits" asp-route-mhn="@mhn">Cancel</a>
                 <input type="submit" class="btn blue-button" data-bs-theme="auto" />
             </div>
         </form>

@@ -23,16 +23,13 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <!-- Commented out in case we want to view mhn later for testing purposes.-->
-@*                             <th scope="col">MHN:</th>
- *@                            
                             <th scope="col">Priority:</th>
                             <th scope="col">Description:</th>
                             <th scope="col">ICD-10:</th>
                             <th scope="col">Immediacy:</th>
                             <th scope="col">Created On:</th>
                             <th scope="col">Created By:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col"></th> <!--empty column for the edit button-->
                             <th scope="col"></th>
                         </tr>
@@ -67,9 +64,9 @@
                                 <td>@problem.ICD_10</td>
                                 <td>@problem.immediacy</td>
                                 <td>@problem.createdAt.ToString("MM/dd/yyyy")</td>
-                                <td>@problem.providers.firstName @problem.providers.lastName</td>
-                                <td>@(problem.active ? "Yes" : "No")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td>@problem.providers.firstName @problem.providers.lastName, @problem.providers.providerId</td>
+                                <td>@(problem.active ? "Active" : "Inactive")</td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Problems" asp-action="EditProblemForm" asp-route-problemId="@problem.patientProblemsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
 
                                 <td>

@@ -37,11 +37,11 @@
             <div class="form-group">
                 <label for="createdBy">Created By:</label>
                 <select id="createdBy" class="form-control" name="createdBy" asp-for="PatientNotesDetails.createdBy" data-bs-theme="auto">
-                    <option value="-1">--Select--</option>
+                    <option value="-1">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId">
-                            @provider.firstName @provider.lastName
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
                         </option>
                     }
                 </select>
@@ -51,11 +51,11 @@
             <div class="form-group">
                 <label for="associatedProvider">Associated Provider:</label>
                 <select id="createdBy" class="form-control" name="associatedProvider" asp-for="PatientNotesDetails.associatedProvider" data-bs-theme="auto">
-                    <option value="-1">--Select--</option>
+                    <option value="-1">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId">
-                            @provider.firstName @provider.lastName
+                            @provider.firstName @provider.lastName, @provider.specialty @provider.providerId
                         </option>
                     }
                 </select>
@@ -71,7 +71,7 @@
             <div class="form-group">
                 <label for="visitsId">Visit:</label>
                 <select id="visitsId" class="form-control" name="visitsId" asp-for="PatientNotesDetails.visitsId" data-bs-theme="auto">
-                    <option value="-1">--Select--</option>
+                    <option value="-1">-- Select Visit--</option>
                     @foreach (var visit in ListService.GetPatientVisitsByMHN(mhn))
                     {
                         <option value="@visit.visitsId.ToString()">
@@ -104,7 +104,7 @@
                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to save the note's information?
+                            Are you sure you want to save this note?
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

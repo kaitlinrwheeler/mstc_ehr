@@ -73,7 +73,7 @@
             <div class="form-group">
                 <label asp-for="@patient.primaryPhysician">Primary Physician:</label>
                 <select id="primaryPhysician" class="form-control" asp-for="@patient.primaryPhysician" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select A Provider --</option>
                     @foreach (var provider in ListService.GetProviders())
                     {
                         <option value="@provider.providerId.ToString()">
@@ -108,7 +108,7 @@
             <div class="form-group">
                 <label asp-for="@patient.preferredPronouns">Preferred Pronouns:</label>
                 <select asp-for="@patient.preferredPronouns" id="Pronouns" class="form-control" data-bs-theme="auto" required onchange="dropdownOtherOption('Pronouns', 'OtherPronouns', 'OtherPronounsError', 'pronoun')">
-                    <option value=""></option>
+                    <option value="">-- Select Preferred Pronouns --</option>
                     <option value="He/Him">He/Him</option>
                     <option value="She/Her">She/Her</option>
                     <option value="They/Them">They/Them</option>
@@ -121,7 +121,7 @@
             <div class="form-group">
                 <label asp-for="@patient.gender">Gender:</label>
                 <select asp-for="@patient.gender" id="Gender" class="form-control" data-bs-theme="auto" required onchange="dropdownOtherOption('Gender', 'OtherGender', 'OtherGenderError', 'gender')">
-                    <option value=""></option>
+                    <option value="">-- Select Gender --</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Non-binary">Non-binary</option>
@@ -135,7 +135,7 @@
             <div class="form-group">
                 <label asp-for="@patient.genderAssignedAtBirth">Gender assigned at birth:</label>
                 <select asp-for="@patient.genderAssignedAtBirth" id="GenderAssignedAtBirth" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select Gender Assigned at Birth --</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Intersex">Intersex</option>
@@ -146,7 +146,7 @@
             <div class="form-group">
                 <label asp-for="@patient.preferredLanguage">Preferred Language:</label>
                 <select asp-for="@patient.preferredLanguage" id="PreferredLanguage" class="form-control" data-bs-theme="auto">
-                    <option value=""></option>
+                    <option value="">-- Select Language --</option>
                     <option value="English">English</option>
                     <option value="Arabic">Arabic</option>
                     <option value="Bengali">Bengali</option>
@@ -218,7 +218,7 @@
 
             <!-- Submit Button -->
             <div class="mt-3 d-flex justify-content-center">
-                <a type="button"  class="btn btn-secondary me-2" asp-controller="Patient" asp-action="AllPatients">Cancel</a>
+                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</a>
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal"  value="Save" />
             </div>
 

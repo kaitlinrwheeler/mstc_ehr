@@ -27,7 +27,7 @@
                             <th scope="col">Name:</th>
                             <th scope="col">Start Date:</th>
                             <th scope="col">End Date:</th>
-                            <th scope="col">Active:</th>
+                            <th scope="col">Status:</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
@@ -39,8 +39,8 @@
                             <td>@alert.alertName</td>
                             <td>@alert.startDate.ToString("MM/dd/yyyy")</td>
                             <td>@alert.endDate.ToString("MM/dd/yyyy")</td>
-                            <td>@(alert.activeStatus ? "Yes" : "No")</td>
-                            <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAlertForm" asp-route-alertId="@alert.alertId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                            <td>@(alert.activeStatus ? "Active" : "Inactive")</td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditAlertForm" asp-route-alertId="@alert.alertId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             <td>
                                 <button type="submit" class="btn delete-button text-nowrap" data-name="@alert.alertName" data-alertId="@alert.alertId">
                                     <i class="fa-solid fa-trash me-2"></i>Delete

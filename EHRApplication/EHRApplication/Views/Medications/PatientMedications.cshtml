@@ -24,8 +24,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Medication:</th>@* 
-                            <th scope="col">Category:</th> *@
+                            <th scope="col">Medication:</th>
+                            <th scope="col">Category:</th>
                             <th scope="col">Status:</th>
                             <th scope="col">Instructions:</th>
                             <th scope="col">Dosage:</th>
@@ -43,8 +43,8 @@
                             var popupId = $"requirementsPopup-{Guid.NewGuid()}"; // Generate a unique ID for each popup
 
                             <tr id="row-@medication.patientMedId" class="hover-highlighting">
-                                <td>@medication.medProfile.medName</td>@* 
-                                <td>@medication.category</td> *@
+                                <td>@medication.medProfile.medName</td> 
+                                <td>@medication.category</td>
                                 <td>@medication.activeStatus</td>
                                 <td>
                                     @if(medication.prescriptionInstructions.Length <= 15)
@@ -69,10 +69,10 @@
                                 </td>
                                 <td>@medication.dosage</td>
                                 <td>@medication.route</td>
-                                <td>@medication.providers.firstName @medication.providers.lastName</td>
+                                <td>@medication.providers.firstName @medication.providers.lastName, @medication.providers.providerId</td>
                                 <td>@medication.datePrescribed.ToString("MM-dd-yyyy")</td>
                                 <td>@medication.endDate.ToString("MM-dd-yyyy")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditPatientMedForm" asp-route-patientMedId="@medication.patientMedId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
 
                                 <td>
@@ -89,7 +89,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No medications found for this patient.</h1>
+                <h1 class="text-center display-6">No medications found.</h1>
             }
         </div>
     </div>

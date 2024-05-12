@@ -47,7 +47,7 @@
                                 <td>@insurance.policyNumber</td>
                                 <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
-                                <td>@insurance.providers.firstName @insurance.providers.lastName, #@insurance.providers.providerId</td>
+                                <td>@insurance.providers.firstName @insurance.providers.lastName, @insurance.providers.providerId</td>
 
                                 <td>
                                     <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
@@ -66,7 +66,7 @@
             }
             else
             {
-                <h1 class="text-center display-6">No insurance found.</h1>
+                <h1 class="text-center display-6">No insurance policies found.</h1>
             }
         </div>
     </div>
@@ -81,7 +81,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete the insurance, "<span id="insuranceNamePlaceholder"></span>"?
+                Are you sure you want to delete the insurance "<span id="insuranceNamePlaceholder"></span>"?
             </div>
             <div class="modal-footer">
                 <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
