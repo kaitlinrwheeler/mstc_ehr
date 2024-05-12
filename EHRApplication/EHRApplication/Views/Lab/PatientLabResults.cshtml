@@ -61,7 +61,7 @@
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
 
                                 <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-name="@results.labTests.testName" data-labId="@results.labId">
+                                    <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-time="@results.time" data-test-name="@results.labTests.testName" data-labId="@results.labId">
                                         <i class="fa-solid fa-trash me-2"></i>Delete
                                     </button>
                                 </td>

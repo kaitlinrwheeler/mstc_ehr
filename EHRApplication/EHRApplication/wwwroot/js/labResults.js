@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
             labId = this.getAttribute('data-labId');
             testDate = this.getAttribute('data-test-date');
             testName = this.getAttribute('data-test-name');
-            message = testName + ' on ' + testDate;
+            testTime = this.getAttribute('data-test-time');
+            message = testName + ' on ' + testDate + ' at ' + testTime;
             document.getElementById('messagePlaceholder').textContent = message; // Update the name placeholder
             modal.show();
         });
