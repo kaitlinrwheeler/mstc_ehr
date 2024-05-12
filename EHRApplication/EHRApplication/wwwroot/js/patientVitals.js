@@ -9,7 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function (event) {
             event.preventDefault(); // Prevent the default form submission
             patientVitalId = this.getAttribute('data-patientVitalId');
-            message = this.getAttribute('data-message'); // Get the name
+            const vitalDate = this.getAttribute('data-vital-date');
+            const vitalTime = this.getAttribute('data-vital-time');
+            message = vitalDate + ' at ' + vitalTime;
             document.getElementById('messagePlaceholder').textContent = message; // Update the name placeholder
             modal.show();
         });

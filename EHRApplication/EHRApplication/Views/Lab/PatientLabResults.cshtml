@@ -62,13 +62,13 @@
                                 <td>@results.providers.firstName @results.providers.lastName, @results.providers.providerId</td>
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
                                 <td>@results.time.ToString("HH:mm")</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN">View</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <td>
                                         <a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
                                         
-                                        <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-name="@results.labTests.testName" data-labId="@results.labId">
+                                        <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-time="@results.time" data-test-name="@results.labTests.testName" data-labId="@results.labId">
                                             <i class="fa-solid fa-trash me-2"></i>Delete
                                         </button>
                                     </td>
