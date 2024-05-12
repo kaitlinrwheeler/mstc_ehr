@@ -6,7 +6,13 @@
 }
 
 <div class="container">
-    <h2>Welcome, User!</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <h2>Welcome, Instructor!</h2>
+    }else
+    {
+        <h2>Welcome, Student!</h2>
+    }
     <!--Start of first row-->
     <div class="card-row">
         <a class="card-box navigation-1" asp-area ="" asp-controller="Medications" asp-action="AllMedications">

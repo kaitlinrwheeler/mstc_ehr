@@ -11,12 +11,15 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Patient Lab Results</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Lab" asp-action="CreateResultsForm" asp-route-mhn="@mhn">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Lab" asp-action="CreateResultsForm" asp-route-mhn="@mhn">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.LabResults.Any())
@@ -32,8 +35,10 @@
                             <th scope="col">Date Ordered:</th>
                             <th scope="col">Time Ordered:</th>
                             <th scope="col"></th> <!-- Empty column for the button -->
-                            <th scope="col"></th> <!-- Empty column for the button -->
-                            <th scope="col"></th> <!-- Empty column for the button -->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col"></th> <!-- Empty column for the button -->
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -58,15 +63,16 @@
                                 <td>@results.date.ToString("MM/dd/yyyy")</td>
                                 <td>@results.time.ToString("HH:mm")</td>
                                 <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@results.visitsId" asp-route-mhn="@results.MHN"><i class="fa-solid fa-eye me-2"></i>View</a></td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
-
-                                <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-time="@results.time" data-test-name="@results.labTests.testName" data-labId="@results.labId">
-                                        <i class="fa-solid fa-trash me-2"></i>Delete
-                                    </button>
-                                </td>
-
-                            
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Lab" asp-action="EditResultsForm" asp-route-labId="@results.labId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        
+                                        <button type="submit" class="btn delete-button text-nowrap" data-test-date="@results.date" data-test-time="@results.time" data-test-name="@results.labTests.testName" data-labId="@results.labId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

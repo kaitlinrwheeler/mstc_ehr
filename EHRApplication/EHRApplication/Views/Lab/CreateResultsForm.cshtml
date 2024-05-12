@@ -8,15 +8,16 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Create Lab Result</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Create Lab Result</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="labOrderForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="labOrderForm" enctype="multipart/form-data">
-
-            <input asp-for="LabResultsDetails.MHN" hidden />
+                <input asp-for="LabResultsDetails.MHN" hidden />
 
             <div class="form-group">
                 <label for="testId">Test Name:</label>
@@ -32,11 +33,11 @@
                 <span asp-validation-for="LabResultsDetails.testId" id="testIdError" class="validation-msg"></span>
             </div>
 
-            <div class="form-group">
-                <label for="resultValue">Result Value:</label>
-                <input name="resultValue" asp-for="LabResultsDetails.resultValue" type="text" id="resultValue" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('resultValue', 'result value')" />
-                <span asp-validation-for="LabResultsDetails.resultValue" id="resultValueError" class="validation-msg"></span>
-            </div>
+                <div class="form-group">
+                    <label for="resultValue">Result Value:</label>
+                    <input name="resultValue" asp-for="LabResultsDetails.resultValue" type="text" id="resultValue" class="form-control" data-bs-theme="auto" onblur="validateRequiredInput('resultValue', 'result value')" />
+                    <span asp-validation-for="LabResultsDetails.resultValue" id="resultValueError" class="validation-msg"></span>
+                </div>
 
             <div class="form-group">
                 <label for="abnormalFlag">Abnormal Flag:</label>
@@ -63,17 +64,17 @@
                 <span asp-validation-for="LabResultsDetails.visitsId" id="visitError" class="validation-msg"></span>
             </div>
 
-            <div class="form-group">
-                <label for="date">Date of Order:</label>
-                <input name="date" asp-for="LabResultsDetails.date" type="date" id="date" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="LabResultsDetails.date" id="dateError" class="validation-msg"></span>
-            </div>
+                <div class="form-group">
+                    <label for="date">Date of Order:</label>
+                    <input name="date" asp-for="LabResultsDetails.date" type="date" id="date" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="LabResultsDetails.date" id="dateError" class="validation-msg"></span>
+                </div>
 
-            <div class="form-group">
-                <label for="time">Time of Order:</label>
-                <input name="time" asp-for="LabResultsDetails.time" type="time" id="time" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="LabResultsDetails.time" id="timeError" class="validation-msg"></span>
-            </div>
+                <div class="form-group">
+                    <label for="time">Time of Order:</label>
+                    <input name="time" asp-for="LabResultsDetails.time" type="time" id="time" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="LabResultsDetails.time" id="timeError" class="validation-msg"></span>
+                </div>
 
             <div class="form-group">
                 <label for="orderedBy">Provider:</label>
@@ -89,10 +90,25 @@
                 <span asp-validation-for="LabResultsDetails.orderedBy" id="PrimaryPhysicianError" class="validation-msg"></span>
             </div>
 
-            <div class="mt-3 d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn">Cancel</a>
-                <input type="submit" class="btn blue-button" data-bs-theme="auto" />
-            </div>
-        </form>
-    </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    <a type="button" class="btn btn-secondary me-2" value="Cancel" asp-controller="Lab" asp-action="PatientLabResults" asp-route-mhn="@mhn">Cancel</a>
+                    <input type="submit" class="btn blue-button" data-bs-theme="auto" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>

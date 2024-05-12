@@ -13,12 +13,16 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Vitals</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateVitalsForm" asp-route-mhn="@patient.MHN">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            <!--This is coded here to only display if you are logged in as an Admin-->
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreateVitalsForm" asp-route-mhn="@patient.MHN">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>                
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (patient != null && Model.Vitals.Any())
@@ -38,8 +42,10 @@
                             <th scope="col">BMI:</th>
                             <th scope="col">Intake:</th>
                             <th scope="col">Output:</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -58,13 +64,15 @@
                                 <td>@vital.BMI.ToString("F2")</td>
                                 <td>@vital.intakeMilliLiters mL</td>
                                 <td>@vital.outputMilliLiters mL</td>
-                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
-
-                                <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-vital-date="@vital.visits.date" data-vital-time="@vital.visits.time" data-patientVitalId="@vital.vitalsId">
-                                        <i class="fa-solid fa-trash me-2"></i>Delete
-                                    </button>
-                                </td>
+                                @if(User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditVitalsForm" asp-route-vitalsId="@vital.vitalsId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-vital-date="@vital.visits.date" data-vital-time="@vital.visits.time" data-patientVitalId="@vital.vitalsId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

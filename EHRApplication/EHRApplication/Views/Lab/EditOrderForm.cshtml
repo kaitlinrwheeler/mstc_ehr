@@ -8,16 +8,17 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Update Lab Order</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Update Lab Order</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="visitForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="visitForm" enctype="multipart/form-data">
-
-            <input name="MHN" asp-for="LabOrdersDetails.MHN" hidden />
-            <input asp-for="LabOrdersDetails.orderId" hidden />
+                <input name="MHN" asp-for="LabOrdersDetails.MHN" hidden />
+                <input asp-for="LabOrdersDetails.orderId" hidden />
 
             <div class="form-group">
                 <label for="testId">Test Name:</label>
@@ -58,17 +59,17 @@
                 <span asp-validation-for="LabOrdersDetails.visitsId" id="visitError" class="validation-msg"></span>
             </div>
 
-            <div class="form-group">
-                <label for="orderDate">Date of Order:</label>
-                <input name="orderDate" asp-for="LabOrdersDetails.orderDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="LabOrdersDetails.orderDate" id="orderDateError" class="validation-msg"></span>
-            </div>
+                <div class="form-group">
+                    <label for="orderDate">Date of Order:</label>
+                    <input name="orderDate" asp-for="LabOrdersDetails.orderDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="LabOrdersDetails.orderDate" id="orderDateError" class="validation-msg"></span>
+                </div>
 
-            <div class="form-group">
-                <label for="orderTime">Time of Order:</label>
-                <input name="orderTime" asp-for="LabOrdersDetails.orderTime" type="time" id="time" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="LabOrdersDetails.orderTime" id="timeError" class="validation-msg"></span>
-            </div>
+                <div class="form-group">
+                    <label for="orderTime">Time of Order:</label>
+                    <input name="orderTime" asp-for="LabOrdersDetails.orderTime" type="time" id="time" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="LabOrdersDetails.orderTime" id="timeError" class="validation-msg"></span>
+                </div>
 
             <div class="form-group">
                 <label for="orderedBy">Provider:</label>
@@ -90,24 +91,40 @@
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 
-            <!-- confirmation modal-->
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
-                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this lab order information?
-                        </div>
-                        <div class="modal-footer">
-                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+
+
+             <!-- confirmation modal-->
+             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                             <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                             Are you sure you want to save this lab order information?
+                         </div>
+                         <div class="modal-footer">
+                             <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                             <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                         </div>
+                     </div>
+                 </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 </section>

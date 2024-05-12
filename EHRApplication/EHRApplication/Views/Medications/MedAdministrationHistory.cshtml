@@ -9,12 +9,15 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Medication Administration History</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedAdministrationHistory" asp-route-mhn="@mhn">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Medications" asp-action="CreateMedAdministrationHistory" asp-route-mhn="@mhn">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (Model.MedAdministrationHistories.Any())
@@ -29,8 +32,10 @@
                             <th scope="col">Status:</th>
                             <th scope="col">Frequency:</th>
                             <th scope="col">Administered By:</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -44,12 +49,15 @@
                                 <td>@meds.status</td>
                                 <td>@meds.frequency</td>
                                 <td>@meds.providers.firstName @meds.providers.lastName, @meds.providers.providerId</td>
-                                <td>
-                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-med-name="@meds.medProfile.medName" data-admin-date="@meds.dateGiven" data-admin-time="@meds.timeGiven" data-admin-id="@meds.administrationId">
-                                        <i class="fa-solid fa-trash me-2"></i>Delete
-                                    </button>
-                                </td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Medications" asp-action="EditMedAdministrationHistory" asp-route-administrationId="@meds.administrationId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-med-name="@meds.medProfile.medName" data-admin-date="@meds.dateGiven" data-admin-time="@meds.timeGiven" data-admin-id="@meds.administrationId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>                                
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

@@ -11,47 +11,48 @@
 }
 
 <section class="my-5 w-75" data-bs-theme="auto">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="card-header" data-bs-theme="auto">
+            <h3 class="my-3">Edit Patient Allergy</h3>
+        </div>
 
-    <div class="card-header" data-bs-theme="auto">
-        <h3 class="my-3">Edit Patient Allergy</h3>
-    </div>
+        <div class="card-body" data-bs-theme="auto">
+            <form method="post" id="editPtAllergyForm" enctype="multipart/form-data">
 
-    <div class="card-body" data-bs-theme="auto">
-        <form method="post" id="editPtAllergyForm" enctype="multipart/form-data">
+                <input asp-for="PatientAllergy.MHN" name="MHN" hidden/>
+                <input asp-for="@ptAllergy.patientAllergyId" hidden />
 
-            <input asp-for="PatientAllergy.MHN" name="MHN" hidden/>
-            <input asp-for="@ptAllergy.patientAllergyId" hidden />
-
-            <div class="form-group">
-                <label for="allergyId">Allergy:</label>
-                <select id="allergyId" name="allergyId" class="form-control" asp-for="PatientAllergy.allergyId" data-bs-theme="auto" required>
-                    <option value="-1">-- Select Allergy --</option>
-                    @foreach (var allergy in ListService.GetAllergies())
-                    {
-                        <option value="@allergy.allergyId">@allergy.allergyName</option>
-                    }
-                </select>
-                <span asp-validation-for="PatientAllergy.allergyId" id="ptAllergyError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="onSetDate">Onset Date:</label>
-                <input name="onSetDate" asp-for="PatientAllergy.onSetDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
-                <span asp-validation-for="PatientAllergy.onSetDate" id="onSetDateError" class="validation-msg"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="activeStatus">Active?</label>
-                <div class="col-sm-6 ms-4">
-                    <div class="race-column">
-                        <input name="activeStatus" type="radio" id="Yes" asp-for="PatientAllergy.activeStatus" value="True" required />
-                        <label for="Yes" style="font-weight: normal;">Yes</label><br />
-                        <input name="activeStatus" type="radio" id="No" asp-for="PatientAllergy.activeStatus" value="False" />
-                        <label for="No" style="font-weight: normal;">No</label><br />
-                    </div>
+                <div class="form-group">
+                    <label for="allergyId">Allergy:</label>
+                    <select id="allergyId" name="allergyId" class="form-control" asp-for="PatientAllergy.allergyId" data-bs-theme="auto" required>
+                        <option value="-1">-- Select Allergy --</option>
+                        @foreach (var allergy in ListService.GetAllergies())
+                        {
+                            <option value="@allergy.allergyId">@allergy.allergyName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PatientAllergy.allergyId" id="ptAllergyError" class="validation-msg"></span>
                 </div>
-                <span asp-validation-for="PatientAllergy.activeStatus" class="validation-msg"></span>
-            </div>
+
+                <div class="form-group">
+                    <label for="onSetDate">Onset Date:</label>
+                    <input name="onSetDate" asp-for="PatientAllergy.onSetDate" type="date" id="date" class="form-control" data-bs-theme="auto" required />
+                    <span asp-validation-for="PatientAllergy.onSetDate" id="onSetDateError" class="validation-msg"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="activeStatus">Active?</label>
+                    <div class="col-sm-6 ms-4">
+                        <div class="race-column">
+                            <input name="activeStatus" type="radio" id="Yes" asp-for="PatientAllergy.activeStatus" value="True" required />
+                            <label for="Yes" style="font-weight: normal;">Yes</label><br />
+                            <input name="activeStatus" type="radio" id="No" asp-for="PatientAllergy.activeStatus" value="False" />
+                            <label for="No" style="font-weight: normal;">No</label><br />
+                        </div>
+                    </div>
+                    <span asp-validation-for="PatientAllergy.activeStatus" class="validation-msg"></span>
+                </div>
 
 
             <div class="mt-3 d-flex justify-content-center">
@@ -59,25 +60,40 @@
                 <input type="button" class="btn blue-button" data-bs-toggle="modal" data-bs-target="#confirmModal" value="Save" />
             </div>
 
-            <!-- confirmation modal-->
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
-                            <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save patient allergy information?
-                        </div>
-                        <div class="modal-footer">
-                            <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                <!-- confirmation modal-->
+                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ConfirmModalLabel" aria-hidden="true" data-bs-theme="auto">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ConfirmModalLabel">Confirm</h5>
+                                <button type="button" class="btn-close" data-bs-theme="auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to save the patient allergy information?
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn blue-button" id="confirmBtn">Save</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        //This makes the page redirect to the previous page.
+        <script>
+            window.history.back();
+        </script>
+
+        //This is a fail safe if the javascript is turned off it will still show an error.
+        <div class="card-body" data-bs-theme="auto">
+            Admin permission required.<br />
+            <a type="button" class="btn btn-secondary me-2" value="Cancel" onclick="window.history.back()">Cancel</a>
+            <a type="button" class="btn blue-button" asp-area="" asp-controller="Login_Register" asp-action="Login">Login</a>
+        </div>
+    }
 
 </section>

@@ -12,12 +12,15 @@
     <div class="card mb-3 shadow-sm" data-bs-theme="auto">
         <div class="h4 card-header d-flex justify-content-between align-items-center" data-bs-theme="auto">
             <div class="text-center w-100">Patient Insurance</div>
-            <div>
-                <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    <span>Add</span>
-                </a>
-            </div>
+            @if (User.IsInRole("Admin"))
+            {                
+                <div>
+                    <a type="button" class="btn blue-button d-flex align-items-center" asp-controller="Patient" asp-action="CreatePatientInsurance" asp-route-mhn="@patient.MHN">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        <span>Add</span>
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body overflow-auto" data-bs-theme="auto">
             @if (patient != null && Model.PatientInsurances.Any())
@@ -32,8 +35,10 @@
                             <th scope="col">Group Number:</th>
                             <th scope="col">Priority:</th>
                             <th scope="col">Primary Physician:</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            @if (User.IsInRole("Admin"))
+                            {                                
+                                <th scope="col"></th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -48,17 +53,15 @@
                                 <td>@(insurance.groupNumber != "" ? insurance.groupNumber : "N/A")</td>
                                 <td>@insurance.priority</td>
                                 <td>@insurance.providers.firstName @insurance.providers.lastName, @insurance.providers.providerId</td>
-
-                                <td>
-                                    <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
-                                </td>
-
-                                <td>
-                                    <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
-                                        <i class="fa-solid fa-trash me-2"></i>Delete
-                                    </button>
-                                </td>
-
+                                @if (User.IsInRole("Admin"))
+                                {                                    
+                                    <td>
+                                        <a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditPatientInsurance" asp-route-insuranceId="@insurance.patientInsuranceId"><i class="fa-solid fa-pen me-2"></i>Edit</a>
+                                        <button type="submit" class="btn delete-button text-nowrap" data-name="@insurance.providerName" data-insuranceId="@insurance.patientInsuranceId">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
