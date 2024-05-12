@@ -40,7 +40,7 @@
                             <td>@alert.startDate.ToString("MM/dd/yyyy")</td>
                             <td>@alert.endDate.ToString("MM/dd/yyyy")</td>
                             <td>@(alert.activeStatus ? "Active" : "Inactive")</td>
-                            <td><a type="button" class="btn blue-button" asp-controller="Patient" asp-action="EditAlertForm" asp-route-alertId="@alert.alertId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Patient" asp-action="EditAlertForm" asp-route-alertId="@alert.alertId"><i class="fa-solid fa-pen me-2"></i>Edit</a></td>
                             <td>
                                 <button type="submit" class="btn delete-button text-nowrap" data-name="@alert.alertName" data-alertId="@alert.alertId">
                                     <i class="fa-solid fa-trash me-2"></i>Delete
