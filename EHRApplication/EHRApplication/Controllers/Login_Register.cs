@@ -113,7 +113,7 @@ namespace EHRApplication.Controllers
                 {
                     // Log information about the successful login
                     _logger.LogInformation("User logged in.");
-                    TempData["SuccessMessage"] = "You have successfully Loged in!";
+                    TempData["SuccessMessage"] = "You have successfully logged in!";
 
 
                     // Redirect the user to the returnUrl if it's provided

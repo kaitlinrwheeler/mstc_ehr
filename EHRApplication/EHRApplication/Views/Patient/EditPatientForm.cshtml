@@ -8,14 +8,6 @@
     <script src="~/js/confirmModal.js"defer></script>
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
 <section class="my-5 w-75" data-bs-theme="auto">
     <!--This is coded here to only display if you are logged in as an Admin-->
     @if (User.IsInRole("Admin"))
