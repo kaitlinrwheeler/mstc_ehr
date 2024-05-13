@@ -1186,7 +1186,8 @@ namespace EHRApplication.Controllers
                             lastName = Convert.ToString(dataReader["lastName"]),
                             suffix = Convert.ToString(dataReader["suffix"]),
                             DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day),
-                            gender = Convert.ToString(dataReader["gender"])
+                            gender = Convert.ToString(dataReader["gender"]),
+                            Active = Convert.ToBoolean(dataReader["Active"]),
                         };
 
                         // adds results to list
