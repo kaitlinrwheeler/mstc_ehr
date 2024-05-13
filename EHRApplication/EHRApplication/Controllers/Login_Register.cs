@@ -75,36 +75,12 @@ namespace EHRApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginAccount account)
         {
+            //Removing the model state for the password and email.
+            ModelState.Remove("Password");
+            ModelState.Remove("Email");
             //Testing for nulls and if so will return with nulls
             if (ModelState.IsValid)
             {
-                //Testing to make sure that the email has "@mstc.edu" in it.
-                if (!System.Text.RegularExpressions.Regex.IsMatch(account.Email, @"^[^\s]+@mstc\.edu$"))
-                {
-                    //sets the error message for the email
-                    ModelState.AddModelError("Email", "Email must end with @mstc.edu.");
-                    return View(account);
-                }
-
-                //Testing to make sure that the password is greater than 8
-                if (account.Password.Length >= 8)
-                {
-                    //Tests and makes sure that the password has at least one upper, lower, number and special character
-                    if (!account.Password.Any(char.IsUpper) || !account.Password.Any(char.IsLower) || !account.Password.Any(char.IsDigit) || !account.Password.Any(IsSpecialCharacter))
-                    {
-                        //sets the error message for password
-                        ModelState.AddModelError("Password", "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
-                        return View(account);
-                    }
-                }
-                else
-                {
-                    //sets the error message for password
-                    ModelState.AddModelError("Password", "Password must have more than 8 character");
-                    return View(account);
-                }
-
-
                 // Attempt to sign in the user with the provided email and password
                 var result = await _signInManager.PasswordSignInAsync(account.Email, account.Password, true, lockoutOnFailure: false);
 
@@ -118,6 +94,10 @@ namespace EHRApplication.Controllers
 
                     // Redirect the user to the returnUrl if it's provided
                     return RedirectToAction("UserDashboard", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("Password", "Invalid Email or Password.");
                 }
 
                 // Check if two-factor authentication is required
