@@ -486,7 +486,8 @@ namespace EHRApplication.Services
             {
                 connection.Open();
                 //SQL command to select the data from the table
-                string sql = "Select administrationId, MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId From [dbo].[MedAdministrationHistory] WHERE administrationId = administrationId";
+                string sql = "SELECT administrationId, MHN, category, medId, status, frequency, dateGiven, timeGiven, administeredBy, visitsId FROM [dbo].[MedAdministrationHistory] WHERE administrationId = @administrationId";
+
                 SqlCommand cmd = new SqlCommand(sql, connection);
 
                 //Replace placeholder with paramater to avoid sql injection.
