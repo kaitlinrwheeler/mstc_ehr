@@ -337,7 +337,7 @@ namespace EHRApplication.Services
                         patientContact.email = Convert.ToString(dataReader["email"]);
                         patientContact.ECFirstName = Convert.ToString(dataReader["ECFirstName"]);
                         patientContact.ECLastName = Convert.ToString(dataReader["ECLastName"]);
-                        patientContact.ECRelationship = Convert.ToString(dataReader["ECFirstName"]);
+                        patientContact.ECRelationship = Convert.ToString(dataReader["ECRelationship"]);
                         patientContact.ECPhone = Convert.ToString(dataReader["ECPhone"]);
                     }
                 };
