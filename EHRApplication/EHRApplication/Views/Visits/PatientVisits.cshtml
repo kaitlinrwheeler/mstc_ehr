@@ -51,7 +51,7 @@
                                 <td>@visits.providers.firstName @visits.providers.lastName, @visits.providers.providerId</td>
                                 <td>@(visits.admitted ? "Yes" : "No")</td>
                                 <td>@visits.notes</td>
-                                <td><a type="button" class="btn blue-button" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@mhn">View</a></td>
+                                <td><a type="button" class="btn blue-button text-nowrap" asp-controller="Visits" asp-action="VisitDetails" asp-route-visitId="@visits.visitsId" asp-route-mhn="@mhn"><i class="fa-solid fa-eye me-2"></i>View</a></td>
                                 <!--This is coded here to only display if you are logged in as an Admin-->
                                 @if (User.IsInRole("Admin"))
                                 {
