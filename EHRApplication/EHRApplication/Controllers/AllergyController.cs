@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -60,6 +61,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateAllergyActiveStatus(int allergyId, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -94,12 +96,14 @@ namespace EHRApplication.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAllergy()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAllergy(Allergies allergy)
         {            
             if (!ModelState.IsValid)
@@ -113,6 +117,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAllergy(int allergyId)
         {
             Allergies allergy = _listService.GetAllergyById(allergyId);
@@ -120,6 +125,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAllergy(Allergies allergy)
         {
             if (!ModelState.IsValid)

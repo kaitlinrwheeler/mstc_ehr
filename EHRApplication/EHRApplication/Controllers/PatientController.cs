@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
@@ -83,13 +84,14 @@ namespace EHRApplication.Controllers
             return View(allPatients);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Index(int mhn)
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(PatientDemographic patient)
         {
             // Testing to see if the date of birth entered was a future date or not
@@ -357,68 +359,9 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-        private PatientDemographic GetPatientByMHN(int mhn)
-        {
-            //Creating a new patientDemographic instance
-            PatientDemographic patientDemographic = new PatientDemographic();
-
-            using (SqlConnection connection = new SqlConnection(this._connectionString))
-            {
-                connection.Open();
-
-                // Sql query to get the patient with the passed in mhn.
-                string sql = "SELECT * FROM [dbo].[PatientDemographic] WHERE MHN = @mhn";
-
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                // Replace placeholder with paramater to avoid sql injection.
-                cmd.Parameters.AddWithValue("@mhn", mhn);
-
-                using (SqlDataReader dataReader = cmd.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        //Assign properties for the patient demographic from the database
-                        patientDemographic.MHN = Convert.ToInt32(dataReader["MHN"]);
-                        patientDemographic.firstName = Convert.ToString(dataReader["firstName"]);
-                        patientDemographic.middleName = Convert.ToString(dataReader["middleName"]);
-                        patientDemographic.lastName = Convert.ToString(dataReader["lastName"]);
-                        patientDemographic.suffix = Convert.ToString(dataReader["suffix"]);
-                        patientDemographic.preferredPronouns = Convert.ToString(dataReader["preferredPronouns"]);
-                        //This is grabbing the date of birth from the database and converting it to date only. Somehow even though it is 
-                        //Saved to the database as only a date it does not read as just a date so this converts it to dateOnly.
-                        DateTime dateTime = DateTime.Parse(dataReader["DOB"].ToString());
-                        patientDemographic.DOB = new DateOnly(dateTime.Year, dateTime.Month, dateTime.Day);
-                        patientDemographic.gender = Convert.ToString(dataReader["gender"]);
-                        patientDemographic.preferredLanguage = Convert.ToString(dataReader["preferredLanguage"]);
-                        patientDemographic.ethnicity = Convert.ToString(dataReader["ethnicity"]);
-                        patientDemographic.race = Convert.ToString(dataReader["race"]);
-                        patientDemographic.religion = Convert.ToString(dataReader["religion"]);
-                        patientDemographic.primaryPhysician = Convert.ToInt32(dataReader["primaryPhysician"]);
-                        //Gets the provider for this patient using the primary physician number that links to the providers table
-                        patientDemographic.providers = _listService.GetProvidersByProviderId(patientDemographic.primaryPhysician);
-                        patientDemographic.legalGuardian1 = Convert.ToString(dataReader["legalGuardian1"]);
-                        patientDemographic.legalGuardian2 = Convert.ToString(dataReader["legalGuardian2"]);
-                        patientDemographic.previousName = Convert.ToString(dataReader["previousName"]);
-                        //Gets the contact info for this patient using the MHN that links to the contact info table
-                        patientDemographic.genderAssignedAtBirth = Convert.ToString(dataReader["genderAssignedAtBirth"]);
-                        patientDemographic.ContactId = _listService.GetContactByMHN(patientDemographic.MHN);
-                        patientDemographic.patientImage = Convert.ToString(dataReader["patientImage"]);
-                        patientDemographic.Active = Convert.ToBoolean(dataReader["Active"]);
-                        patientDemographic.HasAlerts = Convert.ToBoolean(dataReader["HasAlerts"]);
-                    }
-                }
-
-                connection.Close();
-            }
-
-            return patientDemographic;
-        }
-
-
-
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientInsurance(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -431,6 +374,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientInsurance(PatientInsurance insurance)
         {
             if (insurance.primaryPhysician == -1)
@@ -483,6 +427,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientInsurance(int insuranceId)
         {
             PatientInsurance insurance = new PatientInsurance();
@@ -528,6 +473,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientInsurance(PatientInsurance insurance)
         {
             if (insurance.primaryPhysician == -1)
@@ -758,6 +704,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdatePatientActiveStatus(int mhn, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -793,6 +740,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateInsuranceActiveStatus(int insuranceId, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -830,6 +778,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatient(int mhn)
         {
 
@@ -988,6 +937,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientForm(int mhn)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -1039,6 +989,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientForm(PatientDemographic patient)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -1200,7 +1151,7 @@ namespace EHRApplication.Controllers
             return View("PatientSearchResults", searchResults);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult PatientAlerts(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -1275,6 +1226,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public bool SetAlertInactive(int id)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -1309,6 +1261,7 @@ namespace EHRApplication.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateVitalsForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -1322,6 +1275,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateVitalsForm(Vitals vital)
         {
             if (vital.visitId == 0)
@@ -1350,6 +1304,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientVitals", new { mhn = vital.patientId });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditVitalsForm(int vitalsId)
         {
             // Needed to work with the patient banner properly.
@@ -1364,6 +1319,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditVitalsForm(Vitals vital)
         {
             if (vital.visitId == 0)
@@ -1393,6 +1349,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientCarePlanForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -1407,6 +1364,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientCarePlanForm(CarePlan carePlan)
         {
             // Needed to work with the patient banner properly.
@@ -1515,7 +1473,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientCarePlanForm(int carePlanId)
         {
             // Needed to work with the patient banner properly.
@@ -1570,6 +1528,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientCarePlanForm(CarePlan carePlan)
         {
             // Needed to work with the patient banner properly.
@@ -1679,6 +1638,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientNotesForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -1692,6 +1652,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientNotesForm(PatientNotes patientNote)
         {
 
@@ -1791,7 +1752,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
-
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientNotesForm(int noteId)
         {
             // Needed to work with the patient banner properly.
@@ -1844,6 +1805,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientNotesForm(PatientNotes patientNote)
         {
 
@@ -1944,6 +1906,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientNotes", new { mhn = patientNote.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAllergyForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -1958,6 +1921,7 @@ namespace EHRApplication.Controllers
 
         // still testing below
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAllergyForm(PatientAllergies allergy)
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -2003,6 +1967,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientAllergies", new { mhn = allergy.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAlertForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -2016,6 +1981,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAlertForm(Alerts alert)
         {
             DateTime today = DateTime.Today;
@@ -2076,6 +2042,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientAlerts", new { mhn = alert.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAllergyForm(int patientAllergyId)
         {
             // Needed to work with the patient banner properly.
@@ -2090,6 +2057,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAllergyForm(PatientAllergies allergy)
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -2135,6 +2103,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientAllergies", new { mhn = allergy.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAlertForm(int alertId)
         {
             // Needed to work with the patient banner properly.
@@ -2150,6 +2119,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditAlertForm(Alerts alert)
         {
             DateTime today = DateTime.Today;
@@ -2210,6 +2180,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditProfilePicture(IFormFile file, int mhn)
         {
             if (file == null || file.Length == 0)
@@ -2253,6 +2224,7 @@ namespace EHRApplication.Controllers
 
         // delete patient allergy record
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientAllergy(int patientAllergyId)
         {
 
@@ -2289,6 +2261,7 @@ namespace EHRApplication.Controllers
         }        
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientCarePlan(int carePlanId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -2324,6 +2297,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientNote(int noteId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -2360,6 +2334,7 @@ namespace EHRApplication.Controllers
 
         // delete patient alert record, change hasAlerts status if there are no alerts left for that patient
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteAlert(int alertId)
         {
             int mhn = _listService.GetPatientFromAlert(alertId);
@@ -2401,6 +2376,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientInsurance(int insuranceId)
         {
 
@@ -2438,6 +2414,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Patient/DeleteVitals")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteVitals(int vitalsId)
         {
 

@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
@@ -97,6 +98,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateOrderForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -110,6 +112,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateOrderForm(LabOrders labOrder)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -159,6 +162,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("LabOrders", new { mhn = labOrder.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditOrderForm(int orderId)
         {
             // Needed to work with the patient banner properly.
@@ -173,6 +177,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditOrderForm(LabOrders labOrder)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -222,6 +227,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("LabOrders", new { mhn = labOrder.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateResultsForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -235,6 +241,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateResultsForm(LabResults labResult)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -288,6 +295,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientLabResults", new { mhn = labResult.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditResultsForm(int labId)
         {
             // Needed to work with the patient banner properly.
@@ -302,6 +310,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditResultsForm(LabResults labResult)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -356,6 +365,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateLabActiveStatus(int id, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -392,6 +402,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Lab/DeleteLabOrder")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteLabOrder(int orderId)
         {
 
@@ -429,6 +440,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Lab/DeleteLabResults")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteLabResults(int resultId)
         {
 

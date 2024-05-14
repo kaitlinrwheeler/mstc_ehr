@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -21,6 +22,7 @@ namespace EHRApplication.Controllers
             _listService = listService;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index(int mhn)
         {
             PortalViewModel portalViewModel = new PortalViewModel();
@@ -32,6 +34,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index(PatientContact contact, int mhn)
         {
             PortalViewModel portalViewModel = new PortalViewModel();
@@ -80,6 +83,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditContact(int mhn)
         {
             PortalViewModel portalViewModel = new PortalViewModel();
@@ -95,6 +99,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditContact(PatientContact contact)
         {
             //returns the model if null because there were errors in validating it
@@ -160,6 +165,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientContact(int mhn, int contactId)
         {
             // Delete the patient contact record from the database

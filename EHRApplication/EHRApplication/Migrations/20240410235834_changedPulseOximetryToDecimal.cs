@@ -10,7 +10,7 @@ namespace EHRApplication.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            /*migrationBuilder.DropColumn(
                 name: "OtherGender",
                 table: "PatientDemographic");
 
@@ -20,7 +20,7 @@ namespace EHRApplication.Migrations
 
             migrationBuilder.DropColumn(
                 name: "OtherRace",
-                table: "PatientDemographic");
+                table: "PatientDemographic");*/
 
             migrationBuilder.AlterColumn<decimal>(
                 name: "pulseOximetry",
@@ -78,7 +78,7 @@ namespace EHRApplication.Migrations
                 oldType: "nvarchar(70)",
                 oldMaxLength: 70);
 
-            migrationBuilder.AddColumn<string>(
+           /* migrationBuilder.AddColumn<string>(
                 name: "OtherGender",
                 table: "PatientDemographic",
                 type: "nvarchar(60)",
@@ -97,7 +97,7 @@ namespace EHRApplication.Migrations
                 table: "PatientDemographic",
                 type: "nvarchar(60)",
                 maxLength: 60,
-                nullable: true);
+                nullable: true);*/
         }
     }
 }

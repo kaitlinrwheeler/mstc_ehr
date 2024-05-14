@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Configuration;
@@ -84,7 +85,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateProblemForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -98,6 +99,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateProblemForm(PatientProblems problem)
         {
             if (problem.visitsId == 0)
@@ -131,6 +133,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("index", new { mhn = problem.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditProblemForm(int problemId)
         {
             // Needed to work with the patient banner properly.
@@ -145,6 +148,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditProblemForm(PatientProblems problem)
         {
             if (problem.visitsId == 0)
@@ -180,6 +184,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Problems/DeletePatientProblem")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientProblem(int problemId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))

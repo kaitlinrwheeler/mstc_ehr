@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
@@ -218,6 +219,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientMedForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -231,6 +233,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreatePatientMedForm(PatientMedications medication)
         {
             if (medication.prescriptionInstructions.IsNullOrEmpty())
@@ -324,6 +327,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientMedications", new { mhn = medication.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientMedForm(int patientMedId)
         {
             // Needed to work with the patient banner properly.
@@ -338,6 +342,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditPatientMedForm(PatientMedications medication)
         {
             if (medication.prescriptionInstructions.IsNullOrEmpty())
@@ -433,6 +438,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateActiveStatusForMedProfile(int medId, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -467,12 +473,14 @@ namespace EHRApplication.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedication()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedication(MedicationProfile medProfile)
         {
             if (medProfile.route == "")
@@ -494,6 +502,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("AllMedications");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedication(int medId)
         {
 
@@ -503,6 +512,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedication(MedicationProfile medProfile)
         {
             if (medProfile.route == "")
@@ -524,6 +534,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("AllMedications");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedicationOrder(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -537,6 +548,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedicationOrder(MedOrders medOrder)
         {
             //Vailidatoin that can't be done in the model
@@ -588,6 +600,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("MedicationOrders", new { mhn = medOrder.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedicationOrder(int orderId)
         {
             // Needed to work with the patient banner properly.
@@ -602,6 +615,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedicationOrder(MedOrders medOrder)
         {
             //Vailidatoin that can't be done in the model
@@ -653,6 +667,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("MedicationOrders", new { mhn = medOrder.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedAdministrationHistory(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -666,6 +681,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateMedAdministrationHistory(MedAdministrationHistory medHistory)
         {
             //Vailidatoin that can't be done in the model
@@ -721,6 +737,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("MedAdministrationHistory", new { mhn = medHistory.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedAdministrationHistory(int administrationId)
         {
             // Needed to work with the patient banner properly.
@@ -735,6 +752,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditMedAdministrationHistory(MedAdministrationHistory medHistory)
         {
             //Vailidatoin that can't be done in the model
@@ -792,6 +810,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Medication/DeletePatientMedication")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePatientMedication(int patientMedId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -828,6 +847,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Medication/DeleteMedAdminHistory")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteMedAdminHistory(int administrationId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
@@ -864,6 +884,7 @@ namespace EHRApplication.Controllers
 
         [HttpPost]
         [Route("Medication/DeleteMedOrder")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteMedOrder(int orderId)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))
