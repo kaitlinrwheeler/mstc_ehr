@@ -1,5 +1,6 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -61,12 +62,14 @@ namespace EHRApplication.Controllers
             return View(allProviders);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateProvider()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateProvider(Providers provider)
         {
             if (!ModelState.IsValid)
@@ -80,6 +83,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("AllProviders");
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditProvider(int providerId)
         {
             Providers provider = _listService.GetProviderById(providerId);
@@ -87,6 +91,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditProvider(Providers provider)
         {
             if (!ModelState.IsValid)
@@ -102,6 +107,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateProviderActiveStatus(int providerId, bool activeStatus)
         {
             using (SqlConnection connection = new SqlConnection(this._connectionString))

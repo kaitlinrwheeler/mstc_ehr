@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -66,12 +67,14 @@ namespace EHRApplication.Controllers
         } 
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateLabTest()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateLabTest(LabTestProfile labTest)
         {
             // We want to default to active when created.
@@ -115,6 +118,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditLabTest(int testId)
         {
             LabTestProfile labTest = new LabTestProfile();
@@ -152,6 +156,7 @@ namespace EHRApplication.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditLabTest(LabTestProfile labTest)
         {
             // We want to default to active when edited.
@@ -196,7 +201,5 @@ namespace EHRApplication.Controllers
             // If the model state is not valid, return the view with errors
             return View(labTest);
         }
-
-
     }
 }

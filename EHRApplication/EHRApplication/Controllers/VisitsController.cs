@@ -1,6 +1,7 @@
 ﻿using EHRApplication.Models;
 using EHRApplication.Services;
 using EHRApplication.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
@@ -64,6 +65,7 @@ namespace EHRApplication.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateVisitForm(int mhn)
         {
             // Needed to work with the patient banner properly.
@@ -77,6 +79,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateVisitForm(Visits visit)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -117,6 +120,7 @@ namespace EHRApplication.Controllers
             return RedirectToAction("PatientVisits", new { mhn = visit.MHN });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult EditVisitForm(int visitId)
         {
             // Needed to work with the patient banner properly.
@@ -131,6 +135,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult EditVisitForm(Visits visit)
         {
             PortalViewModel viewModel = new PortalViewModel();
@@ -172,6 +177,7 @@ namespace EHRApplication.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteVisit(int visitId)
         {
 

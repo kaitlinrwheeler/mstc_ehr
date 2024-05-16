@@ -18,6 +18,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EHRApplication.Controllers
 {
@@ -81,6 +82,13 @@ namespace EHRApplication.Controllers
             //Testing for nulls and if so will return with nulls
             if (ModelState.IsValid)
             {
+                //makes sure that the there are values entered.
+                if (account.Password.IsNullOrEmpty() || account.Email.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError("Password", "Invalid Email or Password.");
+                    return View(account);
+                }
+
                 // Attempt to sign in the user with the provided email and password
                 var result = await _signInManager.PasswordSignInAsync(account.Email, account.Password, true, lockoutOnFailure: false);
 
@@ -98,6 +106,7 @@ namespace EHRApplication.Controllers
                 else
                 {
                     ModelState.AddModelError("Password", "Invalid Email or Password.");
+                    return View(account);
                 }
 
                 // Check if two-factor authentication is required
